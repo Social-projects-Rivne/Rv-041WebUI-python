@@ -11,8 +11,8 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 requires = [
     'plaster_pastedeploy',
     'pyramid',
-    'pyramid_jinja2',
     'pyramid_debugtoolbar',
+    'piramid_jinja2',
     'waitress',
     'alembic',
     'pyramid_retry',
@@ -31,7 +31,7 @@ tests_require = [
 ]
 
 setup(
-    name='easyrestaurant',
+    name='easyrest',
     version='0.0',
     description='EasyRestaurant',
     long_description=README + '\n\n' + CHANGES,
@@ -54,10 +54,10 @@ setup(
     install_requires=requires,
     entry_points={
         'paste.app_factory': [
-            'main = easyrestaurant:main',
+            'main = easyrest:main',
         ],
         'console_scripts': [
-            'initialize_easyrestaurant_db=easyrestaurant.scripts.initialize_db:main',
+            'initialize_easyrest_db=easyrest.scripts.initialize_db:main',
         ],
     },
 )
