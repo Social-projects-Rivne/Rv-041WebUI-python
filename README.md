@@ -47,6 +47,11 @@ and then restart postqresql service
 
 `(venv) initialize_easyrest_db development.ini`
 
+```
+--drop - Drop derivative models from Base
+--fill - Create tables with test data (without create empty tables)
+```
+
 8. Run tests
 
 `(venv) pytest`
