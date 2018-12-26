@@ -1,4 +1,4 @@
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.schema import MetaData
 
 # Recommended naming convention used by Alembic, as various different database
@@ -13,4 +13,16 @@ NAMING_CONVENTION = {
 }
 
 metadata = MetaData(naming_convention=NAMING_CONVENTION)
-Base = declarative_base(metadata=metadata)
+
+
+@as_declarative(metadata=metadata)
+class Base(object):
+    def __repr__(self):
+        s = '<%s(' % (self.__class__)
+        for c in self.__table__.columns:
+            s += '%s = %s, ' % (c.name, getattr(self, c.name))
+        s += ')'
+        return s
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

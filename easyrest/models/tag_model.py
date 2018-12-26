@@ -12,10 +12,3 @@ class Tag(Base):
     __tablename__ = 'Tag'
     id = Column(Integer, primary_key=True)
     name = Column(Text)
-
-    def __repr__(self):
-        return "<Tag(id='%s', name='%s')>" % (
-                            self.id, self.name)
-
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
