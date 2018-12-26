@@ -53,10 +53,12 @@ def main(argv=sys.argv):
             dbsession = env['request'].dbsession
             if args.drop:
                 drop_models(dbsession)
+                print('Droped')
             else:
                 setup_models(dbsession)
+                print('Created')
             if args.fill:
-                print("fill")
                 fill_models(dbsession)
+                print("filled")
     except OperationalError:
         print('Error in init_db.py')
