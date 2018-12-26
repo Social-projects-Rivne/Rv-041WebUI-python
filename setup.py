@@ -8,14 +8,12 @@ requires = [
     'pyramid_debugtoolbar',
     'pyramid_jinja2',
     'waitress',
-    'alembic',
     'pyramid_retry',
     'pyramid_tm',
     'SQLAlchemy',
     'transaction',
     'zope.sqlalchemy',
-    'pytest',
-    'psycopg2',
+    'psycopg2-binary',
 ]
 
 tests_require = [
