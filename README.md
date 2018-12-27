@@ -23,8 +23,8 @@
 5. Configure posgres db
 
 ```
-sudo -i -u postgres psql
->>>CREATE USER admin WITH ENCRYPTED PASSWORD 12345678
+sudo -u postgres psql
+>>>CREATE USER admin WITH ENCRYPTED PASSWORD "12345678";
 >>>CREATE DATABASE easyrest OWNER admin;
 ```
 Or
