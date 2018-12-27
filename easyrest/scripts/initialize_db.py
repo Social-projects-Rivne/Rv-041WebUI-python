@@ -4,24 +4,28 @@ import sys
 from pyramid.paster import bootstrap, setup_logging
 from sqlalchemy.exc import OperationalError
 
-from .. import models
+from ..models.meta import Base
+from ..models.Tag import Tag
+
+from test_data import Add
 
 
 def setup_models(dbsession):
     engine = dbsession.get_bind()
-    Base = models.meta.Base.metadata.create_all(engine)
+    Base_rez = Base.metadata.create_all(engine)
 
 
 def fill_models(dbsession):
     names = ["pizza", "beer", "japanese", "ukrainian"]
     for name in names:
-        model_item = models.tag_model.Tag(name=name)
+        model_item = Tag(name=name)
         dbsession.add(model_item)
+    Add()
 
 
 def drop_models(dbsession):
     engine = dbsession.get_bind()
-    Base = models.meta.Base.metadata.drop_all(engine)
+    Base_rez = Base.metadata.drop_all(engine)
 
 
 def parse_args(argv):

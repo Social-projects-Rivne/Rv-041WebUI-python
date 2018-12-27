@@ -12,3 +12,4 @@ class Tag(Base):
     __tablename__ = 'Tag'
     id = Column(Integer, primary_key=True)
     name = Column(Text)
+    priority = Column(Integer)

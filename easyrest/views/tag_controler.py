@@ -5,13 +5,13 @@ from pyramid.httpexceptions import HTTPNotFound
 
 from sqlalchemy.exc import DBAPIError
 
-from .. import models
+from ..models.Tag import Tag
 
 
 @view_config(route_name='get_tags', renderer='json', request_method='GET')
 def get_tags_controler(request):
     try:
-        query = request.dbsession.query(models.Tag)
+        query = request.dbsession.query(Tag)
         tags = query.all()
         if len(tags) == 0:
             raise HTTPNotFound()
