@@ -5,7 +5,12 @@ import zope.sqlalchemy
 
 # import or define all models here to ensure they are attached to the
 # Base.metadata prior to any initialization routines
+from .Menu import Menu
+from .Menu_item import Menu_item
+from .Restaurant import Restaurant
 from .Tag import Tag
+from .Tag_association import Tag_association
+
 
 # run configure_mappers after defining all of the models to ensure
 # all relationships can be setup

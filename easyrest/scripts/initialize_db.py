@@ -5,9 +5,9 @@ from pyramid.paster import bootstrap, setup_logging
 from sqlalchemy.exc import OperationalError
 
 from ..models.meta import Base
-from ..models.Tag import Tag
+from ..models import *
 
-from test_data import Add
+from test_data import fill_db
 
 
 def setup_models(dbsession):
@@ -16,11 +16,7 @@ def setup_models(dbsession):
 
 
 def fill_models(dbsession):
-    names = ["pizza", "beer", "japanese", "ukrainian"]
-    for name in names:
-        model_item = Tag(name=name)
-        dbsession.add(model_item)
-    Add()
+    fill_db(dbsession)
 
 
 def drop_models(dbsession):
@@ -44,6 +40,11 @@ def parse_args(argv):
         help='Argument to create tables with content',
         action='store_true'
     )
+    parser.add_argument(
+        '--reset',
+        help='Argument to reset db with no content',
+        action='store_true'
+    )
     return parser.parse_args(argv[1:])
 
 
@@ -55,14 +56,19 @@ def main(argv=sys.argv):
     try:
         with env['request'].tm:
             dbsession = env['request'].dbsession
-            if args.drop:
+            if args.reset:
                 drop_models(dbsession)
-                print('Droped')
-            else:
                 setup_models(dbsession)
-                print('Created')
+                print("Reseted")
+            else:
+                if args.drop:
+                    drop_models(dbsession)
+                    print('Droped')
+                else:
+                    setup_models(dbsession)
+                    print('Created')
             if args.fill:
                 fill_models(dbsession)
-                print("filled")
+                print("Filled")
     except OperationalError:
         print('Error in init_db.py')
