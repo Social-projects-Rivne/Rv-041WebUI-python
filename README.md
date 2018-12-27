@@ -24,8 +24,8 @@
 
 ```
 sudo -i -u postgres psql
->>>CREATE USER admin WITH ENCRYPTED PASSWORD 123;
->>>CREATE DATABASE "EasyRest" OWNER admin;
+>>>CREATE USER admin WITH ENCRYPTED PASSWORD 12345678
+>>>CREATE DATABASE easyrest OWNER admin;
 ```
 Or
 in /etc/postgresql/9.x/main/pg_hba.conf add lines to the bottom of the file:
@@ -103,15 +103,14 @@ alias envon=`source ~/venv/<Your venv name>/bin/activate`
 
 9. Install posgresql and create database
 
-10. Initialize and upgrade the database using Alembic
-
-`(%VENV%) alembic -c development.ini revision --autogenerate -m "init"`
-
-`(%VENV%) alembic -c development.ini upgrade head`
-
 10. Initialize db
 
-`(%VENV%) initialize_easyrest_db development.ini`
+`(venv) initialize_easyrest_db development.ini`
+
+```
+--drop - Drop derivative models from Base
+--fill - Create tables with test data (without create empty tables)
+```
 
 11. Run tests
 

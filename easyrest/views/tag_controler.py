@@ -8,7 +8,7 @@ from sqlalchemy.exc import DBAPIError
 from .. import models
 
 
-@view_config(route_name='get_tags', renderer='json')
+@view_config(route_name='get_tags', renderer='json', request_method='GET')
 def get_tags_controler(request):
     try:
         query = request.dbsession.query(models.Tag)
