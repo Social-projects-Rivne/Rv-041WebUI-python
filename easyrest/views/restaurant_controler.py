@@ -13,7 +13,8 @@ from ..models.Restaurant import Restaurant
 def asign_tags(rests):
     rests_dict = [rest.as_dict() for rest in rests]
     for i, rest in enumerate(rests):
-        rests_dict[i]["id"] = "restaurantId" + rests_dict[i]["id"]
+        del(rests_dict[i]["menu_id"])
+        rests_dict[i]["id"] = "restaurantId" + str(rests_dict[i]["id"])
         tags = rest.tag
         tags_list = [tag.as_dict() for tag in tags]
         for tag in tags_list:
@@ -22,7 +23,7 @@ def asign_tags(rests):
     return rests_dict
 
 
-@view_config(route_name='get_restaurant', renderer='json', request_method='GET')
+@view_config(route_name='get_all_restaurants', renderer='json', request_method='GET')
 def get_restaurant_controler(request):
     def return_all():
         rests = request.dbsession.query(Restaurant).all()
@@ -31,14 +32,17 @@ def get_restaurant_controler(request):
         response = Response(body=dumps({"data":rests_dict, "name": "get_restaurant" }))
         return response
 
-    params = request.GET
-    id = params.getall("id")[0] if len(params.getall("id")) != 0 else None
-    if id is not None and id != '':
-        query = request.dbsession.query(Restaurant).filter(Restaurant.id == id).all()
+    response = return_all()
+    return response
+
+@view_config(route_name='get_restaurant', renderer='json', request_method='GET')
+def get_restaurant_controler(request):
+    id = request.matchdict["id"]
+    query = request.dbsession.query(Restaurant).filter(Restaurant.id == id).all()
+    if len(query) == 0:
+        response = Response(body=dumps({"data":[], "name": "get_restaurant_by_id" }))
+    else:
         rests_dict = asign_tags(query)
         response = Response(body=dumps({"data":rests_dict, "name": "get_restaurant_by_id" }))
-    else:
-        response = return_all()
-
 
     return response
