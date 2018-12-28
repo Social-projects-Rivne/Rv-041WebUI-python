@@ -5,6 +5,8 @@ from pyramid.httpexceptions import HTTPNotFound
 
 from sqlalchemy.exc import DBAPIError
 
+from json import dumps
+
 from ..models.Tag import Tag
 
 
@@ -16,6 +18,7 @@ def get_tags_controler(request):
         if len(tags) == 0:
             raise HTTPNotFound()
         dict_objs = [tag.as_dict() for tag in tags]
+        response = Response(body=dumps({"data":dict_objs, "name": "tag" }))
     except DBAPIError:
         return Response(db_err_msg, content_type='text/plain', status=500)
-    return dict_objs
+    return response
