@@ -4,6 +4,9 @@ def includeme(config):
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_route('home', '/')
     config.add_route('get_tags', '/tag', request_method="GET")
+    config.add_route('get_restaurant', '/restaurant', request_method="GET")
+    config.add_route('get_menu', '/restaurant/{id}/menu', request_method="GET")
+    config.scan()
 
 
     #CORS fix for react
@@ -17,4 +20,5 @@ def includeme(config):
             'Access-Control-Max-Age': '1728000',
             })
         event.request.add_response_callback(cors_headers)
+
     config.add_subscriber(add_cors_headers_response_callback, NewRequest)
