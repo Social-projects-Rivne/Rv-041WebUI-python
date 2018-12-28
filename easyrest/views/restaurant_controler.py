@@ -13,9 +13,12 @@ from ..models.Restaurant import Restaurant
 def asign_tags(rests):
     rests_dict = [rest.as_dict() for rest in rests]
     for i, rest in enumerate(rests):
+        rests_dict[i]["id"] = "restaurantId" + rests_dict[i]["id"]
         tags = rest.tag
-        tags_dict = [tag.as_dict() for tag in tags]
-        rests_dict[i].update({"tags": tags_dict})
+        tags_list = [tag.as_dict() for tag in tags]
+        for tag in tags_list:
+            tag["id"] = "tagId" + str(tag["id"])
+        rests_dict[i].update({"tags": tags_list})
     return rests_dict
 
 

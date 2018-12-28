@@ -18,6 +18,8 @@ def get_tags_controler(request):
         if len(tags) == 0:
             raise HTTPNotFound()
         dict_objs = [tag.as_dict() for tag in tags]
+        for tag in dict_objs:
+        	tag["id"] = "tagId" + str(tag["id"])
         response = Response(body=dumps({"data":dict_objs, "name": "tag" }))
     except DBAPIError:
         return Response(db_err_msg, content_type='text/plain', status=500)

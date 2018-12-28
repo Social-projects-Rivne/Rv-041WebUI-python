@@ -11,7 +11,10 @@ from ..models.Restaurant import Restaurant
 
 def asign_items(menu):
     menu_dict = menu.as_dict()
+    menu_dict["id"] = "menuId" + str(menu_dict["id"])
     menu_items = [item.as_dict() for item in menu.menu_item]
+    for item in menu_items:
+        item["id"] = "menuItemId" + str(item["id"])
     menu_dict.update({"menu_items": menu_items})
     return menu_dict
 
