@@ -16,6 +16,6 @@ class Tag(Base):
     priority = Column(Integer)
     # tag_agreg_id = Column(Integer, ForeignKey('tag_agreg.id'))
 
-    tag_agreg = relationship(
+    rest = relationship(
         "Restaurant",
         secondary="tag_association")

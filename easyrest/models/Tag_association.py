@@ -10,7 +10,7 @@ from .meta import Base
 
 
 class Tag_association(Base):
-    __tablename__ = 'tag_agreg'
+    __tablename__ = 'tag_association'
     id = Column(Integer, primary_key=True)
     restaurant_id = Column(Integer, ForeignKey('restaurant.id'))
     tag_id = Column(Integer, ForeignKey('tag.id'))
