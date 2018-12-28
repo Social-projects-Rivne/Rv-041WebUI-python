@@ -7,7 +7,7 @@ from sqlalchemy.exc import OperationalError
 from ..models.meta import Base
 from ..models import *
 
-from test_data import fill_db
+from insert_exemple_data import fill_db
 
 
 def setup_models(dbsession):
