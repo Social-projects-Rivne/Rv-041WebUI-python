@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.7.1",
+    "@material-ui/icons": "^3.0.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
-    "react-redux": "^6.0.0",
-    "react-scripts": "2.1.1",
-    "redux": "^4.0.1"
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -23,8 +24,5 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "devDependencies": {
-    "react-router-dom": "^4.3.1"
-  }
+  ]
 }
