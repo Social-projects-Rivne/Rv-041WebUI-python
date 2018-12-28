@@ -50,6 +50,7 @@ and then restart postqresql service
 ```
 --drop - Drop derivative models from Base
 --fill - Create tables with test data (without create empty tables)
+--reset - Drop and create empty database
 ```
 
 8. Run tests
@@ -110,6 +111,7 @@ alias envon=`source ~/venv/<Your venv name>/bin/activate`
 ```
 --drop - Drop derivative models from Base
 --fill - Create tables with test data (without create empty tables)
+--reset - Drop and create empty database
 ```
 
 11. Run tests
