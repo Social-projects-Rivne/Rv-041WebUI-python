@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core/";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
-import GridListTileBar from "@material-ui/core/GridListTileBar";
-import IconButton from "@material-ui/core/IconButton";
+import {
+  withStyles,
+  GridList,
+  GridListTile,
+  GridListTileBar,
+  IconButton
+} from "@material-ui/core";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 
 const tags = [
@@ -26,31 +27,31 @@ const tags = [
     priority: 4
   },
   {
-    name: "Pizza",
+    name: "Pizza12",
     priority: 1
   },
   {
-    name: "Sushi",
+    name: "Sushi122f1",
     priority: 2
   },
   {
-    name: "asdasda",
+    name: "asdasdawfqfw",
     priority: 3
   },
   {
-    name: "wqdwqd",
+    name: "wqdwqdfwqfqw",
     priority: 4
   },
   {
-    name: "Sushi",
+    name: "Sushiqwfqw",
     priority: 2
   },
   {
-    name: "asdasda",
+    name: "asdasdaqwf",
     priority: 3
   },
   {
-    name: "wqdwqd",
+    name: "wqdwqdfqw",
     priority: 4
   }
 ];
@@ -83,6 +84,24 @@ function SingleLineGridList(props) {
   return (
     <div className={classes.root}>
       <GridList className={classes.gridList} cols={5}>
+        <GridListTile>
+          <img
+            alt="View All"
+            src="https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=200&h=200&q=60"
+          />
+          <GridListTileBar
+            title="View All"
+            classes={{
+              root: classes.titleBar,
+              title: classes.title
+            }}
+            actionIcon={
+              <IconButton>
+                <StarBorderIcon className={classes.title} />
+              </IconButton>
+            }
+          />
+        </GridListTile>
         {tags
           .sort((a, b) => a.priority - b.priority)
           .map(tag => (

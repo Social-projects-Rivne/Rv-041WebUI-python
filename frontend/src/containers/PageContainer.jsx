@@ -1,15 +1,12 @@
 import React from "react";
-import AppHeader from "../components/AppHeader.jsx";
-
-const AppFooter = () => <div>AppFooter</div>;
+import AppHeader from "../components/AppHeader";
 
 const PageContainer = props => {
   return (
-    <div>
+    <React.Fragment>
       <AppHeader />
       {props.children}
-      <AppFooter />
-    </div>
+    </React.Fragment>
   );
 };
 

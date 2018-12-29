@@ -1,9 +1,6 @@
 import React from "react";
-import Typography from "@material-ui/core/Typography";
-import { withStyles } from "@material-ui/core/styles";
-import Fab from "@material-ui/core/Fab";
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import { withStyles, Fab } from "@material-ui/core/";
+import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons/";
 
 const slides = [
   {
@@ -23,7 +20,10 @@ const slides = [
   }
 ];
 
-const styles = {
+const styles = theme => ({
+  root: {
+    marginBottom: theme.spacing.unit * 8
+  },
   sliderContainer: {
     width: "100%",
     position: "relative",
@@ -55,9 +55,9 @@ const styles = {
     margin: "auto",
     left: 0
   }
-};
+});
 
-class Slider extends React.Component {
+class AppSlider extends React.Component {
   state = {
     sliders: [],
     activeStep: 0,
@@ -98,35 +98,37 @@ class Slider extends React.Component {
     };
 
     return (
-      <div className={classes.sliderContainer}>
-        <div style={sliderStyle} className={classes.sliderSlides}>
-          {slides.map((step, index) => (
-            <div className={classes.sliderItem} key={step.label}>
-              <img
-                className={classes.sliderImg}
-                src={step.imgPath}
-                alt={step.label}
-              />
-            </div>
-          ))}
+      <section className={classes.root}>
+        <div className={classes.sliderContainer}>
+          <div style={sliderStyle} className={classes.sliderSlides}>
+            {slides.map((step, index) => (
+              <div className={classes.sliderItem} key={step.label}>
+                <img
+                  className={classes.sliderImg}
+                  src={step.imgPath}
+                  alt={step.label}
+                />
+              </div>
+            ))}
+          </div>
+          <Fab
+            className={classes.sliderBtnPrev}
+            color="primary"
+            onClick={this.handleBack}
+          >
+            <KeyboardArrowLeft />
+          </Fab>
+          <Fab
+            className={classes.sliderBtnNext}
+            color="primary"
+            onClick={this.handleNext}
+          >
+            <KeyboardArrowRight />
+          </Fab>
         </div>
-        <Fab
-          className={classes.sliderBtnPrev}
-          color="primary"
-          onClick={this.handleBack}
-        >
-          <KeyboardArrowLeft />
-        </Fab>
-        <Fab
-          className={classes.sliderBtnNext}
-          color="primary"
-          onClick={this.handleNext}
-        >
-          <KeyboardArrowRight />
-        </Fab>
-      </div>
+      </section>
     );
   }
 }
 
-export default withStyles(styles)(Slider);
+export default withStyles(styles)(AppSlider);

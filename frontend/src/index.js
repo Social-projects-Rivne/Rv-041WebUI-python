@@ -1,21 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import PageContainer from "./containers/PageContainer";
 import "./index.css";
-import AppSlider from "./components/AppSlider";
-import TagsList from "./components/TagsList";
-import { Grid } from "@material-ui/core";
+import { BrowserRouter } from "react-router-dom";
+import App from "./containers/App";
 
 ReactDOM.render(
-  <PageContainer>
-    <Grid container spacing={24}>
-      <Grid item xs={12}>
-        <AppSlider />
-      </Grid>
-      {/* <Grid item xs={12}>
-        <TagsList />
-      </Grid> */}
-    </Grid>
-  </PageContainer>,
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>,
   document.getElementById("root")
 );
