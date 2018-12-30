@@ -18,6 +18,11 @@ from .. import models
 
 @view_config(route_name='restaurants', renderer='json', request_method='GET')
 def get_restaurants_controller(request):
+    """
+    Return json with restaurant collection fetched from database
+    If there are no information - 404 is rising
+    If there are problem with database - DBAPIError is rising
+    """
     # perform DB request
     try:
         restaurants = request.dbsession.query(models.Restaurant).all()
@@ -32,19 +37,22 @@ def get_restaurants_controller(request):
 
 @view_config(route_name='restaurant', renderer='json', request_method='GET')
 def get_restaurant_controller(request):
+    """
+    Return json with one partucular restaurant fetched from database by id
+    which came in URL
+    If id is not int - ValueError is rising
+    If there are multiple rows in result - 404 is rising
+    If there are no information - 404 is rising
+    If there are problem with database - DBAPIError is rising
+    """
     # check if there are id income request, if not - take all restaurants
     rest_id = request.matchdict['id']
-    if rest_id is None:
-        response_body = dict(data='', success=False, error='Invalid URL')
+    # try to cast string to integer
+    try:
+        rest_id = int(rest_id)
+    except ValueError:
+        response_body = dict(data='', success=False, error='invalid restaurant id')
         return Response(response_body, content_type='application/json', status=400)
-    else:
-        # try to cast string to integer
-        try:
-            rest_id = int(rest_id)
-        except ValueError:
-            response_body = dict(data='', success=False, error='invalid restaurant id')
-            return Response(response_body, content_type='application/json', status=400)
-    # .................................................................................................
     # perform DB request
     try:
         restaurant = request.dbsession.query(models.Restaurant).filter_by(id=rest_id).one()
