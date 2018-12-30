@@ -5,6 +5,7 @@ from pyramid.paster import bootstrap, setup_logging
 from sqlalchemy.exc import OperationalError
 
 from .. import models
+from ..models.restaurant import Restaurant
 
 
 def setup_models(dbsession):
@@ -17,14 +18,10 @@ def fill_models(dbsession):
     for name in names:
         model_item = models.tag_model.Tag(name=name)
         dbsession.add(model_item)
-    # RazSK 28.12.2018 Begin
-    # fill db restaurant data
-    from ..models.restaurant import Restaurant
-    model = Restaurant(name='3 Elephants', description='some description')
-    dbsession.add(model)
-    model = Restaurant(name='Father', description='some description 2')
-    dbsession.add(model)
-    # RazSK 28.12.2018 End
+    dbsession.add_all([
+        Restaurant(name='3 Elephants', description='some description'),
+        Restaurant(name='Father', description='some description 2'),
+        ])
 
 
 def drop_models(dbsession):
