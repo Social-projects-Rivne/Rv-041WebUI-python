@@ -55,4 +55,5 @@ def get_restaurant_controller(request):
     except DBAPIError:
         response_body = dict(data='', success=False, error='Data base error occurred')
         return Response(response_body, content_type='application/json', status=500)
-    return restaurant.as_dict()
+    dict_obj = restaurant.as_dict()
+    return dict(data=dict_obj, success=True)
