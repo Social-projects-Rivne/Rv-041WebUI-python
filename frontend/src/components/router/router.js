@@ -8,7 +8,6 @@ class Router extends React.Component {
             <div>
                 <Switch>
                     <Route path="/" exact component={RestaurantsListPage} />
-                    <Route path="/test" component={RestaurantsListPage} />
                 </Switch>
             </div>
 
