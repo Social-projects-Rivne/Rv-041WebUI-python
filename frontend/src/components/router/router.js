@@ -1,14 +1,14 @@
 import React from 'react';
 import { Route, Switch } from "react-router-dom";
-import Test from '../test';
+import RestaurantsListPage from '../restaurantsListPage';
 class Router extends React.Component {
 
     render() {
         return (
             <div>
                 <Switch>
-                    <Route path="/" exact component={Test} />
-                    <Route path="/test" component={Test} />
+                    <Route path="/" exact component={RestaurantsListPage} />
+                    <Route path="/test" component={RestaurantsListPage} />
                 </Switch>
             </div>
 
