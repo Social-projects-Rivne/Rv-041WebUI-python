@@ -16,7 +16,8 @@ def fill_db(session):
         rest = {
             "name": fake.company(),
             "addres_id": fake.address(),
-            "owner_id": fake.name()
+            "owner_id": fake.name(),
+            "description": fake.text(max_nb_chars=400)
         }
 
         menu_model = Menu(name=fake.company())
