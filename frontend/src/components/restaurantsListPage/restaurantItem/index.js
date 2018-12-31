@@ -1,7 +1,7 @@
 import React from 'react';
 import {withStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import {NavLink} from 'react-router-dom';
+import {NavLink, Link} from 'react-router-dom';
 
 
 import CardMedia from '@material-ui/core/CardMedia';
@@ -47,7 +47,9 @@ const styles = {
 };
 
 function restaurantItem(props) {
-    const {classes} = props;
+    const {classes, Id, Name } = props;
+
+
     return (
         <div className={classes.root}>
 
@@ -76,11 +78,11 @@ function restaurantItem(props) {
                                 Address : {props.Address}
                             </Typography>
                             <Typography align={"right"}>
-                                <NavLink to={'/' + props.Id} className={classes.nav}>
-                                    <Button size="small" color="primary" className={classes.btn}>
+                                {/*<NavLink to={'/test?wqe#oewoqoqw' } className={classes.nav}>*/}
+                                    <Button component={Link} to={'/test/'} size="small" color="primary" className={classes.btn}>
                                         go to details
                                     </Button>
-                                </NavLink>
+                                {/*</NavLink>*/}
                                 <NavLink to={'/' + props.Id} className={classes.nav}>
                                     <Button size="small" color="primary" className={classes.btn}>
                                         Watch menu
