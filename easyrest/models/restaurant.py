@@ -17,7 +17,7 @@ class Restaurant(Base):
     The data model of "Restaurants" table
     Defines data stricture of restaurant table
     """
-    __tablename__ = 'Restaurants'
+    __tablename__ = 'restaurants'
     id = Column(Integer, primary_key=True)
     name = Column(Text, unique=False)
     description = Column(Text)
