@@ -27,6 +27,7 @@ sudo -i -u postgres psql
 >>>CREATE USER admin WITH ENCRYPTED PASSWORD 123;
 >>>CREATE DATABASE "EasyRest" OWNER admin;
 ```
+
 Or
 in /etc/postgresql/9.x/main/pg_hba.conf add lines to the bottom of the file:
 
@@ -97,12 +98,6 @@ alias envon=`source ~/venv/<Your venv name>/bin/activate`
 `(%VENV%) pip install -e ".[testing]"`
 
 9. Install posgresql and create database
-
-10. Initialize and upgrade the database using Alembic
-
-`(%VENV%) alembic -c development.ini revision --autogenerate -m "init"`
-
-`(%VENV%) alembic -c development.ini upgrade head`
 
 10. Initialize db
 
