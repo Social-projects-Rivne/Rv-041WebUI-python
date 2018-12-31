@@ -1,6 +1,6 @@
 import React from "react";
-import AppSlider from "../components/AppSlider";
-import TagsList from "../components/TagsList";
+import AppSlider from "../components/HomePage/AppSlider";
+import TagsList from "../components/HomePage/TagsList";
 
 const HomePage = props => {
   return (

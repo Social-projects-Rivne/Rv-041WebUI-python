@@ -4,13 +4,15 @@ import { withStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Typography } from "@material-ui/core";
 import NavMenu from "./NavMenu";
 import UserMenu from "./UserMenu";
+import { Link } from "react-router-dom";
 
 const styles = theme => ({
   grow: {
     flexGrow: 1
   },
-  root: {
-    marginBottom: theme.spacing.unit * 8
+  logoLink: {
+    textDecoration: "none",
+    color: "#fff"
   }
 });
 
@@ -20,8 +22,10 @@ class AppHeader extends React.Component {
     return (
       <AppBar className={classes.root} position="static">
         <Toolbar>
-          <Typography variant="h6" className={classes.grow}>
-            Easy-restaurant
+          <Typography variant="button" className={classes.grow}>
+            <Link className={classes.logoLink} to="/">
+              Easy-rest
+            </Link>
           </Typography>
           <NavMenu />
           <UserMenu />

@@ -1,7 +1,7 @@
 import React from "react";
 
 const RestautantListPage = () => {
-  return <div>This is restaurants list Page</div>;
+  return <div>Rest list</div>;
 };
 
 export default RestautantListPage;

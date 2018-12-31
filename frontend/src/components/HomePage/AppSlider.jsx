@@ -1,28 +1,29 @@
 import React from "react";
 import { withStyles, Fab } from "@material-ui/core/";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons/";
+import SwipeableViews from "react-swipeable-views";
 
 const slides = [
   {
     label: "Some text 1",
     imgPath:
-      "https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=1200&h=500&q=60"
+      "https://images.unsplash.com/photo-1462121457351-9fb0f5622b72?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1400&h=500&q=80"
   },
   {
     label: "Some text 2",
     imgPath:
-      "https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=1200&h=500&q=60"
+      "https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=1400&h=500&q=60"
   },
   {
     label: "Some text 3",
     imgPath:
-      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&h=500&q=80"
+      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1400&h=500&q=80"
   }
 ];
 
 const styles = theme => ({
   root: {
-    marginBottom: theme.spacing.unit * 8
+    marginBottom: theme.spacing.unit * 2
   },
   sliderContainer: {
     width: "100%",
@@ -37,7 +38,7 @@ const styles = theme => ({
   },
   sliderImg: {
     display: "block",
-    maxWidth: "100%",
+    width: "100%",
     height: "auto",
     margin: "auto"
   },
@@ -46,20 +47,19 @@ const styles = theme => ({
     top: 0,
     bottom: 0,
     margin: "auto",
-    right: 0
+    right: theme.spacing.unit * 3
   },
   sliderBtnPrev: {
     position: "absolute",
     top: 0,
     bottom: 0,
     margin: "auto",
-    left: 0
+    left: theme.spacing.unit * 3
   }
 });
 
 class AppSlider extends React.Component {
   state = {
-    sliders: [],
     activeStep: 0,
     maxSteps: slides.length - 1
   };
@@ -92,24 +92,25 @@ class AppSlider extends React.Component {
     const { activeStep } = this.state;
     const { classes } = this.props;
 
-    const sliderStyle = {
-      transform: `translateX(${activeStep * -100}%)`,
-      transition: "0.2s"
-    };
-
     return (
       <section className={classes.root}>
         <div className={classes.sliderContainer}>
-          <div style={sliderStyle} className={classes.sliderSlides}>
-            {slides.map((step, index) => (
-              <div className={classes.sliderItem} key={step.label}>
-                <img
-                  className={classes.sliderImg}
-                  src={step.imgPath}
-                  alt={step.label}
-                />
-              </div>
-            ))}
+          <div className={classes.sliderSlides}>
+            <SwipeableViews
+              onChangeIndex={this.handleStepChange}
+              index={activeStep}
+              resistance
+            >
+              {slides.map((step, index) => (
+                <div className={classes.sliderItem} key={step.label}>
+                  <img
+                    className={classes.sliderImg}
+                    src={step.imgPath}
+                    alt={step.label}
+                  />
+                </div>
+              ))}
+            </SwipeableViews>
           </div>
           <Fab
             className={classes.sliderBtnPrev}

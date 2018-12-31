@@ -11,9 +11,7 @@ import {
 import { Link } from "react-router-dom";
 
 const styles = theme => ({
-  userMenu: {
-    marginLeft: theme.spacing.unit * 8
-  }
+  root: {}
 });
 
 class UserMenu extends React.Component {
@@ -44,14 +42,14 @@ class UserMenu extends React.Component {
     const { classes } = this.props;
     const match = "";
     return (
-      <React.Fragment>
+      <div className={classes.root}>
         {!auth && (
           <div className={classes.userMenu}>
-            <Button component={Link} to={`${match}/log-in`}>
+            <Button color="inherit" component={Link} to={`${match}/log-in`}>
               Log In
             </Button>
             /{" "}
-            <Button component={Link} to={`${match}/sign-up`}>
+            <Button color="inherit" component={Link} to={`${match}/sign-up`}>
               Sign Un
             </Button>
           </div>
@@ -92,7 +90,7 @@ class UserMenu extends React.Component {
             </Menu>
           </div>
         )}
-      </React.Fragment>
+      </div>
     );
   }
 }

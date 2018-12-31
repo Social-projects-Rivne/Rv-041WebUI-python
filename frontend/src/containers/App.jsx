@@ -1,13 +1,15 @@
 import React from "react";
 import PageContainer from "../containers/PageContainer";
-
+import { BrowserRouter } from "react-router-dom";
 import Router from "../router";
 
-const App = props => {
+const App = () => {
   return (
-    <PageContainer>
-      <Router />
-    </PageContainer>
+    <BrowserRouter>
+      <PageContainer>
+        <Router />
+      </PageContainer>
+    </BrowserRouter>
   );
 };
 
