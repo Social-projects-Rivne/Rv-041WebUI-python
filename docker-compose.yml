@@ -1,0 +1,36 @@
+version: '3'
+services:
+  db:
+    image: postgres:9.5.15
+    restart: always
+    env_file: ./.env
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8882:8080"
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    environment:
+      NODE_ENV: production
+    volumes:
+      - ./frontend:/home/node/frontend
+    ports:
+      - "8880:3000"
+    command: npm start
+    depends_on:
+      - backend
+
+  backend:
+    build: ./
+    volumes:
+      - ./:/usr/src/easyrest
+    ports:
+      - "8881:6543"
+    command: pserve --reload development.ini
+    depends_on:
+      - db
