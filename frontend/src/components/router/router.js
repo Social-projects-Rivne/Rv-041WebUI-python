@@ -10,7 +10,7 @@ class Router extends React.Component {
                 <Switch>
                     <Route path="/rest" exact component={RestaurantsListPage} />
                     <Route path="/test" exact component={RestaurantDetails} />
-                    <Route path="/${id}" exact component={RestaurantDetails} />
+                    <Route path="/{id}" exact component={RestaurantDetails} />
                 </Switch>
             </div>
 

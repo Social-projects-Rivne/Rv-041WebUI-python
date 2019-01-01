@@ -30,7 +30,7 @@ const styles = theme => ({
         borderRadius: 7,
     },
     tabs: {
-        fontSize: 25,
+        fontSize: 20,
         fontWeight: 600
     }
 });
@@ -45,26 +45,35 @@ class TagsTab extends React.Component {
         fetch('http://localhost:6543/restaurant')
             .then(response => response.json())
             .then(data => this.setState({rests: data.data}));
+
     }
 
     handleChange = (event, value) => {
         this.setState({value});
     };
 
+    handleGetTags=( rests)=>{
+        let tagNames=[];
+        rests.map(item=> item.tags.map(tag=>{
+            if (tagNames.indexOf(tag.name) === -1)
+            tagNames.push(tag.name);
+        }));
+        return tagNames;
+    };
+
     render() {
         const {classes} = this.props;
         const {value} = this.state;
+        const tagNames=this.handleGetTags(this.state.rests);
 
         return (
             <div className={classes.root}>
                 <AppBar position="static" className={classes.appbar}>
-                    <Tabs value={value} onChange={this.handleChange} centered={true}>
+                    <Tabs value={value} onChange={this.handleChange} scrollable scrollButtons="on">
                         <Tab label="View all" className={classes.tabs}/>
-                        <Tab label="sushi" className={classes.tabs}/>
-                        <Tab label="pub" className={classes.tabs}/>
-                        <Tab label="vegetarian" className={classes.tabs}/>
-                        <Tab label="greel" className={classes.tabs}/>
-                        <Tab label="fast food" className={classes.tabs}/>
+                        {tagNames.map(i=>{
+                            return <Tab key={i} label={i} value={i} className={classes.tabs}/>
+                        })}
                     </Tabs>
                 </AppBar>
                 {value === 0 && <TabContainer>
@@ -78,78 +87,23 @@ class TagsTab extends React.Component {
                             Id={item.id}
                         />
                     })}
-
                 </TabContainer>}
-                {value === 1 && <TabContainer>
-                    {this.state.rests.map((item) => {
-                        if (item.tags.filter(p => p.name === "sushi").length !== 0) {
-                            return <RestaurantItem
-                                key={item.id}
-                                Name={item.name}
-                                Description={item.description}
-                                Address={item.addres_id}
-                                Id={item.id}
-                            />
-                        }
-                    return '';
-                    })}
-                </TabContainer>}
-                {value === 2 && <TabContainer>
-                    {this.state.rests.map((item) => {
-                        if (item.tags.filter(p => p.name === "pub").length !== 0) {
-                            return <RestaurantItem
-                                key={item.id}
-                                Name={item.name}
-                                Description={item.description}
-                                Address={item.addres_id}
-                                Id={item.id}
-                            />
-                        }
-                        return '';
-                    })}
-                </TabContainer>}
-                {value === 3 && <TabContainer>
-                    {this.state.rests.map((item) => {
-                        if (item.tags.filter(p => p.name === "vegetarian").length !== 0) {
-                            return <RestaurantItem
-                                key={item.id}
-                                Name={item.name}
-                                Description={item.description}
-                                Address={item.addres_id}
-                                Id={item.id}
-                            />
-                        }
-                        return '';
-                    })}
-                </TabContainer>}
-                {value === 4 && <TabContainer>
-                    {this.state.rests.map((item) => {
-                        if (item.tags.filter(p => p.name === "greel").length !== 0) {
-                            return <RestaurantItem
-                                key={item.id}
-                                Name={item.name}
-                                Description={item.description}
-                                Address={item.addres_id}
-                                Id={item.id}
-                            />
-                        }
-                        return '';
-                    })}
-                </TabContainer>}
-                {value === 5 && <TabContainer>
-                    {this.state.rests.map((item) => {
-                        if (item.tags.filter(p => p.name === "fast food").length !== 0) {
-                            return <RestaurantItem
-                                key={item.id}
-                                Name={item.name}
-                                Description={item.description}
-                                Address={item.addres_id}
-                                Id={item.id}
-                            />
-                        }
-                        return '';
-                    })}
-                </TabContainer>}
+                {tagNames.map(i=>{
+                    if(value === i){
+                    return <TabContainer>
+                        {this.state.rests.map((item) => {
+                            if (item.tags.filter(p => p.name === value).length !== 0) {
+                                return <RestaurantItem
+                                    key={item.id}
+                                    Name={item.name}
+                                    Description={item.description}
+                                    Address={item.addres_id}
+                                    Id={item.id}
+                                />
+                            }
+                            return '';
+                        })}
+                    </TabContainer>}})}
             </div>
         );
     }
