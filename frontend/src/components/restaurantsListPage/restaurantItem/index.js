@@ -79,7 +79,7 @@ function restaurantItem(props) {
                             </Typography>
                             <Typography align={"right"}>
                                 {/*<NavLink to={'/test?wqe#oewoqoqw' } className={classes.nav}>*/}
-                                    <Button component={Link} to={'/test/'} size="small" color="primary" className={classes.btn}>
+                                    <Button component={Link} to={'/rest/' + Id} size="small" color="primary" className={classes.btn}>
                                         go to details
                                     </Button>
                                 {/*</NavLink>*/}
