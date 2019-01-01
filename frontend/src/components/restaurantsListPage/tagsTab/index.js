@@ -6,6 +6,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import RestaurantItem from '../restaurantItem';
+import {Link} from "react-router-dom";
 
 function TabContainer(props) {
     return (
@@ -45,6 +46,7 @@ class TagsTab extends React.Component {
         fetch('http://localhost:6543/restaurant')
             .then(response => response.json())
             .then(data => this.setState({rests: data.data}));
+        console.log("ok");
 
     }
 
@@ -63,20 +65,28 @@ class TagsTab extends React.Component {
 
     render() {
         const {classes} = this.props;
-        const {value} = this.state;
+        let {value} = this.state;
         const tagNames=this.handleGetTags(this.state.rests);
+        let searchTag =this.props.url.location.search;
+        let params = new URLSearchParams(this.props.url.location.search);
+
+        if (params.get("tag") !== null){
+            value=params.get("tag");
+        }
+
+
 
         return (
             <div className={classes.root}>
                 <AppBar position="static" className={classes.appbar}>
                     <Tabs value={value} onChange={this.handleChange} scrollable scrollButtons="on">
-                        <Tab label="View all" className={classes.tabs}/>
+                        <Tab label="View all" component={Link} to={{search:""}} className={classes.tabs}/>
                         {tagNames.map(i=>{
-                            return <Tab key={i} label={i} value={i} className={classes.tabs}/>
+                            return <Tab key={i} component={Link} to={{search:`?tag=${i}`}} label={i} value={i} className={classes.tabs}/>
                         })}
                     </Tabs>
                 </AppBar>
-                {value === 0 && <TabContainer>
+                {value === 0 && searchTag === `` && <TabContainer>
 
                     {this.state.rests.map((item) => {
                         return <RestaurantItem
@@ -89,8 +99,8 @@ class TagsTab extends React.Component {
                     })}
                 </TabContainer>}
                 {tagNames.map(i=>{
-                    if(value === i){
-                    return <TabContainer>
+                    if(value === i && searchTag===`?tag=${i}`){
+                    return <TabContainer key={i}>
                         {this.state.rests.map((item) => {
                             if (item.tags.filter(p => p.name === value).length !== 0) {
                                 return <RestaurantItem
@@ -101,7 +111,7 @@ class TagsTab extends React.Component {
                                     Id={item.id}
                                 />
                             }
-                            return '';
+
                         })}
                     </TabContainer>}})}
             </div>
