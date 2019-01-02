@@ -63,6 +63,40 @@ alias envoff=`deactivate`
 alias envon=`source ~/venv/<Your venv name>/bin/activate`
 ```
 
+### Deploying via Docker
+
+1. Install Docker and Docker Compose
+
+[Install Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
+
+[Install Docker Compose](https://docs.docker.com/compose/install/)
+
+2. Change the database connection in the development.ini to this form.
+
+```
+# sqlalchemy.url = postgresql://localhost/easyrest?user=admin&password=123
+
+# Connection for Docker environment
+sqlalchemy.url = postgresql://admin:12345678@db/easyrest
+```
+
+3. Change the server url in the development.ini to this form.
+
+```
+# listen = localhost:6543
+
+# Url for Docker environment
+listen = 0.0.0.0:6543
+```
+
+4. Run `./smanager up`
+
+Services links:
+
+[Frontend](http://127.0.0.1:8880)
+[Backend](http://127.0.0.1:8881)
+[Adminer](http://127.0.0.1:8882)
+
 ---
 
 ## Install instructions on windows:
