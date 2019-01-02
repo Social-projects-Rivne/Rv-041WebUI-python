@@ -80,7 +80,7 @@ class TagsList extends Component {
               .sort((a, b) => a.priority - b.priority)
               .map(tag => (
                 <GridListTile
-                  to={`/restaurants-list?${tag.name}`}
+                  to={`/restaurants-list?tag=${tag.name}`}
                   component={Link}
                   key={tag.name}
                 >

@@ -1,7 +1,14 @@
 import React from "react";
+import TagsTab from '../components/RestaurantList/TagsTab';
+import "../components/RestaurantList/style.css";
 
-const RestautantListPage = () => {
-  return <div>Rest list</div>;
+const RestautantListPage = (props) => {
+  return (
+      <div className="container-main">
+          {/*<SearchRestaurant />*/}
+          <TagsTab url={props} />
+      </div>
+  )
 };
 
 export default RestautantListPage;
