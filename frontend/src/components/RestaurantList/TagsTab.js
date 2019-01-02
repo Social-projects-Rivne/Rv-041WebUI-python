@@ -43,7 +43,7 @@ class TagsTab extends React.Component {
     };
 
     componentDidMount() {
-        fetch('http://localhost:3000/restaurants.json')
+        fetch('http://localhost:3000/restaurant.json')
             .then(response => response.json())
             .then(data => this.setState({rests: data.data}))
             .catch(err=>console.log(err));
