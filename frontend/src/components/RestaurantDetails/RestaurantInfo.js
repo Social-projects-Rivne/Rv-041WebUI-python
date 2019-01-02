@@ -52,16 +52,15 @@ class restaurantInfo extends React.Component {
     componentDidMount() {
         fetch('http://localhost:3000/restaurant.json')
             .then(response => response.json())
-            .then(data => this.setState({restInfo: data.data[this.props.url.match.params.id-1]}));
-         console.log(this.props.url.match.params.id);
+            .then(data => this.setState({restInfo: data.data[this.props.url.match.params.id-1]}))
+            .catch(err=>console.log(err))
+
 
     }
 
     render() {
         const {classes} = this.props;
         const {restInfo} = this.state;
-        console.log(restInfo);
-        // console.log(this.props.url);
         return (
             <div className={classes.root}>
                 <Card className={classes.card}>

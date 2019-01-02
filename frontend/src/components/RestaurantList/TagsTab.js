@@ -39,7 +39,7 @@ const styles = theme => ({
 class TagsTab extends React.Component {
     state = {
         value: 0,
-        rests: []
+        rests: [],
     };
 
     componentDidMount() {
@@ -47,7 +47,6 @@ class TagsTab extends React.Component {
             .then(response => response.json())
             .then(data => this.setState({rests: data.data}))
             .catch(err=>console.log(err));
-        console.log("ok");
 
     }
 
@@ -69,22 +68,20 @@ class TagsTab extends React.Component {
         const {classes} = this.props;
         let {value} = this.state;
         const tagNames=this.handleGetTags(this.state.rests);
-        console.log(tagNames);
         let searchTag =this.props.url.location.search;
         let params = new URLSearchParams(this.props.url.location.search);
-        console.log(`value: ${value}`);
-        console.log("query: "+params.get("tag"));
+
 
         if (params.get("tag") !== null){
             value=params.get("tag");
-        }
+        } else value=0;
 
 
 
         return (
             <div className={classes.root}>
                 <AppBar position="static" className={classes.appbar}>
-                    <Tabs value={value} onChange={this.handleChange} scrollable scrollButtons="on">
+                    <Tabs value={value} onChange={this.handleChange} variant="scrollable" scrollButtons="on">
                         <Tab label="View all" component={Link} to={{search:""}} className={classes.tabs}/>
                         {tagNames.map(i=>{
                             return <Tab key={i} component={Link} to={{search:`?tag=${i}`}} label={i} value={i} className={classes.tabs}/>
