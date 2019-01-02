@@ -69,14 +69,15 @@ class TagsTab extends React.Component {
         const {classes} = this.props;
         let {value} = this.state;
         const tagNames=this.handleGetTags(this.state.rests);
-        console.log(tagNames);
+        // console.log(tagNames);
         let searchTag =this.props.url.location.search;
         let params = new URLSearchParams(this.props.url.location.search);
-        console.log(`value: ${value}`);
-        console.log("query: "+params.get("tag"));
+
 
         if (params.get("tag") !== null){
             value=params.get("tag");
+            console.log(`value: ${value}`);
+            console.log("query: "+params.get("tag"));
         }
 
 
