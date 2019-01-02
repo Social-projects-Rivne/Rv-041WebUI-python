@@ -1,6 +1,5 @@
 """
-This module initialize Data base. Create tables, fill or remove them,
-based on passed arguments.
+This module initialize Data base. Create tables, fill them
 """
 
 
@@ -81,12 +80,12 @@ def main(argv=sys.argv):
             dbsession = env['request'].dbsession
             if args.drop:
                 drop_models(dbsession)
-                print 'Droped'
+                print 'Dropped all tables in the database'
             else:
                 setup_models(dbsession)
-                print 'Created'
+                print 'Created table in the database'
             if args.fill:
                 fill_models(dbsession)
-                print "filled"
+                print "Populated the database by testing data"
     except OperationalError:
         print 'Error in init_db.py'
