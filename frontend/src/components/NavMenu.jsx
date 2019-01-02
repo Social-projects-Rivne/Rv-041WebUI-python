@@ -9,7 +9,7 @@ const styles = theme => ({
 
 const Menu = [
   { name: "Home", route: "/" },
-  { name: "Restaurants List", route: "/restaurants-list" },
+  { name: "Restaurants List", route: "/restaurants" },
   { name: "Restaurants Map", route: "/restaurants-map" }
 ];
 

@@ -58,7 +58,7 @@ class TagsList extends Component {
             className={classes.gridList}
             cols={tagsLength > 5 ? 5.5 : tagsLength + 1}
           >
-            <GridListTile to="/restaurants-list" component={Link}>
+            <GridListTile to="/restaurants" component={Link}>
               <img
                 alt="View All"
                 src="https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=300&h=300&q=60"
@@ -80,7 +80,7 @@ class TagsList extends Component {
               .sort((a, b) => a.priority - b.priority)
               .map(tag => (
                 <GridListTile
-                  to={`/restaurants-list?tag=${tag.name}`}
+                  to={`/restaurants?tag=${tag.name}`}
                   component={Link}
                   key={tag.name}
                 >

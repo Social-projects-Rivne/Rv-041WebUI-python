@@ -2,8 +2,6 @@ import React from 'react';
 import {withStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import {Link} from 'react-router-dom';
-
-
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -11,82 +9,53 @@ import Grid from '@material-ui/core/Grid';
 
 const styles = {
     card: {
-        width: 1200,
         background: 'rgba(230, 232, 209, 0.96)',
-        marginTop: 7,
-        borderRadius: 20
+        marginTop: 8
     },
     media: {
-        height: 195,
-        width: 260
-    },
-    title: {
-        fontWeight: 700
-    },
-    desc: {
-        marginBottom: 10,
-        fontSize: 16
-    },
-    adr: {
-        fontSize: 16
-    },
-    btn: {
-        textDecoration: "none",
-        color: "#585a59",
-        border: "solid 1px",
-        height: 35,
-        width: 120,
-        marginRight: 20
-
-    },
-    nav: {
-        textDecoration: "none"
-    },
-    padding:0
+        height: 305,
+        width: 460
+    }
 };
 
 function restaurantItem(props) {
-    const {classes, Id} = props;
+    const {classes, id, name, description, address} = props;
 
 
     return (
         <div className={classes.root}>
 
-            <Card className={classes.card}>
+            <Card>
 
                 <Grid container alignItems={"center"}>
                     <Grid item sm={3}>
                         <CardMedia
                             className={classes.media}
                             image="https://media-cdn.tripadvisor.com/media/photo-f/04/43/20/9c/whisky-corner.jpg"
-                            title={props.Name}
+                            title={name}
                         />
                     </Grid>
                     <Grid item sm={9}>
                         <Grid>
-                            <Typography gutterBottom variant="h5" component="h2" className={classes.title}>
-                                {props.Name}
+                            <Typography gutterBottom variant="h5" component="h2">
+                                {name}
                             </Typography>
 
-                            <Typography component="p" className={classes.desc}>
-                                {props.Description}
+                            <Typography component="p">
+                                {description}
                             </Typography>
                         </Grid>
                         <Grid container justify="space-between" alignItems={"baseline"}>
-                            <Typography component="p" className={classes.adr}>
-                                Address : {props.Address}
+                            <Typography component="p">
+                                Address : {address}
                             </Typography>
                             <Typography align={"right"}>
-                                {/*<NavLink to={'/test?wqe#oewoqoqw' } className={classes.nav}>*/}
-                                <Button component={Link} to={'/restaurant/' + Id} size="small" color="primary" className={classes.btn}>
+                                <Button component={Link} to={'/restaurants/' + id} size="small" color="primary">
                                     go to details
                                 </Button>
-                                {/*</NavLink>*/}
-                                {/*<NavLink to={'/' + props.Id} className={classes.nav}>*/}
-                                <Button component={Link} to={'rest/menu/' + Id} size="small" color="primary" className={classes.btn}>
+                                <Button component={Link} to={'rest/menu/' + id} size="small" color="primary">
                                     Watch menu
                                 </Button>
-                                {/*</NavLink>*/}
                             </Typography>
                         </Grid>
                     </Grid>

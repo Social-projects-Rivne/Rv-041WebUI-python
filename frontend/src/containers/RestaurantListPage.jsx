@@ -1,13 +1,11 @@
 import React from "react";
 import TagsTab from '../components/RestaurantList/TagsTab';
-import "../components/RestaurantList/style.css";
 
 const RestautantListPage = (props) => {
   return (
-      <div className="container-main">
-          {/*<SearchRestaurant />*/}
+      <React.Fragment>
           <TagsTab url={props} />
-      </div>
+      </React.Fragment>
   )
 };
 

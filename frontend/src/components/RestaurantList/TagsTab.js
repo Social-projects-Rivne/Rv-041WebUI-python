@@ -20,44 +20,28 @@ TabContainer.propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const styles = theme => ({
+const styles = {
     root: {
-        flexGrow: 1,
-        backgroundColor: theme.palette.background.paper,
-    },
-    appbar: {
-        backgroundColor: 'rgba(230, 232, 209, 0.96)',
-        color: "black",
-        borderRadius: 7,
-    },
-    tabs: {
-        fontSize: 20,
-        fontWeight: 600
+        flexGrow: 1
     }
-});
+};
 
 class TagsTab extends React.Component {
     state = {
-        value: 0,
-        rests: [],
+        rests: []
     };
 
     componentDidMount() {
         fetch('http://localhost:3000/restaurant.json')
             .then(response => response.json())
             .then(data => this.setState({rests: data.data}))
-            .catch(err=>console.log(err));
-
+            .catch(err => console.log(err));
     }
 
-    handleChange = (event, value) => {
-        this.setState({value});
-    };
-
-    handleGetTags=( rests)=>{
-        let tagNames=[];
-        rests.map(item=> item.tags.map(tag=>{
-            if (tagNames.indexOf(tag.name) === -1)
+    handleGetTags = (rests) => {
+        let tagNames = [];
+        rests.map(rest => rest.tags.map(tag => {
+            if (!tagNames.includes(tag.name))
                 tagNames.push(tag.name);
             return '';
         }));
@@ -66,56 +50,55 @@ class TagsTab extends React.Component {
 
     render() {
         const {classes} = this.props;
-        let {value} = this.state;
-        const tagNames=this.handleGetTags(this.state.rests);
-        let searchTag =this.props.url.location.search;
-        let params = new URLSearchParams(this.props.url.location.search);
+        let value = 0;
+        const tagNames = this.handleGetTags(this.state.rests);
+        let params = new URLSearchParams(this.props.url.location.search).get("tag");
 
+        console.log(this.state.counter);
 
-        if (params.get("tag") !== null){
-            value=params.get("tag");
-        } else value=0;
-
-
+        if (params !== null) {
+            value = params;
+        }
 
         return (
             <div className={classes.root}>
-                <AppBar position="static" className={classes.appbar}>
-                    <Tabs value={value} onChange={this.handleChange} variant="scrollable" scrollButtons="on">
-                        <Tab label="View all" component={Link} to={{search:""}} className={classes.tabs}/>
-                        {tagNames.map(i=>{
-                            return <Tab key={i} component={Link} to={{search:`?tag=${i}`}} label={i} value={i} className={classes.tabs}/>
+                <AppBar position="static" >
+                    <Tabs value={value} variant="scrollable" scrollButtons="on">
+                        <Tab label="View all" component={Link} to={{search: ""}} />
+                        {tagNames.map(i => {
+                            return <Tab key={i} component={Link} to={{search: `?tag=${i}`}} label={i} value={i}/>
                         })}
                     </Tabs>
                 </AppBar>
-                {value === 0 && searchTag === `` && <TabContainer>
+                {value === 0 && params === null && <TabContainer>
 
-                    {this.state.rests.map((item) => {
+                    {this.state.rests.map((rest) => {
                         return <RestaurantItem
-                            key={item.id}
-                            Name={item.name}
-                            Description={item.description}
-                            Address={item.addres_id}
-                            Id={item.id}
+                            key={rest.id}
+                            name={rest.name}
+                            description={rest.description}
+                            address={rest.addres_id}
+                            id={rest.id}
                         />
                     })}
                 </TabContainer>}
-                {tagNames.map(i=>{
-                    if(value === i && searchTag===`?tag=${i}`){
+                {tagNames.map(i => {
+                    if (value === i && params === i) {
                         return <TabContainer key={i}>
-                            {this.state.rests.map(item => {
-                                if (item.tags.filter(p => p.name === value).length !== 0) {
+                            {this.state.rests.map(rest => {
+                                if (rest.tags.filter(p => p.name === value).length !== 0) {
                                     return <RestaurantItem
-                                        key={item.id}
-                                        Name={item.name}
-                                        Description={item.description}
-                                        Address={item.addres_id}
-                                        Id={item.id}
+                                        key={rest.id}
+                                        name={rest.name}
+                                        description={rest.description}
+                                        address={rest.addres_id}
+                                        id={rest.id}
                                     />
                                 }
                                 return '';
                             })}
-                        </TabContainer>}
+                        </TabContainer>
+                    }
                     return '';
                 })}
             </div>
