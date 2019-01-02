@@ -45,7 +45,8 @@ class TagsTab extends React.Component {
     componentDidMount() {
         fetch('http://localhost:6543/restaurant')
             .then(response => response.json())
-            .then(data => this.setState({rests: data.data}));
+            .then(data => this.setState({rests: data.data}))
+            .catch(err=>console.log(err));
         console.log("ok");
 
     }
@@ -59,6 +60,7 @@ class TagsTab extends React.Component {
         rests.map(item=> item.tags.map(tag=>{
             if (tagNames.indexOf(tag.name) === -1)
             tagNames.push(tag.name);
+            return '';
         }));
         return tagNames;
     };
@@ -67,6 +69,7 @@ class TagsTab extends React.Component {
         const {classes} = this.props;
         let {value} = this.state;
         const tagNames=this.handleGetTags(this.state.rests);
+        console.log(tagNames);
         let searchTag =this.props.url.location.search;
         let params = new URLSearchParams(this.props.url.location.search);
         console.log(`value: ${value}`);
@@ -103,7 +106,7 @@ class TagsTab extends React.Component {
                 {tagNames.map(i=>{
                     if(value === i && searchTag===`?tag=${i}`){
                     return <TabContainer key={i}>
-                        {this.state.rests.map((item) => {
+                        {this.state.rests.map(item => {
                             if (item.tags.filter(p => p.name === value).length !== 0) {
                                 return <RestaurantItem
                                     key={item.id}
@@ -113,9 +116,11 @@ class TagsTab extends React.Component {
                                     Id={item.id}
                                 />
                             }
-
+                            return '';
                         })}
-                    </TabContainer>}})}
+                    </TabContainer>}
+                    return '';
+                })}
             </div>
         );
     }

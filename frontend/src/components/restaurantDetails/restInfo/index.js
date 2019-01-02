@@ -1,120 +1,100 @@
-    //
-    // const {classes} = props;
-    // const restId =props.url.match.params.Id;
-    // console.log(props.url);
-    import React from 'react';
-    import {withStyles} from '@material-ui/core/styles';
-    import Card from '@material-ui/core/Card';
-    import Divider from '@material-ui/core/Divider';
+import React from 'react';
+import {withStyles} from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
+import Divider from '@material-ui/core/Divider';
 
-    import CardMedia from '@material-ui/core/CardMedia';
-    import Button from '@material-ui/core/Button';
-    import Typography from '@material-ui/core/Typography';
-    import Grid from '@material-ui/core/Grid';
+import CardMedia from '@material-ui/core/CardMedia';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import {Link} from "react-router-dom";
 
-    const styles = {
-        card: {
-            width: 1200,
-            background: 'rgba(230, 232, 209, 0.96)',
-            marginTop: 7,
-            borderRadius: 5
-        },
-        media: {
-            height: 295,
-            width: 460
-        },
-        media_small:{
-            height: 140,
-            width: 140
-        },
-        title: {
-            fontWeight: 700,
-            border: "solid black 1px",
-            marginTop: 10,
-            padding: 10,
-            marginRight: 17
-        },
-        desc: {
-            marginBottom: 10,
-            fontSize: 16
-        },
-        adr: {
-            fontSize: 16
-        },
-        btn: {
-            textDecoration: "none",
-            color: "black",
-            fontWeight: 600,
-            border: "solid black 2px",
-            height: 35,
-            width: 120,
-            marginRight: 20
+const styles = {
+    card: {
+        width: 1200,
+        background: 'rgba(230, 232, 209, 0.96)',
+        marginTop: 7,
+        borderRadius: 5
+    },
+    media: {
+        height: 330,
+        width: "50%",
+        float: "left",
+        marginRight: 15
+    },
+    title: {
+        fontWeight: 700,
+        marginRight: 17,
+        fontSize: 43,
+        letterSpacing: 2
+    },
+    desc: {
+        marginBottom: 10,
+        fontSize: 22,
+        padding: 15,
+        lineHeight: "150%",
+        color: "#585a59"
+    },
+    adr: {
+        fontSize: 19,
+        color:"rgba(64, 66, 54, 0.85)"
+    },
+    button:{
+        marginLeft:230
+    }
+};
 
-        },
-        nav: {
-            textDecoration: "none"
-        },
-        padding: 0
+class restaurantInfo extends React.Component {
+
+    state = {
+        restInfo: []
     };
 
-    class restaurantInfo extends React.Component {
-
-        state={
-            restInfo:[]
-        };
-
-        componentDidMount() {
-            fetch('http://localhost:6543/restaurant')
-                .then(response => response.json())
-                .then(data => this.setState({restInfo: data.data[this.props.url.match.params.Id-1]}));
-            console.log("ok");
-
-        }
-        render(){
-            const {classes} = this.props;
-            const {restInfo} = this.state;
-            console.log(restInfo);
-            // console.log(this.props.url);
-            return (
-                <div className={classes.root}>
-
-                    <Card className={classes.card}>
-
-                        <div>
-                            <div>
-                                <CardMedia
-                                    className={classes.media}
-                                    image="https://media-cdn.tripadvisor.com/media/photo-f/04/43/20/9c/whisky-corner.jpg"
-                                    title={"ok"}
-                                />
-                                <Typography component="p" className={classes.desc}>
-                                    LISTIMAGES WILL BE HERE
-                                </Typography>
-                            </div>
-
-                            <Typography gutterBottom variant="h5" component="h2" className={classes.title}>
-                                {restInfo.name}
-                            </Typography>
-
-                            <Typography component="p" className={classes.desc}>
-                                Address: {restInfo.addres_id}
-                            </Typography>
-                            <Divider variant="middle"/>
-                            <Typography component="p" className={classes.desc}>
-                                {restInfo.description}
-                            </Typography>
-
-
-                        </div>
-
-
-                    </Card>
-                </div>
-            );
-        }
+    componentDidMount() {
+        fetch('http://localhost:6543/restaurant')
+            .then(response => response.json())
+            .then(data => this.setState({restInfo: data.data[this.props.url.match.params.Id - 1]}));
+        console.log("ok");
 
     }
 
+    render() {
+        const {classes} = this.props;
+        const {restInfo} = this.state;
+        console.log(restInfo);
+        // console.log(this.props.url);
+        return (
+            <div className={classes.root}>
+                <Card className={classes.card}>
+
+                    <CardMedia
+                        className={classes.media}
+                        image="https://www.omnihotels.com/-/media/images/hotels/bospar/restaurants/bospar-omni-parker-house-parkers-restaurant-1170.jpg"
+                        title={"ok"}
+                    />
+                    <Typography gutterBottom variant="h5" component="h2" className={classes.title}>
+                        {restInfo.name}
+                    </Typography>
+                    <Typography component="p" className={classes.adr}>
+                        Address: {restInfo.addres_id} <br/>
+                        Works hour: 10.00 - 23.00 <br/>
+                        Phone: 093-999-23-08
+                        <Button component={Link} to={'menu/' + restInfo.id} variant="outlined" className={classes.button}>
+                            Watch menu
+                        </Button>
+                    </Typography>
+                    <Divider variant="middle" style={{marginTop:"10px"}}/>
+                    <Typography component="p" className={classes.desc}>
+                        {restInfo.description}{restInfo.description}
+                    </Typography>
 
 
-    export default withStyles(styles)(restaurantInfo);
+                </Card>
+
+            </div>
+        );
+    }
+
+}
+
+
+export default withStyles(styles)(restaurantInfo);
