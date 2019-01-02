@@ -3,7 +3,10 @@ services:
   db:
     image: postgres:9.5.15
     restart: always
-    env_file: ./.env
+    environment:
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "12345678"
+      POSTGRES_DB: "easyrest"
 
   adminer:
     image: adminer
