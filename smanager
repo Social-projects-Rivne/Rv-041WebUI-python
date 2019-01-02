@@ -8,11 +8,11 @@ function print_help() {
 	echo ""
 	echo "Commands:"
 	echo "  help       Print help"
-	echo "  up         Up service"
-	echo "  down       Down service"
-	echo "  start      Start service"
-	echo "  stop       Stop service"
-	echo "  restart    Restart service"
+	echo "  up         Create and run containers for a service"
+	echo "  down       Stops containers and removes containers, networks, volumes, and images"
+	echo "  start      Starts existing containers for aservice"
+	echo "  stop       Stops running containers without removing them"
+	echo "  restart    Restarts all stopped and running containers for service"
 	echo "  rebuild    Rebuild service"
 }
 
