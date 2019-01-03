@@ -39,7 +39,7 @@ def get_tags_controler(request):
     """
     query = request.dbsession.query(Tag)
     tags = query.all()
-    if len(tags) == 0:
+    if not tags:
         body = warp([], False, "No tags in database")
     else:
         tags_as_dict = [tag.as_dict() for tag in tags]
