@@ -1,6 +1,10 @@
 """
 In this module determines metadata of data base
 Also it contains declaration of Base Object for ORM objects in Application
+Base object contains custom methods shared by every model.
+Attributes:
+    NAMING_CONVENTION (obj): naming convention for SQLAlchemy auto name 
+    generation.
 """
 
 from sqlalchemy.ext.declarative import as_declarative
@@ -24,8 +28,15 @@ metadata = MetaData(naming_convention=NAMING_CONVENTION)
 class Base(object):
     """
     Determine Base Object for ORM objects in Application
+    Contains custom methods sheared by all models:
+        __repr__() - to make fancy output by print
+        as_dict() - to compile ORM model into python dictionary
     """
     def __repr__(self):
+        """Do custom style output by print
+        Output format:
+        <class <class_name>> ([prop.name = prop.value, ])
+        """
         s = '<%s(' % (self.__class__)
         for c in self.__table__.columns:
             s += '%s = %s, ' % (c.name, getattr(self, c.name))
@@ -33,4 +44,12 @@ class Base(object):
         return s
 
     def as_dict(self):
+        """Converts model into python dictionary
+        Returns:
+            dictionary
+            {
+                [prop.name = prop.value, ]
+            }
+
+        """
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}

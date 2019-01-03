@@ -17,6 +17,9 @@ class Restaurant(Base):
     """
     The data model of "restaurants" table
     Defines data structure of "restaurant" table
+    Relationship:
+        restaurant -> menu
+        restaurant -> tag
     """
     __tablename__ = 'restaurant'
     id = Column(Integer, primary_key=True)
@@ -24,7 +27,6 @@ class Restaurant(Base):
     description = Column(Text)
     addres_id = Column(Text)
     owner_id = Column(Text)
-    # tag_agred_id = Column(Integer, ForeignKey('tag_agreg.id'))
     menu_id = Column(Integer, ForeignKey('menu.id'))
 
     menu = relationship("Menu")

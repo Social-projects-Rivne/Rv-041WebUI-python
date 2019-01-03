@@ -1,5 +1,12 @@
 """
-Test tags
+Storage file for tags
+Attributes:
+    Tags (list): list of objects discribing tags
+        Object structure:
+            {
+                "name": <str>,
+                "priority": <int>
+            }
 """
 
 

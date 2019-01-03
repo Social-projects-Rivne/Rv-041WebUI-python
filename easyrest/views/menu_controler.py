@@ -1,5 +1,6 @@
 """
-This module describe menu view
+This module describe menu controler
+This module describes behavior of /restaurant/{id}/menu route
 """
 
 from pyramid.view import view_config
@@ -13,6 +14,7 @@ from json import dumps
 
 from ..models.Restaurant import Restaurant
 
+
 def asign_items(menu):
     menu_dict = menu.as_dict()
     menu_dict["id"] = "menuId" + str(menu_dict["id"])
@@ -25,10 +27,17 @@ def asign_items(menu):
 
 @view_config(route_name='get_menu', renderer='json', request_method='GET')
 def get_menu_controler(request):
+    """GET request controler to return menu and
+    its items for restaurant specified by id
+    Args:
+        request: current pyramid request
+    Returns:
+        
+    """
     rest_id = request.matchdict['id']
     rest = request.dbsession.query(Restaurant).filter(Restaurant.id == rest_id).all()
     if len(rest) == 0:
-        return Response(body=dumps({"data": [], "name": "get_menu" }))
+        return Response(body=dumps({"data": [], "name": "get_menu"}))
     menu_dict = asign_items(rest[0].menu)
-    response = Response(body=dumps({"data":menu_dict, "name": "get_menu" }))
+    response = Response(body=dumps({"data": menu_dict, "name": "get_menu"}))
     return response

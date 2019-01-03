@@ -1,5 +1,7 @@
 """
 This module describe data model for "tag_association" table
+tag_association table filled automatically by SQLalchemy.
+It provides many to many relation between restaurant and tag
 """
 
 from sqlalchemy import (
@@ -8,7 +10,6 @@ from sqlalchemy import (
     Text,
     ForeignKey,
 )
-# from sqlalchemy.orm import relationship
 
 from .meta import Base
 
@@ -22,6 +23,3 @@ class Tag_association(Base):
     id = Column(Integer, primary_key=True)
     restaurant_id = Column(Integer, ForeignKey('restaurant.id'))
     tag_id = Column(Integer, ForeignKey('tag.id'))
-
-    # rest = relationship("Restaurant")
-    # tag = relationship("Tag")

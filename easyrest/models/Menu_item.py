@@ -24,5 +24,3 @@ class Menu_item(Base):
     description = Column(Text)
     ingredients = Column(Text)
     menu_id = Column(Integer, ForeignKey('menu.id'))
-
-    # menu = relationship("Menu")

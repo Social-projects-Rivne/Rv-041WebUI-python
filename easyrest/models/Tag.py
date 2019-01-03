@@ -17,12 +17,12 @@ class Tag(Base):
     """
     The data model of "tag" table
     Defines data structure of "tag" table
+    Relationship: tag -> restaurant
     """
     __tablename__ = 'tag'
     id = Column(Integer, primary_key=True)
     name = Column(Text)
     priority = Column(Integer)
-    # tag_agreg_id = Column(Integer, ForeignKey('tag_agreg.id'))
 
     rest = relationship(
         "Restaurant",

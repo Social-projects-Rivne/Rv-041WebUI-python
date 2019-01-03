@@ -17,10 +17,10 @@ class Menu(Base):
     """
     The data model of "menu" table
     Defines data structure of "menu" table
+    Relationship: menu -> menu_item
     """
     __tablename__ = 'menu'
     id = Column(Integer, primary_key=True)
     name = Column(Text)
 
-    # restaurant = relationship("Restaurant")
     menu_item = relationship("Menu_item")

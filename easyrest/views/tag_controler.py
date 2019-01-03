@@ -1,3 +1,8 @@
+"""
+This module describe menu controler
+This module describes behavior of /tag route
+"""
+
 from pyramid.view import view_config
 from pyramid.response import Response
 
@@ -19,8 +24,8 @@ def get_tags_controler(request):
             raise HTTPNotFound()
         dict_objs = [tag.as_dict() for tag in tags]
         for tag in dict_objs:
-        	tag["id"] = "tagId" + str(tag["id"])
-        response = Response(body=dumps({"data":dict_objs, "name": "tag" }))
-    except DBAPIError:
+            tag["id"] = "tagId" + str(tag["id"])
+        response = Response(body=dumps({"data": dict_objs, "name": "tag"}))
+    except DBAPIError as db_err_msg:
         return Response(db_err_msg, content_type='text/plain', status=500)
     return response

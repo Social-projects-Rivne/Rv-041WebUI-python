@@ -9,6 +9,8 @@ import zope.sqlalchemy
 
 # import or define all models here to ensure they are attached to the
 # Base.metadata prior to any initialization routines
+# also to import all models using syntax:
+# from models import *
 from .Menu import Menu
 from .Menu_item import Menu_item
 from .Restaurant import Restaurant
