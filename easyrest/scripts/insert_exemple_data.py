@@ -1,10 +1,12 @@
 """
 This script populate Data base with fake data.
 """
-from ..models import *
 from random import randint, seed
+
 from faker import Faker
+
 from tags_data import Tags
+from ..models import Tag, Menu, Restaurant, MenuItem
 
 
 def fill_db(session):
@@ -51,7 +53,7 @@ def fill_db(session):
                     variable_nb_words=True,
                     ext_word_list=None)
             }
-            menu_item_model = Menu_item(**menu_item)
+            menu_item_model = MenuItem(**menu_item)
             Menu_item_models.append(menu_item_model)
 
         # using model relationship defined in models.restaurant

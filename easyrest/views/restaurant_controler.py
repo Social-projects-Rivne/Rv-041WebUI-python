@@ -3,13 +3,11 @@ This module describe menu controler
 This module describes behavior of /restaurant/{id} and
 /restaurant routes
 """
-
 from pyramid.view import view_config
 from pyramid.response import Response
 
 from ..scripts.json_helpers import wrap
-
-from ..models.Restaurant import Restaurant
+from ..models.restaurant import Restaurant
 
 
 def asign_tags(rests):
@@ -129,8 +127,8 @@ def get_restaurant_controler(request):
             "error": Restaurant with id={} not found
         }
     """
-    id = request.matchdict["id"]
-    query = request.dbsession.query(Restaurant).get(int(id))
+    rest_id = request.matchdict["id"]
+    query = request.dbsession.query(Restaurant).get(int(rest_id))
     if query is None:
         body = wrap([], False, "Restaurant with id=%s not found" % (id))
         response = Response(body=body)

@@ -11,11 +11,11 @@ import zope.sqlalchemy
 # Base.metadata prior to any initialization routines
 # also to import all models using syntax:
 # from models import *
-from .Menu import Menu
-from .Menu_item import Menu_item
-from .Restaurant import Restaurant
-from .Tag import Tag
-from .Tag_association import Tag_association
+from .menu import Menu
+from .menu_item import MenuItem
+from .restaurant import Restaurant
+from .tag import Tag
+from .tag_association import TagAssociation
 
 
 # run configure_mappers after defining all of the models to ensure

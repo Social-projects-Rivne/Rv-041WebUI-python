@@ -8,12 +8,11 @@ from sqlalchemy import (
     Text,
     ForeignKey,
 )
-# from sqlalchemy.orm import relationship
 
 from .meta import Base
 
 
-class Menu_item(Base):
+class MenuItem(Base):
     """
     The data model of "menu_item" table
     Defines data structure of "menu_item" table

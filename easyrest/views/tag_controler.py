@@ -7,8 +7,7 @@ from pyramid.view import view_config
 from pyramid.response import Response
 
 from ..scripts.json_helpers import wrap
-
-from ..models.Tag import Tag
+from ..models.tag import Tag
 
 
 @view_config(route_name='get_tags', renderer='json', request_method='GET')

@@ -2,17 +2,13 @@
 This module describe menu controler
 This module describes behavior of /restaurant/{id}/menu route
 """
-
 from pyramid.view import view_config
 from pyramid.response import Response
-
-from pyramid.httpexceptions import HTTPNotFound
 
 from sqlalchemy.exc import DBAPIError
 
 from ..scripts.json_helpers import wrap
-
-from ..models.Restaurant import Restaurant
+from ..models.restaurant import Restaurant
 
 
 def asign_items(menu):

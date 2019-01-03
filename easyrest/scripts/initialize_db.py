@@ -9,8 +9,6 @@ from pyramid.paster import bootstrap, setup_logging
 from sqlalchemy.exc import OperationalError
 
 from ..models.meta import Base
-from ..models import *
-
 from insert_exemple_data import fill_db
 
 

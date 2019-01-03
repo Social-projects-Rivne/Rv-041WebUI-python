@@ -23,4 +23,4 @@ class Menu(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Text)
 
-    menu_item = relationship("Menu_item")
+    menu_item = relationship("MenuItem")

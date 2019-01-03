@@ -14,7 +14,7 @@ from sqlalchemy import (
 from .meta import Base
 
 
-class Tag_association(Base):
+class TagAssociation(Base):
     """
     The data model of "tag_association" table
     Defines data structure of "tag_association" table
