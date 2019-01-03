@@ -8,6 +8,7 @@ from .. import models
 
 
 def setup_models(dbsession):
+    """"""
     engine = dbsession.get_bind()
     Base = models.meta.Base.metadata.create_all(engine)
 
@@ -53,12 +54,12 @@ def main(argv=sys.argv):
             dbsession = env['request'].dbsession
             if args.drop:
                 drop_models(dbsession)
-                print('Droped')
+                print 'Database has been droped'
             else:
                 setup_models(dbsession)
-                print('Created')
+                print 'Database has been created'
             if args.fill:
                 fill_models(dbsession)
-                print("filled")
-    except OperationalError:
-        print('Error in init_db.py')
+                print 'Database has been filled'
+    except OperationalError as e:
+        print 'OperationalError: {}' % (e)
