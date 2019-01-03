@@ -1,45 +1,49 @@
  [{
-     "name": "Pizza",
+     "name": "kebab",
      "priority": 1
    },
    {
-     "name": "Sushi",
+     "name": "sushi",
      "priority": 2
    },
    {
-     "name": "asdasda",
+     "name": "pub",
      "priority": 4
    },
    {
-     "name": "wqdwqd",
+     "name": "turkish cuisine",
      "priority": 4
    },
    {
-     "name": "Pizza12",
+     "name": "burgers",
      "priority": 1
    },
    {
-     "name": "Sushi122f1",
+     "name": "coffee/tea",
      "priority": 2
    },
    {
-     "name": "asdasdawfqfw",
+     "name": "pizza",
      "priority": 3
    },
    {
-     "name": "wqdwqdfwqfqw",
+     "name": "vegetarian",
      "priority": 4
    },
    {
-     "name": "Sushiqwfqw",
+     "name": "ukrainian cuisine",
      "priority": 2
    },
    {
-     "name": "asdasdaqwf",
+     "name": "fast food",
      "priority": 3
    },
    {
-     "name": "wqdwqdfqw",
+     "name": "beer",
+     "priority": 4
+   },
+   {
+     "name": "greel",
      "priority": 4
    }
  ]
