@@ -1,3 +1,8 @@
+"""
+Test tags
+"""
+
+
 Tags = [
         {
             "name": "sushi",

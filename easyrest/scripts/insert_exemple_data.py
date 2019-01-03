@@ -1,3 +1,7 @@
+"""
+This module populate Data base with fake data.
+"""
+
 from ..models import *
 from random import randint, seed
 from faker import Faker
@@ -5,6 +9,10 @@ from tags_data import Tags
 
 
 def fill_db(session):
+    """
+    fill Data base with fake data
+    """
+
     fake = Faker()
     fake.seed(4321)
     seed(4321)  # for randint

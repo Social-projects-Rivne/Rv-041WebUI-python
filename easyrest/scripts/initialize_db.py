@@ -1,6 +1,7 @@
 """
-
+This module initialize Data base. Create tables, fill them
 """
+
 import argparse
 import sys
 
@@ -14,22 +15,35 @@ from insert_exemple_data import fill_db
 
 
 def setup_models(dbsession):
-    """Create tables from classes that are children of models.meta.Base"""
+    """
+    This function create Data base, based on declarative_base metadata.
+    """
     engine = dbsession.get_bind()
     Base_rez = Base.metadata.create_all(engine)
 
 
 def fill_models(dbsession):
+    """
+    This function fill Data base with test data.
+    If --fill parameter passed.
+    """
     fill_db(dbsession)
 
 
 def drop_models(dbsession):
-    """Create tables from classes that are children of models.meta.Base"""
+    """
+    This function drop Data base tables.
+    If --drop parameter passed.
+    """
     engine = dbsession.get_bind()
     Base_rez = Base.metadata.drop_all(engine)
 
 
 def parse_args(argv):
+    """
+    This function parse arguments, which were passed.
+    It parse 'config_uri', 'config_uri' and '--fill' arguments
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'config_uri',
@@ -54,6 +68,9 @@ def parse_args(argv):
 
 
 def main(argv=sys.argv):
+    """
+    This function is entry point for DB initializing script.
+    """
     args = parse_args(argv)
     setup_logging(args.config_uri)
     env = bootstrap(args.config_uri)

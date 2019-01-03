@@ -1,3 +1,7 @@
+"""
+This module describe data model for "tag" table
+"""
+
 from sqlalchemy import (
     Column,
     Integer,
@@ -10,6 +14,10 @@ from .meta import Base
 
 
 class Tag(Base):
+    """
+    The data model of "tag" table
+    Defines data structure of "tag" table
+    """
     __tablename__ = 'tag'
     id = Column(Integer, primary_key=True)
     name = Column(Text)
