@@ -3,8 +3,10 @@ In this module determines metadata of data base
 Also it contains declaration of Base Object for ORM objects in Application
 Base object contains custom methods shared by every model.
 Attributes:
-    NAMING_CONVENTION (obj): naming convention for SQLAlchemy auto name 
-    generation.
+    NAMING_CONVENTION (dict): naming convention for SQLAlchemy auto name
+        generation.
+    metadata: SQLAlchemy object created by sqlalchemy.schema.MetaData
+        using specified naming convention
 """
 
 from sqlalchemy.ext.declarative import as_declarative
