@@ -1,3 +1,6 @@
+"""Module for initializing configurator object with current settings
+and defines response callback function for CORS fix
+"""
 from pyramid.config import Configurator
 from pyramid.events import NewRequest
 
@@ -27,7 +30,7 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     Initialize:
         .models: models from models folder
-        pyramid_jinja2: 
+        pyramid_jinja2:
         .routes: routes for app
         adds subscriber for modification of every responce(CORS fix)
     """
