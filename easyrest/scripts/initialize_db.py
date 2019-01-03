@@ -1,3 +1,6 @@
+"""
+
+"""
 import argparse
 import sys
 
@@ -8,7 +11,7 @@ from .. import models
 
 
 def setup_models(dbsession):
-    """"""
+    """Create tables from classes that are children of models.meta.Base"""
     engine = dbsession.get_bind()
     Base = models.meta.Base.metadata.create_all(engine)
 
@@ -21,6 +24,7 @@ def fill_models(dbsession):
 
 
 def drop_models(dbsession):
+    """Create tables from classes that are children of models.meta.Base"""
     engine = dbsession.get_bind()
     Base = models.meta.Base.metadata.drop_all(engine)
 
@@ -60,6 +64,6 @@ def main(argv=sys.argv):
                 print 'Database has been created'
             if args.fill:
                 fill_models(dbsession)
-                print 'Database has been filled'
+                print 'Database has been populated by testing data'
     except OperationalError as e:
         print 'OperationalError: {}' % (e)
