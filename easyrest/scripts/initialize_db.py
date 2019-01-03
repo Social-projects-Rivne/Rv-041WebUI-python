@@ -81,6 +81,8 @@ def main(argv=sys.argv):
             if args.reset:
                 drop_models(dbsession)
                 print 'Database has been droped'
+                setup_models(dbsession)
+                print 'Database has been created'
             else:
                 setup_models(dbsession)
                 print 'Database has been created'

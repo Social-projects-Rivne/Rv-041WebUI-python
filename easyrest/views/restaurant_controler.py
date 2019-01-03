@@ -8,7 +8,7 @@ from sqlalchemy.exc import DBAPIError
 from json import dumps
 
 from ..models.Restaurant import Restaurant
-# from ..models.Tag import Tag
+
 
 def asign_tags(rests):
     rests_dict = [rest.as_dict() for rest in rests]
@@ -24,7 +24,7 @@ def asign_tags(rests):
 
 
 @view_config(route_name='get_all_restaurants', renderer='json', request_method='GET')
-def get_restaurant_controler(request):
+def get_all_restaurant_controler(request):
     def return_all():
         rests = request.dbsession.query(Restaurant).all()
         rests_dict = asign_tags(rests)
@@ -34,6 +34,7 @@ def get_restaurant_controler(request):
 
     response = return_all()
     return response
+
 
 @view_config(route_name='get_restaurant', renderer='json', request_method='GET')
 def get_restaurant_controler(request):
