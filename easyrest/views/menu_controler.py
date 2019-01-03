@@ -55,7 +55,7 @@ def get_menu_controler(request):
     rest_id = request.matchdict['id']
     rest = request.dbsession.query(Restaurant).filter(Restaurant.id == rest_id).all()
     if len(rest) == 0:
-        body = wrap([], False, "Restaurant with id={} not found" % (rest_id))
+        body = wrap([], False, "Restaurant with id=%s not found" % (rest_id))
         return Response(body=body)
     menu_dict = asign_items(rest[0].menu)
     body = wrap([menu_dict])
