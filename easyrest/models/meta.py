@@ -1,3 +1,8 @@
+"""
+In this module determines metadata of data base
+Also it contains declaration of Base Object for ORM objects in Application
+"""
+
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.schema import MetaData
 
@@ -17,6 +22,9 @@ metadata = MetaData(naming_convention=NAMING_CONVENTION)
 
 @as_declarative(metadata=metadata)
 class Base(object):
+    """
+    Determine Base Object for ORM objects in Application
+    """
     def __repr__(self):
         s = '<%s(' % (self.__class__)
         for c in self.__table__.columns:

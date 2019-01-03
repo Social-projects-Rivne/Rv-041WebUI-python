@@ -1,3 +1,7 @@
+"""
+This module describe data model for "restaurants" table
+"""
+
 from sqlalchemy import (
     Column,
     Integer,
@@ -10,6 +14,10 @@ from .meta import Base
 
 
 class Restaurant(Base):
+    """
+    The data model of "restaurants" table
+    Defines data structure of "restaurant" table
+    """
     __tablename__ = 'restaurant'
     id = Column(Integer, primary_key=True)
     name = Column(Text)
