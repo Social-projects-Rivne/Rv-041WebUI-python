@@ -10,7 +10,7 @@ from pyramid.httpexceptions import HTTPNotFound
 
 from sqlalchemy.exc import DBAPIError
 
-from json import dumps
+from ..scripts.json_helpers import wrap
 
 from ..models.Restaurant import Restaurant
 
@@ -32,12 +32,32 @@ def get_menu_controler(request):
     Args:
         request: current pyramid request
     Returns:
-        
+        Json string(not pretty) created from dictionary with format:
+            {
+                "data": data,
+                "success": success,
+                "error": error
+            }
+        Where data is list with menus asign for current restaurant
+        (Now list with one element). Format:
+            [
+                {
+                    "id": "menuId" + id,
+                    "menu_items": [{
+                        "id": "menuItemId" + id,
+                        "description": description,
+                        "ingredients": ingredients,
+                        "menu_id": menu_id
+                    }, ]
+                }
+            ]
     """
     rest_id = request.matchdict['id']
     rest = request.dbsession.query(Restaurant).filter(Restaurant.id == rest_id).all()
     if len(rest) == 0:
-        return Response(body=dumps({"data": [], "name": "get_menu"}))
+        body = wrap([], False, "Restaurant with id={} not found" % (rest_id))
+        return Response(body=body)
     menu_dict = asign_items(rest[0].menu)
-    response = Response(body=dumps({"data": menu_dict, "name": "get_menu"}))
+    body = wrap([menu_dict])
+    response = Response(body=body)
     return response

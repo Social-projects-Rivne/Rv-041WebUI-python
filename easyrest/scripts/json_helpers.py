@@ -5,7 +5,7 @@ Script contains helper functions to work with json such as:
 from json import dumps
 
 
-def wrap(data, error=None, success=True):
+def wrap(data, success=True, error=None):
     """Function to turn python dictionary from models output to
     json format for futher send with responce
     Args:
