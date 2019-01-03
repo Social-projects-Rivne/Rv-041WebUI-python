@@ -1,7 +1,7 @@
-"""
-Script contains helper functions to work with json such as:
+"""Script contains helper functions to work with json such as:
     wrap(): wraper to make response json acording to format
 """
+
 from json import dumps
 
 

@@ -1,7 +1,7 @@
-"""
-This module describes 404 page controler using jinja2 template from
+"""This module describes 404 page controler using jinja2 template from
 cookiecutter
 """
+
 from pyramid.view import notfound_view_config
 
 

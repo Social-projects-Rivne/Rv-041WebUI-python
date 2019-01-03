@@ -1,5 +1,4 @@
-"""
-This module describe menu controler
+"""This module describe menu controler
 This module describes behavior of /tag route
 """
 

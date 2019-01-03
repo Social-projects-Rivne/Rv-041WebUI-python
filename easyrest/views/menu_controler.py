@@ -1,7 +1,7 @@
-"""
-This module describe menu controler
+"""This module describe menu controler
 This module describes behavior of /restaurant/{id}/menu route
 """
+
 from pyramid.view import view_config
 from pyramid.response import Response
 

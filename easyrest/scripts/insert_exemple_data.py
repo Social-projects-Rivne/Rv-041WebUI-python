@@ -1,6 +1,5 @@
-"""
-This script populate Data base with fake data.
-"""
+"""This script populate Data base with fake data."""
+
 from random import randint, seed
 
 from faker import Faker

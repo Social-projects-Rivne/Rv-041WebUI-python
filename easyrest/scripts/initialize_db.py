@@ -1,6 +1,4 @@
-"""
-This module initialize Data base. Create tables, fill them
-"""
+"""This module initialize Data base. Create tables, fill them"""
 
 import argparse
 import sys

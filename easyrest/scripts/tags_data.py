@@ -1,5 +1,4 @@
-"""
-Storage file for tags
+"""Storage file for tags
 Attributes:
     Tags (list): list of objects discribing tags
         Object structure:
@@ -8,7 +7,6 @@ Attributes:
                 "priority": <int>
             }
 """
-
 
 Tags = [
         {
