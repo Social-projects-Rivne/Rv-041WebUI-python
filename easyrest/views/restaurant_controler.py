@@ -49,9 +49,7 @@ def return_all(request):
     rests = request.dbsession.query(Restaurant).all()
     rests_dict = asign_tags(rests)
 
-    body = wrap(rests_dict)
-    response = Response(body=body)
-    return response
+    return rests_dict
 
 
 @view_config(route_name='get_all_restaurants', renderer='json', request_method='GET')
@@ -85,7 +83,12 @@ def get_all_restaurant_controler(request):
                 },
             ]
     """
-    response = return_all(request)
+    rests_dict = return_all(request)
+    if not rests_dict:
+        body = wrap([], False, "No restaurants in database")
+    else:
+        body = wrap(rests_dict)
+    response = Response(body=body)
     return response
 
 
