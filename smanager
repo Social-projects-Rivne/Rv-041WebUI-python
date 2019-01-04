@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+
+SCRIPT_NAME=$(basename $0)
+
+function print_help() {
+	echo "Usage:"
+	echo "  $SCRIPT_NAME COMMAND [SERVICES]"
+	echo ""
+	echo "Commands:"
+	echo "  help       Print help"
+	echo "  up         Create and run containers for a service"
+	echo "  down       Stops containers and removes containers, networks, volumes, and images"
+	echo "  start      Starts existing containers for aservice"
+	echo "  stop       Stops running containers without removing them"
+	echo "  restart    Restarts all stopped and running containers for service"
+	echo "  rebuild    Rebuild service"
+}
+
+function install_frontend_modules() {
+	docker-compose run --rm --no-deps -u node frontend bash -ci "npm install"
+}
+
+function install_backend_modules() {
+	docker-compose run --rm --no-deps backend bash -ci "pip install --no-cache-dir -e ".[testing]""
+}
+
+function install_missing_modules() {
+	local node_modules_folder="./frontend/node_modules/"
+	local python_modules_folder="./easyrest.egg-info/"
+
+	if ! [ -d $node_modules_folder ]
+	then
+		install_frontend_modules
+	fi
+
+	if ! [ -d $python_modules_folder ]
+	then
+		install_backend_modules
+	fi
+}
+
+function rebuild_services() {
+	docker-compose build $@
+	for param in $*
+	do
+		install_$param_modules
+	done
+}
+
+function up_services() {
+	install_missing_modules
+	docker-compose up -d $@
+}
+
+function down_services() {
+	docker-compose down $@
+}
+
+function start_services() {
+	docker-compose start $@
+}
+
+function stop_services() {
+	docker-compose stop $@
+}
+
+function restart_services() {
+	docker-compose restart $@
+}
+
+if [ $# = 0 ]; then
+	print_help
+	exit
+fi
+
+case $1 in
+	up )
+		shift
+		up_services $@
+		;;
+	down )
+		shift
+		down_services $@
+		;;
+	start )
+		shift
+		start_services $@
+		;;
+	stop )
+		shift
+		stop_services $@
+		;;
+	restart )
+		shift
+		restart_services $@
+		;;
+	rebuild )
+		shift
+		rebuild_services $@
+		;;
+	help )
+		print_help
+		;;
+	* )
+		echo "$1 is not an option"
+		;;
+esac
+
