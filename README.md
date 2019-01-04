@@ -43,9 +43,21 @@ and then restart postqresql service
 
 `(venv) pip install -e ".[testing]"`
 
-7. Initialize db(with example data)
+7. Initialize db(with example data):
 
 `(venv) initialize_easyrest_db --fill development.ini`
+
+Drop and create empty database
+
+`(venv) initialize_easyrest_db --reset development.ini`
+
+Drop derivative models from Base
+
+`(venv) initialize_easyrest_db --drop development.ini`
+
+Reset and fill database
+
+`(venv) initialize_easyrest_db --reset --fill development.ini`
 
 ```
 --drop - Drop derivative models from Base
