@@ -7,7 +7,7 @@ from pyramid.paster import bootstrap, setup_logging
 from sqlalchemy.exc import OperationalError
 
 from ..models.meta import Base
-from insert_exemple_data import fill_db
+from insert_example_data import fill_db
 
 
 def setup_models(dbsession):
