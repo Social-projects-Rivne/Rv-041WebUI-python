@@ -13,10 +13,10 @@ from ..models.restaurant import Restaurant
 
 def asign_items(menu):
     menu_dict = menu.as_dict()
-    menu_dict["id"] = "menuId" + str(menu_dict["id"])
+    menu_dict["id"] = "menuId%s" % menu_dict["id"]
     menu_items = [item.as_dict() for item in menu.menu_item]
     for item in menu_items:
-        item["id"] = "menuItemId" + str(item["id"])
+        item["id"] = "menuItemId%s" % item["id"]
     menu_dict.update({"menu_items": menu_items})
     return menu_dict
 
@@ -49,11 +49,11 @@ def get_menu_controler(request):
             ]
     """
     rest_id = request.matchdict['id']
-    rest = request.dbsession.query(Restaurant).filter(Restaurant.id == rest_id).all()
-    if len(rest) == 0:
+    rest = request.dbsession.query(Restaurant).get(rest_id)
+    if not rest:
         body = wrap([], False, "Restaurant with id=%s not found" % (rest_id))
         return Response(body=body)
-    menu_dict = asign_items(rest[0].menu)
+    menu_dict = asign_items(rest.menu)
     body = wrap([menu_dict])
     response = Response(body=body)
     return response

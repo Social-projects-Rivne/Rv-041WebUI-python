@@ -26,11 +26,11 @@ def asign_tags(rests):
     rests_list = [rest.as_dict() for rest in rests]
     for i, rest in enumerate(rests):
         del(rests_list[i]["menu_id"])
-        rests_list[i]["id"] = "restaurantId" + str(rests_list[i]["id"])
+        rests_list[i]["id"] = "restaurantId%s" % rests_list[i]["id"]
         tags = rest.tag
         tags_list = [tag.as_dict() for tag in tags]
         for tag in tags_list:
-            tag["id"] = "tagId" + str(tag["id"])
+            tag["id"] = "tagId%s" % tag["id"]
         rests_list[i].update({"tags": tags_list})
     return rests_list
 

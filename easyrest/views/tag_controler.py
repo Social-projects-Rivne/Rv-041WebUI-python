@@ -43,7 +43,7 @@ def get_tags_controler(request):
     else:
         tags_as_dict = [tag.as_dict() for tag in tags]
         for tag in tags_as_dict:
-            tag["id"] = "tagId" + str(tag["id"])
+            tag["id"] = "tagId%s" % tag["id"]
         body = wrap(tags_as_dict)
     response = Response(body=body)
     return response
