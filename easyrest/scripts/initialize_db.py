@@ -86,4 +86,4 @@ def main(argv=sys.argv):
                 fill_models(dbsession)
                 print 'Database has been populated by testing data'
     except OperationalError as e:
-        print 'OperationalError: {}' % (e)
+        print 'OperationalError: %s' % (e)
