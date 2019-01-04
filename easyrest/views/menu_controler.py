@@ -5,18 +5,13 @@ This module describes behavior of /restaurant/{id}/menu route
 from pyramid.view import view_config
 from pyramid.response import Response
 
-from sqlalchemy.exc import DBAPIError
-
 from ..scripts.json_helpers import wrap
 from ..models.restaurant import Restaurant
 
 
 def asign_items(menu):
     menu_dict = menu.as_dict()
-    menu_dict["id"] = "menuId%s" % menu_dict["id"]
     menu_items = [item.as_dict() for item in menu.menu_item]
-    for item in menu_items:
-        item["id"] = "menuItemId%s" % item["id"]
     menu_dict.update({"menu_items": menu_items})
     return menu_dict
 
@@ -52,8 +47,7 @@ def get_menu_controler(request):
     rest = request.dbsession.query(Restaurant).get(rest_id)
     if not rest:
         body = wrap([], False, "Restaurant with id=%s not found" % (rest_id))
-        return Response(body=body)
+        return body
     menu_dict = asign_items(rest.menu)
     body = wrap([menu_dict])
-    response = Response(body=body)
-    return response
+    return body

@@ -5,6 +5,7 @@ This module describes behavior of /restaurant/{id} and
 
 from pyramid.view import view_config
 from pyramid.response import Response
+from pyramid.httpexceptions import HTTPNotFound
 
 from ..scripts.json_helpers import wrap
 from ..models.restaurant import Restaurant
@@ -27,12 +28,8 @@ def asign_tags(rests):
     for rest in rests:
         tags = rest.tag
         tags_list = [tag.as_dict() for tag in tags]
-        for tag in tags_list:
-            tag["id"] = "tagId%s" % tag["id"]
 
         rest_dict = rest.as_dict()
-        del rest_dict["menu_id"]
-        rest_dict["id"] = "restaurantId%s" % rest_dict["id"]
         rest_dict.update({"tags": tags_list})
         rests_list.append(rest_dict)
     return rests_list
@@ -72,12 +69,12 @@ def get_all_restaurant_controler(request):
     rests = request.dbsession.query(Restaurant).all()
     rests_dict = asign_tags(rests)
     if not rests_dict:
-        body = wrap([], False, "No restaurants in database")
+        #body = wrap([], False, "No restaurants in database")
+        raise HTTPNotFound("No restaurants in database")
     else:
         body = wrap(rests_dict)
-    response = Response(body=body)
 
-    return response
+    return body
 
 
 @view_config(route_name='get_restaurant', renderer='json', request_method='GET')
@@ -121,11 +118,9 @@ def get_restaurant_controler(request):
     rest_id = request.matchdict["id"]
     query = request.dbsession.query(Restaurant).get(int(rest_id))
     if query is None:
-        body = wrap([], False, "Restaurant with id=%s not found" % (id))
-        response = Response(body=body)
+        # body = wrap([], False, "Restaurant with id=%s not found" % (rest_id))
+        raise HTTPNotFound("Restaurant with id=%s not found" % (rest_id))
     else:
         rest_with_tags = asign_tags([query])
         body = wrap([rest_with_tags])
-        response = Response(body=body)
-
-    return response
+    return body

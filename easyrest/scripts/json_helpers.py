@@ -1,20 +1,18 @@
 """Script contains helper functions to work with json such as:
-    wrap(): wraper to make response json acording to format
+    wrap(): wraper to make response acording to style
 """
-
-from json import dumps
 
 
 def wrap(data, success=True, error=None):
     """Function to turn python dictionary from models output to
-    json format for futher send with responce
+    json style for futher send with responce
     Args:
         data (list): list of dictionaries representing models output
         error (str): error message, None by default
         success (bool): request status True is request succeeded
-            otherwise False
+            otherwise False, True by default
     Returns:
-        Json string(not pretty) created from dictionary with format:
+        Dictionary with style:
             {
                 "data": data,
                 "success": success,
@@ -25,4 +23,4 @@ def wrap(data, success=True, error=None):
         "success": success,
         "error": error
     }
-    return dumps(data_dict)
+    return data_dict

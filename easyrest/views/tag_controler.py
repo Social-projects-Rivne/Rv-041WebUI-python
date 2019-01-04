@@ -4,6 +4,7 @@ This module describes behavior of /tag route
 
 from pyramid.view import view_config
 from pyramid.response import Response
+from pyramid.httpexceptions import HTTPNotFound
 
 from ..scripts.json_helpers import wrap
 from ..models.tag import Tag
@@ -39,11 +40,8 @@ def get_tags_controler(request):
     query = request.dbsession.query(Tag)
     tags = query.all()
     if not tags:
-        body = wrap([], False, "No tags in database")
+        raise HTTPNotFound("No tags in database")
     else:
         tags_as_dict = [tag.as_dict() for tag in tags]
-        for tag in tags_as_dict:
-            tag["id"] = "tagId%s" % tag["id"]
         body = wrap(tags_as_dict)
-    response = Response(body=body)
-    return response
+    return body
