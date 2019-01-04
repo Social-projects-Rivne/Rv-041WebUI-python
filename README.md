@@ -153,7 +153,19 @@ Services links:
 
 10. Initialize db
 
-`(venv) initialize_easyrest_db development.ini`
+`(%VENV%) initialize_easyrest_db --fill development.ini`
+
+Drop and create empty database
+
+`(%VENV%) initialize_easyrest_db --reset development.ini`
+
+Drop derivative models from Base
+
+`(%VENV%) initialize_easyrest_db --drop development.ini`
+
+Reset and fill database
+
+`(%VENV%) initialize_easyrest_db --reset --fill development.ini`
 
 ```
 --drop - Drop derivative models from Base
