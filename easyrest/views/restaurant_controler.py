@@ -23,33 +23,19 @@ def asign_tags(rests):
                     "tags": [<tag dictionary>, ]
                 },
             ]"""
-    rests_list = [rest.as_dict() for rest in rests]
-    for i, rest in enumerate(rests):
-        del(rests_list[i]["menu_id"])
-        rests_list[i]["id"] = "restaurantId%s" % rests_list[i]["id"]
+    rests_list = []
+    for rest in rests:
         tags = rest.tag
         tags_list = [tag.as_dict() for tag in tags]
         for tag in tags_list:
             tag["id"] = "tagId%s" % tag["id"]
-        rests_list[i].update({"tags": tags_list})
+
+        rest_dict = rest.as_dict()
+        del rest_dict["menu_id"]
+        rest_dict["id"] = "restaurantId%s" % rest_dict["id"]
+        rest_dict.update({"tags": tags_list})
+        rests_list.append(rest_dict)
     return rests_list
-
-
-def return_all(request):
-    """Function for quering all restaurants and asign them tags
-    data = restourant models coverted to dict with tags asigned
-    Returns:
-        Json response in format:
-            {
-                "data": [<data>, ],
-                "succses": True/False,
-                "error": error message or None
-            }
-    """
-    rests = request.dbsession.query(Restaurant).all()
-    rests_dict = asign_tags(rests)
-
-    return rests_dict
 
 
 @view_config(route_name='get_all_restaurants', renderer='json', request_method='GET')
@@ -83,12 +69,14 @@ def get_all_restaurant_controler(request):
                 },
             ]
     """
-    rests_dict = return_all(request)
+    rests = request.dbsession.query(Restaurant).all()
+    rests_dict = asign_tags(rests)
     if not rests_dict:
         body = wrap([], False, "No restaurants in database")
     else:
         body = wrap(rests_dict)
     response = Response(body=body)
+
     return response
 
 
