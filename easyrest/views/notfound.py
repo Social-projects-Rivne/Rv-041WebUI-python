@@ -1,7 +1,13 @@
+"""This module describes 404 page controler which will be triggered
+when HTTPNotFound exception is raised.
+It sends json with error title and error message in error field.
+"""
+
 from pyramid.view import notfound_view_config
 
+from ..scripts.json_helpers import wrap
 
-@notfound_view_config(renderer='../templates/404.jinja2')
-def notfound_view(request):
-    request.response.status = 404
-    return {}
+
+@notfound_view_config(renderer='json')
+def notfound_view(error, request):
+    return wrap([], False, "%s: %s" % (error.title, error.args[0]))

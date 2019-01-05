@@ -23,9 +23,9 @@
 5. Configure posgres db
 
 ```
-sudo -i -u postgres psql
->>>CREATE USER admin WITH ENCRYPTED PASSWORD 123;
->>>CREATE DATABASE "EasyRest" OWNER admin;
+sudo -u postgres psql
+>>>CREATE USER admin WITH ENCRYPTED PASSWORD "12345678";
+>>>CREATE DATABASE easyrest OWNER admin;
 ```
 
 Or
@@ -44,9 +44,27 @@ and then restart postqresql service
 
 `(venv) pip install -e ".[testing]"`
 
-7. Initialize db
+7. Initialize db(with example data):
 
-`(venv) initialize_easyrest_db development.ini`
+`(venv) initialize_easyrest_db --fill development.ini`
+
+Drop and create empty database
+
+`(venv) initialize_easyrest_db --reset development.ini`
+
+Drop derivative models from Base
+
+`(venv) initialize_easyrest_db --drop development.ini`
+
+Reset and fill database
+
+`(venv) initialize_easyrest_db --reset --fill development.ini`
+
+```
+--drop - Drop derivative models from Base
+--fill - Create tables with test data (without create empty tables)
+--reset - Drop and create empty database
+```
 
 8. Run tests
 
@@ -135,7 +153,25 @@ Services links:
 
 10. Initialize db
 
-`(%VENV%) initialize_easyrest_db development.ini`
+`(%VENV%) initialize_easyrest_db --fill development.ini`
+
+Drop and create empty database
+
+`(%VENV%) initialize_easyrest_db --reset development.ini`
+
+Drop derivative models from Base
+
+`(%VENV%) initialize_easyrest_db --drop development.ini`
+
+Reset and fill database
+
+`(%VENV%) initialize_easyrest_db --reset --fill development.ini`
+
+```
+--drop - Drop derivative models from Base
+--fill - Create tables with test data (without create empty tables)
+--reset - Drop and create empty database
+```
 
 11. Run tests
 

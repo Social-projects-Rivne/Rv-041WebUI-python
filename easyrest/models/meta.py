@@ -1,4 +1,15 @@
-from sqlalchemy.ext.declarative import declarative_base
+"""
+In this module determines metadata of data base
+Also it contains declaration of Base Object for ORM objects in Application
+Base object contains custom methods shared by every model.
+Attributes:
+    NAMING_CONVENTION (dict): naming convention for SQLAlchemy auto name
+        generation.
+    metadata: SQLAlchemy object created by sqlalchemy.schema.MetaData
+        using specified naming convention
+"""
+
+from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.schema import MetaData
 
 # Recommended naming convention used by Alembic, as various different database
@@ -13,4 +24,34 @@ NAMING_CONVENTION = {
 }
 
 metadata = MetaData(naming_convention=NAMING_CONVENTION)
-Base = declarative_base(metadata=metadata)
+
+
+@as_declarative(metadata=metadata)
+class Base(object):
+    """
+    Determine Base Object for ORM objects in Application
+    Contains custom methods sheared by all models:
+        __repr__() - to make fancy output by print
+        as_dict() - to compile ORM model into python dictionary
+    """
+    def __repr__(self):
+        """Do custom style output by print
+        Output format:
+        <class <class_name>> ([prop.name = prop.value, ])
+        """
+        s = '<%s(' % (self.__class__)
+        for c in self.__table__.columns:
+            s += '%s = %s, ' % (c.name, getattr(self, c.name))
+        s += ')'
+        return s
+
+    def as_dict(self):
+        """Converts model into python dictionary
+        Returns:
+            dictionary
+            {
+                [prop.name = prop.value, ]
+            }
+
+        """
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

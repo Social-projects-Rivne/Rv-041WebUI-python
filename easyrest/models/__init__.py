@@ -1,3 +1,7 @@
+"""
+This module initialize DB session
+"""
+
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import configure_mappers
@@ -5,7 +9,14 @@ import zope.sqlalchemy
 
 # import or define all models here to ensure they are attached to the
 # Base.metadata prior to any initialization routines
-from .mymodel import MyModel  # flake8: noqa
+# also to import all models using syntax:
+# from models import *
+from .menu import Menu
+from .menu_item import MenuItem
+from .restaurant import Restaurant
+from .tag import Tag
+from .tag_association import TagAssociation
+
 
 # run configure_mappers after defining all of the models to ensure
 # all relationships can be setup
