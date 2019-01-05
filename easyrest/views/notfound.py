@@ -1,5 +1,6 @@
-"""This module describes 404 page controler using jinja2 template from
-cookiecutter
+"""This module describes 404 page controler which will be triggered
+when HTTPNotFound exception is raised.
+It sends json with error title and error message in error field.
 """
 
 from pyramid.view import notfound_view_config

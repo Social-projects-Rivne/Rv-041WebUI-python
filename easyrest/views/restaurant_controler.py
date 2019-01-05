@@ -23,7 +23,8 @@ def asign_tags(rests):
                     [<restaurant key:value>, ]
                     "tags": [<tag dictionary>, ]
                 },
-            ]"""
+            ]
+    """
     rests_list = []
     for rest in rests:
         tags = rest.tag
@@ -69,7 +70,6 @@ def get_all_restaurant_controler(request):
     rests = request.dbsession.query(Restaurant).all()
     rests_dict = asign_tags(rests)
     if not rests_dict:
-        #body = wrap([], False, "No restaurants in database")
         raise HTTPNotFound("No restaurants in database")
     else:
         body = wrap(rests_dict)
@@ -118,7 +118,6 @@ def get_restaurant_controler(request):
     rest_id = request.matchdict["id"]
     query = request.dbsession.query(Restaurant).get(int(rest_id))
     if query is None:
-        # body = wrap([], False, "Restaurant with id=%s not found" % (rest_id))
         raise HTTPNotFound("Restaurant with id=%s not found" % (rest_id))
     else:
         rest_with_tags = asign_tags([query])

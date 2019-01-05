@@ -4,6 +4,7 @@ This module describes behavior of /restaurant/{id}/menu route
 
 from pyramid.view import view_config
 from pyramid.response import Response
+from pyramid.httpexceptions import HTTPNotFound
 
 from ..scripts.json_helpers import wrap
 from ..models.restaurant import Restaurant
@@ -46,8 +47,7 @@ def get_menu_controler(request):
     rest_id = request.matchdict['id']
     rest = request.dbsession.query(Restaurant).get(rest_id)
     if not rest:
-        body = wrap([], False, "Restaurant with id=%s not found" % (rest_id))
-        return body
+        raise HTTPNotFound("Restaurant with id=%s not found" % (rest_id))
     menu_dict = asign_items(rest.menu)
     body = wrap([menu_dict])
     return body

@@ -32,6 +32,8 @@ def drop_models(dbsession):
     If --drop parameter passed.
     """
     engine = dbsession.get_bind()
+    # magic to delete all ralaited constrains(like Foreign key)
+    Base.metadata.reflect(engine)
     Base_rez = Base.metadata.drop_all(engine)
 
 

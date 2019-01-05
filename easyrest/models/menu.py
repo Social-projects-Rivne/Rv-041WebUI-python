@@ -15,11 +15,11 @@ from .meta import Base
 
 class Menu(Base):
     """
-    The data model of "menu" table
-    Defines data structure of "menu" table
-    Relationship: menu -> menu_item
+    The data model of "menus" table
+    Defines data structure of "menus" table
+    Relationship: menus -> menu_items
     """
-    __tablename__ = 'menu'
+    __tablename__ = 'menus'
     id = Column(Integer, primary_key=True)
     name = Column(Text)
 

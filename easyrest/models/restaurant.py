@@ -16,20 +16,22 @@ from .meta import Base
 class Restaurant(Base):
     """
     The data model of "restaurants" table
-    Defines data structure of "restaurant" table
+    Defines data structure of "restaurants" table
+    Has many to many relationship with tags, using
+    association table tag_associations
     Relationship:
-        restaurant -> menu
-        restaurant -> tag
+        restaurants -> menus
+        restaurants -> tags
     """
-    __tablename__ = 'restaurant'
+    __tablename__ = 'restaurants'
     id = Column(Integer, primary_key=True)
     name = Column(Text)
     description = Column(Text)
     addres_id = Column(Text)
     owner_id = Column(Text)
-    menu_id = Column(Integer, ForeignKey('menu.id'))
+    menu_id = Column(Integer, ForeignKey('menus.id'))
 
     menu = relationship("Menu")
     tag = relationship(
         "Tag",
-        secondary="tag_association")
+        secondary="tag_associations")

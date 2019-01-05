@@ -19,7 +19,7 @@ class TagAssociation(Base):
     The data model of "tag_association" table
     Defines data structure of "tag_association" table
     """
-    __tablename__ = 'tag_association'
+    __tablename__ = 'tag_associations'
     id = Column(Integer, primary_key=True)
-    restaurant_id = Column(Integer, ForeignKey('restaurant.id'))
-    tag_id = Column(Integer, ForeignKey('tag.id'))
+    restaurant_id = Column(Integer, ForeignKey('restaurants.id'))
+    tag_id = Column(Integer, ForeignKey('tags.id'))
