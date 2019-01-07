@@ -1,4 +1,4 @@
-"""This module describes 404 page controler which will be triggered
+"""This module describes 404 page controller which will be triggered
 when HTTPNotFound exception is raised.
 It sends json with error title and error message in error field.
 """

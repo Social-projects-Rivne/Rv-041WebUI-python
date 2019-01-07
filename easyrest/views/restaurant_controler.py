@@ -79,7 +79,7 @@ def get_all_restaurant_controler(request):
 
 @view_config(route_name='get_restaurant', renderer='json', request_method='GET')
 def get_restaurant_controler(request):
-    """GET request controler to return restaurant and
+    """GET request controller to return restaurant and
     its tags by id
     Args:
         request: current pyramid request

@@ -5,7 +5,7 @@ from random import randint, seed
 from faker import Faker
 
 from tags_data import Tags
-from ..models import Tag, Menu, Restaurant, MenuItem
+from ..models import Tag, Menu, Restaurant, MenuItem, User
 
 
 def fill_db(session):
@@ -29,6 +29,8 @@ def fill_db(session):
     # **tag extract from object pairs and pass 
     # it as key=value arguments
     Tags_models = [Tag(**tag) for tag in Tags]
+    # create container for user model
+    user_model = []
 
     for i in range(10):
         rest = {
@@ -81,5 +83,19 @@ def fill_db(session):
 
         Rest_models.append(rest_model)
 
+    # add users
+    for myIter in range(menu_item_number):
+        user = {
+            "name": fake.name(),
+            "email": fake.email(),
+            "phone_number": fake.phone_number(),
+            "birth_date": fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100),
+            "role_id": myIter,
+            "status_user_id": myIter + 1,
+        }
+        current_user = User(**user)
+        user_model.append(current_user)
+
     # insert data into database
     session.add_all(Rest_models)
+    session.add_all(user_model)
