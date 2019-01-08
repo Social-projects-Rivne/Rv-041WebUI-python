@@ -5,7 +5,7 @@ from random import randint, seed
 from faker import Faker
 
 from tags_data import Tags
-from ..models import Tag, Menu, Restaurant, MenuItem
+from ..models import Tag, Menu, Restaurant, MenuItem, User
 
 
 def fill_db(session):
@@ -83,3 +83,9 @@ def fill_db(session):
 
     # insert data into database
     session.add_all(Rest_models)
+
+    Users = [User(name=fake.name(),
+                  email=fake.email(),
+                  password="123%s" % i) for i in range(10)]
+
+    session.add_all(Users)

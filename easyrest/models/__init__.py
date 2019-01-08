@@ -16,6 +16,7 @@ from .menu_item import MenuItem
 from .restaurant import Restaurant
 from .tag import Tag
 from .tag_association import TagAssociation
+from .user import User
 
 
 # run configure_mappers after defining all of the models to ensure
