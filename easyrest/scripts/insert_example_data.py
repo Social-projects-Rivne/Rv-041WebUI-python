@@ -30,11 +30,19 @@ def fill_db(session):
     # it as key=value arguments
     Tags_models = [Tag(**tag) for tag in Tags]
 
+    owners = [fake.name(), fake.name(), fake.name()]
+
     for i in range(10):
         rest = {
             "name": fake.company(),
+            "description": fake.text(max_nb_chars=50),
             "addres_id": fake.address(),
-            "owner_id": fake.name()
+            "owner_id": owners[randint(0, 2)],
+            "phone": fake.msisdn(),
+            "work_hours": [
+                fake.time(pattern="%H:%M", end_datetime=None),
+                fake.time(pattern="%H:%M", end_datetime=None)
+            ]
         }
 
         menu_model = Menu(name=fake.company())
