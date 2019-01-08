@@ -15,11 +15,13 @@ const styles = theme => ({
 });
 
 class UserMenu extends React.Component {
-  state = {
-    auth: false,
-    isOwner: false,
-    anchorEl: null
-  };
+
+    constructor(props) {
+      super(props);
+      // console.log(props)
+      this.state = this.props.state
+    }
+
 
   handleMenu = event => {
     this.setState({ anchorEl: event.currentTarget });

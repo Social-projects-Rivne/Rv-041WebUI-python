@@ -15,6 +15,7 @@ requires = [
     'zope.sqlalchemy',
     'psycopg2-binary',
     'faker',
+    'bcrypt'
 ]
 
 tests_require = [

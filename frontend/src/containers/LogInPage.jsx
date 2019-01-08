@@ -3,9 +3,10 @@ import React from "react";
 import Login from "../components/Login";
 
 const LogInPage = props => {
+  // console.log(props)
   return ( 
 	    <div>
-		  <Login />
+		  <Login props={props}/>
 		</div>
   );
 
