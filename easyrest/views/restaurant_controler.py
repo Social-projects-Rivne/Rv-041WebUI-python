@@ -29,14 +29,17 @@ def asign_tags(rests):
     for rest in rests:
         tags = rest.tag
         tags_list = [tag.as_dict() for tag in tags]
-
         rest_dict = rest.as_dict()
         rest_dict.update({"tags": tags_list})
         rests_list.append(rest_dict)
     return rests_list
 
 
-@view_config(route_name='get_all_restaurants', renderer='json', request_method='GET')
+@view_config(
+    route_name='get_all_restaurants',
+    renderer='json',
+    request_method='GET'
+)
 def get_all_restaurant_controler(request):
     """GET request controler to return all restaurants and
     its tags
@@ -77,7 +80,11 @@ def get_all_restaurant_controler(request):
     return body
 
 
-@view_config(route_name='get_restaurant', renderer='json', request_method='GET')
+@view_config(
+    route_name='get_restaurant',
+    renderer='json',
+    request_method='GET'
+)
 def get_restaurant_controler(request):
     """GET request controler to return restaurant and
     its tags by id
@@ -122,4 +129,21 @@ def get_restaurant_controler(request):
     else:
         rest_with_tags = asign_tags([query])
         body = wrap([rest_with_tags])
+    return body
+
+
+@view_config(
+    route_name='get_my_restaurant',
+    renderer='json',
+    request_method='GET'
+)
+def get_my_restaurant_controler(request):
+    owner = request.params['owner']
+    my_rests = request.dbsession.query(
+        Restaurant).filter_by(owner_id=owner).all()
+    my_rests_with_tags = asign_tags(my_rests)
+    if my_rests is None:
+        raise HTTPNotFound("Restaurant with id=%s not found" % (my_rests))
+    else:
+        body = wrap(my_rests_with_tags)
     return body

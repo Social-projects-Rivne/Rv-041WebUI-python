@@ -7,13 +7,16 @@ import UserMenu from "./UserMenu";
 import { Link } from "react-router-dom";
 
 const styles = theme => ({
+  root: {
+    marginBottom: 24,
+  },
   grow: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   logoLink: {
     textDecoration: "none",
-    color: "#fff"
-  }
+    color: "#fff",
+  },
 });
 
 class AppHeader extends React.Component {
@@ -36,7 +39,7 @@ class AppHeader extends React.Component {
 }
 
 AppHeader.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(AppHeader);

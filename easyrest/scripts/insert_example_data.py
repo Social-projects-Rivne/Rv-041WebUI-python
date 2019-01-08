@@ -26,7 +26,7 @@ def fill_db(session):
     # to insert data and maintain relations
     Rest_models = []
     # create tag models using data from tags_data.py
-    # **tag extract from object pairs and pass 
+    # **tag extract from object pairs and pass
     # it as key=value arguments
     Tags_models = [Tag(**tag) for tag in Tags]
 

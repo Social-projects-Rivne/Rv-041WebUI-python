@@ -1,24 +1,24 @@
 import React from "react";
-import AccountCircle from "@material-ui/icons/AccountCircle";
 import {
   withStyles,
   Divider,
   Menu,
   IconButton,
   MenuItem,
-  Button
+  Button,
+  Avatar,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
 const styles = theme => ({
-  root: {}
+  root: {},
 });
 
 class UserMenu extends React.Component {
   state = {
-    auth: false,
-    isOwner: false,
-    anchorEl: null
+    auth: true,
+    isOwner: true,
+    anchorEl: null,
   };
 
   handleMenu = event => {
@@ -32,7 +32,7 @@ class UserMenu extends React.Component {
   handleLogout = () => {
     this.setState({
       auth: false,
-      anchorEl: null
+      anchorEl: null,
     });
   };
 
@@ -57,32 +57,43 @@ class UserMenu extends React.Component {
         {auth && (
           <div className={classes.userMenu}>
             <IconButton
+              color="inherit"
               aria-owns={open ? "menu-appbar" : undefined}
               aria-haspopup="true"
               onClick={this.handleMenu}
             >
-              <AccountCircle />
+              <Avatar>V</Avatar>
             </IconButton>
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
               anchorOrigin={{
                 vertical: "top",
-                horizontal: "right"
+                horizontal: "right",
               }}
               transformOrigin={{
                 vertical: "top",
-                horizontal: "right"
+                horizontal: "right",
               }}
               open={open}
               onClose={this.handleClose}
             >
-              <MenuItem onClick={this.handleClose}>Personal info</MenuItem>
-              <MenuItem onClick={this.handleClose}>Current orders</MenuItem>
-              <MenuItem onClick={this.handleClose}>My account</MenuItem>
+              <MenuItem
+                component={Link}
+                to="/profile"
+                onClick={this.handleClose}
+              >
+                Personal info
+              </MenuItem>
               {isOwner && (
                 <div>
-                  <MenuItem onClick={this.handleClose}>My restaurant</MenuItem>
+                  <MenuItem
+                    component={Link}
+                    to="/profile"
+                    onClick={this.handleClose}
+                  >
+                    My restaurant
+                  </MenuItem>
                 </div>
               )}
               <Divider />

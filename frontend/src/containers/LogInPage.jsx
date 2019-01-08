@@ -1,7 +1,9 @@
 import React from "react";
 
-const LogInPage = props => {
-  return <div>This is Log In Page</div>;
-};
+class LogInPage extends React.Component {
+  render() {
+    return <div>Log in page</div>;
+  }
+}
 
 export default LogInPage;

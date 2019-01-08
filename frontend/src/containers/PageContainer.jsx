@@ -1,16 +1,17 @@
-import React from "react";
+import React, { Component } from "react";
+// import { withRouter } from "react-router-dom";
 import AppHeader from "../components/AppHeader";
+import UserMenu from "../components/UserMenu";
 
-const PageContainer = props => {
-  React.Children.forEach(props.children, child => {
-    console.log(child);
-  });
-  return (
-    <main>
-      <AppHeader />
-      {props.children}
-    </main>
-  );
-};
+class PageContainer extends Component {
+  render() {
+    return (
+      <>
+        <AppHeader />
+        <main>{this.props.children}</main>
+      </>
+    );
+  }
+}
 
 export default PageContainer;

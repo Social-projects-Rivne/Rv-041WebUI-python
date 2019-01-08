@@ -1,7 +1,7 @@
 import React from "react";
-import PageContainer from "../containers/PageContainer";
 import { BrowserRouter } from "react-router-dom";
 import Router from "../router";
+import PageContainer from "./PageContainer";
 
 const App = () => {
   return (
