@@ -9,7 +9,7 @@ import {
   CardContent,
   TextField,
   Grid,
-  Button,
+  Button
 } from "@material-ui/core";
 
 const styles = theme => ({
@@ -18,19 +18,24 @@ const styles = theme => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: theme.spacing.unit * 2,
-  },
+    marginBottom: theme.spacing.unit * 2
+  }
 });
 
 class AddRestaurant extends React.Component {
   state = {
-    expanded: false,
+    expanded: false
   };
 
   handleExpandClick = () => {
     this.setState({
-      expanded: !this.state.expanded,
+      expanded: !this.state.expanded
     });
+  };
+
+  handleSubmit = event => {
+    event.preventDefault();
+    console.log(event.target.elements);
   };
 
   render() {
@@ -54,7 +59,12 @@ class AddRestaurant extends React.Component {
         <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
           <Card>
             <CardContent>
-              <form className={classes.form} noValidate autoComplete="off">
+              <form
+                onSubmit={event => this.handleSubmit(event)}
+                className={classes.form}
+                noValidate
+                autoComplete="off"
+              >
                 <Grid justify="space-between" container spacing={16}>
                   <Grid item xs={12}>
                     <TextField
@@ -96,7 +106,12 @@ class AddRestaurant extends React.Component {
                     </Button>
                   </Grid>
                   <Grid item xs={3}>
-                    <Button variant="contained" color="primary" fullWidth>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                    >
                       Save
                     </Button>
                   </Grid>
