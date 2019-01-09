@@ -20,5 +20,5 @@ def includeme(config):
     config.add_route(
         'add_restaurant',
         'add_restaurant',
-        request_method='GET'
+        request_method='POST'
     )

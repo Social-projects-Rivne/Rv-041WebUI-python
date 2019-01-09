@@ -9,7 +9,7 @@ import {
   CardContent,
   TextField,
   Grid,
-  Button,
+  Button
 } from "@material-ui/core";
 import classnames from "classnames";
 
@@ -18,15 +18,15 @@ const styles = theme => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: theme.spacing.unit * 2,
+    marginBottom: theme.spacing.unit * 2
   },
   fab: {
     transform: "scale(1)",
-    transition: theme.transitions.create("transform"),
+    transition: theme.transitions.create("transform")
   },
   fabDisabled: {
-    transform: "scale(0)",
-  },
+    transform: "scale(0)"
+  }
 });
 
 class AddRestaurant extends React.Component {
@@ -35,18 +35,18 @@ class AddRestaurant extends React.Component {
     name: "",
     address: "",
     phone: "",
-    description: "",
+    description: ""
   };
 
   handleExpandFormClick = () => {
     this.setState({
-      expanded: !this.state.expanded,
+      expanded: !this.state.expanded
     });
   };
 
   handleCloseFormClick = () => {
     this.setState({
-      expanded: false,
+      expanded: false
     });
   };
 
@@ -54,30 +54,46 @@ class AddRestaurant extends React.Component {
     event.preventDefault();
     const { name, address, phone, description } = this.state;
 
-    // fetch("http://localhost:6543/add_restaurant", {method: "POST"})
-    //   .then(response => response.json())
-    //   .then(data => this.setState({ tags: data.data }));
-
-    console.log(name, address, phone, description);
+    fetch("http://localhost:6543/add_restaurant", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: name,
+        address: address,
+        phone: phone,
+        description: description
+      })
+    })
+      .then(response => response.json())
+      .then(myRest => {
+        console.log(myRest.data.id);
+        return this.props.onUpdate(
+          myRest.data.id,
+          myRest.data.name,
+          myRest.data.address,
+          myRest.data.phone,
+          myRest.data.description
+        );
+      });
   };
 
   handleFormChange = event => {
     this.setState({
-      [event.target.name]: event.target.value,
+      [event.target.name]: event.target.value
     });
   };
 
   render() {
     const { classes } = this.props;
     const { expanded } = this.state;
-
+    // console.log(this.props);
     return (
       <CardContent>
         <div className={classes.header}>
           <Typography variant="title">Add new restaurant:</Typography>
           <Fab
             className={classnames(classes.fab, {
-              [classes.fabDisabled]: expanded,
+              [classes.fabDisabled]: expanded
             })}
             onClick={this.handleExpandFormClick}
             aria-expanded={expanded}

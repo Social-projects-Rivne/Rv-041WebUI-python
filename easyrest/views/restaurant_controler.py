@@ -9,6 +9,7 @@ from pyramid.httpexceptions import HTTPNotFound
 
 from ..scripts.json_helpers import wrap
 from ..models.restaurant import Restaurant
+import json
 
 
 def asign_tags(rests):
@@ -150,16 +151,19 @@ def get_my_restaurant_controller(request):
 
 @view_config(
     route_name='add_restaurant',
-    request_method='GET',
+    request_method='POST',
     renderer='json'
 )
 def add_restaurant_controller(request):
-    data = {
-        "name": "Some Name",
-        "description": "Some text",
-        "owner_id": "John Doe"
-    }
-    rest = Restaurant(**data)
-    # rest_test = asign_tags(rest)
+    rest_data = request.json_body
+
+    name, description, phone, address = rest_data["name"], rest_data[
+        "phone"], rest_data["address"], rest_data["description"]
+
+    rest = Restaurant(name=name, description=description,
+                      phone=phone, address_id=address, owner_id="Jason Brown")
+
     request.dbsession.add(rest)
-    # return wrap(rest_test)
+    request.dbsession.flush()
+
+    return wrap(rest.as_dict())

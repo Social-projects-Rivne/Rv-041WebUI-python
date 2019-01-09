@@ -36,7 +36,7 @@ def fill_db(session):
         rest = {
             "name": fake.company(),
             "description": fake.text(max_nb_chars=50),
-            "addres_id": fake.address(),
+            "address_id": fake.address(),
             "owner_id": owners[randint(0, 2)],
             "phone": fake.msisdn(),
             "work_hours": [

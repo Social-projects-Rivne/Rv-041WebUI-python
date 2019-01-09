@@ -27,7 +27,7 @@ class Restaurant(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Text)
     description = Column(Text)
-    addres_id = Column(Text)
+    address_id = Column(Text)
     owner_id = Column(Text)
     phone = Column(Text)
     work_hours = Column(Text)
