@@ -137,13 +137,29 @@ def get_restaurant_controler(request):
     renderer='json',
     request_method='GET'
 )
-def get_my_restaurant_controler(request):
+def get_my_restaurant_controller(request):
     owner = request.params['owner']
     my_rests = request.dbsession.query(
         Restaurant).filter_by(owner_id=owner).all()
     my_rests_with_tags = asign_tags(my_rests)
-    if my_rests is None:
-        raise HTTPNotFound("Restaurant with id=%s not found" % (my_rests))
-    else:
-        body = wrap(my_rests_with_tags)
+
+    body = wrap(my_rests_with_tags)
+
     return body
+
+
+@view_config(
+    route_name='add_restaurant',
+    request_method='GET',
+    renderer='json'
+)
+def add_restaurant_controller(request):
+    data = {
+        "name": "Some Name",
+        "description": "Some text",
+        "owner_id": "John Doe"
+    }
+    rest = Restaurant(**data)
+    # rest_test = asign_tags(rest)
+    request.dbsession.add(rest)
+    # return wrap(rest_test)

@@ -1,26 +1,34 @@
 import React from "react";
 import RestaurantItem from "../components/RestaurantItem";
-import { withStyles, Grid } from "@material-ui/core/";
+import { withStyles, Grid, CardContent } from "@material-ui/core/";
 
 const styles = theme => ({
   root: {},
 });
 
 const RestaurantList = props => {
-  const { classes } = props;
+  const { classes, data } = props;
   return (
     <div className={classes.root}>
-      <Grid container spacing={16}>
-        <Grid item xs={12}>
-          <RestaurantItem />
-        </Grid>
-        <Grid item xs={12}>
-          <RestaurantItem />
-        </Grid>
-        <Grid item xs={12}>
-          <RestaurantItem />
-        </Grid>
-      </Grid>
+      {data.length !== 0 && (
+        <CardContent>
+          <Grid container spacing={16}>
+            {data.map(rest => {
+              return (
+                <Grid key={rest.id} item xs={12}>
+                  <RestaurantItem
+                    id={rest.id}
+                    name={rest.name}
+                    description={rest.description}
+                    address={rest.addres_id}
+                    phone={rest.phone}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </CardContent>
+      )}
     </div>
   );
 };

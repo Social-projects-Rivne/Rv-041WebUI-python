@@ -38,8 +38,7 @@ const styles = theme => ({
 });
 
 function restaurantItem(props) {
-  const { classes, id, name, description, address } = props;
-
+  const { classes, id, name, description, address, phone } = props;
   return (
     <Card className={classes.card}>
       <CardMedia
@@ -51,37 +50,26 @@ function restaurantItem(props) {
       <div className={classes.details}>
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
-            Restaurant Name
+            {name}
           </Typography>
           <Typography paragraph component="p">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Labore sed
-            quos accusamus iure illum nemo voluptates ea quidem inventore
-            consequuntur nisi laboriosam cupiditate excepturi ad, ab quis.
+            {description}
           </Typography>
           <Divider />
           <div className={classes.info}>
-            <Typography variant="subtitle2">
-              Address : 4345 Amy Mission Lake Jennifer, OH 01577
-            </Typography>
-            <Typography variant="subtitle2">+099-999-99-99</Typography>
+            <Typography variant="subtitle2">Address : {address}</Typography>
+            <Typography variant="subtitle2">Phone: {phone}</Typography>
           </div>
           <Divider />
           <div className={classes.nav}>
             <Button
+              variant="contained"
               component={Link}
               to={"/restaurants/" + id}
               size="small"
               color="primary"
             >
-              go to details
-            </Button>
-            <Button
-              component={Link}
-              to={"rest/menu/" + id}
-              size="small"
-              color="primary"
-            >
-              Watch menu
+              details
             </Button>
           </div>
         </CardContent>

@@ -1,40 +1,28 @@
-import React from "react";
-import RestaurantItem from "../components/RestaurantItem";
-import {
-  withStyles,
-  Card,
-  Grid,
-  Paper,
-  Divider,
-  CardHeader,
-  CardContent,
-} from "@material-ui/core/";
+import React, { Component } from "react";
+import RestaurantList from "../components/RestaurantList";
+import AddRestaurant from "../components/Profile/AddRestaurant";
 
-const styles = theme => ({
-  root: {
-    paddingLeft: 24,
-    paddingRight: 24,
-  },
-});
+class MyRestaurant extends Component {
+  state = {
+    owner: "Jason Brown",
+    myRestaurants: [],
+  };
 
-const MyRestaurant = props => {
-  const { classes } = props;
-  return (
-    <div className={classes.root}>
-      <Grid container spacing={24}>
-        <Grid item xs={12}>
-          <Card>
-            <CardHeader title="Your restaurants:" />
-            <Divider />
-            <CardContent>
-              <RestaurantItem />
-              <RestaurantItem />
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-    </div>
-  );
-};
+  componentDidMount() {
+    fetch(`http://localhost:6543/my_restaurant?owner=${this.state.owner}`)
+      .then(response => response.json())
+      .then(data => this.setState({ myRestaurants: data.data }));
+  }
 
-export default withStyles(styles)(MyRestaurant);
+  render() {
+    const { owner, myRestaurants } = this.state;
+    return (
+      <div>
+        <RestaurantList data={myRestaurants} />
+        <AddRestaurant />
+      </div>
+    );
+  }
+}
+
+export default MyRestaurant;

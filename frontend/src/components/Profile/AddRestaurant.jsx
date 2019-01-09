@@ -9,54 +9,86 @@ import {
   CardContent,
   TextField,
   Grid,
-  Button
+  Button,
 } from "@material-ui/core";
+import classnames from "classnames";
 
 const styles = theme => ({
-  root: {},
   header: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: theme.spacing.unit * 2
-  }
+    marginBottom: theme.spacing.unit * 2,
+  },
+  fab: {
+    transform: "scale(1)",
+    transition: theme.transitions.create("transform"),
+  },
+  fabDisabled: {
+    transform: "scale(0)",
+  },
 });
 
 class AddRestaurant extends React.Component {
   state = {
-    expanded: false
+    expanded: false,
+    name: "",
+    address: "",
+    phone: "",
+    description: "",
   };
 
-  handleExpandClick = () => {
+  handleExpandFormClick = () => {
     this.setState({
-      expanded: !this.state.expanded
+      expanded: !this.state.expanded,
+    });
+  };
+
+  handleCloseFormClick = () => {
+    this.setState({
+      expanded: false,
     });
   };
 
   handleSubmit = event => {
     event.preventDefault();
-    console.log(event.target.elements);
+    const { name, address, phone, description } = this.state;
+
+    // fetch("http://localhost:6543/add_restaurant", {method: "POST"})
+    //   .then(response => response.json())
+    //   .then(data => this.setState({ tags: data.data }));
+
+    console.log(name, address, phone, description);
+  };
+
+  handleFormChange = event => {
+    this.setState({
+      [event.target.name]: event.target.value,
+    });
   };
 
   render() {
     const { classes } = this.props;
+    const { expanded } = this.state;
+
     return (
-      <div className={classes.root}>
+      <CardContent>
         <div className={classes.header}>
-          <Typography variant="title">Add new Restaurant:</Typography>
-          {!this.state.expanded && (
-            <Fab
-              onClick={this.handleExpandClick}
-              aria-expanded={this.state.expanded}
-              aria-label="Show more"
-              color="primary"
-              aria-label="Add"
-            >
-              <AddIcon />
-            </Fab>
-          )}
+          <Typography variant="title">Add new restaurant:</Typography>
+          <Fab
+            className={classnames(classes.fab, {
+              [classes.fabDisabled]: expanded,
+            })}
+            onClick={this.handleExpandFormClick}
+            aria-expanded={expanded}
+            aria-label="Show more"
+            color="primary"
+            disabled={expanded}
+          >
+            <AddIcon />
+          </Fab>
         </div>
-        <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
           <Card>
             <CardContent>
               <form
@@ -64,11 +96,12 @@ class AddRestaurant extends React.Component {
                 className={classes.form}
                 noValidate
                 autoComplete="off"
+                onChange={this.handleFormChange}
               >
                 <Grid justify="space-between" container spacing={16}>
                   <Grid item xs={12}>
                     <TextField
-                      id="restaurant-name"
+                      name="name"
                       label="Restaurant Name"
                       fullWidth
                       className={classes.textField}
@@ -76,7 +109,7 @@ class AddRestaurant extends React.Component {
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
-                      id="restaurant-address"
+                      name="address"
                       label="Restaurant Address"
                       fullWidth
                       className={classes.textField}
@@ -84,7 +117,7 @@ class AddRestaurant extends React.Component {
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
-                      id="restaurant-phone"
+                      name="phone"
                       label="Restaurant Phone"
                       fullWidth
                       className={classes.textField}
@@ -92,16 +125,21 @@ class AddRestaurant extends React.Component {
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
-                      id="restaurant-description"
+                      name="description"
                       label="Restaurant Description"
                       multiline
-                      rowsMax="6"
+                      rows="4"
                       fullWidth
                       className={classes.textField}
                     />
                   </Grid>
                   <Grid item xs={3}>
-                    <Button variant="contained" color="secondary" fullWidth>
+                    <Button
+                      onClick={this.handleCloseFormClick}
+                      variant="contained"
+                      color="secondary"
+                      fullWidth
+                    >
                       Cancel
                     </Button>
                   </Grid>
@@ -120,7 +158,7 @@ class AddRestaurant extends React.Component {
             </CardContent>
           </Card>
         </Collapse>
-      </div>
+      </CardContent>
     );
   }
 }
