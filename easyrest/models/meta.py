@@ -53,6 +53,7 @@ class Base(object):
             {
                 [prop.name = prop.value, ]
             }
+            if it finds datetime object converts it to isoformat.
 
         """
         data = {}

@@ -121,5 +121,5 @@ def get_restaurant_controler(request):
         raise HTTPNotFound("Restaurant with id=%s not found" % (rest_id))
     else:
         rest_with_tags = asign_tags([query])
-        body = wrap([rest_with_tags])
+        body = wrap(rest_with_tags)
     return body

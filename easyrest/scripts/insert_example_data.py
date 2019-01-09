@@ -5,7 +5,7 @@ from random import randint, seed
 from faker import Faker
 
 from tags_data import Tags
-from ..models import Tag, Menu, Restaurant, MenuItem, User
+from ..models import Tag, Menu, Restaurant, MenuItem, User, UserStatus
 
 
 def fill_db(session):
@@ -30,11 +30,28 @@ def fill_db(session):
     # it as key=value arguments
     Tags_models = [Tag(**tag) for tag in Tags]
 
+    #create example user statuses(user types)
+    UserStatuses = [
+        UserStatus(name='Client'),
+        UserStatus(name='Owner'),
+        UserStatus(name='Moderator'),
+        UserStatus(name='Admin')
+    ]
+
+    session.add_all(UserStatuses)
+
+    #Create 5 users with status Client
+    Users = [User(name=fake.name(),
+                  email=fake.email(),
+                  password="123%s" % i,
+                  status=UserStatuses[0]) for i in range(5)]
+
+    session.add_all(Users)
+
     for i in range(10):
         rest = {
             "name": fake.company(),
-            "addres_id": fake.address(),
-            "owner_id": fake.name()
+            "addres_id": fake.address()
         }
 
         menu_model = Menu(name=fake.company())
@@ -63,6 +80,10 @@ def fill_db(session):
         # asign menu_items to menu
         rest_model.menu.menu_item = Menu_item_models
 
+        #using model relationship defined in models.restaurant
+        # asign one of 5 users to restaurant
+        rest_model.user = Users[randint(0, 4)]
+
         # define random number of tags for each restaurant
         tag_number = randint(0, len(Tags) - 1)
         # container for tags
@@ -84,8 +105,6 @@ def fill_db(session):
     # insert data into database
     session.add_all(Rest_models)
 
-    Users = [User(name=fake.name(),
-                  email=fake.email(),
-                  password="123%s" % i) for i in range(10)]
 
-    session.add_all(Users)
+
+

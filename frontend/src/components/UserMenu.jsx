@@ -20,7 +20,7 @@ class UserMenu extends React.Component {
       super(props);
       // console.log(props)
       this.state = {
-        auth: false,
+        auth: true,
         isOwner: false,
         anchorEl: null
      };

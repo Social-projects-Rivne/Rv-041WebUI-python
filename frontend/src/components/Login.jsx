@@ -38,21 +38,23 @@ class Login extends React.Component {
       email: this.state.email,
       password: this.state.password
     }
-    axios.post('http://localhost:6543/auth/login', body)
+    axios.post('http://localhost:6543/login', body)
       .then(res => {
-        console.log(res, res.headers['x-auth-token']);
+        console.log(res.data.error);
         localStorage.setItem('token', res.headers['x-auth-token']);
-      })
-    // if this.state.username != "" && this.state.password !=
-    //  
+        localStorage.setItem('role', res.data.data[0]);
+      }) 
   }
+
   handleLogout = (event) => {
-    axios.delete('http://localhost:6543/auth/login', {
+    axios.delete('http://localhost:6543/login', {
       headers: {
-        'X-Auth-Token': localStorage.getItem('token')
+        'x-auth-token': localStorage.getItem('token')
       }
     }).then(res => {
-        console.log(res);
+        console.log(res.data.error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
       })
   }
 
