@@ -19,7 +19,6 @@ const styles = theme => ({
 class AppHeader extends React.Component {
   render() {
     const { classes } = this.props;
-    console.log(this.props)
     return (
       <AppBar className={classes.root} position="static">
         <Toolbar>

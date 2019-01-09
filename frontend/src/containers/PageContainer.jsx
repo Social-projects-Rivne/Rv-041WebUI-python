@@ -5,15 +5,10 @@ const PageContainer = props => {
   React.Children.forEach(props.children, child => {
     console.log(child);
   });
-  state = {
-        auth: false,
-        isOwner: false,
-        anchorEl: null
-      };
 
   return (
     <main>
-      <AppHeader state={state}/>
+      <AppHeader />
       {props.children}
     </main>
   );

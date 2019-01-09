@@ -40,12 +40,20 @@ class Login extends React.Component {
     }
     axios.post('http://localhost:6543/auth/login', body)
       .then(res => {
-        // console.log(this.props);
-        localStorage.setItem('token', res.data.data[0]);
-        this.props.updateHeaderState();
+        console.log(res, res.headers['x-auth-token']);
+        localStorage.setItem('token', res.headers['x-auth-token']);
       })
     // if this.state.username != "" && this.state.password !=
     //  
+  }
+  handleLogout = (event) => {
+    axios.delete('http://localhost:6543/auth/login', {
+      headers: {
+        'X-Auth-Token': localStorage.getItem('token')
+      }
+    }).then(res => {
+        console.log(res);
+      })
   }
 
 
@@ -73,8 +81,14 @@ class Login extends React.Component {
                        onChange = {(e, value) => this.handleChange(e, "password")}
                        />
                       </Grid>
-                      <Grid style={{ display: "flex" }} item xs={12} justify="flex-end">
+                      <Grid style={{ display: "flex" }} item xs={6} justify="flex-end">
                         <Button type="submit" color="primary" variant="contained">Submit</Button>
+                      </Grid>
+                      <Grid style={{ display: "flex" }} item xs={6} justify="flex-end">
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          onClick={(e) => this.handleLogout(e)}>Logout</Button>
                       </Grid>
                     </Grid>
                   </CardContent>
