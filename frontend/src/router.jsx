@@ -22,6 +22,10 @@ const routes = [
     component: RestaurantPage,
   },
   {
+    path: "/profile/my_restaurant/:id",
+    component: RestaurantPage,
+  },
+  {
     path: "/restaurants-map",
     component: RestaurantsMapPage,
   },

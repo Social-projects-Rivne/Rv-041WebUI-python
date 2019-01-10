@@ -22,3 +22,8 @@ def includeme(config):
         'add_restaurant',
         request_method='POST'
     )
+    config.add_route(
+        'update_restaurant',
+        'update_restaurant/{id:[1-9]\d*}',
+        request_method='PUT'
+    )

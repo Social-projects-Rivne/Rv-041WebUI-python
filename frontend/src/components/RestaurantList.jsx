@@ -3,12 +3,11 @@ import RestaurantItem from "../components/RestaurantItem";
 import { withStyles, Grid, CardContent } from "@material-ui/core/";
 
 const styles = theme => ({
-  root: {}
+  root: {},
 });
 
 const RestaurantList = props => {
   const { classes, data } = props;
-  console.log(data);
   return (
     <div className={classes.root}>
       {data.length !== 0 && (

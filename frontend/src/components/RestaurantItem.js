@@ -46,14 +46,15 @@ function restaurantItem(props) {
         image="https://media-cdn.tripadvisor.com/media/photo-f/04/43/20/9c/whisky-corner.jpg"
         title={name}
       />
-
       <div className={classes.details}>
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
             {name}
           </Typography>
           <Typography paragraph component="p">
-            {description}
+            {description.length > 230
+              ? description.slice(0, 230) + "..."
+              : description}
           </Typography>
           <Divider />
           <div className={classes.info}>
@@ -65,7 +66,7 @@ function restaurantItem(props) {
             <Button
               variant="contained"
               component={Link}
-              to={"/restaurants/" + id}
+              to={"/profile/my_restaurant/" + id}
               size="small"
               color="primary"
             >

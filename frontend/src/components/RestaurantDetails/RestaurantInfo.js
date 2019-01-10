@@ -1,21 +1,24 @@
 import React from "react";
-import { withStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import Divider from "@material-ui/core/Divider";
-
-import CardMedia from "@material-ui/core/CardMedia";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import { Link } from "react-router-dom";
+import {
+  withStyles,
+  Card,
+  Divider,
+  Button,
+  CardMedia,
+  Typography,
+  Grid,
+  CardContent,
+} from "@material-ui/core/";
+import AddUpdateRestaurant from "../Profile/AddUpdateRestaurant";
 
 const styles = {
-  media: {
-    height: 330,
-    width: "50%",
-    float: "left",
-    marginRight: 16,
+  root: {
+    paddingLeft: 24,
+    paddingRight: 24,
   },
 };
+const image =
+  "https://www.omnihotels.com/-/media/images/hotels/bospar/restaurants/bospar-omni-parker-house-parkers-restaurant-1170.jpg";
 
 class restaurantInfo extends React.Component {
   state = {
@@ -23,14 +26,10 @@ class restaurantInfo extends React.Component {
   };
 
   componentDidMount() {
-    fetch("http://localhost:3000/restaurant.json")
+    const restId = this.props.url.match.params.id;
+    fetch(`http://localhost:6543/restaurant/${restId}`)
       .then(response => response.json())
-      .then(data =>
-        this.setState({
-          restInfo: data.data[this.props.url.match.params.id - 1],
-        }),
-      )
-      .catch(err => console.log(err));
+      .then(rest => this.setState({ restInfo: rest.data[0] }));
   }
 
   render() {
@@ -39,33 +38,36 @@ class restaurantInfo extends React.Component {
     return (
       <div className={classes.root}>
         <Card>
-          <CardMedia
-            className={classes.media}
-            image="https://www.omnihotels.com/-/media/images/hotels/bospar/restaurants/bospar-omni-parker-house-parkers-restaurant-1170.jpg"
-            title={"ok"}
-          />
-          <Typography gutterBottom variant="h5" component="h2">
-            {restInfo.name}
-          </Typography>
-          <Typography component="p">
-            Address: {restInfo.addres_id} <br />
-            Works hour: 10.00 - 23.00 <br />
-            Phone: 093-999-23-08
-            <Button
-              component={Link}
-              to={"menu/" + restInfo.id}
-              variant="outlined"
-              className={classes.button}
-            >
-              Watch menu
-            </Button>
-          </Typography>
-          <Divider variant="middle" style={{ marginTop: "10px" }} />
-          <Typography component="p">
-            {restInfo.description}
-            {restInfo.description}
-          </Typography>
+          <CardContent>
+            <div
+              style={{
+                width: "300px",
+                height: "300px",
+                backgroundColor: "#fafafa",
+                float: "left",
+                marginRight: "16px",
+              }}
+              className="gallery"
+            />
+            <div className="content">
+              <Typography gutterBottom variant="h4">
+                {restInfo.name}
+              </Typography>
+              <Typography gutterBottom variant="h6" component="p">
+                Address: {restInfo.address_id} <br />
+                Phone: {restInfo.phone}
+              </Typography>
+              <Divider style={{ marginBottom: "2em" }} />
+              <Typography variant="body1" gutterBottom component="p">
+                {restInfo.description}
+              </Typography>
+            </div>
+          </CardContent>
         </Card>
+        <AddUpdateRestaurant
+          requestType="put"
+          id={this.props.url.match.params.id}
+        />
       </div>
     );
   }

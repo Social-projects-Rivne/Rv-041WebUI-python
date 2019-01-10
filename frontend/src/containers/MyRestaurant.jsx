@@ -1,28 +1,21 @@
 import React, { Component } from "react";
 import RestaurantList from "../components/RestaurantList";
-import AddRestaurant from "../components/Profile/AddRestaurant";
+import AddUpdateRestaurant from "../components/Profile/AddUpdateRestaurant";
 
 class MyRestaurant extends Component {
   state = {
     owner: "Jason Brown",
-    myRestaurants: []
+    myRestaurants: [],
   };
 
   componentDidMount() {
     fetch(`http://localhost:6543/my_restaurant?owner=${this.state.owner}`)
       .then(response => response.json())
-      .then(data => this.setState({ myRestaurants: data.data }));
+      .then(rests => this.setState({ myRestaurants: rests.data }));
   }
 
-  handleUpdate = (id, name, address, phone, description) => {
-    const restObj = {
-      name: name,
-      address_id: address,
-      phone: phone,
-      description: description,
-      id: id
-    };
-
+  handleUpdate = restObj => {
+    // console.log(restObj);
     this.setState({ myRestaurants: this.state.myRestaurants.concat(restObj) });
   };
 
@@ -31,7 +24,7 @@ class MyRestaurant extends Component {
     return (
       <div>
         <RestaurantList data={myRestaurants} />
-        <AddRestaurant onUpdate={this.handleUpdate} />
+        <AddUpdateRestaurant requestType="post" onUpdate={this.handleUpdate} />
       </div>
     );
   }
