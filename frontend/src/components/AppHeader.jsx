@@ -5,6 +5,7 @@ import { AppBar, Toolbar, Typography } from "@material-ui/core";
 import NavMenu from "./NavMenu";
 import UserMenu from "./UserMenu";
 import { Link } from "react-router-dom";
+import AppContext from "./AppContext"
 
 const styles = theme => ({
   grow: {
@@ -28,7 +29,9 @@ class AppHeader extends React.Component {
             </Link>
           </Typography>
           <NavMenu />
-          <UserMenu />
+          <AppContext.Consumer>
+            {(state) => <UserMenu state={state}/>}
+          </AppContext.Consumer>
         </Toolbar>
       </AppBar>
     );

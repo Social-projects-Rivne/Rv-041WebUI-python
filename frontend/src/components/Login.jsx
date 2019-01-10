@@ -43,7 +43,10 @@ class Login extends React.Component {
         console.log(res.data.error);
         localStorage.setItem('token', res.headers['x-auth-token']);
         localStorage.setItem('role', res.data.data[0]);
-      }) 
+      })
+      .then(
+        this.props.state.changeState({auth: true})
+      )
   }
 
   handleLogout = (event) => {

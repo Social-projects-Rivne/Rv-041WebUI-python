@@ -19,11 +19,25 @@ class UserMenu extends React.Component {
     constructor(props) {
       super(props);
       // console.log(props)
-      this.state = {
-        auth: true,
+     //  this.state = {
+     //    auth: true,
+     //    isOwner: false,
+     //    anchorEl: null
+     // };
+     this.state={
+        auth: props.state.state.auth,
+        token: props.state.state.token,
+        role: props.state.state.role,
         isOwner: false,
         anchorEl: null
      };
+     this.setState({
+        auth: props.state.state.auth,
+        token: props.state.state.token,
+        role: props.state.state.role,
+        isOwner: false,
+        anchorEl: null
+     });
     }
 
 
@@ -47,6 +61,7 @@ class UserMenu extends React.Component {
     const open = Boolean(anchorEl);
     const { classes } = this.props;
     const match = "";
+
     return (
       <div className={classes.root}>
         {!auth && (
