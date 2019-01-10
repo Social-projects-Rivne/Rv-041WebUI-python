@@ -7,38 +7,40 @@ import {
   Typography,
   CardContent,
   Divider,
+  Chip,
+  GridList
 } from "@material-ui/core/";
 
 import { Link } from "react-router-dom";
 
 const styles = theme => ({
   card: {
-    display: "flex",
+    display: "flex"
   },
   media: {
     width: theme.spacing.unit * 20,
-    flex: 1,
+    flex: 1
   },
   details: {
     display: "flex",
     flexDirection: "column",
-    flex: 4,
+    flex: 4
   },
   info: {
     display: "flex",
     justifyContent: "space-between",
     paddingTop: theme.spacing.unit,
-    paddingBottom: theme.spacing.unit,
+    paddingBottom: theme.spacing.unit
   },
   nav: {
     display: "flex",
     justifyContent: "flex-end",
-    paddingTop: theme.spacing.unit,
-  },
+    paddingTop: theme.spacing.unit
+  }
 });
 
 function restaurantItem(props) {
-  const { classes, id, name, description, address, phone } = props;
+  const { classes, id, name, description, address, phone, tags } = props;
   return (
     <Card className={classes.card}>
       <CardMedia
@@ -63,6 +65,19 @@ function restaurantItem(props) {
           </div>
           <Divider />
           <div className={classes.nav}>
+            <GridList
+              style={{ flexWrap: nowrap }}
+              spacing={16}
+              cellHeight="auto"
+              cols={4}
+            >
+              <Chip label={"2132 2121 feofk"} className={classes.chip} />
+              <Chip label={"2132 2121 feofk"} className={classes.chip} />
+              <Chip label={"2132 2121 feofk"} className={classes.chip} />
+              <Chip label={"2132 2121 feofk"} className={classes.chip} />
+              <Chip label={"2132 2121 feofk"} className={classes.chip} />
+              <Chip label={"2132 2121 feofk"} className={classes.chip} />
+            </GridList>
             <Button
               variant="contained"
               component={Link}

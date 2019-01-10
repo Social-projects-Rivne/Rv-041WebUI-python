@@ -5,7 +5,7 @@ import AddUpdateRestaurant from "../components/Profile/AddUpdateRestaurant";
 class MyRestaurant extends Component {
   state = {
     owner: "Jason Brown",
-    myRestaurants: [],
+    myRestaurants: []
   };
 
   componentDidMount() {
@@ -14,8 +14,7 @@ class MyRestaurant extends Component {
       .then(rests => this.setState({ myRestaurants: rests.data }));
   }
 
-  handleUpdate = restObj => {
-    // console.log(restObj);
+  handleAddRestaurant = restObj => {
     this.setState({ myRestaurants: this.state.myRestaurants.concat(restObj) });
   };
 
@@ -24,7 +23,10 @@ class MyRestaurant extends Component {
     return (
       <div>
         <RestaurantList data={myRestaurants} />
-        <AddUpdateRestaurant requestType="post" onUpdate={this.handleUpdate} />
+        <AddUpdateRestaurant
+          requestType="post"
+          onAdd={this.handleAddRestaurant}
+        />
       </div>
     );
   }

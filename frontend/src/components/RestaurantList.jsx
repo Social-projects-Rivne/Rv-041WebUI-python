@@ -3,7 +3,7 @@ import RestaurantItem from "../components/RestaurantItem";
 import { withStyles, Grid, CardContent } from "@material-ui/core/";
 
 const styles = theme => ({
-  root: {},
+  root: {}
 });
 
 const RestaurantList = props => {
@@ -22,6 +22,7 @@ const RestaurantList = props => {
                     description={rest.description}
                     address={rest.address_id}
                     phone={rest.phone}
+                    tags={rest.tags}
                   />
                 </Grid>
               );

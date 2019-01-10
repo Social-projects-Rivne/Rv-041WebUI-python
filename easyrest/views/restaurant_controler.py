@@ -161,13 +161,18 @@ def add_restaurant_controller(request):
 
     name,  phone, address, description, tags = rest_data["name"], rest_data[
         "phone"], rest_data["address"], rest_data["description"], json.loads(rest_data["tag"])
+    print tags
 
-    # tags_model = [request.dbsession.query(Tag).filter_by(name=tags[0]).one()
+    tag_models = [request.dbsession.query(
+        Tag).filter_by(name=tag).first() for tag in tags]
+
+    # tag_id = request.dbsession.query(Tag).filter_by(name=tags[0]).one()
+    # tag_model = request.dbsession.query(Tag).get(tag_id)
 
     rest = Restaurant(name=name, description=description,
                       phone=phone, address_id=address, owner_id="Jason Brown",)
 
-    # rest.tag = tag
+    rest.tag = tag_models
 
     request.dbsession.add(rest)
     request.dbsession.flush()
@@ -197,3 +202,5 @@ def update_restaurant_controller(request):
         rest.phone = phone
     if address:
         rest.address_id = address
+
+    return wrap(rest.as_dict())
