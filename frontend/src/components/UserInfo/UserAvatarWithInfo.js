@@ -6,6 +6,8 @@ import UserAvatar from "./UserAvatar";
 const styles = {
     forDiv: {
         flexGrow: 1,
+        display: "flex",
+        justifyContent: "center",
     },
 };
 

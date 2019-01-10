@@ -10,12 +10,13 @@ import TableRow from '@material-ui/core/TableRow';
 const styles = {
     root: {
         flexGrow: 1,
+        maxWidth: "50%",
     },
     table: {
 
     },
     cardStyle: {
-        width: "50%",
+        width: "100%",
         float: "left",
         margin: 16,
     }
