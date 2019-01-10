@@ -9,6 +9,7 @@ import {
   Button
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 const styles = theme => ({
   root: {}
@@ -18,26 +19,7 @@ class UserMenu extends React.Component {
 
     constructor(props) {
       super(props);
-      // console.log(props)
-     //  this.state = {
-     //    auth: true,
-     //    isOwner: false,
-     //    anchorEl: null
-     // };
-     this.state={
-        auth: props.state.state.auth,
-        token: props.state.state.token,
-        role: props.state.state.role,
-        isOwner: false,
-        anchorEl: null
-     };
-     this.setState({
-        auth: props.state.state.auth,
-        token: props.state.state.token,
-        role: props.state.state.role,
-        isOwner: false,
-        anchorEl: null
-     });
+     this.state = {anchorEl: null};
     }
 
 
@@ -50,17 +32,36 @@ class UserMenu extends React.Component {
   };
 
   handleLogout = () => {
-    this.setState({
-      auth: false,
-      anchorEl: null
-    });
+    axios.delete('http://localhost:6543/login', {
+      headers: {
+        'x-auth-token': localStorage.getItem('token')
+      }
+    }).then(res => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+      })
+      .then(
+        this.props.state.changeState({
+          auth: false,
+          token: '',
+          role: ''
+        })
+      )
+      .then(
+        this.setState({anchorEl: null})
+      )
   };
 
   render() {
-    const { auth, anchorEl, isOwner } = this.state;
+
+    const { auth, token, role } = this.props.state.state;
+    const isOwner = role == "Owner";
+    const { anchorEl } = this.state;
+    console.log("asda", anchorEl)
     const open = Boolean(anchorEl);
     const { classes } = this.props;
     const match = "";
+
 
     return (
       <div className={classes.root}>
@@ -97,6 +98,7 @@ class UserMenu extends React.Component {
               }}
               open={open}
               onClose={this.handleClose}
+              style={{marginTop: 60}}
             >
               <MenuItem onClick={this.handleClose}>Personal info</MenuItem>
               <MenuItem onClick={this.handleClose}>Current orders</MenuItem>

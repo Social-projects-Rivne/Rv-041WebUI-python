@@ -11,7 +11,6 @@ const Menu = [
   { name: "Home", route: "/" },
   { name: "Restaurants List", route: "/restaurants" },
   { name: "Restaurants Map", route: "/restaurants-map" },
-  { name: "Ligin", route: "/log-in" }
 ];
 
 class NavMenu extends React.Component {

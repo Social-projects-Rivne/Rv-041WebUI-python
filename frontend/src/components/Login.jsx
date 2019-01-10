@@ -1,25 +1,26 @@
 import React from "react";
 import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
-import { Button, TextField, Card, CardContent, Grid } from '@material-ui/core/';
+import { Button, 
+         TextField, 
+         Card, 
+         CardContent, 
+         Grid, 
+         CardHeader, 
+         Typography } from '@material-ui/core/';
 
 
 const styles = (theme) => ({
   root: {
     maxWidth: 800,
     margin: "0 auto",
-    marginTop: "60px"
+    marginTop: 20
   }
 
 })
 
 
 class Login extends React.Component {
-  // state={
-  //     email:'',
-  //     password:'',
-  //   }
-
   constructor(props) {
       super(props);
       this.state={
@@ -40,7 +41,6 @@ class Login extends React.Component {
     }
     axios.post('http://localhost:6543/login', body)
       .then(res => {
-        console.log(res.data.error);
         localStorage.setItem('token', res.headers['x-auth-token']);
         localStorage.setItem('role', res.data.data[0]);
       })
@@ -49,19 +49,6 @@ class Login extends React.Component {
       )
   }
 
-  handleLogout = (event) => {
-    axios.delete('http://localhost:6543/login', {
-      headers: {
-        'x-auth-token': localStorage.getItem('token')
-      }
-    }).then(res => {
-        console.log(res.data.error);
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-      })
-  }
-
-
   render() {
       const { classes } = this.props;
       // console.log(this.props)
@@ -69,6 +56,11 @@ class Login extends React.Component {
           <div className={classes.root}>
             <Card >
             <form onSubmit = {this.handleSubmit}>
+              <CardHeader title={
+                <Typography variant="h4" align='center'>
+                  Login page.
+                </Typography>
+              }/>
               <CardContent>
                 <Grid container spacing={24} >
                   <Grid item xs={12}>
@@ -86,14 +78,8 @@ class Login extends React.Component {
                        onChange = {(e, value) => this.handleChange(e, "password")}
                        />
                       </Grid>
-                      <Grid style={{ display: "flex" }} item xs={6} justify="flex-end">
+                      <Grid style={{ display: "flex" }} item xs={12} justify="flex-end">
                         <Button type="submit" color="primary" variant="contained">Submit</Button>
-                      </Grid>
-                      <Grid style={{ display: "flex" }} item xs={6} justify="flex-end">
-                        <Button
-                          color="primary"
-                          variant="contained"
-                          onClick={(e) => this.handleLogout(e)}>Logout</Button>
                       </Grid>
                     </Grid>
                   </CardContent>

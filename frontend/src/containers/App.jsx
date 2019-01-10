@@ -12,15 +12,24 @@ class App extends React.Component {
     token: ""
   }
 
-  changeState = (obj) => {
-    this.setState({auth: true})
-    console.log(obj)
-    console.log("sda", this.state)
+  componentDidMount() {
+    // Func to check if user already loged in 
+    // (if token and role in localStorage)
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+    if (token && role) { this.setState({auth: true, token: token, role: role}) }  
   }
 
+  changeState = (obj) => {
+    // hook for change state from AppContext.Consumer
+    this.setState(obj)
+  }
 
+  
   render() {
     return (
+      // Provider used to share state obj and hook to change state (this.changeState)
+      // between AppContext.Provider and AppContext.Consumer
       <AppContext.Provider value={{state: this.state, changeState: this.changeState}}>   
         <BrowserRouter>
           <PageContainer>
