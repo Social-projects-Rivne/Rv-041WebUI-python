@@ -4,6 +4,7 @@ import datetime as dt
 
 from pyramid.view import view_config
 from pyramid.authentication import AuthTicket
+from pyramid.httpexceptions import HTTPForbidden
 
 from ..scripts.json_helpers import wrap
 from ..models.user import User
@@ -46,9 +47,10 @@ def login_post(request):
     email, password = req_json["email"], req_json["password"]
     user = request.dbsession.query(User).filter(User.email == email).first()
     if user is None:
-        return wrap([email], False, "No such user %s" % (user))
+        raise HTTPForbidden("Email or password is invalid")
     if user.password != password:
-        return wrap([password], False, "Wrong password %s" % (password))
+        raise HTTPForbidden("Email or password is invalid")
+
     res_headers = remember(request, user)
 
     response = request.response

@@ -26,6 +26,8 @@ class Login extends React.Component {
       this.state={
         email:'',
         password:'',
+        error: false, 
+        errorMes: ''
       }
     }
 
@@ -39,19 +41,44 @@ class Login extends React.Component {
       email: this.state.email,
       password: this.state.password
     }
-    axios.post('http://localhost:6543/login', body)
-      .then(res => {
-        localStorage.setItem('token', res.headers['x-auth-token']);
-        localStorage.setItem('role', res.data.data[0]);
+    if (body.email === '') {
+      this.setState({
+        error: true,
+        errorMes: 'Email field cannot be empty'
       })
-      .then(
-        this.props.state.changeState({auth: true})
-      )
+    } else if (body.password === '') {
+
+      this.setState({
+        error: true,
+        errorMes: 'Password field cannot be empty'
+      })
+    } else {
+      axios.post('http://localhost:6543/login', body)
+        .then(res => {
+          const { success, error, data } = res.data;
+          const token = res.headers['x-auth-token'];
+          const role = data[0];
+          if (success && role && token) {
+            localStorage.setItem('token', token);
+            localStorage.setItem('role', role);
+            this.props.state.changeState({auth: true})
+            this.setState({
+              error: false,
+              errorMes: ''
+            })
+          } else {
+            this.setState({
+              error: true,
+              errorMes: error
+            })
+          }
+        })
+    }
   }
 
   render() {
       const { classes } = this.props;
-      // console.log(this.props)
+      const { error, errorMes } = this.state
       return (
           <div className={classes.root}>
             <Card >
@@ -78,6 +105,13 @@ class Login extends React.Component {
                        onChange = {(e, value) => this.handleChange(e, "password")}
                        />
                       </Grid>
+                      {error && (
+                        <Grid item xs={12}>
+                          <Typography variant="h6" align='center'>
+                            {errorMes}
+                          </Typography>
+                        </Grid>
+                      )}
                       <Grid style={{ display: "flex" }} item xs={12} justify="flex-end">
                         <Button type="submit" color="primary" variant="contained">Submit</Button>
                       </Grid>
