@@ -80,7 +80,7 @@ def fill_db(session):
         # asign menu_items to menu
         rest_model.menu.menu_item = Menu_item_models
 
-        #using model relationship defined in models.restaurant
+        # using model relationship defined in models.restaurant
         # asign one of 5 users to restaurant
         rest_model.user = Users[randint(0, 4)]
 
