@@ -7,9 +7,7 @@ class PageContainer extends Component {
     return (
       <>
         <AppHeader />
-        <main style={{ maxWidth: 1280, margin: "0 auto" }}>
-          {this.props.children}
-        </main>
+        <main>{this.props.children}</main>
       </>
     );
   }

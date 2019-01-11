@@ -8,7 +8,8 @@ import {
   CardContent,
   Divider,
   Chip,
-  GridList
+  GridList,
+  Tabs
 } from "@material-ui/core/";
 
 import { Link } from "react-router-dom";
@@ -34,8 +35,11 @@ const styles = theme => ({
   },
   nav: {
     display: "flex",
-    justifyContent: "flex-end",
-    paddingTop: theme.spacing.unit
+    paddingTop: theme.spacing.unit,
+    alignItems: "center"
+  },
+  chip: {
+    margin: theme.spacing.unit / 2
   }
 });
 
@@ -61,28 +65,23 @@ function restaurantItem(props) {
           <Divider />
           <div className={classes.info}>
             <Typography variant="subtitle2">Address : {address}</Typography>
-            <Typography variant="subtitle2">Phone: {phone}</Typography>
+            {phone && (
+              <Typography variant="subtitle2">Phone: {phone}</Typography>
+            )}
           </div>
           <Divider />
           <div className={classes.nav}>
-            <GridList
-              style={{ flexWrap: nowrap }}
-              spacing={16}
-              cellHeight="auto"
-              cols={4}
-            >
-              <Chip label={"2132 2121 feofk"} className={classes.chip} />
-              <Chip label={"2132 2121 feofk"} className={classes.chip} />
-              <Chip label={"2132 2121 feofk"} className={classes.chip} />
-              <Chip label={"2132 2121 feofk"} className={classes.chip} />
-              <Chip label={"2132 2121 feofk"} className={classes.chip} />
-              <Chip label={"2132 2121 feofk"} className={classes.chip} />
-            </GridList>
+            <div className={classes.tags}>
+              {tags.map(tag => (
+                <Chip key={tag.id} label={tag.name} className={classes.chip} />
+              ))}
+            </div>
+
             <Button
+              style={{ marginLeft: "auto" }}
               variant="contained"
               component={Link}
               to={"/profile/my_restaurant/" + id}
-              size="small"
               color="primary"
             >
               details

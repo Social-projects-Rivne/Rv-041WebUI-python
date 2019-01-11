@@ -5,7 +5,7 @@ import {
   GridList,
   GridListTile,
   GridListTileBar,
-  IconButton,
+  IconButton
 } from "@material-ui/core";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import { Link } from "react-router-dom";
@@ -16,26 +16,26 @@ const styles = theme => ({
     flexWrap: "wrap",
     justifyContent: "space-around",
     overflow: "hidden",
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper
   },
   gridList: {
     flexWrap: "nowrap",
     flex: 1,
     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
-    transform: "translateZ(0)",
+    transform: "translateZ(0)"
   },
   title: {
-    color: theme.palette.primary.light,
+    color: theme.palette.primary.light
   },
   titleBar: {
     background:
-      "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
-  },
+      "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)"
+  }
 });
 
 class TagsList extends Component {
   state = {
-    tags: [],
+    tags: []
   };
 
   componentDidMount() {
@@ -67,7 +67,7 @@ class TagsList extends Component {
                 title="View All"
                 classes={{
                   root: classes.titleBar,
-                  title: classes.title,
+                  title: classes.title
                 }}
                 actionIcon={
                   <IconButton>
@@ -94,7 +94,7 @@ class TagsList extends Component {
                     title={tag.name}
                     classes={{
                       root: classes.titleBar,
-                      title: classes.title,
+                      title: classes.title
                     }}
                     actionIcon={
                       <IconButton>
@@ -112,7 +112,7 @@ class TagsList extends Component {
 }
 
 TagsList.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(TagsList);

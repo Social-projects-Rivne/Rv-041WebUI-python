@@ -63,7 +63,7 @@ class AddUpdateRestaurant extends React.Component {
     tag: [],
     tags: [],
     snackbarOpen: false,
-    isFormValid: false
+    notValid: false
   };
 
   componentDidMount() {
@@ -87,9 +87,17 @@ class AddUpdateRestaurant extends React.Component {
   handleSubmit = (event, requestType, restId) => {
     event.preventDefault();
     const { name, address, phone, description, tag } = this.state;
+
+    if (!name.trim() || (!address.trim() && requestType === "post")) {
+      this.setState({ notValid: true });
+      return;
+    } else {
+      this.setState({ notValid: false });
+    }
+
     switch (requestType) {
       case "post":
-        return fetch("http://localhost:6543/add_restaurant", {
+        return fetch("http://localhost:6543/add_restaurant/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -97,7 +105,7 @@ class AddUpdateRestaurant extends React.Component {
             address: address,
             phone: phone,
             description: description,
-            tag: JSON.stringify(tag)
+            tag: tag
           })
         })
           .then(response => response.json())
@@ -105,7 +113,15 @@ class AddUpdateRestaurant extends React.Component {
             return this.props.onAdd(myRest.data);
           })
           .then(this.setState({ snackbarOpen: true }))
-          .then(this.setState({}))
+          .then(
+            this.setState({
+              name: "",
+              address: "",
+              phone: "",
+              description: "",
+              tag: []
+            })
+          )
           .catch(err => console.log(err));
 
       case "put":
@@ -117,7 +133,7 @@ class AddUpdateRestaurant extends React.Component {
             address: address,
             phone: phone,
             description: description,
-            tag: JSON.stringify(tag)
+            tag: tag
           })
         })
           .then(response => response.json())
@@ -149,7 +165,16 @@ class AddUpdateRestaurant extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { expanded, tag, tags } = this.state;
+    const {
+      expanded,
+      tag,
+      tags,
+      name,
+      phone,
+      address,
+      description,
+      notValid
+    } = this.state;
     return (
       <CardContent>
         <div className={classes.header}>
@@ -189,22 +214,31 @@ class AddUpdateRestaurant extends React.Component {
                 <Grid container spacing={16}>
                   <Grid item xs={12}>
                     <TextField
+                      value={name}
+                      required
                       name="name"
                       label="Restaurant Name"
                       fullWidth
                       className={classes.textField}
+                      error={notValid}
+                      helperText={notValid && "Required field"}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
+                      value={address}
+                      required
                       name="address"
                       label="Restaurant Address"
                       fullWidth
                       className={classes.textField}
+                      error={notValid}
+                      helperText={notValid && "Required field"}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
+                      value={phone}
                       name="phone"
                       label="Restaurant Phone"
                       fullWidth
@@ -213,6 +247,7 @@ class AddUpdateRestaurant extends React.Component {
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
+                      value={description}
                       name="description"
                       label="Restaurant Description"
                       multiline
@@ -239,7 +274,7 @@ class AddUpdateRestaurant extends React.Component {
                           <MenuItem key={item.name} value={item.name}>
                             <Checkbox checked={tag.indexOf(item.name) > -1} />
                             <ListItemText
-                              class={classes.listItem}
+                              className={classes.listItem}
                               primary={item.name}
                             />
                           </MenuItem>
@@ -291,7 +326,12 @@ class AddUpdateRestaurant extends React.Component {
           ContentProps={{
             "aria-describedby": "message-id"
           }}
-          message={<span id="message-id">Restaurant was added</span>}
+          message={
+            <span id="message-id">
+              Restaurant was{" "}
+              {this.props.requestType === "post" ? "added" : "update"}
+            </span>
+          }
           action={[
             <IconButton
               key="close"

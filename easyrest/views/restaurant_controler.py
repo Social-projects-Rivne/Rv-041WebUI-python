@@ -10,7 +10,6 @@ from pyramid.httpexceptions import HTTPNotFound
 from ..scripts.json_helpers import wrap
 from ..models.restaurant import Restaurant
 from ..models.tag import Tag
-import json
 
 
 def asign_tags(rests):
@@ -30,7 +29,6 @@ def asign_tags(rests):
     rests_list = []
     for rest in rests:
         tags = rest.tag
-        print rest.tag
         tags_list = [tag.as_dict() for tag in tags]
         rest_dict = rest.as_dict()
         rest_dict.update({"tags": tags_list})
@@ -160,14 +158,10 @@ def add_restaurant_controller(request):
     rest_data = request.json_body
 
     name,  phone, address, description, tags = rest_data["name"], rest_data[
-        "phone"], rest_data["address"], rest_data["description"], json.loads(rest_data["tag"])
-    print tags
+        "phone"], rest_data["address"], rest_data["description"], rest_data["tag"]
 
     tag_models = [request.dbsession.query(
         Tag).filter_by(name=tag).first() for tag in tags]
-
-    # tag_id = request.dbsession.query(Tag).filter_by(name=tags[0]).one()
-    # tag_model = request.dbsession.query(Tag).get(tag_id)
 
     rest = Restaurant(name=name, description=description,
                       phone=phone, address_id=address, owner_id="Jason Brown",)
@@ -177,7 +171,7 @@ def add_restaurant_controller(request):
     request.dbsession.add(rest)
     request.dbsession.flush()
 
-    return wrap(rest.as_dict())
+    return wrap(asign_tags([rest]))
 
 
 @view_config(
@@ -189,7 +183,7 @@ def update_restaurant_controller(request):
     rest_data = request.json_body
     rest_id = request.matchdict["id"]
 
-    name, description, phone, address = rest_data["name"], rest_data[
+    name, description, phone, address, tag = rest_data["name"], rest_data[
         "description"], rest_data["phone"], rest_data["address"]
 
     rest = request.dbsession.query(Restaurant).get(int(rest_id))

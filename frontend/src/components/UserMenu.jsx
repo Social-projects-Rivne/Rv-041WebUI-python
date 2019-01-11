@@ -6,19 +6,19 @@ import {
   IconButton,
   MenuItem,
   Button,
-  Avatar,
+  Avatar
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
 const styles = theme => ({
-  root: {},
+  root: {}
 });
 
 class UserMenu extends React.Component {
   state = {
     auth: true,
     isOwner: true,
-    anchorEl: null,
+    anchorEl: null
   };
 
   handleMenu = event => {
@@ -32,7 +32,7 @@ class UserMenu extends React.Component {
   handleLogout = () => {
     this.setState({
       auth: false,
-      anchorEl: null,
+      anchorEl: null
     });
   };
 
@@ -69,11 +69,11 @@ class UserMenu extends React.Component {
               anchorEl={anchorEl}
               anchorOrigin={{
                 vertical: "top",
-                horizontal: "right",
+                horizontal: "right"
               }}
               transformOrigin={{
                 vertical: "top",
-                horizontal: "right",
+                horizontal: "right"
               }}
               open={open}
               onClose={this.handleClose}
