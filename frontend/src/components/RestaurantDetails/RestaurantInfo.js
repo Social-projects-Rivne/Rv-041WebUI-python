@@ -3,42 +3,21 @@ import {
   withStyles,
   Card,
   Divider,
-  Button,
-  CardMedia,
   Typography,
-  Grid,
-  CardContent
+  CardContent,
 } from "@material-ui/core/";
 import AddUpdateRestaurant from "../Profile/AddUpdateRestaurant";
 
 const styles = {
   root: {
     paddingLeft: 24,
-    paddingRight: 24
-  }
+    paddingRight: 24,
+  },
 };
-const image =
-  "https://www.omnihotels.com/-/media/images/hotels/bospar/restaurants/bospar-omni-parker-house-parkers-restaurant-1170.jpg";
 
-class restaurantInfo extends React.Component {
-  state = {
-    restInfo: []
-  };
-
-  componentDidMount() {
-    const restId = this.props.url.match.params.id;
-    fetch(`http://localhost:6543/restaurant/${restId}`)
-      .then(response => response.json())
-      .then(rest => this.setState({ restInfo: rest.data[0] }));
-  }
-
-  handleUpdateRestaurant = restObj => {
-    this.setState({ restInfo: restObj });
-  };
-
+class RestaurantInfo extends React.Component {
   render() {
-    const { classes } = this.props;
-    const { restInfo } = this.state;
+    const { classes, restInfo, onUpdate } = this.props;
     return (
       <div className={classes.root}>
         <Card>
@@ -49,7 +28,7 @@ class restaurantInfo extends React.Component {
                 height: "300px",
                 backgroundColor: "#fafafa",
                 float: "left",
-                marginRight: "16px"
+                marginRight: "16px",
               }}
               className="gallery"
             />
@@ -70,12 +49,13 @@ class restaurantInfo extends React.Component {
         </Card>
         <AddUpdateRestaurant
           requestType="put"
-          onUpdate={this.handleUpdateRestaurant}
-          id={this.props.url.match.params.id}
+          onUpdate={onUpdate}
+          id={restInfo.id}
+          restInfo={this.props.restInfo}
         />
       </div>
     );
   }
 }
 
-export default withStyles(styles)(restaurantInfo);
+export default withStyles(styles)(RestaurantInfo);

@@ -2,6 +2,7 @@ import React from "react";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import AddIcon from "@material-ui/icons/Add";
+import Edit from "@material-ui/icons/Edit";
 import {
   Fab,
   withStyles,
@@ -19,7 +20,7 @@ import {
   Checkbox,
   InputLabel,
   FormControl,
-  Snackbar
+  Snackbar,
 } from "@material-ui/core";
 import classnames from "classnames";
 
@@ -28,68 +29,76 @@ const styles = theme => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: theme.spacing.unit * 2
+    marginBottom: theme.spacing.unit * 2,
   },
   fab: {
     transform: "scale(1)",
-    transition: theme.transitions.create("transform")
+    transition: theme.transitions.create("transform"),
   },
   fabDisabled: {
-    transform: "scale(0)"
+    transform: "scale(0)",
   },
   btns: {
-    marginTop: theme.spacing.unit * 2
+    marginTop: theme.spacing.unit * 2,
   },
   listItem: {
-    textTransform: "capitalize"
-  }
+    textTransform: "capitalize",
+  },
 });
 
 const MenuProps = {
   PaperProps: {
     style: {
-      maxHeight: 250
-    }
-  }
+      maxHeight: 250,
+    },
+  },
 };
 
 class AddUpdateRestaurant extends React.Component {
   state = {
-    expanded: false,
     name: "",
     address: "",
     phone: "",
     description: "",
-    tag: [],
     tags: [],
+    allTags: [],
+    expanded: false,
     snackbarOpen: false,
-    isFormValid: false
+    notValid: false,
   };
 
   componentDidMount() {
     fetch("http://localhost:6543/tag")
       .then(response => response.json())
-      .then(tags => this.setState({ tags: tags.data }));
+      .then(tags => this.setState({ allTags: tags.data }));
   }
 
   handleExpandFormClick = () => {
     this.setState({
-      expanded: !this.state.expanded
+      expanded: !this.state.expanded,
     });
   };
 
   handleCloseFormClick = () => {
     this.setState({
-      expanded: false
+      expanded: false,
     });
   };
 
   handleSubmit = (event, requestType, restId) => {
     event.preventDefault();
-    const { name, address, phone, description, tag } = this.state;
+    const { name, address, phone, description, tags } = this.state;
+
+    if (!name.trim() || !address.trim()) {
+      this.setState({ notValid: true });
+      return;
+    } else {
+      this.setState({ notValid: false });
+    }
+
     switch (requestType) {
       case "post":
-        return fetch("http://localhost:6543/add_restaurant", {
+        return fetch("http://localhost:6543/add_restaurant/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -97,15 +106,23 @@ class AddUpdateRestaurant extends React.Component {
             address: address,
             phone: phone,
             description: description,
-            tag: JSON.stringify(tag)
-          })
+            tags: tags,
+          }),
         })
           .then(response => response.json())
           .then(myRest => {
             return this.props.onAdd(myRest.data);
           })
-          .then(this.setState({ snackbarOpen: true }))
-          .then(this.setState({}))
+          .then(
+            this.setState({
+              snackbarOpen: true,
+              name: "",
+              address: "",
+              phone: "",
+              description: "",
+              tags: [],
+            }),
+          )
           .catch(err => console.log(err));
 
       case "put":
@@ -117,8 +134,8 @@ class AddUpdateRestaurant extends React.Component {
             address: address,
             phone: phone,
             description: description,
-            tag: JSON.stringify(tag)
-          })
+            tags: tags,
+          }),
         })
           .then(response => response.json())
           .then(myRest => {
@@ -131,35 +148,43 @@ class AddUpdateRestaurant extends React.Component {
 
   handleFormChange = event => {
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
 
   handleTagChange = event => {
-    this.setState({ tag: event.target.value });
+    this.setState({ tags: event.target.value });
   };
 
   handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
-
     this.setState({ snackbarOpen: false });
   };
 
   render() {
     const { classes } = this.props;
-    const { expanded, tag, tags } = this.state;
+    const {
+      expanded,
+      tags,
+      allTags,
+      name,
+      phone,
+      address,
+      description,
+      notValid,
+    } = this.state;
     return (
       <CardContent>
         <div className={classes.header}>
           <Typography variant="title">
-            {this.props.requestType === "post" ? "Add" : "Update"} new
+            {this.props.requestType === "post" ? "Add new" : "Update"}{" "}
             restaurant:
           </Typography>
           <Fab
             className={classnames(classes.fab, {
-              [classes.fabDisabled]: expanded
+              [classes.fabDisabled]: expanded,
             })}
             onClick={this.handleExpandFormClick}
             aria-expanded={expanded}
@@ -167,7 +192,7 @@ class AddUpdateRestaurant extends React.Component {
             color="primary"
             disabled={expanded}
           >
-            <AddIcon />
+            {this.props.requestType === "post" ? <AddIcon /> : <Edit />}
           </Fab>
         </div>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
@@ -178,7 +203,7 @@ class AddUpdateRestaurant extends React.Component {
                   this.handleSubmit(
                     event,
                     this.props.requestType,
-                    this.props.id
+                    this.props.id,
                   )
                 }
                 className={classes.form}
@@ -189,22 +214,31 @@ class AddUpdateRestaurant extends React.Component {
                 <Grid container spacing={16}>
                   <Grid item xs={12}>
                     <TextField
+                      value={name}
+                      required
                       name="name"
                       label="Restaurant Name"
                       fullWidth
                       className={classes.textField}
+                      error={notValid}
+                      helperText={notValid && "Required field"}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
+                      value={address}
+                      required
                       name="address"
                       label="Restaurant Address"
                       fullWidth
                       className={classes.textField}
+                      error={notValid}
+                      helperText={notValid && "Required field"}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
+                      value={phone}
                       name="phone"
                       label="Restaurant Phone"
                       fullWidth
@@ -213,6 +247,7 @@ class AddUpdateRestaurant extends React.Component {
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
+                      value={description}
                       name="description"
                       label="Restaurant Description"
                       multiline
@@ -229,18 +264,18 @@ class AddUpdateRestaurant extends React.Component {
                       <Select
                         multiple
                         label="Restaurant Description"
-                        value={tag}
+                        value={tags}
                         onChange={this.handleTagChange}
                         input={<Input id="select-multiple-checkbox" />}
                         renderValue={selected => selected.join(", ")}
                         MenuProps={MenuProps}
                       >
-                        {tags.map(item => (
-                          <MenuItem key={item.name} value={item.name}>
-                            <Checkbox checked={tag.indexOf(item.name) > -1} />
+                        {allTags.map(tag => (
+                          <MenuItem key={tag.name} value={tag.name}>
+                            <Checkbox checked={tags.indexOf(tag.name) > -1} />
                             <ListItemText
-                              class={classes.listItem}
-                              primary={item.name}
+                              className={classes.listItem}
+                              primary={tag.name}
                             />
                           </MenuItem>
                         ))}
@@ -283,15 +318,20 @@ class AddUpdateRestaurant extends React.Component {
         <Snackbar
           anchorOrigin={{
             vertical: "bottom",
-            horizontal: "right"
+            horizontal: "right",
           }}
           open={this.state.snackbarOpen}
           autoHideDuration={3000}
           onClose={this.handleCloseSnackbar}
           ContentProps={{
-            "aria-describedby": "message-id"
+            "aria-describedby": "message-id",
           }}
-          message={<span id="message-id">Restaurant was added</span>}
+          message={
+            <span id="message-id">
+              Restaurant was{" "}
+              {this.props.requestType === "post" ? "added" : "update"}
+            </span>
+          }
           action={[
             <IconButton
               key="close"
@@ -301,7 +341,7 @@ class AddUpdateRestaurant extends React.Component {
               onClick={this.handleCloseSnackbar}
             >
               <CloseIcon />
-            </IconButton>
+            </IconButton>,
           ]}
         />
       </CardContent>
