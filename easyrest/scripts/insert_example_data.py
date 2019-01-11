@@ -30,7 +30,7 @@ def fill_db(session):
     # it as key=value arguments
     Tags_models = [Tag(**tag) for tag in Tags]
 
-    #create example user statuses(user types)
+    # create example user statuses(user types)
     UserStatuses = [
         UserStatus(name='Client'),
         UserStatus(name='Owner'),
@@ -40,7 +40,7 @@ def fill_db(session):
 
     session.add_all(UserStatuses)
 
-    #Create 5 users with status Client
+    # Create 5 users with status Client
     Users = [User(name=fake.name(),
                   email=fake.email(),
                   password="123%s" % i,

@@ -1,6 +1,5 @@
 import React from "react";
 import { withStyles } from '@material-ui/core/styles';
-import axios from 'axios';
 import { Button, 
          TextField, 
          Card, 
@@ -53,10 +52,23 @@ class Login extends React.Component {
         errorMes: 'Password field cannot be empty'
       })
     } else {
-      axios.post('http://localhost:6543/login', body)
-        .then(res => {
-          const { success, error, data } = res.data;
-          const token = res.headers['x-auth-token'];
+      fetch('http://localhost:6543/login', {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(response => response.json()
+        .then(data => ({
+            json: data,
+            token: response.headers.get('x-auth-token')
+        }))
+      )
+      .then(input => {
+          const { json, token } = input
+          // console.log(data1.data)
+          const { success, error, data } = json;
+          // console.log(token)
+          // const token = json.token;
           const role = data[0];
           if (success && role && token) {
             localStorage.setItem('token', token);

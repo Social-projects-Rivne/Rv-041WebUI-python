@@ -9,7 +9,6 @@ import {
   Button
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import axios from 'axios';
 
 const styles = theme => ({
   root: {}
@@ -32,7 +31,8 @@ class UserMenu extends React.Component {
   };
 
   handleLogout = () => {
-    axios.delete('http://localhost:6543/login', {
+    fetch('http://localhost:6543/login', {
+      method: 'DELETE',
       headers: {
         'x-auth-token': localStorage.getItem('token')
       }

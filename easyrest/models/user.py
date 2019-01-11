@@ -29,6 +29,6 @@ class User(Base):
     password = Column(Text)
     status_id = Column(Integer, ForeignKey('user_statuses.id'))
 
-    token = relationship("Token")
+    tokens = relationship("Token")
     status = relationship('UserStatus')
     restaurants = relationship('Restaurant')

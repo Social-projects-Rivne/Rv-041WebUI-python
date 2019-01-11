@@ -21,7 +21,7 @@ def login_get(request):
     user_list = request.dbsession.query(User).all()
     data = []
     for user in user_list:
-        tokens = user.token
+        tokens = user.tokens
         tokens = [token.as_dict() for token in tokens]
         user = user.as_dict()
         user.update({"tokens": tokens})

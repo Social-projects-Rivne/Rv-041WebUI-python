@@ -3,7 +3,7 @@
 to request. 
 """
 
-import hashlib
+from passlib.pwd import genword
 import datetime as dt
 
 from pyramid.authentication import AuthTktAuthenticationPolicy
@@ -15,18 +15,17 @@ from .models import Token
 
 
 def remember(request, user):
-    """Function to create token using sha224 algo from
-    user email and current datetime. Also creates token model,
+    """Function to create token using system RNG.
+    Also creates token model,
     add token to db, for token header. 
     """
-    hash_str = '%s%s' % (user.email, dt.datetime.now())
-    token = hashlib.sha224(hash_str).hexdigest()
+    token = str(genword(length=32, entropy=512))
     t_model = Token(
         token=token,
         date_created=dt.datetime.now(),
         date_last_use=dt.datetime.now()
     )
-    user.token.append(t_model)
+    user.tokens.append(t_model)
     return {'X-Auth-Token': token}
 
 
@@ -76,9 +75,8 @@ def get_token(request):
     """
     token = request.headers.get('X-Auth-Token')
     if token is not None:
-        token_id = request.dbsession.query(Token.id).filter_by(token=token).first()
-        if token_id is not None:
-            token = request.dbsession.query(Token).get(token_id)
+        token = request.dbsession.query(Token).filter_by(token=token).first()
+        if token is not None:
             return token
         else:
             raise HTTPForbidden("Invalid token")
