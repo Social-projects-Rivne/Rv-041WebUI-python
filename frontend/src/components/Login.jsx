@@ -63,15 +63,20 @@ class Login extends React.Component {
             localStorage.setItem('role', role);
             this.props.state.changeState({auth: true})
             this.setState({
-              error: false,
-              errorMes: ''
-            })
+            error: false,
+            errorMes: ''
+          });
+            this.props.history.push("/restaurants")
+
           } else {
+            throw error
+          }
+        })
+        .catch((error) => {
             this.setState({
               error: true,
               errorMes: error
             })
-          }
         })
     }
   }

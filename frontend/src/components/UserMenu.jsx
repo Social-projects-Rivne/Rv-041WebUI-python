@@ -41,7 +41,7 @@ class UserMenu extends React.Component {
         localStorage.removeItem('role');
       })
       .then(
-        this.props.state.changeState({
+        this.props.ctx.changeState({
           auth: false,
           token: '',
           role: ''
@@ -54,10 +54,9 @@ class UserMenu extends React.Component {
 
   render() {
 
-    const { auth, token, role } = this.props.state.state;
+    const { auth, token, role } = this.props.ctx;
     const isOwner = role === "Owner";
     const { anchorEl } = this.state;
-    console.log("asda", anchorEl)
     const open = Boolean(anchorEl);
     const { classes } = this.props;
     const match = "";

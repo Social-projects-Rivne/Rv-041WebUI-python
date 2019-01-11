@@ -15,7 +15,10 @@ class App extends React.Component {
   componentDidMount() {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');
-    if (token && role) { this.setState({auth: true, token: token, role: role}) }  
+    if (token && role) { 
+      this.setState(
+        {auth: true, token: token, role: role}
+      )}  
   }
 
   changeState = (obj) => {
@@ -25,7 +28,7 @@ class App extends React.Component {
   
   render() {
     return (
-      <AppContext.Provider value={{state: this.state, changeState: this.changeState}}>   
+      <AppContext.Provider value={{...this.state, changeState: this.changeState}}>   
         <BrowserRouter>
           <PageContainer>
             <Router />

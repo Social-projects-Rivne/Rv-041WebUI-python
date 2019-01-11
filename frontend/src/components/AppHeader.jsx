@@ -30,7 +30,7 @@ class AppHeader extends React.Component {
           </Typography>
           <NavMenu />
           <AppContext.Consumer>
-            {(state) => <UserMenu state={state}/>}
+            {(state) => <UserMenu ctx={state}/>}
           </AppContext.Consumer>
         </Toolbar>
       </AppBar>
