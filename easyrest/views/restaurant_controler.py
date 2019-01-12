@@ -123,3 +123,44 @@ def get_restaurant_controler(request):
         rest_with_tags = asign_tags([query])
         body = wrap([rest_with_tags])
     return body
+
+
+@view_config(route_name='get_my_restaurants', renderer='json', request_method='GET')
+def get_my_restaurant_controler(request):
+    """GET request controler to return all restaurants and
+    its tags
+    Args:
+        request: current pyramid request
+    Returns:
+        Json string(not pretty) created from dictionary with format:
+            {
+                "data": data,
+                "success": success,
+                "error": error
+            }
+        Where data is list with restaurant with tags assigned.
+        Style:
+            [
+                {
+                    "id": "restaurantId" + id,
+                    "name": (str),
+                    "description": (str),
+                    "addres_id": curently str,
+                    "owner_id": (int),
+                    "menu_id": (int)
+                    "tags": [{
+                        "id": "tagId" + id
+                        "name": tag name
+                        "priority": (int)
+                    }, ]
+                },
+            ]
+    """
+    owner = request.matchdict["id"]
+    rests = asign_tags(request.dbsession.query(Restaurant).filter_by(owner_id=owner).all())
+    if not rests:
+        raise HTTPNotFound("No restaurants in database")
+    else:
+        body = wrap(rests)
+
+    return body

@@ -6,11 +6,11 @@ import RestaurantItem from "../RestaurantList/RestaurantItem";
 class MyRest extends React.Component {
     state = {
         rests: [],
-        owner: 'Cassidy Lopez'
+        owner: '2'
     };
 
     componentDidMount() {
-        fetch('http://localhost:6543/restaurant')
+        fetch(`http://localhost:6543/my_restaurant/${this.state.owner}`)
             .then(response => response.json())
             .then(data => this.setState({rests: data.data}))
             .catch(err => console.log(err));
@@ -22,7 +22,6 @@ class MyRest extends React.Component {
             <div>
 
                 {this.state.rests.map((rest) => {
-                   if (rest.owner_id === this.state.owner) {
                        return <RestaurantItem
                            key={rest.id}
                            name={rest.name}
@@ -30,7 +29,6 @@ class MyRest extends React.Component {
                            address={rest.addres_id}
                            id={rest.id}
                        />
-                   }
                 })}
             </div>
         )
