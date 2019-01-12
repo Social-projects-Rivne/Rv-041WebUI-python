@@ -25,5 +25,5 @@ class User(Base):
     email = Column(Text)
     phone_number = Column(Text)
     birth_date = Column(Date)
-    role_id = Column(Integer)  # now it is without foreign key relations
-    status_user_id = Column(Integer)  # now it is without foreign key relations
+    role_id = Column(Integer)  # TODO: add relations
+    status_user_id = Column(Integer)  # TODO: add relations

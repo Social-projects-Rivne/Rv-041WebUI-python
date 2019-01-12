@@ -1,12 +1,19 @@
 """Script contains helper functions to work with json such as:
     wrap(): wraper to make response acording to style
-    date_time_normalize(): function, which normaloze date_time object for proper json serialization
+    date_time_normalize(): function, which normalize date_time object for proper json serialization
 """
 
 import datetime
 
 
 def date_time_normalize(date_time_object):
+    """
+    function which, if input parameter is "date_time" - converts date_time object to iso format.
+    Otherwise - returns this paramether without modifications.
+    :param date_time_object: object
+    :return: date_time object in iso format when param type is "date_tame", otherwise - return
+    param "date_time_object" without modifications
+    """
     if isinstance(date_time_object, (datetime.date, datetime.datetime)):
         return date_time_object.isoformat()
     else:

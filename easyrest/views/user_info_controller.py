@@ -32,12 +32,11 @@ def get_user_info_controller(request):
             ]
         If user is unauthorized - throw 403:
     """
-    # in this place must be user authorization status check
-    # but now is simple User with Id = 1
+
+    # TODO: remove when decorator which prevent unauthorized user call this function will added
     user_id = 1
     user = request.dbsession.query(User).get(user_id)
-    # debug (will replace when authorization will be done
-    # user = None
+    # TODO: replace this check with special decorator which prevent unauthorized user call this function
     if user is None:
         raise HTTPForbidden("403")
     else:
