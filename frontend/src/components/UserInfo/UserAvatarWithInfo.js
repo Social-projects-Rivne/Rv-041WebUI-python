@@ -3,6 +3,7 @@ import { Redirect } from 'react-router';
 import {withStyles} from '@material-ui/core/styles';
 import UserInfo from "./UserInfo";
 import UserAvatar from "./UserAvatar";
+import {redirectToSignUp} from "../../Service/NeedAuthorization";
 
 const styles = {
     forDiv: {
@@ -16,29 +17,36 @@ class UserAvatarWithInfo extends React.Component {
 
     state = {
         userInfo: [],
-        isForbidden: false,
+        success: false,
+        error: "",
     };
 
     componentDidMount() {
         fetch('http://localhost:6543/profile')
             .then(response => response.json())
-            .then(data => this.setState({userInfo: data.data[0], isForbidden: data.error.toLowerCase().search("forbidden") === -1 ? false: true}))
+            .then(data => this.setState({userInfo: data.data[0], success: data.success, error: data.error}))
             .catch(err=>console.log(err))
     }
 
     render() {
         const {classes} = this.props;
-        const {userInfo, isForbidden} = this.state;
-        console.log(isForbidden);
-        if (isForbidden){
-            return (<Redirect to='/log-in'/>);
+        const {userInfo, success, error} = this.state;
+
+        let redirection = false;
+        //if success is not true - find if there Forbidden issue
+        if (success === false){
+            redirection = redirectToSignUp(error);
         }
-        else{
+        //check if redirection must occur
+        if (redirection === false){
             return (
                 <div className={classes.forDiv}>
                     <UserAvatar userInfo={userInfo}/>
                     <UserInfo userInfo={userInfo}/>
                 </div>);
+        }
+        else{
+            return (redirection);
         }
     }
 }
