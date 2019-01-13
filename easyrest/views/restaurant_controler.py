@@ -162,9 +162,5 @@ def get_my_restaurant_controler(request):
     # TODO: own = request.dbsession.query(User).filter_by(token=token).first()
     # TODO: owner = own[0]['owner_id']
     restaurants = asign_tags(request.dbsession.query(Restaurant).filter_by(owner_id=owner).all())
-    if not restaurants:
-        raise HTTPNotFound("No restaurants in database")
-    else:
-        body = wrap(restaurants)
-
+    body = wrap(restaurants)
     return body
