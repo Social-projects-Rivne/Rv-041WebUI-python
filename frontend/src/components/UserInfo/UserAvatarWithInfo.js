@@ -7,7 +7,6 @@ import {redirectToSignUp} from "../../Service/NeedAuthorization";
 
 const styles = {
     forDiv: {
-        flexGrow: 1,
         display: "flex",
         justifyContent: "center",
     },
@@ -19,10 +18,18 @@ class UserAvatarWithInfo extends React.Component {
         userInfo: [],
         success: false,
         error: "",
+        token: "Peter P",
     };
 
     componentDidMount() {
-        fetch('http://localhost:6543/profile')
+
+        const headers = new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': this.state.token
+        });
+
+
+        fetch('http://localhost:6543/profile', {method: "GET", headers})
             .then(response => response.json())
             .then(data => this.setState({userInfo: data.data[0], success: data.success, error: data.error}))
             .catch(err=>console.log(err))

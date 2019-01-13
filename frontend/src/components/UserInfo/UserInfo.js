@@ -17,7 +17,6 @@ const styles = {
     },
     cardStyle: {
         width: "100%",
-        float: "left",
         margin: 16,
     }
 }

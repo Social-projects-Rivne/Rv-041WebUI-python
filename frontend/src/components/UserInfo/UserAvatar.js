@@ -12,9 +12,7 @@ const styles = {
         flexGrow: 1,
         maxWidth: 345,
         width: "50%",
-        float: "left",
         margin: 16,
-
     },
     media: {
         height: 330,
