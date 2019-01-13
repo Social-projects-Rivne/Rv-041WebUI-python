@@ -25,7 +25,6 @@ class MyRest extends React.Component {
     }
 
     render() {
-        console.log(this.state.rests);
         return (
             <div>
 

@@ -29,14 +29,13 @@ class restaurantInfo extends React.Component {
     componentDidMount() {
         fetch('http://localhost:6543/restaurant/'+ this.props.url.match.params.id)
             .then(response => response.json())
-            .then(data => this.setState({restInfo: data.data[0][0]}))
+            .then(data => this.setState({restInfo: data.data[0]}))
             .catch(err=>console.log(err))
     }
 
     render() {
         const {classes} = this.props;
         const {restInfo} = this.state;
-        console.log(this.state.restInfo);
         return (
             <div className={classes.root}>
                 <Card>
@@ -60,7 +59,7 @@ class restaurantInfo extends React.Component {
                     </Typography>
                     <Typography align="right" style={{margin:10}}>
                         <Button component={Link} to={'menu/' + restInfo.id} variant="contained" color="primary">
-                            Watch menu
+                            see menu
                         </Button>
                     </Typography>
                 </Card>
