@@ -14,7 +14,10 @@ const styles = {
     },
     media: {
         height: 305,
-        width: 460
+        width: "100%"
+    },
+    root: {
+        padding: 8
     }
 };
 
@@ -35,25 +38,25 @@ function restaurantItem(props) {
                             title={name}
                         />
                     </Grid>
-                    <Grid item sm={9}>
+                    <Grid item sm={9} style={{padding:16}}>
                         <Grid>
-                            <Typography gutterBottom variant="h5" component="h2">
+                            <Typography gutterBottom variant="h4" component="h2">
                                 {name}
                             </Typography>
 
-                            <Typography component="p">
+                            <Typography component="p" variant="h6">
                                 {description}
                             </Typography>
                         </Grid>
                         <Grid container justify="space-between" alignItems={"baseline"}>
-                            <Typography component="p">
+                            <Typography component="p" variant="h6" style={{paddingTop:16}}>
                                 Address : {address}
                             </Typography>
                             <Typography align={"right"}>
-                                <Button component={Link} to={'/restaurants/' + id} size="small" color="primary">
+                                <Button component={Link} variant="contained" color="primary" to={'/restaurants/' + id} size="big" >
                                     go to details
                                 </Button>
-                                <Button component={Link} to={'rest/menu/' + id} size="small" color="primary">
+                                <Button component={Link} variant="contained" color="primary" to={'rest/menu/' + id} size="big" style={{marginLeft:16,marginRight:24}} >
                                     Watch menu
                                 </Button>
                             </Typography>

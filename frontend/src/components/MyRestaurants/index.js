@@ -6,11 +6,19 @@ import RestaurantItem from "../RestaurantList/RestaurantItem";
 class MyRest extends React.Component {
     state = {
         rests: [],
-        owner: '2'
+        token: 'Scott Baker' // TODO: get data from local storage after auth
+
     };
 
     componentDidMount() {
-        fetch(`http://localhost:6543/my_restaurant/${this.state.owner}`)
+        const headers = new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': this.state.token
+        });
+        fetch(`http://localhost:6543/my_restaurant`,{
+            method: "GET",
+            headers
+        })
             .then(response => response.json())
             .then(data => this.setState({rests: data.data}))
             .catch(err => console.log(err));

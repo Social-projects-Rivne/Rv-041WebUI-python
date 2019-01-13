@@ -127,7 +127,7 @@ def get_restaurant_controler(request):
 
 @view_config(route_name='get_my_restaurants', renderer='json', request_method='GET')
 def get_my_restaurant_controler(request):
-    """GET request controler to return all restaurants and
+    """GET request controler to return my restaurants and
     its tags
     Args:
         request: current pyramid request
@@ -156,7 +156,11 @@ def get_my_restaurant_controler(request):
                 },
             ]
     """
-    owner = request.matchdict["id"]
+    owner = request.headers.get('Authorization')
+    # TODO: take owner_id from table users after Max pullrequst
+    # token = request.headers.get('Authorization')
+    # own = request.dbsession.query(User).filter_by(token=token).first()
+    # owner = own[0]['owner_id']
     rests = asign_tags(request.dbsession.query(Restaurant).filter_by(owner_id=owner).all())
     if not rests:
         raise HTTPNotFound("No restaurants in database")
