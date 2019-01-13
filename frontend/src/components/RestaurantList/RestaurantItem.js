@@ -53,10 +53,10 @@ function restaurantItem(props) {
                                 Address : {address}
                             </Typography>
                             <Typography align={"right"}>
-                                <Button component={Link} variant="contained" color="primary" to={'/restaurants/' + id} size="big" >
+                                <Button component={Link} variant="contained" color="primary" to={'/restaurants/' + id} size="large" >
                                     go to details
                                 </Button>
-                                <Button component={Link} variant="contained" color="primary" to={'rest/menu/' + id} size="big" style={{marginLeft:16,marginRight:24}} >
+                                <Button component={Link} variant="contained" color="primary" to={'rest/menu/' + id} size="large" style={{marginLeft:16,marginRight:24}} >
                                     Watch menu
                                 </Button>
                             </Typography>

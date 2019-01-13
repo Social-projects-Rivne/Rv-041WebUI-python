@@ -158,9 +158,9 @@ def get_my_restaurant_controler(request):
     """
     owner = request.headers.get('Authorization')
     # TODO: take owner_id from table users after Max pullrequst
-    # token = request.headers.get('Authorization')
-    # own = request.dbsession.query(User).filter_by(token=token).first()
-    # owner = own[0]['owner_id']
+    # TODO: token = request.headers.get('Authorization')
+    # TODO: own = request.dbsession.query(User).filter_by(token=token).first()
+    # TODO: owner = own[0]['owner_id']
     rests = asign_tags(request.dbsession.query(Restaurant).filter_by(owner_id=owner).all())
     if not rests:
         raise HTTPNotFound("No restaurants in database")
