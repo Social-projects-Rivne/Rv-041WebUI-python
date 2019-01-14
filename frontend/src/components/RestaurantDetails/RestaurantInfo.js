@@ -14,6 +14,9 @@ const styles = {
         width: "50%",
         float: "left",
         marginRight: 16
+    },
+    root:{
+        margin:16
     }
 };
 
@@ -24,9 +27,9 @@ class restaurantInfo extends React.Component {
     };
 
     componentDidMount() {
-        fetch('http://localhost:3000/restaurant.json')
+        fetch('http://localhost:6543/restaurant/'+ this.props.url.match.params.id)
             .then(response => response.json())
-            .then(data => this.setState({restInfo: data.data[this.props.url.match.params.id-1]}))
+            .then(data => this.setState({restInfo: data.data[0]}))
             .catch(err=>console.log(err))
     }
 
@@ -42,23 +45,23 @@ class restaurantInfo extends React.Component {
                         image="https://www.omnihotels.com/-/media/images/hotels/bospar/restaurants/bospar-omni-parker-house-parkers-restaurant-1170.jpg"
                         title={"ok"}
                     />
-                    <Typography gutterBottom variant="h5" component="h2">
+                    <Typography gutterBottom variant="h3">
                         {restInfo.name}
                     </Typography>
-                    <Typography component="p">
+                    <Typography component="p" variant="h5">
                         Address: {restInfo.addres_id} <br/>
                         Works hour: 10.00 - 23.00 <br/>
                         Phone: 093-999-23-08
-                        <Button component={Link} to={'menu/' + restInfo.id} variant="outlined" className={classes.button}>
-                            Watch menu
-                        </Button>
                     </Typography>
                     <Divider variant="middle" style={{marginTop:"10px"}}/>
-                    <Typography component="p">
+                    <Typography component="p" variant="h5">
                         {restInfo.description}{restInfo.description}
                     </Typography>
-
-
+                    <Typography align="right" style={{margin:10}}>
+                        <Button component={Link} to={'menu/' + restInfo.id} variant="contained" color="primary">
+                            see menu
+                        </Button>
+                    </Typography>
                 </Card>
 
             </div>

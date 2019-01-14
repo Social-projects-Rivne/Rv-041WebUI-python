@@ -121,5 +121,46 @@ def get_restaurant_controler(request):
         raise HTTPNotFound("Restaurant with id=%s not found" % (rest_id))
     else:
         rest_with_tags = asign_tags([query])
-        body = wrap([rest_with_tags])
+        body = wrap(rest_with_tags)
+    return body
+
+
+@view_config(route_name='get_my_restaurants', renderer='json', request_method='GET')
+def get_my_restaurant_controler(request):
+    """GET request controler to return my restaurants and
+    its tags
+    Args:
+        request: current pyramid request
+    Returns:
+        Json string(not pretty) created from dictionary with format:
+            {
+                "data": data,
+                "success": success,
+                "error": error
+            }
+        Where data is list with restaurant with tags assigned.
+        Style:
+            [
+                {
+                    "id": "restaurantId" + id,
+                    "name": (str),
+                    "description": (str),
+                    "addres_id": curently str,
+                    "owner_id": (int),
+                    "menu_id": (int)
+                    "tags": [{
+                        "id": "tagId" + id
+                        "name": tag name
+                        "priority": (int)
+                    }, ]
+                },
+            ]
+    """
+    owner = request.headers.get('Authorization')
+    # TODO: take owner_id from table users after Max pullrequst
+    # TODO: token = request.headers.get('Authorization')
+    # TODO: own = request.dbsession.query(User).filter_by(token=token).first()
+    # TODO: owner = own[0]['owner_id']
+    restaurants = asign_tags(request.dbsession.query(Restaurant).filter_by(owner_id=owner).all())
+    body = wrap(restaurants)
     return body
