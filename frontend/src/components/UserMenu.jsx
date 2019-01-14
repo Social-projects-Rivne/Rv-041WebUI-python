@@ -31,15 +31,22 @@ class UserMenu extends React.Component {
   };
 
   handleLogout = () => {
-    fetch('http://localhost:6543/login', {
+    fetch('http://localhost:6543/api/login', {
       method: 'DELETE',
       headers: {
         'x-auth-token': localStorage.getItem('token')
       }
-    }).then(res => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success) {
+          throw "Logout failed"
+        }        
       })
+    .then(_ => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('role');
+    })
       .then(
         this.props.ctx.changeState({
           auth: false,
@@ -50,6 +57,9 @@ class UserMenu extends React.Component {
       .then(
         this.setState({anchorEl: null})
       )
+      .catch(error => {
+        console.log(error)
+      })
   };
 
   render() {

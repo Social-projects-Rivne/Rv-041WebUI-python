@@ -52,21 +52,15 @@ class Login extends React.Component {
         errorMes: 'Password field cannot be empty'
       })
     } else {
-      fetch('http://localhost:6543/login', {
+      fetch('http://localhost:6543/api/login', {
         method: "POST",
         body: JSON.stringify(body),
         headers: { "Content-Type": "application/json" }
       })
-      .then(response => response.json()
-        .then(data => ({
-            json: data,
-            token: response.headers.get('x-auth-token')
-        }))
-      )
+      .then(response => response.json())
       .then(input => {
-          const { json, token } = input
-          const { success, error, data } = json;
-          const role = data;
+          const { success, error, data } = input;
+          const { role, token } = data;
           if (success && role && token) {
             localStorage.setItem('token', token);
             localStorage.setItem('role', role);

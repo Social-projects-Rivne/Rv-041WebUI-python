@@ -40,7 +40,11 @@ def login_post(request):
             "password": (str)
         }
     Return:
-        user status string  
+        {
+            "role": user status string,
+            "token": token
+        }
+         
         with aditional header:
             {'X-Auth-Token': token}
     """
@@ -52,12 +56,13 @@ def login_post(request):
     if user.password != password:
         raise HTTPForbidden("Email or password is invalid")
 
-    res_headers = remember(request, user)
-
-    response = request.response
-    response.headers.update(res_headers)
-
-    return wrap(user.status.name)
+    token = remember(request, user)
+    body = {
+        "role": user.status.name,
+        "token": token
+    }
+    
+    return wrap(body)
 
 
 @view_config(route_name='login', renderer='json', request_method='DELETE')
@@ -69,10 +74,11 @@ def login_del(request):
         DELETE request with header:
             {'X-Auth-Token': token}
     Return:
-        empty list with aditional header:
-            {'X-Auth-Token': ''}
+        {
+            "data": [],
+            "status": True if token deleted
+                      False if none was deleted
+        }
     """
-    res_headers = forget(request)
-    response = request.response
-    response.headers.update(res_headers)
-    return wrap([])
+    status = forget(request)
+    return wrap([], status)

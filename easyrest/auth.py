@@ -26,16 +26,19 @@ def remember(request, user):
         date_last_use=dt.datetime.now()
     )
     user.tokens.append(t_model)
-    return {'X-Auth-Token': token}
+    return token
 
 
 def forget(request):
     """Function to logout. It gets token from request,
-    deletes it from db and form empty header 
+    deletes it from db, checks if any rows was deleted.
+    Return: 
+        True if any was deleted
+        False if none was deleted
     """
     token = request.token
-    request.dbsession.delete(token)
-    return {'X-Auth-Token': ''}
+    count = request.dbsession.delete(token)
+    return True if count != 0 else False
 
 
 def restrict_access(user_types):
