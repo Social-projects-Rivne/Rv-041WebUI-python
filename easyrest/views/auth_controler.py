@@ -8,25 +8,7 @@ from pyramid.httpexceptions import HTTPForbidden
 
 from ..scripts.json_helpers import wrap
 from ..models.user import User
-from ..models.token import Token
 from ..auth import restrict_access, remember, forget
-
-
-@view_config(route_name='login', renderer='json', request_method='GET')
-def login_get(request):
-    """Temporary controller for development
-    Returns:
-        list of all users and their tokens
-    """
-    user_list = request.dbsession.query(User).all()
-    data = []
-    for user in user_list:
-        tokens = user.tokens
-        tokens = [token.as_dict() for token in tokens]
-        user = user.as_dict()
-        user.update({"tokens": tokens})
-        data.append(user)
-    return wrap(data, True, '')
 
 
 @view_config(route_name='login', renderer='json', request_method='POST')
@@ -44,16 +26,12 @@ def login_post(request):
             "role": user status string,
             "token": token
         }
-         
-        with aditional header:
-            {'X-Auth-Token': token}
     """
     req_json = request.json_body
     email, password = req_json["email"], req_json["password"]
-    user = request.dbsession.query(User).filter(User.email == email).first()
-    if user is None:
-        raise HTTPForbidden("Email or password is invalid")
-    if user.password != password:
+    user = request.dbsession.query(User).filter_by(email=email).first()
+    
+    if user is None or user.password != password:
         raise HTTPForbidden("Email or password is invalid")
 
     token = remember(request, user)
@@ -61,7 +39,6 @@ def login_post(request):
         "role": user.status.name,
         "token": token
     }
-    
     return wrap(body)
 
 

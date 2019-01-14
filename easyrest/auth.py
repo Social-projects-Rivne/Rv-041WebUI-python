@@ -3,12 +3,12 @@
 to request. 
 """
 
-from passlib.pwd import genword
 import datetime as dt
 
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.httpexceptions import HTTPForbidden
+from passlib.pwd import genword
 
 from .models import User
 from .models import Token
