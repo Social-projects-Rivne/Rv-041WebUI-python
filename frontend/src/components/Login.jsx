@@ -65,11 +65,8 @@ class Login extends React.Component {
       )
       .then(input => {
           const { json, token } = input
-          // console.log(data1.data)
           const { success, error, data } = json;
-          // console.log(token)
-          // const token = json.token;
-          const role = data[0];
+          const role = data;
           if (success && role && token) {
             localStorage.setItem('token', token);
             localStorage.setItem('role', role);
@@ -111,6 +108,7 @@ class Login extends React.Component {
                    <TextField
                      label="Enter your Email"
                      fullWidth
+                     required={true}
                      onChange = {(e, value) => this.handleChange(e, "email")}
                      />
                    </Grid>
@@ -119,6 +117,7 @@ class Login extends React.Component {
                        type="password"
                        label="Enter your Password"
                        fullWidth
+                       required={true}
                        onChange = {(e, value) => this.handleChange(e, "password")}
                        />
                       </Grid>

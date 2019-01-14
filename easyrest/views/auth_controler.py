@@ -40,7 +40,8 @@ def login_post(request):
             "password": (str)
         }
     Return:
-        empty list with aditional header:
+        user status string  
+        with aditional header:
             {'X-Auth-Token': token}
     """
     req_json = request.json_body
@@ -56,7 +57,7 @@ def login_post(request):
     response = request.response
     response.headers.update(res_headers)
 
-    return wrap([user.status.name])
+    return wrap(user.status.name)
 
 
 @view_config(route_name='login', renderer='json', request_method='DELETE')

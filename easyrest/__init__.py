@@ -39,7 +39,7 @@ def main(global_config, **settings):
     with Configurator(settings=settings) as config:
         config.include('.models')
         config.include('pyramid_jinja2')
-        config.include('.routes')
+        config.include('.routes', route_prefix='/api')
         config.include('.auth')
         config.add_subscriber(add_cors_headers_response_callback, NewRequest)
         config.scan()
