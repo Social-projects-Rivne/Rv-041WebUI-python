@@ -50,7 +50,7 @@ class UserMenu extends React.Component {
             </Button>
             /{" "}
             <Button color="inherit" component={Link} to={`${match}/sign-up`}>
-              Sign Un
+              Sign Up
             </Button>
           </div>
         )}
