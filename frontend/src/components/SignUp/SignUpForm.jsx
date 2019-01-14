@@ -28,6 +28,28 @@ const styles = theme => ({
   },
 });
 
+class SubmittedForm extends React.Component {
+  render() {
+    const {classes} = this.props;
+    return (
+      <div>
+        <Grid container justify='center' className={classes.form}>
+          <Typography variant="h4" align='center'>
+            {this.props.message}
+          </Typography>
+          <Grid container direction='column' alignContent='center'>
+            <Grid item>
+              <Button variant="outlined" href="/" className={classes.button}>
+                Go to homepage
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+      </div>
+    );
+  }
+}
+
 class SignUpForm extends React.Component {
   constructor(props) {
     super(props);
@@ -56,7 +78,7 @@ class SignUpForm extends React.Component {
       method: "POST",
       body: JSON.stringify(formData),
     };
-    fetch("http://localhost:6543/sign-up", requestConfig)
+    fetch("http://localhost:6543/api/sign-up", requestConfig)
       .then(response => response.json())
       .then(response => this.setState({serverResponse: response.success}))
       .catch(error => this.setState({errors: true}));
@@ -64,64 +86,73 @@ class SignUpForm extends React.Component {
 
   render() {
     const {classes} = this.props;
-    return (
-      <Grid container justify='center' className={classes.form}>
-        <Card className={classes.cardBody}>
-          <Typography variant="h4" align='center'>
-            Create your account
-          </Typography>
-          <form>
-            <Grid container direction='column' alignContent='center'>
-              <CardContent>
-                <Grid item>
-                  <TextField
-                    required
-                    label="Name"
-                    defaultValue=""
-                    onChange={this.handleChange}
-                    className={classes.textField}
-                    margin="normal"
-                    name="name"
-                  />
-                  <TextField
-                    required
-                    label="Email"
-                    defaultValue=""
-                    onChange={this.handleChange}
-                    className={classes.textField}
-                    margin="normal"
-                    name="email"
-                  />
-                </Grid>
-                <Grid item>
-                  <TextField
-                    required
-                    label="Password"
-                    onChange={this.handleChange}
-                    className={classes.textField}
-                    defaultValue=""
-                    type="password"
-                    margin="normal"
-                    name="password"
-                  />
-                  <TextField
-                    required
-                    label="Confirm password"
-                    className={classes.textField}
-                    defaultValue=""
-                    type="password"
-                    margin="normal"
-                  />
-                </Grid>
-              </CardContent>
-              <Button type="submit" variant="contained" color="primary" className={classes.button}>
-                Create an account
-              </Button>
-            </Grid>
-          </form>
-        </Card>
-      </Grid>
-    );
+    if (this.state.errors) {
+      return (
+        <SubmittedForm classes={classes} message={"Ooops something went wrong!"}/>
+
+      );
+    } else if (this.state.serverResponse) {
+      return (
+        <SubmittedForm classes={classes} message={"Thanks for registration!"}/>
+      );
+    } else {
+      return (
+        <Grid container justify='center' className={classes.form}>
+          <Card className={classes.cardBody}>
+            <Typography variant="h4" align='center'>
+              Create your account
+            </Typography>
+            <form onSubmit={this.handleSubmit}>
+              <Grid container direction='column' alignContent='center'>
+                <CardContent>
+                  <Grid item>
+                    <TextField
+                      required
+                      label="Name"
+                      defaultValue=""
+                      onChange={this.handleChange}
+                      className={classes.textField}
+                      margin="normal"
+                      name="name"
+                    />
+                    <TextField
+                      required
+                      label="Email"
+                      defaultValue=""
+                      onChange={this.handleChange}
+                      className={classes.textField}
+                      margin="normal"
+                      name="email"
+                    />
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      required
+                      label="Password"
+                      onChange={this.handleChange}
+                      className={classes.textField}
+                      type="password"
+                      margin="normal"
+                      name="password"
+                    />
+                    <TextField
+                      required
+                      label="Confirm password"
+                      className={classes.textField}
+                      type="password"
+                      margin="normal"
+                    />
+                  </Grid>
+                </CardContent>
+                <Button type="submit" variant="contained" color="primary" className={classes.button}>
+                  Create an account
+                </Button>
+              </Grid>
+            </form>
+          </Card>
+        </Grid>
+      );
+    }
   }
 }
 
