@@ -38,6 +38,28 @@ class SignUpForm extends React.Component {
       serverResponse: false,
       errors: false
     };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(e) {
+    this.setState({[e.target.name]: e.target.value});
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    const {name, email, password} = this.state;
+    const formData = {name, email, password};
+    const requestConfig = {
+      headers: new Headers({"Content-Type": "application/json"}),
+      method: "POST",
+      body: JSON.stringify(formData),
+    };
+    fetch("http://localhost:6543/sign-up", requestConfig)
+      .then(response => response.json())
+      .then(response => this.setState({serverResponse: response.success}))
+      .catch(error => this.setState({errors: true}));
   }
 
   render() {
@@ -56,6 +78,7 @@ class SignUpForm extends React.Component {
                     required
                     label="Name"
                     defaultValue=""
+                    onChange={this.handleChange}
                     className={classes.textField}
                     margin="normal"
                     name="name"
@@ -64,6 +87,7 @@ class SignUpForm extends React.Component {
                     required
                     label="Email"
                     defaultValue=""
+                    onChange={this.handleChange}
                     className={classes.textField}
                     margin="normal"
                     name="email"
@@ -73,7 +97,9 @@ class SignUpForm extends React.Component {
                   <TextField
                     required
                     label="Password"
+                    onChange={this.handleChange}
                     className={classes.textField}
+                    defaultValue=""
                     type="password"
                     margin="normal"
                     name="password"
@@ -82,6 +108,7 @@ class SignUpForm extends React.Component {
                     required
                     label="Confirm password"
                     className={classes.textField}
+                    defaultValue=""
                     type="password"
                     margin="normal"
                   />
