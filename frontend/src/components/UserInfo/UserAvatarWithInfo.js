@@ -1,9 +1,9 @@
 import React from 'react';
-import { Redirect } from 'react-router';
 import {withStyles} from '@material-ui/core/styles';
 import UserInfo from "./UserInfo";
 import UserAvatar from "./UserAvatar";
 import {redirectToSignUp} from "../../Service/NeedAuthorization";
+import GeneralError from "../ErrorPages/GeneralError";
 
 const styles = {
     forDiv: {
@@ -15,8 +15,9 @@ const styles = {
 class UserAvatarWithInfo extends React.Component {
 
     state = {
+        needRedirection: false,
         userInfo: [],
-        success: false,
+        success: null,
         error: "",
         token: "Peter P",
     };
@@ -28,32 +29,36 @@ class UserAvatarWithInfo extends React.Component {
             'Authorization': this.state.token
         });
 
-
         fetch('http://localhost:6543/profile', {method: "GET", headers})
-            .then(response => response.json())
-            .then(data => this.setState({userInfo: data.data[0], success: data.success, error: data.error}))
-            .catch(err=>console.log(err))
+            .then(response => (response.status === 403 ? this.setState({needRedirection: true, success: false}): response.json()))
+            .then(data => this.setState({userInfo: data.data, success: data.success, error: data.error}))
+            .catch(err => this.setState({success: false, error: err.message}))
     }
 
     render() {
         const {classes} = this.props;
-        const {userInfo, success, error} = this.state;
+        const {needRedirection, userInfo, success, error} = this.state;
 
-        let redirection = false;
-        //if success is not true - find if there Forbidden issue
-        if (success === false){
-            redirection = redirectToSignUp(error);
+        //prevent for rendering without fetch completing
+        if (success === null){
+            return null;
         }
-        //check if redirection must occur
-        if (redirection === false){
-            return (
-                <div className={classes.forDiv}>
-                    <UserAvatar userInfo={userInfo}/>
-                    <UserInfo userInfo={userInfo}/>
-                </div>);
+
+        if (needRedirection === true){
+            let redirection = redirectToSignUp(error);
+            return redirection;
         }
         else{
-            return (redirection);
+            if(success ===true){
+                return (
+                    <div className={classes.forDiv}>
+                        <UserAvatar userInfo={userInfo}/>
+                        <UserInfo userInfo={userInfo}/>
+                    </div>);
+            }
+            else{
+                return(<GeneralError error={error}/>);
+            }
         }
     }
 }

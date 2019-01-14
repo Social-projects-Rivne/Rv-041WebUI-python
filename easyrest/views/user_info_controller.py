@@ -41,5 +41,5 @@ def get_user_info_controller(request):
     else:
         user_dict = user.as_dict()
         user_dict = {key: date_time_normalize(value) for key, value in user_dict.items()}
-        body = wrap([user_dict])
+        body = wrap(user_dict)
     return body

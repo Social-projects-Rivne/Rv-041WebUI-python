@@ -84,14 +84,14 @@ def fill_db(session):
         Rest_models.append(rest_model)
 
     # add users
-    for myIter in range(menu_item_number):
+    for i in range(menu_item_number):
         user = {
             "name": fake.name(),
             "email": fake.email(),
             "phone_number": fake.phone_number(),
             "birth_date": fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100),
-            "role_id": myIter,
-            "status_user_id": myIter + 1,
+            "role_id": i,
+            "status_user_id": i + 1,
         }
         current_user = User(**user)
         user_model.append(current_user)

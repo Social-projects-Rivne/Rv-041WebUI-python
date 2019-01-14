@@ -24,7 +24,7 @@ def wrap(data, success=True, error=None):
     """Function to turn python dictionary from models output to
     json style for futher send with responce
     Args:
-        data (list): list of dictionaries representing models output
+        data: any serializable data
         error (str): error message, None by default
         success (bool): request status True is request succeeded
             otherwise False, True by default

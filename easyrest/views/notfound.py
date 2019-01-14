@@ -10,4 +10,11 @@ from ..scripts.json_helpers import wrap
 
 @notfound_view_config(renderer='json')
 def notfound_view(error, request):
+    """
+    Overrided notfound view for adding specific information to it.
+    :param error: object represents error
+    :param request: standard Pyramid Request object
+    :return: dictionary
+    """
+    request.response.status_code = 404
     return wrap([], False, "%s: %s" % (error.title, error.args[0]))

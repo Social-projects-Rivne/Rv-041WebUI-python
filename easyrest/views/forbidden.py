@@ -13,7 +13,8 @@ def forbidden_view(error, request):
     """
     Overrided forbidden view for adding specific information to it.
     :param error: object represents error
-    :param request: standard Pyramid request object
+    :param request: standard Pyramid Request object
     :return: dictionary
     """
+    request.response.status_code = 403
     return wrap([], False, "%s: %s" % (error.title, error.args[0]))
