@@ -122,8 +122,10 @@ class Login extends React.Component {
                           </Typography>
                         </Grid>
                       )}
-                      <Grid style={{ display: "flex" }} item xs={12} justify="flex-end">
-                        <Button type="submit" color="primary" variant="contained">Submit</Button>
+                      <Grid item xs={12}>
+                        <Grid container justify='flex-end'>
+                          <Button type="submit" color="primary" variant="contained">Submit</Button>
+                        </Grid>
                       </Grid>
                     </Grid>
                   </CardContent>
