@@ -13,3 +13,5 @@ def includeme(config):
                      request_method="GET")
     config.add_route('get_menu', 'restaurant/{id:[1-9]\d*}/menu',
                      request_method="GET")
+    config.add_route('get_my_restaurants', 'my_restaurant',
+                     request_method="GET")
