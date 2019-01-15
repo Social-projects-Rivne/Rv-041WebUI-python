@@ -79,7 +79,7 @@ class AddUpdateRestaurant extends React.Component {
 
   componentDidMount() {
     this.props.requestType === "put" &&
-      fetch(`http://localhost:6543/restaurant/${this.props.id}`)
+      fetch(`http://localhost:6543/api/restaurant/${this.props.id}`)
         .then(response => response.json())
         .then(rest => rest.data[0])
         .then(restInfo =>
@@ -92,7 +92,7 @@ class AddUpdateRestaurant extends React.Component {
           })
         );
 
-    fetch("http://localhost:6543/tag")
+    fetch("http://localhost:6543/api/tag")
       .then(response => response.json())
       .then(tags => this.setState({ allTags: tags.data }));
   }
@@ -128,10 +128,11 @@ class AddUpdateRestaurant extends React.Component {
     switch (requestType) {
       // eslint-disable-next-line
       case "post":
-        return fetch("http://localhost:6543/user_restaurants", {
+        return fetch("http://localhost:6543/api/user_restaurants", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "x-auth-token": localStorage.getItem("token")
           },
           body: JSON.stringify(newRest)
         })
@@ -157,9 +158,12 @@ class AddUpdateRestaurant extends React.Component {
           });
 
       case "put":
-        return fetch(`http://localhost:6543/user_restaurant/${restId}`, {
+        return fetch(`http://localhost:6543/api/user_restaurant/${restId}`, {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": localStorage.getItem("token")
+          },
           body: JSON.stringify(newRest)
         })
           .then(response => {

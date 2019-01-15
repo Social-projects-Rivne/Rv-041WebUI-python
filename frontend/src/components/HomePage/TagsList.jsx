@@ -39,7 +39,7 @@ class TagsList extends Component {
   };
 
   componentDidMount() {
-    fetch("http://localhost:6543/tag")
+    fetch("http://localhost:6543/api/tag")
       .then(response => response.json())
       .then(data => this.setState({ tags: data.data }));
   }

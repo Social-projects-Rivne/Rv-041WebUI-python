@@ -4,11 +4,16 @@ import AddUpdateRestaurant from "../components/Profile/AddUpdateRestaurant";
 
 class MyRestaurant extends Component {
   state = {
-    myRestaurants: [],
+    myRestaurants: []
   };
 
   componentDidMount() {
-    fetch(`http://localhost:6543/user_restaurants`)
+    fetch(`http://localhost:6543/api/user_restaurants`, {
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": localStorage.getItem("token")
+      }
+    })
       .then(response => response.json())
       .then(rests => this.setState({ myRestaurants: rests.data }));
   }

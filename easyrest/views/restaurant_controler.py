@@ -10,6 +10,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from ..scripts.json_helpers import wrap
 from ..models.restaurant import Restaurant
 from ..models.tag import Tag
+from ..auth import restrict_access
 
 
 def asign_tags(rests):
@@ -138,6 +139,7 @@ def get_restaurant_controler(request):
     renderer='json',
     request_method='GET'
 )
+@restrict_access(user_types=['Client'])
 def user_restaurants(request):
     """GET request controler to return my restaurants and
     its tags
@@ -168,13 +170,7 @@ def user_restaurants(request):
                 },
             ]
     """
-    owner = request.headers.get('Authorization')
-    # TODO: take owner_id from table users after Max pullrequst
-    # TODO: token = request.headers.get('Authorization')
-    # TODO: own = request.dbsession.query(User).filter_by(token=token).first()
-    # TODO: owner = own[0]['owner_id']
-    restaurants = asign_tags(request.dbsession.query(
-        Restaurant).filter_by(owner_id=owner).all())
+    restaurants = asign_tags(request.token.user.restaurants)
     body = wrap(restaurants)
 
     return body
@@ -185,13 +181,11 @@ def user_restaurants(request):
     request_method="POST",
     renderer='json'
 )
+@restrict_access(user_types=['Client'])
 def create_user_restaurant(request):
     """
     POST request controller. Create new restaurant in database and return created item
     """
-    # TODO: take user from auth decorator
-    # TODO: check role, if not owner change user status
-
     rest_data = request.json_body
 
     name, description, phone, address, tags = rest_data["name"], rest_data[
@@ -205,8 +199,9 @@ def create_user_restaurant(request):
         Tag).filter_by(name=tag["name"]).first() for tag in tags]
 
     rest = Restaurant(name=name, description=description,
-                      phone=phone, address_id=address, owner_id="Jason Brown",)
+                      phone=phone, address_id=address)
     rest.tag = tag_models
+    rest.user = request.token.user
     try:
         request.dbsession.add(rest)
         request.dbsession.flush()
