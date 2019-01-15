@@ -14,3 +14,5 @@ def includeme(config):
                      request_method="GET")
     config.add_route('get_user_info', 'profile',
                      request_method="GET")
+    config.add_route('options_handling', '/{catch_all:.*}',
+                     request_method="OPTIONS")

@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
 
 function GeneralError(props) {
-  const { classes, error } = props;
+  const { error } = props;
 
   return (
      <Grid container >

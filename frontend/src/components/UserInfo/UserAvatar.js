@@ -3,7 +3,6 @@ import {withStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 
 import CardMedia from '@material-ui/core/CardMedia';
-import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
@@ -27,7 +26,6 @@ class UserAvatar extends React.Component {
 
         return (
             <Card className={classes.card}>
-              <CardActionArea>
                 <CardMedia
                   className={classes.media}
                   image="https://previews.123rf.com/images/salamatik/salamatik1801/salamatik180100019/92979836-ic%C3%B4ne-de-visage-anonyme-de-profil-personne-silhouette-grise-avatar-par-d%C3%A9faut-masculin-photo-placeholder-.jpg"
@@ -41,7 +39,6 @@ class UserAvatar extends React.Component {
                     Common user
                   </Typography>
                 </CardContent>
-              </CardActionArea>
             </Card>
         );
     }
