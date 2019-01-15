@@ -1,6 +1,7 @@
 import React from "react";
 import HomePage from "./containers/HomePage";
 import RestautantListPage from "./containers/RestaurantListPage";
+import MyRestaurantsPage from './containers/MyRestaurantsPage';
 import RestaurantsMapPage from "./containers/RestaurantsMapPage";
 import RestaurantPage from "./containers/RastaurantPage";
 import { Route, Switch } from "react-router-dom";
@@ -18,6 +19,7 @@ class Router extends React.Component {
           <Route path="/restaurants/:id" exact component={RestaurantPage} />
           <Route path="/log-in" component={LogInPage} />
           <Route path="/sign-up" component={SignUpPage} />
+          <Route path="/profile/my-restaurants" component={MyRestaurantsPage} />
         </Switch>
       </React.Fragment>
     );
