@@ -3,6 +3,8 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import AddIcon from "@material-ui/icons/Add";
 import Edit from "@material-ui/icons/Edit";
+import green from "@material-ui/core/colors/green";
+import amber from "@material-ui/core/colors/amber";
 import {
   Fab,
   withStyles,
@@ -44,6 +46,12 @@ const styles = theme => ({
   listItem: {
     textTransform: "capitalize",
   },
+  snackbarSuccess: {
+    backgroundColor: green[600],
+  },
+  snackbarError: {
+    backgroundColor: amber[700],
+  },
 });
 
 const MenuProps = {
@@ -62,12 +70,28 @@ class AddUpdateRestaurant extends React.Component {
     description: "",
     tags: [],
     allTags: [],
-    expanded: false,
+    formExpanded: false,
     snackbarOpen: false,
-    notValid: false,
+    isValid: true,
+    success: false,
+    snackbarMsg: "Error",
   };
 
   componentDidMount() {
+    this.props.requestType === "put" &&
+      fetch(`http://localhost:6543/restaurant/${this.props.id}`)
+        .then(response => response.json())
+        .then(rest => rest.data[0])
+        .then(restInfo =>
+          this.setState({
+            name: restInfo.name,
+            address: restInfo.address_id,
+            phone: restInfo.phone,
+            description: restInfo.description,
+            tags: [...restInfo.tags],
+          }),
+        );
+
     fetch("http://localhost:6543/tag")
       .then(response => response.json())
       .then(tags => this.setState({ allTags: tags.data }));
@@ -75,84 +99,99 @@ class AddUpdateRestaurant extends React.Component {
 
   handleExpandFormClick = () => {
     this.setState({
-      expanded: !this.state.expanded,
+      formExpanded: !this.state.formExpanded,
     });
   };
 
   handleCloseFormClick = () => {
     this.setState({
-      expanded: false,
+      formExpanded: false,
     });
   };
 
   handleSubmit = (event, requestType, restId) => {
     event.preventDefault();
-    const { name, address, phone, description, tags } = this.state;
+    const { name, address, description, phone, tags } = this.state;
 
-    if (!name.trim() || !address.trim()) {
-      this.setState({ notValid: true });
+    const newRest = { name, address, description, phone, tags };
+
+    if (requestType === "post" && (!name.trim() || !address.trim())) {
+      this.setState({
+        isValid: false,
+        snackbarOpen: true,
+        snackbarMsg: "Fill all required fields",
+      });
       return;
-    } else {
-      this.setState({ notValid: false });
     }
 
     switch (requestType) {
+      // eslint-disable-next-line
       case "post":
-        return fetch("http://localhost:6543/add_restaurant/", {
+        return fetch("http://localhost:6543/user_restaurants", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: name,
-            address: address,
-            phone: phone,
-            description: description,
-            tags: tags,
-          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newRest),
         })
-          .then(response => response.json())
-          .then(myRest => {
-            return this.props.onAdd(myRest.data);
+          .then(response => {
+            return response.status >= 200 && response.status < 300
+              ? response.json()
+              : response.json().then(Promise.reject.bind(Promise));
           })
-          .then(
+          .then(myRest => {
             this.setState({
               snackbarOpen: true,
-              name: "",
-              address: "",
-              phone: "",
-              description: "",
-              tags: [],
-            }),
-          )
-          .catch(err => console.log(err));
+              success: myRest.success,
+              snackbarMsg: myRest.action,
+            });
+            this.props.onAdd(myRest.data);
+          })
+          .catch(err => {
+            this.setState({
+              snackbarOpen: true,
+              success: err.success,
+              snackbarMsg: err.error,
+            });
+          });
 
       case "put":
-        return fetch(`http://localhost:6543/update_restaurant/${restId}`, {
+        return fetch(`http://localhost:6543/user_restaurant/${restId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: name,
-            address: address,
-            phone: phone,
-            description: description,
-            tags: tags,
-          }),
+          body: JSON.stringify(newRest),
         })
-          .then(response => response.json())
-          .then(myRest => {
-            return this.props.onUpdate(myRest.data);
+          .then(response => {
+            return response.status >= 200 && response.status < 300
+              ? response.json()
+              : response.json().then(Promise.reject.bind(Promise));
           })
-          .then(this.setState({ snackbarOpen: true }))
-          .catch(err => console.log(err));
+          .then(myRest => {
+            this.setState({
+              snackbarOpen: true,
+              success: myRest.success,
+              snackbarMsg: myRest.action,
+            });
+            this.props.onUpdate(myRest.data);
+          })
+          .catch(err => {
+            this.setState({
+              snackbarOpen: true,
+              success: err.success,
+              snackbarMsg: err.error,
+            });
+          });
     }
   };
 
   handleFormChange = event => {
     this.setState({
       [event.target.name]: event.target.value,
+      isValid: true,
     });
   };
 
-  handleTagChange = event => {
+  handleTagsChange = event => {
     this.setState({ tags: event.target.value });
   };
 
@@ -164,48 +203,45 @@ class AddUpdateRestaurant extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, requestType, id } = this.props;
     const {
-      expanded,
-      tags,
+      formExpanded,
       allTags,
+      tags,
+      isValid,
+      snackbarOpen,
       name,
-      phone,
       address,
       description,
-      notValid,
+      phone,
+      success,
+      snackbarMsg,
     } = this.state;
+
     return (
       <CardContent>
         <div className={classes.header}>
           <Typography variant="title">
-            {this.props.requestType === "post" ? "Add new" : "Update"}{" "}
-            restaurant:
+            {requestType === "post" ? "Add new" : "Update"} restaurant:
           </Typography>
           <Fab
             className={classnames(classes.fab, {
-              [classes.fabDisabled]: expanded,
+              [classes.fabDisabled]: formExpanded,
             })}
             onClick={this.handleExpandFormClick}
-            aria-expanded={expanded}
+            aria-expanded={formExpanded}
             aria-label="Show more"
             color="primary"
-            disabled={expanded}
+            disabled={formExpanded}
           >
-            {this.props.requestType === "post" ? <AddIcon /> : <Edit />}
+            {requestType === "post" ? <AddIcon /> : <Edit />}
           </Fab>
         </div>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Collapse in={formExpanded} timeout="auto" unmountOnExit>
           <Card>
             <CardContent>
               <form
-                onSubmit={event =>
-                  this.handleSubmit(
-                    event,
-                    this.props.requestType,
-                    this.props.id,
-                  )
-                }
+                onSubmit={event => this.handleSubmit(event, requestType, id)}
                 className={classes.form}
                 noValidate
                 autoComplete="off"
@@ -215,25 +251,25 @@ class AddUpdateRestaurant extends React.Component {
                   <Grid item xs={12}>
                     <TextField
                       value={name}
-                      required
+                      required={requestType === "post"}
                       name="name"
                       label="Restaurant Name"
                       fullWidth
                       className={classes.textField}
-                      error={notValid}
-                      helperText={notValid && "Required field"}
+                      error={!isValid}
+                      helperText={!isValid && "Required field"}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
                       value={address}
-                      required
+                      required={requestType === "post"}
                       name="address"
                       label="Restaurant Address"
                       fullWidth
                       className={classes.textField}
-                      error={notValid}
-                      helperText={notValid && "Required field"}
+                      error={!isValid}
+                      helperText={!isValid && "Required field"}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -263,20 +299,22 @@ class AddUpdateRestaurant extends React.Component {
                       </InputLabel>
                       <Select
                         multiple
-                        label="Restaurant Description"
                         value={tags}
-                        onChange={this.handleTagChange}
+                        onChange={this.handleTagsChange}
                         input={<Input id="select-multiple-checkbox" />}
-                        renderValue={selected => selected.join(", ")}
+                        renderValue={selected => {
+                          let selectedStr = selected
+                            .map(selectedItem => selectedItem.name)
+                            .join(", ");
+
+                          return selectedStr;
+                        }}
                         MenuProps={MenuProps}
                       >
                         {allTags.map(tag => (
-                          <MenuItem key={tag.name} value={tag.name}>
-                            <Checkbox checked={tags.indexOf(tag.name) > -1} />
-                            <ListItemText
-                              className={classes.listItem}
-                              primary={tag.name}
-                            />
+                          <MenuItem key={tag.id} value={tag}>
+                            <Checkbox checked={tags.indexOf(tag) > -1} />
+                            <ListItemText primary={tag.name} />
                           </MenuItem>
                         ))}
                       </Select>
@@ -306,7 +344,7 @@ class AddUpdateRestaurant extends React.Component {
                         color="primary"
                         fullWidth
                       >
-                        {this.props.requestType === "post" ? "Add" : "Update"}
+                        {requestType === "post" ? "Add" : "Update"}
                       </Button>
                     </Grid>
                   </Grid>
@@ -320,18 +358,16 @@ class AddUpdateRestaurant extends React.Component {
             vertical: "bottom",
             horizontal: "right",
           }}
-          open={this.state.snackbarOpen}
+          open={snackbarOpen}
           autoHideDuration={3000}
           onClose={this.handleCloseSnackbar}
           ContentProps={{
             "aria-describedby": "message-id",
+            className: success
+              ? classes.snackbarSuccess
+              : classes.snackbarError,
           }}
-          message={
-            <span id="message-id">
-              Restaurant was{" "}
-              {this.props.requestType === "post" ? "added" : "update"}
-            </span>
-          }
+          message={<span id="message-id">{snackbarMsg}</span>}
           action={[
             <IconButton
               key="close"

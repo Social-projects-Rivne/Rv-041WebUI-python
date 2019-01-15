@@ -12,18 +12,6 @@ def includeme(config):
                      request_method="GET")
     config.add_route('get_menu', 'restaurant/{id:[1-9]\d*}/menu',
                      request_method="GET")
-    config.add_route(
-        'get_my_restaurant',
-        'my_restaurant',
-        request_method="GET"
-    )
-    config.add_route(
-        'add_restaurant',
-        'add_restaurant/',
-        request_method='POST'
-    )
-    config.add_route(
-        'update_restaurant',
-        'update_restaurant/{id:[1-9]\d*}',
-        request_method='PUT'
-    )
+    config.add_route('user_restaurants', 'user_restaurants',
+                     request_method=["GET", "POST"])
+    config.add_route('user_restaurant', 'user_restaurant/{id:[1-9]\d*}')

@@ -26,8 +26,8 @@ class Restaurant(Base):
     __tablename__ = 'restaurants'
     id = Column(Integer, primary_key=True)
     name = Column(Text)
-    description = Column(Text)
     address_id = Column(Text)
+    description = Column(Text)
     owner_id = Column(Text)
     phone = Column(Text)
     work_hours = Column(Text)

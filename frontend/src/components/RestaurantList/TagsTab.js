@@ -28,7 +28,7 @@ class TagsTab extends React.Component {
   };
 
   componentDidMount() {
-    fetch("http://localhost:3000/restaurant.json")
+    fetch("http://localhost:6543/restaurant")
       .then(response => response.json())
       .then(data => this.setState({ rests: data.data }))
       .catch(err => console.log(err));
@@ -85,6 +85,7 @@ class TagsTab extends React.Component {
                   description={rest.description}
                   address={rest.addres_id}
                   id={rest.id}
+                  tags={rest.tags}
                 />
               );
             })}
@@ -103,6 +104,7 @@ class TagsTab extends React.Component {
                         description={rest.description}
                         address={rest.addres_id}
                         id={rest.id}
+                        tags={rest.tags}
                       />
                     );
                   }

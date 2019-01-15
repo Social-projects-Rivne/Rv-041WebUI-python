@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import RestaurantInfo from "../components/RestaurantDetails/RestaurantInfo";
+import AddUpdateRestaurant from "../components/Profile/AddUpdateRestaurant";
 
 export class RastaurantPage extends Component {
   state = {
@@ -19,12 +20,14 @@ export class RastaurantPage extends Component {
 
   render() {
     return (
-      <div>
-        <RestaurantInfo
+      <>
+        <RestaurantInfo restInfo={this.state.restInfo} />
+        <AddUpdateRestaurant
+          requestType="put"
           onUpdate={this.handleUpdateRestaurant}
-          restInfo={this.state.restInfo}
+          id={this.props.match.params.id}
         />
-      </div>
+      </>
     );
   }
 }

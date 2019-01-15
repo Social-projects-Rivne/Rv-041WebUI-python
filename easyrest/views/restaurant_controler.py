@@ -134,12 +134,18 @@ def get_restaurant_controler(request):
 
 
 @view_config(
-    route_name='get_my_restaurant',
+    route_name='user_restaurants',
     renderer='json',
     request_method='GET'
 )
-def get_my_restaurant_controller(request):
-    owner = request.params['owner']
+def user_restaurants(request):
+    """
+    Temporary controller for development until Vitaliy pull request
+    Returns:
+        list of all restaurant by some user
+    """
+    owner = "Jason Brown"
+
     my_rests = request.dbsession.query(
         Restaurant).filter_by(owner_id=owner).all()
     my_rests_with_tags = asign_tags(my_rests)
@@ -150,60 +156,94 @@ def get_my_restaurant_controller(request):
 
 
 @view_config(
-    route_name='add_restaurant',
-    request_method='POST',
+    route_name='user_restaurants',
+    request_method="POST",
     renderer='json'
 )
-def add_restaurant_controller(request):
+def create_user_restaurant(request):
+    """
+    POST request controller. Create new restaurant in database and return created item
+    """
+    # TODO: take user from auth decorator
+    # TODO: check role, if not owner change user status
+
     rest_data = request.json_body
 
-    name,  phone, address, description, tags = rest_data["name"], rest_data[
-<<<<<<< HEAD
-        "phone"], rest_data["address"], rest_data["description"], rest_data["tags"]
-=======
-        "phone"], rest_data["address"], rest_data["description"], rest_data["tag"]
->>>>>>> 1344ded0d67ca0cf45469385e2dbdb25f459339a
+    name, description, phone, address, tags = rest_data["name"], rest_data[
+        "description"], rest_data["phone"], rest_data["address"], rest_data["tags"]
+
+    if not name or not address:
+        msg = "Fill all required fields"
+        return Response(status=422, json_body=wrap([], success=False, error=msg))
 
     tag_models = [request.dbsession.query(
-        Tag).filter_by(name=tag).first() for tag in tags]
+        Tag).filter_by(name=tag["name"]).first() for tag in tags]
 
     rest = Restaurant(name=name, description=description,
                       phone=phone, address_id=address, owner_id="Jason Brown",)
-
     rest.tag = tag_models
-
-    request.dbsession.add(rest)
-    request.dbsession.flush()
-
-    return wrap(asign_tags([rest]))
+    try:
+        request.dbsession.add(rest)
+        request.dbsession.flush()
+        rest_with_tags = asign_tags([rest])
+        return Response(status=201, json_body=wrap(rest_with_tags, action="Restaurant was successfully created"))
+    except Exception:
+        return Response(status=500, json_body=wrap([], success=False, error='Could not save your retaurant.'))
 
 
 @view_config(
-    route_name='update_restaurant',
-    request_method='PUT',
+    route_name='user_restaurant',
+    request_method="GET",
     renderer='json'
 )
-def update_restaurant_controller(request):
-    rest_data = request.json_body
+def get_user_restaurant(request):
+    """
+    GET request controller. Get restaurant for single owner user
+    """
+    # TODO: restrict route for not authorized and only for one owner
+
     rest_id = request.matchdict["id"]
 
-<<<<<<< HEAD
-    name, description, phone, address, tags = rest_data["name"], rest_data[
-        "description"], rest_data["phone"], rest_data["address"], rest_data["tags"]
-=======
-    name, description, phone, address, tag = rest_data["name"], rest_data[
-        "description"], rest_data["phone"], rest_data["address"]
->>>>>>> 1344ded0d67ca0cf45469385e2dbdb25f459339a
+    rest = request.dbsession.query(Restaurant).get(int(rest_id))
+    if rest is None:
+        raise HTTPNotFound("Restaurant with id=%s not found" % (rest_id))
+    else:
+        rest_with_tags = asign_tags([rest])
+        body = wrap(rest_with_tags)
 
+    return body
+
+
+@view_config(
+    route_name='user_restaurant',
+    request_method="PUT",
+    renderer='json'
+)
+def update_user_restaurant(request):
+    # TODO: restrict route for not authorized and only for one owner
+    """
+    PUT request controller. Update restaurant in database and return updated item
+    """
+    rest_data = request.json_body
+    rest_id = request.matchdict["id"]
     rest = request.dbsession.query(Restaurant).get(int(rest_id))
 
-    if name:
-        rest.name = name
-    if description:
-        rest.description = description
-    if phone:
-        rest.phone = phone
-    if address:
-        rest.address_id = address
+    name, description, phone, address, tags = rest_data["name"], rest_data[
+        "description"], rest_data["phone"], rest_data["address"], rest_data["tags"]
 
-    return wrap(rest.as_dict())
+    try:
+        if name:
+            rest.name = name
+        if description:
+            rest.description = description
+        if phone:
+            rest.phone = phone
+        if address:
+            rest.address_id = address
+        if tags:
+            tag_models = [request.dbsession.query(
+                Tag).filter_by(name=tag["name"]).first() for tag in tags]
+            rest.tag = tag_models
+        return Response(status=201, json_body=wrap(rest.as_dict(), action="Restaurant was successfully updated"))
+    except Exception:
+        return Response(status=500, json_body=wrap([], success=False, error='Cannot update your retaurant.'))

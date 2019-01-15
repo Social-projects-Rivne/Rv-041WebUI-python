@@ -4,12 +4,11 @@ import AddUpdateRestaurant from "../components/Profile/AddUpdateRestaurant";
 
 class MyRestaurant extends Component {
   state = {
-    owner: "Jason Brown",
-    myRestaurants: []
+    myRestaurants: [],
   };
 
   componentDidMount() {
-    fetch(`http://localhost:6543/my_restaurant?owner=${this.state.owner}`)
+    fetch(`http://localhost:6543/user_restaurants`)
       .then(response => response.json())
       .then(rests => this.setState({ myRestaurants: rests.data }));
   }
@@ -24,6 +23,7 @@ class MyRestaurant extends Component {
       <div>
         <RestaurantList data={myRestaurants} />
         <AddUpdateRestaurant
+          id={null}
           requestType="post"
           onAdd={this.handleAddRestaurant}
         />

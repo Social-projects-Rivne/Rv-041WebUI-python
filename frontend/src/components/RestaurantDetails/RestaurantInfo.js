@@ -6,7 +6,7 @@ import {
   Typography,
   CardContent,
 } from "@material-ui/core/";
-import AddUpdateRestaurant from "../Profile/AddUpdateRestaurant";
+
 
 const styles = {
   root: {
@@ -47,12 +47,6 @@ class RestaurantInfo extends React.Component {
             </div>
           </CardContent>
         </Card>
-        <AddUpdateRestaurant
-          requestType="put"
-          onUpdate={onUpdate}
-          id={restInfo.id}
-          restInfo={this.props.restInfo}
-        />
       </div>
     );
   }
