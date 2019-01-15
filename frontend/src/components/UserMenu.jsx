@@ -15,11 +15,12 @@ const styles = theme => ({
 });
 
 class UserMenu extends React.Component {
-  state = {
-    auth: false,
-    isOwner: false,
-    anchorEl: null
-  };
+
+  constructor(props) {
+    super(props);
+    this.state = {anchorEl: null};
+  }
+
 
   handleMenu = event => {
     this.setState({ anchorEl: event.currentTarget });
@@ -30,17 +31,47 @@ class UserMenu extends React.Component {
   };
 
   handleLogout = () => {
-    this.setState({
-      auth: false,
-      anchorEl: null
-    });
+    fetch('http://localhost:6543/api/login', {
+      method: 'DELETE',
+      headers: {
+        'x-auth-token': localStorage.getItem('token')
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success) {
+          throw data
+        }
+      })
+    .then(() => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('role');
+    })
+    .then(
+      this.props.ctx.changeState({
+        auth: false,
+        token: '',
+        role: ''
+      })
+    )
+    .then(
+      this.setState({anchorEl: null})
+    )
+    .catch(error => {
+      console.log(error)
+    })
   };
 
   render() {
-    const { auth, anchorEl, isOwner } = this.state;
+
+    const { auth, token, role } = this.props.ctx;
+    const isOwner = role === "Owner";
+    const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const { classes } = this.props;
     const match = "";
+
+
     return (
       <div className={classes.root}>
         {!auth && (
@@ -50,7 +81,7 @@ class UserMenu extends React.Component {
             </Button>
             /{" "}
             <Button color="inherit" component={Link} to={`${match}/sign-up`}>
-              Sign Un
+              Sign Up
             </Button>
           </div>
         )}
@@ -76,6 +107,7 @@ class UserMenu extends React.Component {
               }}
               open={open}
               onClose={this.handleClose}
+              style={{marginTop: 60}}
             >
               <MenuItem onClick={this.handleClose}>Personal info</MenuItem>
               <MenuItem onClick={this.handleClose}>Current orders</MenuItem>

@@ -3,14 +3,14 @@ This module describe user personal info controller
 This module describes behavior of "/profile" route
 """
 
-from pyramid.httpexceptions import HTTPForbidden
 from pyramid.view import view_config
 
-from ..models.user import User
 from ..scripts.json_helpers import wrap, date_time_normalize
+from ..auth import restrict_access
 
 
 @view_config(route_name='get_user_info', renderer='json', request_method='GET')
+@restrict_access(user_types=["Client", "Owner"])
 def get_user_info_controller(request):
     """
     GET request controller to return user profile information
@@ -33,13 +33,9 @@ def get_user_info_controller(request):
         If user is unauthorized - throw 403:
     """
 
-    user_id = 1  # TODO: remove when decorator which prevent unauthorized user call this function will added
-    user = request.dbsession.query(User).get(user_id)
-    # TODO: replace this check with special decorator which prevent unauthorized user call this function
-    if user is None:
-        raise HTTPForbidden("403")
-    else:
-        user_dict = user.as_dict()
-        user_dict = {key: date_time_normalize(value) for key, value in user_dict.items()}
-        body = wrap(user_dict)
+    user = request.token.user
+    print user, request.token
+    user_dict = user.as_dict()
+    # user_dict = {key: date_time_normalize(value) for key, value in user_dict.items()}
+    body = wrap(user_dict)
     return body

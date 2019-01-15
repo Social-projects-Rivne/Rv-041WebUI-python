@@ -19,7 +19,7 @@ class UserAvatarWithInfo extends React.Component {
         userInfo: [],
         success: null,
         error: "",
-        token: "Peter P",
+        token: localStorage.getItem("token"),
     };
 
     componentDidMount() {

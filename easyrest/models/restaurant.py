@@ -28,10 +28,11 @@ class Restaurant(Base):
     name = Column(Text)
     description = Column(Text)
     addres_id = Column(Text)
-    owner_id = Column(Text)
+    owner_id = Column(Integer, ForeignKey('users.id'))
     menu_id = Column(Integer, ForeignKey('menus.id'))
 
     menu = relationship("Menu")
+    user = relationship("User")
     tag = relationship(
         "Tag",
         secondary="tag_associations")
