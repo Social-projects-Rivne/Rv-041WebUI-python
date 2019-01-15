@@ -3,7 +3,7 @@
 """
 
 
-def wrap(data, success=True, error=None, action=None):
+def wrap(data=[], success=True, error=None, action=None,):
     """Function to turn python dictionary from models output to
     json style for futher send with responce
     Args:

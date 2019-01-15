@@ -22,7 +22,7 @@ import {
   Checkbox,
   InputLabel,
   FormControl,
-  Snackbar,
+  Snackbar
 } from "@material-ui/core";
 import classnames from "classnames";
 
@@ -31,35 +31,35 @@ const styles = theme => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: theme.spacing.unit * 2,
+    marginBottom: theme.spacing.unit * 2
   },
   fab: {
     transform: "scale(1)",
-    transition: theme.transitions.create("transform"),
+    transition: theme.transitions.create("transform")
   },
   fabDisabled: {
-    transform: "scale(0)",
+    transform: "scale(0)"
   },
   btns: {
-    marginTop: theme.spacing.unit * 2,
+    marginTop: theme.spacing.unit * 2
   },
   listItem: {
-    textTransform: "capitalize",
+    textTransform: "capitalize"
   },
   snackbarSuccess: {
-    backgroundColor: green[600],
+    backgroundColor: green[600]
   },
   snackbarError: {
-    backgroundColor: amber[700],
-  },
+    backgroundColor: amber[700]
+  }
 });
 
 const MenuProps = {
   PaperProps: {
     style: {
-      maxHeight: 250,
-    },
-  },
+      maxHeight: 250
+    }
+  }
 };
 
 class AddUpdateRestaurant extends React.Component {
@@ -74,7 +74,7 @@ class AddUpdateRestaurant extends React.Component {
     snackbarOpen: false,
     isValid: true,
     success: false,
-    snackbarMsg: "Error",
+    snackbarMsg: "Error"
   };
 
   componentDidMount() {
@@ -88,8 +88,8 @@ class AddUpdateRestaurant extends React.Component {
             address: restInfo.address_id,
             phone: restInfo.phone,
             description: restInfo.description,
-            tags: [...restInfo.tags],
-          }),
+            tags: [...restInfo.tags]
+          })
         );
 
     fetch("http://localhost:6543/tag")
@@ -99,13 +99,13 @@ class AddUpdateRestaurant extends React.Component {
 
   handleExpandFormClick = () => {
     this.setState({
-      formExpanded: !this.state.formExpanded,
+      formExpanded: !this.state.formExpanded
     });
   };
 
   handleCloseFormClick = () => {
     this.setState({
-      formExpanded: false,
+      formExpanded: false
     });
   };
 
@@ -120,6 +120,7 @@ class AddUpdateRestaurant extends React.Component {
         isValid: false,
         snackbarOpen: true,
         snackbarMsg: "Fill all required fields",
+        success: false
       });
       return;
     }
@@ -130,9 +131,9 @@ class AddUpdateRestaurant extends React.Component {
         return fetch("http://localhost:6543/user_restaurants", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
-          body: JSON.stringify(newRest),
+          body: JSON.stringify(newRest)
         })
           .then(response => {
             return response.status >= 200 && response.status < 300
@@ -143,7 +144,7 @@ class AddUpdateRestaurant extends React.Component {
             this.setState({
               snackbarOpen: true,
               success: myRest.success,
-              snackbarMsg: myRest.action,
+              snackbarMsg: myRest.action
             });
             this.props.onAdd(myRest.data);
           })
@@ -151,7 +152,7 @@ class AddUpdateRestaurant extends React.Component {
             this.setState({
               snackbarOpen: true,
               success: err.success,
-              snackbarMsg: err.error,
+              snackbarMsg: err.error
             });
           });
 
@@ -159,7 +160,7 @@ class AddUpdateRestaurant extends React.Component {
         return fetch(`http://localhost:6543/user_restaurant/${restId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newRest),
+          body: JSON.stringify(newRest)
         })
           .then(response => {
             return response.status >= 200 && response.status < 300
@@ -170,7 +171,7 @@ class AddUpdateRestaurant extends React.Component {
             this.setState({
               snackbarOpen: true,
               success: myRest.success,
-              snackbarMsg: myRest.action,
+              snackbarMsg: myRest.action
             });
             this.props.onUpdate(myRest.data);
           })
@@ -178,7 +179,7 @@ class AddUpdateRestaurant extends React.Component {
             this.setState({
               snackbarOpen: true,
               success: err.success,
-              snackbarMsg: err.error,
+              snackbarMsg: err.error
             });
           });
     }
@@ -187,7 +188,7 @@ class AddUpdateRestaurant extends React.Component {
   handleFormChange = event => {
     this.setState({
       [event.target.name]: event.target.value,
-      isValid: true,
+      isValid: true
     });
   };
 
@@ -215,7 +216,7 @@ class AddUpdateRestaurant extends React.Component {
       description,
       phone,
       success,
-      snackbarMsg,
+      snackbarMsg
     } = this.state;
 
     return (
@@ -226,7 +227,7 @@ class AddUpdateRestaurant extends React.Component {
           </Typography>
           <Fab
             className={classnames(classes.fab, {
-              [classes.fabDisabled]: formExpanded,
+              [classes.fabDisabled]: formExpanded
             })}
             onClick={this.handleExpandFormClick}
             aria-expanded={formExpanded}
@@ -356,16 +357,14 @@ class AddUpdateRestaurant extends React.Component {
         <Snackbar
           anchorOrigin={{
             vertical: "bottom",
-            horizontal: "right",
+            horizontal: "right"
           }}
           open={snackbarOpen}
           autoHideDuration={3000}
           onClose={this.handleCloseSnackbar}
           ContentProps={{
             "aria-describedby": "message-id",
-            className: success
-              ? classes.snackbarSuccess
-              : classes.snackbarError,
+            className: success ? classes.snackbarSuccess : classes.snackbarError
           }}
           message={<span id="message-id">{snackbarMsg}</span>}
           action={[
@@ -377,7 +376,7 @@ class AddUpdateRestaurant extends React.Component {
               onClick={this.handleCloseSnackbar}
             >
               <CloseIcon />
-            </IconButton>,
+            </IconButton>
           ]}
         />
       </CardContent>
