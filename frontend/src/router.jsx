@@ -1,6 +1,7 @@
 import React from "react";
 import HomePage from "./containers/HomePage";
 import RestautantListPage from "./containers/RestaurantListPage";
+import MyRestaurantsPage from "./containers/MyRestaurantsPage";
 import RestaurantsMapPage from "./containers/RestaurantsMapPage";
 import RestaurantPage from "./containers/RastaurantPage";
 import { Route, Switch } from "react-router-dom";
@@ -11,44 +12,48 @@ import Profile from "./containers/Profile";
 const routes = [
   {
     path: "/",
-    component: HomePage,
+    component: HomePage
   },
   {
     path: "/restaurants",
-    component: RestautantListPage,
+    component: RestautantListPage
   },
   {
     path: "/restaurants/:id",
-    component: RestaurantPage,
+    component: RestaurantPage
   },
   {
     path: "/profile/my_restaurant/:id",
-    component: RestaurantPage,
+    component: RestaurantPage
   },
   {
     path: "/restaurants-map",
-    component: RestaurantsMapPage,
+    component: RestaurantsMapPage
   },
   {
     path: "/log-in",
-    component: LogInPage,
+    component: LogInPage
   },
   {
     path: "/sign-up",
-    component: SignUpPage,
+    component: SignUpPage
   },
   {
     path: "/profile",
-    component: Profile,
+    component: Profile
   },
   {
     path: "/profile/persona_info",
-    component: Profile,
+    component: Profile
   },
   {
     path: "/profile/current_orders",
-    component: Profile,
+    component: Profile
   },
+  {
+    path: "/profile/my_restaurants",
+    component: MyRestaurantsPage
+  }
 ];
 
 class Router extends React.Component {

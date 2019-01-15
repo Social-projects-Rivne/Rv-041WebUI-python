@@ -1,9 +1,19 @@
 import React from "react";
+import Login from "../components/Login";
+import AppContext from "../components/AppContext";
 
-class LogInPage extends React.Component {
-  render() {
-    return <div>Log in page</div>;
-  }
-}
+const LogInPage = props => {
+  return (
+    <AppContext.Consumer>
+      {state => {
+        if (state.auth) {
+          props.history.push("/restaurants");
+        } else {
+          return <Login history={props.history} state={state} />;
+        }
+      }}
+    </AppContext.Consumer>
+  );
+};
 
 export default LogInPage;

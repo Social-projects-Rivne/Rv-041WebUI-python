@@ -4,15 +4,14 @@ import {
   Card,
   Divider,
   Typography,
-  CardContent,
+  CardContent
 } from "@material-ui/core/";
-
 
 const styles = {
   root: {
     paddingLeft: 24,
-    paddingRight: 24,
-  },
+    paddingRight: 24
+  }
 };
 
 class RestaurantInfo extends React.Component {
@@ -28,7 +27,7 @@ class RestaurantInfo extends React.Component {
                 height: "300px",
                 backgroundColor: "#fafafa",
                 float: "left",
-                marginRight: "16px",
+                marginRight: "16px"
               }}
               className="gallery"
             />

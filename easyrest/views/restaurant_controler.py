@@ -139,18 +139,43 @@ def get_restaurant_controler(request):
     request_method='GET'
 )
 def user_restaurants(request):
-    """
-    Temporary controller for development until Vitaliy pull request
+    """GET request controler to return my restaurants and
+    its tags
+    Args:
+        request: current pyramid request
     Returns:
-        list of all restaurant by some user
+        Json string(not pretty) created from dictionary with format:
+            {
+                "data": data,
+                "success": success,
+                "error": error
+            }
+        Where data is list with restaurant with tags assigned.
+        Style:
+            [
+                {
+                    "id": "restaurantId" + id,
+                    "name": (str),
+                    "description": (str),
+                    "addres_id": curently str,
+                    "owner_id": (int),
+                    "menu_id": (int)
+                    "tags": [{
+                        "id": "tagId" + id
+                        "name": tag name
+                        "priority": (int)
+                    }, ]
+                },
+            ]
     """
-    owner = "Jason Brown"
-
-    my_rests = request.dbsession.query(
-        Restaurant).filter_by(owner_id=owner).all()
-    my_rests_with_tags = asign_tags(my_rests)
-
-    body = wrap(my_rests_with_tags)
+    owner = request.headers.get('Authorization')
+    # TODO: take owner_id from table users after Max pullrequst
+    # TODO: token = request.headers.get('Authorization')
+    # TODO: own = request.dbsession.query(User).filter_by(token=token).first()
+    # TODO: owner = own[0]['owner_id']
+    restaurants = asign_tags(request.dbsession.query(
+        Restaurant).filter_by(owner_id=owner).all())
+    body = wrap(restaurants)
 
     return body
 

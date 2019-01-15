@@ -23,9 +23,16 @@ const styles = {
 };
 
 class TagsTab extends React.Component {
-  state = {
-    rests: [],
-  };
+    state = {
+        rests: []
+    };
+
+    componentDidMount() {
+        fetch('http://localhost:6543/api/restaurant')
+            .then(response => response.json())
+            .then(data => this.setState({rests: data.data}))
+            .catch(err => console.log(err));
+    }
 
   componentDidMount() {
     fetch("http://localhost:6543/restaurant")
@@ -45,13 +52,9 @@ class TagsTab extends React.Component {
     return tagNames;
   };
 
-  render() {
-    const { classes } = this.props;
-    let value = 0;
-    const tagNames = this.handleGetTags(this.state.rests);
-    let params = new URLSearchParams(this.props.url.location.search).get("tag");
-
-    console.log(this.state.counter);
+        if (params !== null) {
+            value = params;
+        }
 
     if (params !== null) {
       value = params;
