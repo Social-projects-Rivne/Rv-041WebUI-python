@@ -26,10 +26,10 @@ class UserAvatarWithInfo extends React.Component {
 
         const headers = new Headers({
             'Content-Type': 'application/json',
-            'Authorization': this.state.token
+            'X-Auth-Token': this.state.token
         });
 
-        fetch('http://localhost:6543/profile', {method: "GET", headers})
+        fetch('http://localhost:6543/api/profile', {method: "GET", headers})
             .then(response => (response.status === 403 ? this.setState({needRedirection: true, success: false}): response.json()))
             .then(data => this.setState({userInfo: data.data, success: data.success, error: data.error}))
             .catch(err => this.setState({success: false, error: err.message}))

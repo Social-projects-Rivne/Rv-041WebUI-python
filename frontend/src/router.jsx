@@ -20,8 +20,8 @@ class Router extends React.Component {
           <Route path="/restaurants/:id" exact component={RestaurantPage} />
           <Route path="/log-in" component={LogInPage} />
           <Route path="/sign-up" component={SignUpPage} />
-          <Route path="/profile" component={UserInfoPage} />
-          <Route path="/profile/my-restaurants" component={MyRestaurantsPage} />
+          <Route path="/profile" exact component={UserInfoPage} />
+          <Route path="/profile/my-restaurants" exact component={MyRestaurantsPage} />
         </Switch>
       </React.Fragment>
     );

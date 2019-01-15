@@ -36,7 +36,7 @@ class UserAvatar extends React.Component {
                     {userInfo.name}
                   </Typography>
                   <Typography component="p">
-                    Common user
+                    {localStorage.getItem('role')}
                   </Typography>
                 </CardContent>
             </Card>
