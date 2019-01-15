@@ -16,10 +16,10 @@ const styles = theme => ({
 
 class UserMenu extends React.Component {
 
-    constructor(props) {
-      super(props);
-     this.state = {anchorEl: null};
-    }
+  constructor(props) {
+    super(props);
+    this.state = {anchorEl: null};
+  }
 
 
   handleMenu = event => {
@@ -43,23 +43,23 @@ class UserMenu extends React.Component {
           throw data
         }
       })
-    .then(_ => {
+    .then(() => {
       localStorage.removeItem('token');
       localStorage.removeItem('role');
     })
-      .then(
-        this.props.ctx.changeState({
-          auth: false,
-          token: '',
-          role: ''
-        })
-      )
-      .then(
-        this.setState({anchorEl: null})
-      )
-      .catch(error => {
-        console.log(error)
+    .then(
+      this.props.ctx.changeState({
+        auth: false,
+        token: '',
+        role: ''
       })
+    )
+    .then(
+      this.setState({anchorEl: null})
+    )
+    .catch(error => {
+      console.log(error)
+    })
   };
 
   render() {

@@ -104,7 +104,3 @@ def fill_db(session):
 
     # insert data into database
     session.add_all(Rest_models)
-
-
-
-
