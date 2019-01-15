@@ -1,6 +1,5 @@
 import React from "react";
 
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -8,6 +7,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
 import { withStyles } from '@material-ui/core/styles';
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
 import 'typeface-roboto';
 
@@ -57,12 +57,22 @@ class SignUpForm extends React.Component {
       name: "",
       email: "",
       password: "",
+      repeated_password: "",
       serverResponse: false,
       errors: false
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
+      if (value !== this.state.password) {
+        return false;
+      }
+      return true;
+    });
   }
 
   handleChange(e) {
@@ -88,7 +98,7 @@ class SignUpForm extends React.Component {
     const {classes} = this.props;
     if (this.state.errors) {
       return (
-        <SubmittedForm classes={classes} message={"Ooops something went wrong!"}/>
+        <SubmittedForm classes={classes} message={"Ooops something went wrong! Please try again."}/>
 
       );
     } else if (this.state.serverResponse) {
@@ -102,45 +112,68 @@ class SignUpForm extends React.Component {
             <Typography variant="h4" align='center'>
               Create your account
             </Typography>
-            <form onSubmit={this.handleSubmit}>
+            <ValidatorForm ref="form" onSubmit={this.handleSubmit} debounceTime={2000}>
               <Grid container direction='column' alignContent='center'>
                 <CardContent>
                   <Grid item>
-                    <TextField
-                      required
+                    <TextValidator
                       label="Name"
-                      defaultValue=""
                       onChange={this.handleChange}
                       className={classes.textField}
+                      validators={["required", "minStringLength:3", "trim"]}
+                      errorMessages={[
+                        "Name is required",
+                        "Name must have at least 3 characters",
+                        "You didn't enter any character"
+                        ]}
+                      value={this.state.name}
                       margin="normal"
                       name="name"
                     />
-                    <TextField
-                      required
+                    <TextValidator
                       label="Email"
-                      defaultValue=""
                       onChange={this.handleChange}
                       className={classes.textField}
+                      validators={['required', 'isEmail']}
+                      errorMessages={[
+                        "Email is required",
+                        "Email is not valid"
+                        ]}
+                      value={this.state.email}
                       margin="normal"
                       name="email"
                     />
                   </Grid>
                   <Grid item>
-                    <TextField
-                      required
+                    <TextValidator
                       label="Password"
                       onChange={this.handleChange}
                       className={classes.textField}
+                      validators={['required', "minStringLength:8", "maxStringLength:16", "matchRegexp:^.*[a-zA-Z]{2}"]}
+                      errorMessages={[
+                        "Password is required",
+                        "Password must have at least 8 characters",
+                        "Please use a shorter password",
+                        "Please use Latin symbols and at least 2 letter"
+                        ]}
+                      value={this.state.password}
                       type="password"
                       margin="normal"
                       name="password"
                     />
-                    <TextField
-                      required
+                    <TextValidator
                       label="Confirm password"
+                      onChange={this.handleChange}
                       className={classes.textField}
+                      validators={['required', 'isPasswordMatch']}
+                      errorMessages={[
+                        "Please repeat password",
+                        "Password mismatch"
+                        ]}
+                      value={this.state.repeated_password}
                       type="password"
                       margin="normal"
+                      name="repeated_password"
                     />
                   </Grid>
                 </CardContent>
@@ -148,7 +181,7 @@ class SignUpForm extends React.Component {
                   Create an account
                 </Button>
               </Grid>
-            </form>
+            </ValidatorForm>
           </Card>
         </Grid>
       );
