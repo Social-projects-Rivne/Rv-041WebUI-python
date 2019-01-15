@@ -27,7 +27,7 @@ class restaurantInfo extends React.Component {
     };
 
     componentDidMount() {
-        fetch('http://localhost:6543/restaurant/'+ this.props.url.match.params.id)
+        fetch('http://localhost:6543/api/restaurant/'+ this.props.url.match.params.id)
             .then(response => response.json())
             .then(data => this.setState({restInfo: data.data[0]}))
             .catch(err=>console.log(err))
