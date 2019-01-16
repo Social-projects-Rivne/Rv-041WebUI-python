@@ -49,7 +49,7 @@ class UserAvatarWithInfo extends React.Component {
             return redirection;
         }
         else{
-            if(success ===true){
+            if(success){
                 return (
                     <div className={classes.forDiv}>
                         <UserAvatar userInfo={userInfo}/>

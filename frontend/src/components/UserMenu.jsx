@@ -65,7 +65,6 @@ class UserMenu extends React.Component {
   render() {
 
     const { auth, token, role } = this.props.ctx;
-    console.log(role)
     const isOwner = role == "Owner";
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
