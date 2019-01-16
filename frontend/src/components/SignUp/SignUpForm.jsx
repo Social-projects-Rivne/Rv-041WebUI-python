@@ -1,5 +1,7 @@
 import React from "react";
 
+import SubmittedForm from "./SubmittedForm"
+
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -27,28 +29,6 @@ const styles = theme => ({
     margin: theme.spacing.unit,
   },
 });
-
-class SubmittedForm extends React.Component {
-  render() {
-    const {classes} = this.props;
-    return (
-      <div>
-        <Grid container justify='center' className={classes.form}>
-          <Typography variant="h4" align='center'>
-            {this.props.message}
-          </Typography>
-          <Grid container direction='column' alignContent='center'>
-            <Grid item>
-              <Button variant="outlined" href="/" className={classes.button}>
-                Go to homepage
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid>
-      </div>
-    );
-  }
-}
 
 class SignUpForm extends React.Component {
   constructor(props) {
@@ -149,17 +129,17 @@ class SignUpForm extends React.Component {
                       label="Password"
                       onChange={this.handleChange}
                       className={classes.textField}
-                      validators={['required', "minStringLength:8", "maxStringLength:16", "matchRegexp:^.*[a-zA-Z]{2}"]}
+                      validators={['required', "minStringLength:8", "matchRegexp:^.*[a-zA-Zа-яА-Я]{2}"]}
                       errorMessages={[
                         "Password is required",
                         "Password must have at least 8 characters",
-                        "Please use a shorter password",
-                        "Please use Latin symbols and at least 2 letter"
+                        "Please use at least 2 letters"
                         ]}
                       value={this.state.password}
                       type="password"
                       margin="normal"
                       name="password"
+                      helperText="Password must have minimum 8 characters and including at least 2 letters"
                     />
                     <TextValidator
                       label="Confirm password"
