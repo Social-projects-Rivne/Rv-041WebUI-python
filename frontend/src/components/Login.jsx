@@ -64,7 +64,11 @@ class Login extends React.Component {
           if (success && role && token) {
             localStorage.setItem('token', token);
             localStorage.setItem('role', role);
-            this.props.state.changeState({auth: true})
+            this.props.state.changeState({
+              auth: true,
+              token,
+              role
+            })
             this.setState({
             error: false,
             errorMes: ''

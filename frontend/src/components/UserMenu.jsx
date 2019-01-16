@@ -60,7 +60,7 @@ class UserMenu extends React.Component {
 
   render() {
     const { auth, token, role } = this.props.ctx;
-    const isOwner = role === "Owner";
+    const isOwner = role == "Owner";
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const { classes } = this.props;
@@ -105,12 +105,14 @@ class UserMenu extends React.Component {
               style={{ marginTop: 60 }}
             >
               <MenuItem
-                component={Link}
-                to="/profile"
                 onClick={this.handleClose}
+                component={Link}
+                to={`${match}/profile`}
               >
-                Personal info
+                My Profile
               </MenuItem>
+              <MenuItem onClick={this.handleClose}>Current orders</MenuItem>
+              <MenuItem onClick={this.handleClose}>My account</MenuItem>
               {isOwner && (
                 <div>
                   <MenuItem

@@ -60,7 +60,7 @@ class Base(object):
         data = {}
         for c in self.__table__.columns:
             value = getattr(self, c.name)
-            if type(value) is datetime.datetime:
-                value = value.isoformat(' ')
+            if isinstance(value, (datetime.datetime, datetime.date)):
+                value = value.isoformat()
             data[c.name] = value
         return data

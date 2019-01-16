@@ -8,6 +8,7 @@ import { Route, Switch } from "react-router-dom";
 import LogInPage from "./containers/LogInPage";
 import SignUpPage from "./containers/SignUpPage";
 import Profile from "./containers/Profile";
+import UserInfoPage from "./containers/UserInfo";
 
 const routes = [
   {
@@ -44,7 +45,7 @@ const routes = [
   },
   {
     path: "/profile/persona_info",
-    component: Profile
+    component: UserInfoPage
   },
   {
     path: "/profile/current_orders",

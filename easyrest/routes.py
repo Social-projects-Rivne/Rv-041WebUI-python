@@ -1,5 +1,5 @@
 """
-This module describes avalible routes for app
+This module describes available routes for app
 """
 
 
@@ -14,5 +14,9 @@ def includeme(config):
                      request_method="GET")
     config.add_route('get_menu', 'restaurant/{id:[1-9]\d*}/menu',
                      request_method="GET")
-    config.add_route('user_restaurants', 'user_restaurants')
-    config.add_route('user_restaurant', 'user_restaurant/{id:[1-9]\d*}')
+    config.add_route('get_user_info', 'profile',
+                     request_method="GET")
+    config.add_route('get_my_restaurants', 'my_restaurant',
+                     request_method="GET")
+    config.add_route('options_handling', '/{catch_all:.*}',
+                     request_method="OPTIONS")
