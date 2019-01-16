@@ -139,7 +139,7 @@ def get_restaurant_controler(request):
     renderer='json',
     request_method='GET'
 )
-@restrict_access(user_types=['Client'])
+@restrict_access(user_types=['Owner'])
 def user_restaurants(request):
     """GET request controler to return my restaurants and
     its tags
@@ -181,7 +181,7 @@ def user_restaurants(request):
     request_method="POST",
     renderer='json'
 )
-@restrict_access(user_types=['Client'])
+@restrict_access(user_types=['Owner'])
 def create_user_restaurant(request):
     """
     POST request controller. Create new restaurant in database and return created item
@@ -193,7 +193,8 @@ def create_user_restaurant(request):
 
     if not name or not address:
         msg = "Fill all required fields"
-        return Response(status=422, json_body=wrap([], success=False, error=msg))
+        request.response.status_code = 201
+        return wrap([], success=False, error=msg)
 
     tag_models = [request.dbsession.query(
         Tag).filter_by(name=tag["name"]).first() for tag in tags]
@@ -206,9 +207,11 @@ def create_user_restaurant(request):
         request.dbsession.add(rest)
         request.dbsession.flush()
         rest_with_tags = asign_tags([rest])
-        return Response(status=201, json_body=wrap(rest_with_tags, action="Restaurant was successfully created"))
+        request.response.status_code = 201
+        return wrap(rest_with_tags, message="Restaurant was successfully created")
     except Exception:
-        return Response(status=500, json_body=wrap([], success=False, error='Could not save your retaurant.'))
+        request.response.status_code = 500
+        return wrap([], success=False, error='Could not save your retaurant.')
 
 
 @view_config(
@@ -216,12 +219,11 @@ def create_user_restaurant(request):
     request_method="GET",
     renderer='json'
 )
+@restrict_access(user_types=['Owner'])
 def get_user_restaurant(request):
     """
     GET request controller. Get restaurant for single owner user
     """
-    # TODO: restrict route for not authorized and only for one owner
-
     rest_id = request.matchdict["id"]
 
     rest = request.dbsession.query(Restaurant).get(int(rest_id))
@@ -239,8 +241,8 @@ def get_user_restaurant(request):
     request_method="PUT",
     renderer='json'
 )
+@restrict_access(user_types=['Owner'])
 def update_user_restaurant(request):
-    # TODO: restrict route for not authorized and only for one owner
     """
     PUT request controller. Update restaurant in database and return updated item
     """
@@ -264,6 +266,8 @@ def update_user_restaurant(request):
             tag_models = [request.dbsession.query(
                 Tag).filter_by(name=tag["name"]).first() for tag in tags]
             rest.tag = tag_models
-        return Response(status=201, json_body=wrap(rest.as_dict(), action="Restaurant was successfully updated"))
+        request.response.status_code = 201
+        return wrap(rest.as_dict(), message="Restaurant was successfully updated")
     except Exception:
-        return Response(status=500, json_body=wrap([], success=False, error='Cannot update your retaurant.'))
+        request.response.status_code = 500
+        return wrap([], success=False, error='Cannot update your retaurant.')

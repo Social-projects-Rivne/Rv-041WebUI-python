@@ -145,7 +145,7 @@ class AddUpdateRestaurant extends React.Component {
             this.setState({
               snackbarOpen: true,
               success: myRest.success,
-              snackbarMsg: myRest.action
+              snackbarMsg: myRest.message
             });
             this.props.onAdd(myRest.data);
           })
@@ -175,7 +175,7 @@ class AddUpdateRestaurant extends React.Component {
             this.setState({
               snackbarOpen: true,
               success: myRest.success,
-              snackbarMsg: myRest.action
+              snackbarMsg: myRest.message
             });
             this.props.onUpdate(myRest.data);
           })

@@ -52,7 +52,7 @@ def fill_db(session):
     for i in range(10):
         rest = {
             "name": fake.company(),
-            "addres_id": fake.address(),
+            "address_id": fake.address(),
             "description": fake.text(max_nb_chars=200),
             "phone": fake.ean8()
         }
