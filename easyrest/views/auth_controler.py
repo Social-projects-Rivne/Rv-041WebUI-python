@@ -43,7 +43,7 @@ def login_post(request):
 
 
 @view_config(route_name='login', renderer='json', request_method='DELETE')
-@restrict_access(user_types=['Client'])
+@restrict_access(user_types=['Client', 'Owner'])
 def login_del(request):
     """Controler for logout. Check header for token, find token in db,
     delete token, return empty list with cleare header.
