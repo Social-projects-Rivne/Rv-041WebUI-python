@@ -5,7 +5,7 @@ This module describes behavior of "/profile" route
 
 from pyramid.view import view_config
 
-from ..scripts.json_helpers import wrap, date_time_normalize
+from ..scripts.json_helpers import wrap
 from ..auth import restrict_access
 
 
