@@ -15,12 +15,10 @@ const styles = theme => ({
 });
 
 class UserMenu extends React.Component {
-
   constructor(props) {
     super(props);
-    this.state = {anchorEl: null};
+    this.state = { anchorEl: null };
   }
-
 
   handleMenu = event => {
     this.setState({ anchorEl: event.currentTarget });
@@ -31,46 +29,42 @@ class UserMenu extends React.Component {
   };
 
   handleLogout = () => {
-    fetch('http://localhost:6543/api/login', {
-      method: 'DELETE',
+    fetch("http://localhost:6543/api/login", {
+      method: "DELETE",
       headers: {
-        'x-auth-token': localStorage.getItem('token')
+        "x-auth-token": localStorage.getItem("token")
       }
     })
-    .then(res => res.json())
-    .then(data => {
+      .then(res => res.json())
+      .then(data => {
         if (!data.success) {
-          throw data
+          throw data;
         }
       })
-    .then(() => {
-      localStorage.removeItem('token');
-      localStorage.removeItem('role');
-    })
-    .then(
-      this.props.ctx.changeState({
-        auth: false,
-        token: '',
-        role: ''
+      .then(() => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
       })
-    )
-    .then(
-      this.setState({anchorEl: null})
-    )
-    .catch(error => {
-      console.log(error)
-    })
+      .then(
+        this.props.ctx.changeState({
+          auth: false,
+          token: "",
+          role: ""
+        })
+      )
+      .then(this.setState({ anchorEl: null }))
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   render() {
-
     const { auth, token, role } = this.props.ctx;
     const isOwner = role == "Owner";
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const { classes } = this.props;
     const match = "";
-
 
     return (
       <div className={classes.root}>
@@ -107,17 +101,25 @@ class UserMenu extends React.Component {
               }}
               open={open}
               onClose={this.handleClose}
-              style={{marginTop: 60}}
+              style={{ marginTop: 60 }}
             >
-              <MenuItem onClick={this.handleClose} component={Link} to={`${match}/profile`}>
-                  My Profile
+              <MenuItem
+                onClick={this.handleClose}
+                component={Link}
+                to={`${match}/profile`}
+              >
+                My Profile
               </MenuItem>
               <MenuItem onClick={this.handleClose}>Current orders</MenuItem>
               <MenuItem onClick={this.handleClose}>My account</MenuItem>
               {isOwner && (
-                <div>
-                  <MenuItem onClick={this.handleClose}>My restaurant</MenuItem>
-                </div>
+                <MenuItem
+                  onClick={this.handleClose}
+                  component={Link}
+                  to={`/profile/my-restaurants`}
+                >
+                  My restaurants
+                </MenuItem>
               )}
               <Divider />
               <MenuItem onClick={this.handleLogout}>Log Out</MenuItem>

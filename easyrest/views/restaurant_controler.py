@@ -9,6 +9,7 @@ from pyramid.httpexceptions import HTTPNotFound
 
 from ..scripts.json_helpers import wrap
 from ..models.restaurant import Restaurant
+from ..auth import restrict_access
 
 
 def asign_tags(rests):
@@ -126,6 +127,7 @@ def get_restaurant_controler(request):
 
 
 @view_config(route_name='get_my_restaurants', renderer='json', request_method='GET')
+@restrict_access(user_types=['Owner'])
 def get_my_restaurant_controler(request):
     """GET request controler to return my restaurants and
     its tags
@@ -156,11 +158,13 @@ def get_my_restaurant_controler(request):
                 },
             ]
     """
-    owner = request.headers.get('Authorization')
-    # TODO: take owner_id from table users after Max pullrequst
-    # TODO: token = request.headers.get('Authorization')
-    # TODO: own = request.dbsession.query(User).filter_by(token=token).first()
-    # TODO: owner = own[0]['owner_id']
-    restaurants = asign_tags(request.dbsession.query(Restaurant).filter_by(owner_id=owner).all())
+    # owner = request.headers.get('Authorization')
+    # # TODO: take owner_id from table users after Max pullrequst
+    # # TODO: token = request.headers.get('Authorization')
+    # # TODO: own = request.dbsession.query(User).filter_by(token=token).first()
+    # # TODO: owner = own[0]['owner_id']
+    # restaurants = asign_tags(request.dbsession.query(
+    #     Restaurant).filter_by(owner_id=owner).all())
+    restaurants = asign_tags(request.token.user.restaurants)
     body = wrap(restaurants)
     return body
