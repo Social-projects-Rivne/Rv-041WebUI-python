@@ -100,10 +100,9 @@ class SignUpForm extends React.Component {
                       label="Name"
                       onChange={this.handleChange}
                       className={classes.textField}
-                      validators={["required", "minStringLength:3", "trim"]}
+                      validators={["required", "trim"]}
                       errorMessages={[
                         "Name is required",
-                        "Name must have at least 3 characters",
                         "You didn't enter any character"
                         ]}
                       value={this.state.name}
@@ -129,17 +128,17 @@ class SignUpForm extends React.Component {
                       label="Password"
                       onChange={this.handleChange}
                       className={classes.textField}
-                      validators={['required', "minStringLength:8", "matchRegexp:^.*[a-zA-Zа-яА-Я]{2}"]}
+                      validators={['required', "minStringLength:8", "matchRegexp:.*[a-zA-Z\u0430-\u044f\u0410-\u042f].*"]}
                       errorMessages={[
                         "Password is required",
                         "Password must have at least 8 characters",
-                        "Please use at least 2 letters"
+                        "Please use at least 1 letter"
                         ]}
                       value={this.state.password}
                       type="password"
                       margin="normal"
                       name="password"
-                      helperText="Password must have minimum 8 characters and including at least 2 letters"
+                      helperText="Password must have minimum 8 characters and including at least 1 letter"
                     />
                     <TextValidator
                       label="Confirm password"
