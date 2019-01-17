@@ -5,7 +5,8 @@ This module describes available routes for app
 
 def includeme(config):
     config.add_static_view('static', 'static', cache_max_age=3600)
-    config.add_route('login', 'login', request_method=["GET", "POST", "DELETE"])
+    config.add_route('login', 'login', request_method=[
+                     "GET", "POST", "DELETE"])
     config.add_route('get_tags', 'tag', request_method="GET")
     config.add_route('get_all_restaurants', 'restaurant',
                      request_method="GET")
