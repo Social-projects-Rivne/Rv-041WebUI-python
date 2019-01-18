@@ -55,6 +55,7 @@ class Login extends React.Component {
     })
       .then(response => response.json())
       .then(input => {
+<<<<<<< HEAD
         const { success, error, data } = input;
         const { role, token } = data;
         if (success && role && token) {
@@ -66,6 +67,19 @@ class Login extends React.Component {
             role
           });
           this.setState({
+=======
+          const { success, error, data } = input;
+          const { role, token } = data;
+          if (success && role && token) {
+            localStorage.setItem('token', token);
+            localStorage.setItem('role', role);
+            this.props.state.changeState({
+              auth: true,
+              token,
+              role
+            })
+            this.setState({
+>>>>>>> develop
             error: false,
             errorMes: ""
           });

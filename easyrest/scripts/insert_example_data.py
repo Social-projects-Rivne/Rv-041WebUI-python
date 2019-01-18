@@ -1,6 +1,7 @@
 """This script populate Data base with fake data."""
 
 from random import randint, seed
+import datetime as dt
 
 from faker import Faker
 
@@ -29,6 +30,8 @@ def fill_db(session):
     # **tag extract from object pairs and pass 
     # it as key=value arguments
     Tags_models = [Tag(**tag) for tag in Tags]
+    # create container for user model
+    user_model = []
 
     # create example user statuses(user types)
     UserStatuses = [
@@ -44,7 +47,10 @@ def fill_db(session):
     Users = [User(name=fake.name(),
                   email=fake.email(),
                   password="123%s" % i,
-                  status=UserStatuses[0]) for i in range(5)]
+                  status=UserStatuses[1],
+                  phone_number=fake.phone_number(),
+                  birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100)
+                  ) for i in range(5)]
 
     session.add_all(Users)
 
@@ -102,5 +108,16 @@ def fill_db(session):
 
         Rest_models.append(rest_model)
 
+    # add users
+    for i in range(menu_item_number):
+        current_user = User(name=fake.name(),
+                            email=fake.email(),
+                            password="123%s" % i,
+                            status=UserStatuses[0],
+                            phone_number=fake.phone_number(),
+                            birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
+        user_model.append(current_user)
+
     # insert data into database
     session.add_all(Rest_models)
+    session.add_all(user_model)
