@@ -139,7 +139,7 @@ class Login extends React.Component {
                     variant="error"
                     message={
                       <Typography color="inherit" align="center">
-                        {errorMes ? errorMes : "No connection to the server"}
+                        {errorMes || "No connection to the server"}
                       </Typography>
                     }
                   />
