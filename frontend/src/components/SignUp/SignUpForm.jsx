@@ -11,8 +11,6 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
-import 'typeface-roboto';
-
 const styles = theme => ({
   form: {
     marginTop: 50,
@@ -31,9 +29,7 @@ const styles = theme => ({
 });
 
 class SignUpForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+  state = {
       name: "",
       email: "",
       password: "",
@@ -41,10 +37,6 @@ class SignUpForm extends React.Component {
       serverResponse: false,
       errors: false
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
 
   componentDidMount() {
     ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
@@ -55,11 +47,11 @@ class SignUpForm extends React.Component {
     });
   }
 
-  handleChange(e) {
+  handleChange = e => {
     this.setState({[e.target.name]: e.target.value});
-  }
+  };
 
-  handleSubmit(e) {
+  handleSubmit = e => {
     e.preventDefault();
     const {name, email, password} = this.state;
     const formData = {name, email, password};
@@ -72,7 +64,7 @@ class SignUpForm extends React.Component {
       .then(response => response.json())
       .then(response => this.setState({serverResponse: response.success}))
       .catch(error => this.setState({errors: true}));
-  }
+  };
 
   render() {
     const {classes} = this.props;
