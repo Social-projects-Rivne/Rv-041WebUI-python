@@ -1,6 +1,5 @@
 """Controler which defines auth behavior
 """
-import datetime as dt
 
 from pyramid.view import view_config
 from pyramid.authentication import AuthTicket
@@ -30,7 +29,7 @@ def login_post(request):
     req_json = request.json_body
     email, password = req_json["email"], req_json["password"]
     user = request.dbsession.query(User).filter_by(email=email).first()
-    
+
     if user is None or user.password != password:
         raise HTTPForbidden("Email or password is invalid")
 
@@ -43,7 +42,7 @@ def login_post(request):
 
 
 @view_config(route_name='login', renderer='json', request_method='DELETE')
-@restrict_access(user_types=['Client'])
+@restrict_access(user_types=['Client', 'Owner'])
 def login_del(request):
     """Controler for logout. Check header for token, find token in db,
     delete token, return empty list with cleare header.
