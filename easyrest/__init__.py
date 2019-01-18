@@ -12,14 +12,16 @@ def add_cors_headers_response_callback(event):
         """Function to modify every server Responce with headers:
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST,GET,DELETE,PUT,OPTIONS',
-            'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization',
+            'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, X-Auth-Token',
             'Access-Control-Allow-Credentials': 'true',
             'Access-Control-Max-Age': '1728000',
         """
         response.headers.update({
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST,GET,DELETE,PUT,OPTIONS',
-            'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization',
+            'Access-Control-Allow-Headers': 'Date, Content-Type, Accept, X-Auth-Token',
+            # to allow React see header 'X-Auth-Token'
+            'Access-Control-Expose-Headers': 'X-Auth-Token',
             'Access-Control-Allow-Credentials': 'true',
             'Access-Control-Max-Age': '1728000',
         })
@@ -37,7 +39,8 @@ def main(global_config, **settings):
     with Configurator(settings=settings) as config:
         config.include('.models')
         config.include('pyramid_jinja2')
-        config.include('.routes')
+        config.include('.routes', route_prefix='/api')
+        config.include('.auth')
         config.add_subscriber(add_cors_headers_response_callback, NewRequest)
         config.scan()
     return config.make_wsgi_app()

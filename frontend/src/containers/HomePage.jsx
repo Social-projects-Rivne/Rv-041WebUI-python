@@ -4,7 +4,7 @@ import TagsList from "../components/HomePage/TagsList";
 
 const HomePage = props => {
   return (
-    <div>
+    <div style={{ marginTop: -24 }}>
       <AppSlider />
       <TagsList />
     </div>

@@ -16,7 +16,9 @@ from .menu_item import MenuItem
 from .restaurant import Restaurant
 from .tag import Tag
 from .tag_association import TagAssociation
-
+from .token import Token
+from .user import User
+from .user_status import UserStatus
 
 # run configure_mappers after defining all of the models to ensure
 # all relationships can be setup

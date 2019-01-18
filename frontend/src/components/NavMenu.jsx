@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 
 const styles = theme => ({
   root: { flexGrow: 1 },
-  navItem: {}
+  navItem: {},
 });
 
 const Menu = [
   { name: "Home", route: "/" },
   { name: "Restaurants List", route: "/restaurants" },
-  { name: "Restaurants Map", route: "/restaurants-map" }
+  { name: "Restaurants Map", route: "/restaurants-map" },
 ];
 
 class NavMenu extends React.Component {

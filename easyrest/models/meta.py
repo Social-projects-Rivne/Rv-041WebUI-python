@@ -8,6 +8,7 @@ Attributes:
     metadata: SQLAlchemy object created by sqlalchemy.schema.MetaData
         using specified naming convention
 """
+import datetime
 
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.schema import MetaData
@@ -34,6 +35,7 @@ class Base(object):
         __repr__() - to make fancy output by print
         as_dict() - to compile ORM model into python dictionary
     """
+
     def __repr__(self):
         """Do custom style output by print
         Output format:
@@ -52,6 +54,13 @@ class Base(object):
             {
                 [prop.name = prop.value, ]
             }
+            if it finds datetime object converts it to isoformat.
 
         """
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        data = {}
+        for c in self.__table__.columns:
+            value = getattr(self, c.name)
+            if isinstance(value, (datetime.datetime, datetime.date)):
+                value = value.isoformat()
+            data[c.name] = value
+        return data

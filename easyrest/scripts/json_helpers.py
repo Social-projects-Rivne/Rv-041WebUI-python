@@ -3,11 +3,11 @@
 """
 
 
-def wrap(data, success=True, error=None):
+def wrap(data=[], success=True, error=None, message=None,):
     """Function to turn python dictionary from models output to
     json style for futher send with responce
     Args:
-        data (list): list of dictionaries representing models output
+        data: any serializable data
         error (str): error message, None by default
         success (bool): request status True is request succeeded
             otherwise False, True by default
@@ -21,6 +21,7 @@ def wrap(data, success=True, error=None):
     data_dict = {
         "data": data,
         "success": success,
-        "error": error
+        "error": error,
+        "message": message
     }
     return data_dict
