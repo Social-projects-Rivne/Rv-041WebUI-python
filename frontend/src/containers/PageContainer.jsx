@@ -1,6 +1,5 @@
-import React from "react";
+import React, { Component } from "react";
 import AppHeader from "../components/AppHeader";
-
 
 const PageContainer = props => {
   return (

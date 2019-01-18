@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const styles = theme => ({
   root: { flexGrow: 1 },
-  navItem: {}
+  navItem: {},
 });
 
 const Menu = [

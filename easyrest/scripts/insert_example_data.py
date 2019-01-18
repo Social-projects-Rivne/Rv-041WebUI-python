@@ -27,13 +27,14 @@ def fill_db(session):
     # to insert data and maintain relations
     Rest_models = []
     # create tag models using data from tags_data.py
-    # **tag extract from object pairs and pass 
+    # **tag extract from object pairs and pass
     # it as key=value arguments
     Tags_models = [Tag(**tag) for tag in Tags]
     # create container for user model
     user_model = []
 
     # create example user statuses(user types)
+
     UserStatuses = [
         UserStatus(name='Client'),
         UserStatus(name='Owner'),
@@ -57,7 +58,9 @@ def fill_db(session):
     for i in range(10):
         rest = {
             "name": fake.company(),
-            "addres_id": fake.address()
+            "address_id": fake.address(),
+            "description": fake.text(max_nb_chars=200),
+            "phone": fake.ean8()
         }
 
         menu_model = Menu(name=fake.company())

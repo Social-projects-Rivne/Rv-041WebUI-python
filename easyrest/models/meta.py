@@ -35,6 +35,7 @@ class Base(object):
         __repr__() - to make fancy output by print
         as_dict() - to compile ORM model into python dictionary
     """
+
     def __repr__(self):
         """Do custom style output by print
         Output format:

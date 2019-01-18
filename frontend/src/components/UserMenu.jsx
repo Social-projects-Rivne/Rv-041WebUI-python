@@ -1,12 +1,12 @@
 import React from "react";
-import AccountCircle from "@material-ui/icons/AccountCircle";
 import {
   withStyles,
   Divider,
   Menu,
   IconButton,
   MenuItem,
-  Button
+  Button,
+  Avatar
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
@@ -80,11 +80,12 @@ class UserMenu extends React.Component {
         {auth && (
           <div className={classes.userMenu}>
             <IconButton
+              color="inherit"
               aria-owns={open ? "menu-appbar" : undefined}
               aria-haspopup="true"
               onClick={this.handleMenu}
             >
-              <AccountCircle />
+              <Avatar>V</Avatar>
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -112,7 +113,13 @@ class UserMenu extends React.Component {
               <MenuItem onClick={this.handleClose}>My account</MenuItem>
               {isOwner && (
                 <div>
-                  <MenuItem onClick={this.handleClose}>My restaurant</MenuItem>
+                  <MenuItem
+                    component={Link}
+                    to="/profile/my-restaurants"
+                    onClick={this.handleClose}
+                  >
+                    My restaurant
+                  </MenuItem>
                 </div>
               )}
               <Divider />
