@@ -76,12 +76,7 @@ class SignUpForm extends React.Component {
 
   render() {
     const {classes} = this.props;
-    if (this.state.errors) {
-      return (
-        <SubmittedForm classes={classes} message={"Ooops something went wrong! Please try again."}/>
-
-      );
-    } else if (this.state.serverResponse) {
+    if (this.state.serverResponse) {
       return (
         <SubmittedForm classes={classes} message={"Thanks for registration!"}/>
       );
@@ -154,6 +149,12 @@ class SignUpForm extends React.Component {
                       margin="normal"
                       name="repeated_password"
                     />
+                    {this.state.errors &&
+                    (<Grid item>
+                      <Typography variant="body2" color="error" align='center'>
+                        Ooops something went wrong! Please try again later.
+                      </Typography>
+                    </Grid>)}
                   </Grid>
                 </CardContent>
                 <Button type="submit" variant="contained" color="primary" className={classes.button}>
