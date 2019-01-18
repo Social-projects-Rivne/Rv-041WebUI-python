@@ -57,14 +57,8 @@ class UserMenu extends React.Component {
   };
 
   render() {
-<<<<<<< HEAD
     const { auth, role } = this.props.ctx;
     const isOwner = role === "Owner";
-=======
-
-    const { auth, token, role } = this.props.ctx;
-    const isOwner = role == "Owner";
->>>>>>> develop
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const { classes } = this.props;
@@ -107,8 +101,12 @@ class UserMenu extends React.Component {
               onClose={this.handleClose}
               style={{ marginTop: 60 }}
             >
-              <MenuItem onClick={this.handleClose} component={Link} to={`${match}/profile`}>
-                  My Profile
+              <MenuItem
+                onClick={this.handleClose}
+                component={Link}
+                to={`${match}/profile`}
+              >
+                My Profile
               </MenuItem>
               <MenuItem onClick={this.handleClose}>Current orders</MenuItem>
               <MenuItem onClick={this.handleClose}>My account</MenuItem>
