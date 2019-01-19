@@ -50,7 +50,8 @@ def fill_db(session):
                   password="123%s" % i,
                   status=UserStatuses[1],
                   phone_number=fake.phone_number(),
-                  birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100)
+                  birth_date=fake.date_of_birth(
+                      tzinfo=None, minimum_age=18, maximum_age=100)
                   ) for i in range(5)]
 
     session.add_all(Users)
