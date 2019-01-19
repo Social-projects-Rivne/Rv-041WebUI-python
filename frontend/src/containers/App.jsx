@@ -3,6 +3,7 @@ import { BrowserRouter } from "react-router-dom";
 import Router from "../router";
 import AppContext from "../components/AppContext";
 import PageContainer from "../containers/PageContainer";
+import { hot } from "react-hot-loader";
 
 class App extends React.Component {
   state = {
@@ -38,4 +39,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default hot(module)(App);
