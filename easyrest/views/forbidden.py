@@ -17,4 +17,4 @@ def forbidden_view(error, request):
     :return: dictionary
     """
     request.response.status_code = 403
-    return wrap([], False, "%s: %s" % (error.title, error.args[0]))
+    return wrap([], False, "%s" % (error.args[0]))

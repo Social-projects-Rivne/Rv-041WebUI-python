@@ -44,23 +44,21 @@ class UserMenu extends React.Component {
       .then(() => {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
-      })
-      .then(
         this.props.ctx.changeState({
           auth: false,
           token: "",
           role: ""
-        })
-      )
-      .then(this.setState({ anchorEl: null }))
+        });
+        this.setState({ anchorEl: null });
+      })
       .catch(error => {
         console.log(error);
       });
   };
 
   render() {
-    const { auth, token, role } = this.props.ctx;
-    const isOwner = role == "Owner";
+    const { auth, role } = this.props.ctx;
+    const isOwner = role === "Owner";
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const { classes } = this.props;
@@ -117,7 +115,7 @@ class UserMenu extends React.Component {
                 <div>
                   <MenuItem
                     component={Link}
-                    to="/profile"
+                    to="/profile/my-restaurants"
                     onClick={this.handleClose}
                   >
                     My restaurant
