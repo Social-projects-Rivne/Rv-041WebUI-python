@@ -76,21 +76,6 @@ class AddUpdateRestaurant extends React.Component {
   };
 
   componentDidMount() {
-    this.props.requestType === "put" &&
-      fetch(`http://localhost:6543/api/restaurant/${this.props.id}`)
-        .then(response => response.json())
-        .then(rest => rest.data[0])
-        .then(restInfo => {
-          const tagsName = restInfo.tags.map(tag => tag.name);
-          this.setState({
-            name: restInfo.name,
-            address: restInfo.address_id,
-            phone: restInfo.phone,
-            description: restInfo.description,
-            tags: tagsName
-          });
-        });
-
     fetch("http://localhost:6543/api/tag")
       .then(response => response.json())
       .then(tags => this.setState({ allTags: tags.data }));
@@ -108,84 +93,11 @@ class AddUpdateRestaurant extends React.Component {
     });
   };
 
-  handleSubmit = (event, requestType, restId) => {
+  handleSubmit = event => {
     event.preventDefault();
     const { name, address, description, phone, tags } = this.state;
-
-    const newRest = { name, address, description, phone, tags };
-
-    if (requestType === "post" && (!name.trim() || !address.trim())) {
-      this.setState({
-        isValid: false,
-        snackbarOpen: true,
-        snackbarMsg: "Fill all required fields",
-        success: false
-      });
-      return;
-    }
-
-    switch (requestType) {
-      // eslint-disable-next-line
-      case "post":
-        return fetch("http://localhost:6543/api/user_restaurants", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-auth-token": localStorage.getItem("token")
-          },
-          body: JSON.stringify(newRest)
-        })
-          .then(response => {
-            return response.status >= 200 && response.status < 300
-              ? response.json()
-              : response.json().then(Promise.reject.bind(Promise));
-          })
-          .then(myRest => {
-            this.setState({
-              snackbarOpen: true,
-              success: myRest.success,
-              snackbarMsg: myRest.message
-            });
-            this.props.onAdd(myRest.data);
-          })
-          .catch(err => {
-            this.setState({
-              snackbarOpen: true,
-              success: err.success,
-              snackbarMsg: err.error
-            });
-          });
-
-      case "put":
-        return fetch(`http://localhost:6543/api/user_restaurant/${restId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "x-auth-token": localStorage.getItem("token")
-          },
-          body: JSON.stringify(newRest)
-        })
-          .then(response => {
-            return response.status >= 200 && response.status < 300
-              ? response.json()
-              : response.json().then(Promise.reject.bind(Promise));
-          })
-          .then(myRest => {
-            this.setState({
-              snackbarOpen: true,
-              success: myRest.success,
-              snackbarMsg: myRest.message
-            });
-            this.props.onUpdate(myRest.data);
-          })
-          .catch(err => {
-            this.setState({
-              snackbarOpen: true,
-              success: err.success,
-              snackbarMsg: err.error
-            });
-          });
-    }
+    const data = { name, address, description, phone, tags };
+    this.props.onAdd(data);
   };
 
   handleFormChange = event => {
@@ -207,7 +119,7 @@ class AddUpdateRestaurant extends React.Component {
   };
 
   render() {
-    const { classes, requestType, id } = this.props;
+    const { classes, onAdd } = this.props;
     const {
       formExpanded,
       allTags,
@@ -221,6 +133,8 @@ class AddUpdateRestaurant extends React.Component {
       success,
       snackbarMsg
     } = this.state;
+
+    const requestType = "post";
 
     return (
       <CardContent>
@@ -245,7 +159,7 @@ class AddUpdateRestaurant extends React.Component {
                 {requestType === "post" ? "Add new" : "Update"} restaurant:
               </Typography>
               <form
-                onSubmit={event => this.handleSubmit(event, requestType, id)}
+                onSubmit={this.handleSubmit}
                 className={classes.form}
                 noValidate
                 autoComplete="off"

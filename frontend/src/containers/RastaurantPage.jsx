@@ -1,35 +1,40 @@
 import React, { Component } from "react";
 import RestaurantInfo from "../components/RestaurantDetails/RestaurantInfo";
 import AddUpdateRestaurant from "../components/Profile/AddUpdateRestaurant";
+import withRest from "../HOC/withRest";
 
-export class RastaurantPage extends Component {
-  state = {
-    restInfo: []
-  };
+// export class RastaurantPage extends Component {
+//   state = {
+//     restInfo: []
+//   };
 
-  componentDidMount() {
-    const restId = this.props.match.params.id;
-    fetch(`http://localhost:6543/api/restaurant/${restId}`)
-      .then(response => response.json())
-      .then(rest => this.setState({ restInfo: rest.data[0] }));
-  }
+//   componentDidMount() {
+//     const restId = this.props.match.params.id;
+//     // this.props.get(restId);
+//   }
 
-  handleUpdateRestaurant = restObj => {
-    this.setState({ restInfo: restObj });
-  };
+//   handleUpdateRestaurant = restObj => {
+//     this.setState({ restInfo: restObj });
+//   };
 
-  render() {
-    return (
-      <>
-        <RestaurantInfo restInfo={this.state.restInfo} />
-        <AddUpdateRestaurant
-          requestType="put"
-          onUpdate={this.handleUpdateRestaurant}
-          id={this.props.match.params.id}
-        />
-      </>
-    );
-  }
+//   render() {
+//     return <>{/* <RestaurantInfo restInfo={this.state.restInfo} /> */}</>;
+//   }
+// }
+
+// export default RastaurantPage;
+
+function RastaurantPage({ response }) {
+  return (
+    <>
+      <RestaurantInfo restInfo={response} />
+      {/* <AddUpdateRestaurant
+        requestType="put"
+        onUpdate={this.handleUpdateRestaurant}
+        id={this.props.match.params.id}
+      />*/}
+    </>
+  );
 }
 
-export default RastaurantPage;
+export default withRest(RastaurantPage, `api/user_restaurant`);
