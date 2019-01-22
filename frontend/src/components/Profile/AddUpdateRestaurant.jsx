@@ -96,8 +96,8 @@ class AddUpdateRestaurant extends React.Component {
   handleSubmit = event => {
     event.preventDefault();
     const { name, address, description, phone, tags } = this.state;
-    const data = { name, address, description, phone, tags };
-    this.props.onAdd(data);
+    const newRestaurant = { name, address, description, phone, tags };
+    this.props.addRestaurant(newRestaurant);
   };
 
   handleFormChange = event => {

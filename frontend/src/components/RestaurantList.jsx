@@ -4,13 +4,13 @@ import RestaurantItem from "../components/RestaurantItem";
 import { withStyles, Grid, CardContent } from "@material-ui/core/";
 
 const RestaurantList = props => {
-  const { classes, response } = props;
+  const { classes, restaurantList } = props;
 
   return (
     <div>
       <CardContent>
         <Grid container spacing={16}>
-          {response.data.map(rest => {
+          {restaurantList.data.map(rest => {
             return (
               <Grid key={rest.id} item xs={12}>
                 <RestaurantItem

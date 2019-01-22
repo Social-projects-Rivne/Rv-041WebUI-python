@@ -15,13 +15,23 @@ const styles = {
 };
 
 class RestaurantInfo extends React.Component {
+  state = {
+    data: []
+  };
+
+  componentDidMount() {
+    const item = this.props.getRestaurant(10);
+    console.log(item);
+  }
+
   render() {
-    const { classes, restInfo, onUpdate } = this.props;
+    const { classes, restInfo, getRestaurant } = this.props;
 
     return (
       <div className={classes.root}>
         <Card>
-          <CardContent>
+          123
+          {/* <CardContent>
             <div
               style={{
                 width: "300px",
@@ -45,7 +55,7 @@ class RestaurantInfo extends React.Component {
                 {restInfo.description}
               </Typography>
             </div>
-          </CardContent>
+          </CardContent> */}
         </Card>
       </div>
     );
