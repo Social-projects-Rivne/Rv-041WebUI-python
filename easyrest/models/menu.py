@@ -22,5 +22,6 @@ class Menu(Base):
     __tablename__ = 'menus'
     id = Column(Integer, primary_key=True)
     name = Column(Text)
+    rest_id = Column(Integer, ForeignKey('restaurants.id'))
 
-    menu_item = relationship("MenuItem")
+    menu_items = relationship("MenuItem")

@@ -8,6 +8,7 @@ from sqlalchemy import (
     Text,
     ForeignKey,
 )
+from sqlalchemy.orm import relationship
 
 from .meta import Base
 
@@ -22,4 +23,9 @@ class MenuItem(Base):
     name = Column(Text)
     description = Column(Text)
     ingredients = Column(Text)
+    img = Column(Text)
     menu_id = Column(Integer, ForeignKey('menus.id'))
+    category_id = Column(Integer, ForeignKey('categories.id'))
+
+    category = relationship("Category")
+    # menu = relationship("Menu")

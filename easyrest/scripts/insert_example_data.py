@@ -6,7 +6,8 @@ import datetime as dt
 from faker import Faker
 
 from tags_data import Tags
-from ..models import Tag, Menu, Restaurant, MenuItem, User, UserStatus
+from ..models import Tag, Menu, Restaurant, MenuItem, User, UserStatus, Category
+from menu_data import Menus, Categories, Meals
 
 
 def fill_db(session):
@@ -50,10 +51,15 @@ def fill_db(session):
                   password="123%s" % i,
                   status=UserStatuses[1],
                   phone_number=fake.phone_number(),
-                  birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100)
+                  birth_date=fake.date_of_birth(
+                      tzinfo=None, minimum_age=18, maximum_age=100)
                   ) for i in range(5)]
 
     session.add_all(Users)
+
+    meals_len = len(Meals)
+
+    Cat_models = [Category(**cat_dict) for cat_dict in Categories]
 
     for i in range(10):
         rest = {
@@ -63,31 +69,27 @@ def fill_db(session):
             "phone": fake.ean8()
         }
 
-        menu_model = Menu(name=fake.company())
         rest_model = Restaurant(**rest)
 
-        Menu_item_models = []
-        menu_item_number = 10
+        Menu_models = [Menu(**menu_dict) for menu_dict in Menus]
 
-        for i in range(menu_item_number):
-            menu_item = {
-                "name": fake.domain_word(),
-                "description": fake.text(max_nb_chars=200),
-                "ingredients": fake.sentence(
-                    nb_words=6,
-                    variable_nb_words=True,
-                    ext_word_list=None)
-            }
-            menu_item_model = MenuItem(**menu_item)
-            Menu_item_models.append(menu_item_model)
+        menu_item_number = randint(0, 10)
+
+        Menu_items_all_cat = []
+        for cat_model in Cat_models:
+            Menu_item_models = []
+            for j in range(menu_item_number):
+                menu_item = Meals[randint(0, meals_len-1)]
+                menu_item_model = MenuItem(**menu_item)
+                menu_item_model.category = cat_model
+                Menu_item_models.append(menu_item_model)
+
+            Menu_items_all_cat.extend(Menu_item_models)
+        Menu_models[0].menu_items = Menu_items_all_cat
 
         # using model relationship defined in models.restaurant
         # asign menu to restaurant
-        rest_model.menu = menu_model
-
-        # using model relationship defined in models.menu
-        # asign menu_items to menu
-        rest_model.menu.menu_item = Menu_item_models
+        rest_model.menu = Menu_models
 
         # using model relationship defined in models.restaurant
         # asign one of 5 users to restaurant

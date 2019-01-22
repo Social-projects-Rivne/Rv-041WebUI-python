@@ -12,6 +12,8 @@ import zope.sqlalchemy
 # also to import all models using syntax:
 # from models import *
 from .menu import Menu
+from .category import Category
+from .cat_association import CatAssociation
 from .menu_item import MenuItem
 from .restaurant import Restaurant
 from .tag import Tag

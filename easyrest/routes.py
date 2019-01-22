@@ -10,9 +10,13 @@ def includeme(config):
     config.add_route('get_tags', 'tag', request_method="GET")
     config.add_route('get_all_restaurants', 'restaurant',
                      request_method="GET")
-    config.add_route('get_restaurant', 'restaurant/{id:[1-9]\d*}',
+    config.add_route('get_restaurant', 'restaurant/{id:\d+}',
                      request_method="GET")
-    config.add_route('get_menu', 'restaurant/{id:[1-9]\d*}/menu',
+    config.add_route('get_menus', 'restaurant/{rest_id:\d+}/menu',
+                     request_method="GET")
+    config.add_route('get_categories', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}',
+                     request_method="GET")
+    config.add_route('get_by_category', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}/{cat_id:\d+}',
                      request_method="GET")
     config.add_route('get_user_info', 'profile',
                      request_method="GET")

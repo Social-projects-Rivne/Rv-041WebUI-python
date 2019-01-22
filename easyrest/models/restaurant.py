@@ -30,7 +30,6 @@ class Restaurant(Base):
     description = Column(Text)
     phone = Column(Text)
     owner_id = Column(Integer, ForeignKey('users.id'))
-    menu_id = Column(Integer, ForeignKey('menus.id'))
 
     menu = relationship("Menu")
     user = relationship("User")
