@@ -3,13 +3,13 @@ import RestaurantList from "../components/RestaurantList";
 import AddUpdateRestaurant from "../components/Profile/AddUpdateRestaurant";
 import withRest from "../HOC/withRest";
 
-function MyRestaurant({ response, create }) {
+function MyRestaurant({ response, create, get }) {
   return (
     <>
-      <RestaurantList restaurantList={response} />
+      <RestaurantList getList={get} restaurantList={response} />
       <AddUpdateRestaurant addRestaurant={create} />
     </>
   );
 }
 
-export default withRest(MyRestaurant)("api/user_restaurants");
+export default withRest(MyRestaurant)("user_restaurants");

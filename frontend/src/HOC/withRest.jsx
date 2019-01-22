@@ -1,7 +1,7 @@
 import React from "react";
 import { CircularProgress } from "@material-ui/core/";
 
-const withRest = (Component, url) => {
+const withRest = Component => url => {
   class WithRest extends React.Component {
     state = {
       response: {
@@ -17,8 +17,8 @@ const withRest = (Component, url) => {
     }
 
     getData = () => {
-      // byId ? (url = `${url}/${this.props.match.params.id}`) : (url = url);
-      fetch(`http://localhost:6543/${url}`, {
+      // const id = this.props.match.params.id;
+      fetch(`http://localhost:6543/api/${url}`, {
         headers: {
           "Content-Type": "application/json",
           "x-auth-token": localStorage.getItem("token")
@@ -29,7 +29,7 @@ const withRest = (Component, url) => {
     };
 
     createData = data => {
-      fetch(`http://localhost:6543/${url}`, {
+      fetch(`http://localhost:6543/api/${url}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,6 +64,16 @@ const withRest = (Component, url) => {
     };
 
     render() {
+      console.log(this.state);
+      // return (
+      //   <Component
+      //     response={this.state.response}
+      //     get={this.getData}
+      //     create={this.createData}
+      //     update={this.updateData}
+      //     {...this.props}
+      //   />
+      // );
       return this.state.response.success ? (
         <Component
           response={this.state.response}

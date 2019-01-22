@@ -19,19 +19,14 @@ class RestaurantInfo extends React.Component {
     data: []
   };
 
-  componentDidMount() {
-    const item = this.props.getRestaurant(10);
-    console.log(item);
-  }
+  componentDidMount() {}
 
   render() {
-    const { classes, restInfo, getRestaurant } = this.props;
-
+    const { classes, restInfo, restaurantItem } = this.props;
     return (
       <div className={classes.root}>
         <Card>
-          123
-          {/* <CardContent>
+          <CardContent>
             <div
               style={{
                 width: "300px",
@@ -44,18 +39,18 @@ class RestaurantInfo extends React.Component {
             />
             <div className="content">
               <Typography gutterBottom variant="h4">
-                {restInfo.data[0].name}
+                {restaurantItem.data[0].name}
               </Typography>
               <Typography gutterBottom variant="h6" component="p">
-                Address: {restInfo.address_id} <br />
-                Phone: {restInfo.phone}
+                Address: {restaurantItem.data[0].address_id} <br />
+                Phone: {restaurantItem.data[0].phone}
               </Typography>
               <Divider style={{ marginBottom: "2em" }} />
               <Typography variant="body1" gutterBottom component="p">
-                {restInfo.description}
+                {restaurantItem.data[0].description}
               </Typography>
             </div>
-          </CardContent> */}
+          </CardContent>
         </Card>
       </div>
     );

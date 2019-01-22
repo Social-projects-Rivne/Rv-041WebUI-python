@@ -2,10 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import RestaurantItem from "../components/RestaurantItem";
 import { withStyles, Grid, CardContent } from "@material-ui/core/";
+import renderer from "../HOC/test";
 
 const RestaurantList = props => {
   const { classes, restaurantList } = props;
-
   return (
     <div>
       <CardContent>

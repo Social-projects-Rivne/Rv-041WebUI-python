@@ -16,4 +16,4 @@ function RastaurantPage({ response }) {
   );
 }
 
-export default withRest(RastaurantPage)("api/user_restaurant");
+export default withRest(RastaurantPage)("user_restaurant", "id");
