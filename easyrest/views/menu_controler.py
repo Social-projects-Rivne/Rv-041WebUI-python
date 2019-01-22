@@ -10,6 +10,7 @@ from ..scripts.json_helpers import wrap
 from ..models.restaurant import Restaurant
 from ..models.menu import Menu
 from ..models.menu_item import MenuItem
+from ..models.category import Category
 
 
 def asign_items(menu):
@@ -55,7 +56,7 @@ def get_menu_controler(request):
     return body
 
 
-@view_config(route_name='get_categories', renderer='json', request_method='GET')
+@view_config(route_name='get_all_with_cats', renderer='json', request_method='GET')
 def get_cats_controler(request):
     """GET request controler to return menu and
     its items for restaurant specified by id
@@ -63,27 +64,37 @@ def get_cats_controler(request):
         request: current pyramid request
     """
     menu_id = request.matchdict['menu_id']
-    menu = request.dbsession.query(Menu).get(menu_id)
 
-    cat_list = [cat.as_dict() for cat in menu.categories]
-    body = wrap(cat_list)
+    result = request.dbsession.query(MenuItem, Category).filter(
+        MenuItem.menu_id == menu_id).filter(
+        Category.id == MenuItem.category_id).all()
+
+    data_dict = {}
+    cats_list = []
+    for item, cat in result:
+        category, item_dict = cat.name, item.as_dict()
+        if category in data_dict:
+            data_dict[category].append(item_dict)
+        else:
+            data_dict[category] = [item_dict]
+            cats_list.append(category)
+
+    body = wrap({
+        "Items": data_dict,
+        "Categories": cats_list
+    })
     return body
 
 
 @view_config(route_name='get_by_category', renderer='json', request_method='GET')
 def get_by_cat_controler(request):
-    """GET request controler to return menu and
-    its items for restaurant specified by id
-    Args:
-        request: current pyramid request
+    """For future use in sorting by category
     """
     menu_id = request.matchdict['menu_id']
     cat_id = request.matchdict['cat_id']
     menu_models = request.dbsession.query(MenuItem).filter_by(
         menu_id=menu_id, category_id=cat_id).all()
 
-    # print(menu_items.menu_items)
-
     menu_items = [item.as_dict() for item in menu_models]
-    # body = wrap(menu_items)
-    return menu_items
+    body = wrap(menu_items)
+    return body

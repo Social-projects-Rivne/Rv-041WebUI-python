@@ -4,6 +4,7 @@ import RestautantListPage from "./containers/RestaurantListPage";
 import MyRestaurantsPage from "./containers/MyRestaurantsPage";
 import RestaurantsMapPage from "./containers/RestaurantsMapPage";
 import RestaurantPage from "./containers/RastaurantPage";
+import MenuPage from "./containers/MenuPage";
 import { Route, Switch } from "react-router-dom";
 import LogInPage from "./containers/LogInPage";
 import SignUpPage from "./containers/SignUpPage";
@@ -22,6 +23,10 @@ const routes = [
   {
     path: "/restaurants/:id",
     component: RestaurantPage
+  },
+  {
+    path: "/restaurants/:restId/menu/:menuId",
+    component: MenuPage
   },
   {
     path: "/profile/my_restaurant/:id",
@@ -52,7 +57,7 @@ const routes = [
     component: Profile
   },
   {
-    path: "/profile/my_restaurants",
+    path: "/profile/my-restaurants",
     component: MyRestaurantsPage
   }
 ];

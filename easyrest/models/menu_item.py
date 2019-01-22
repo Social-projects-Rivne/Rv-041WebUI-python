@@ -28,4 +28,3 @@ class MenuItem(Base):
     category_id = Column(Integer, ForeignKey('categories.id'))
 
     category = relationship("Category")
-    # menu = relationship("Menu")
