@@ -19,7 +19,7 @@ class Restaurant(Base):
     Defines data structure of "restaurants" table
     Has many to many relationship with tags, using
     association table tag_associations
-    "status" attribute is Integer, where 0-waiting for confirmation, 1-active (confirmed), 3-archived
+    "status" attribute is Integer, where 0-waiting for confirmation, 1-active (confirmed), 2-archived
     Relationship:
         restaurants -> menus
         restaurants -> tags

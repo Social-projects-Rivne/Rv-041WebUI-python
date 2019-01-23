@@ -59,14 +59,21 @@ def fill_db(session):
                      )
     session.add_all(Users)
 
+    # Restaurant status can be 0-waiting for confirmation, 1-active (confirmed), 2-archived
+    rest_status = 0
+
     for i in range(10):
+        if rest_status == 3:
+            rest_status = 0
         company_name = fake.company()
         rest = {
             "name": company_name,
             "address_id": fake.address(),
             "description": fake.text(max_nb_chars=200),
-            "phone": "+380362" + str(100000 + i)
+            "phone": "+380362" + str(100000 + i),
+            "status": rest_status
         }
+        rest_status = rest_status + 1
 
         menu_model = Menu(name=company_name + " Menu")
         rest_model = Restaurant(**rest)
