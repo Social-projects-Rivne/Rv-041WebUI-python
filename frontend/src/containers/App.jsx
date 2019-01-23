@@ -1,8 +1,10 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import Router from "../router";
+import CssBaseline from "@material-ui/core/CssBaseline";
 import AppContext from "../components/AppContext";
-import PageContainer from "../containers/PageContainer";
+import AppHeader from "../components/AppHeader";
+import { hot } from "react-hot-loader";
 
 class App extends React.Component {
   state = {
@@ -28,14 +30,16 @@ class App extends React.Component {
       <AppContext.Provider
         value={{ ...this.state, changeState: this.changeState }}
       >
+        <CssBaseline />
         <BrowserRouter>
-          <PageContainer>
+          <React.Fragment>
+            <AppHeader />
             <Router />
-          </PageContainer>
+          </React.Fragment>
         </BrowserRouter>
       </AppContext.Provider>
     );
   }
 }
 
-export default App;
+export default hot(module)(App);

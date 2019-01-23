@@ -5,26 +5,23 @@ import { AppBar, Toolbar, Typography } from "@material-ui/core";
 import NavMenu from "./NavMenu";
 import UserMenu from "./UserMenu";
 import { Link } from "react-router-dom";
-import AppContext from "./AppContext"
+import AppContext from "./AppContext";
 
 const styles = theme => ({
-  root: {
-    marginBottom: 24,
-  },
   grow: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   logoLink: {
     textDecoration: "none",
-    color: "#fff",
-  },
+    color: "#fff"
+  }
 });
 
 class AppHeader extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <AppBar className={classes.root} position="static">
+      <AppBar position="static">
         <Toolbar>
           <Typography variant="button" className={classes.grow}>
             <Link className={classes.logoLink} to="/">
@@ -33,7 +30,7 @@ class AppHeader extends React.Component {
           </Typography>
           <NavMenu />
           <AppContext.Consumer>
-            {(state) => <UserMenu ctx={state}/>}
+            {state => <UserMenu ctx={state} />}
           </AppContext.Consumer>
         </Toolbar>
       </AppBar>
@@ -42,7 +39,7 @@ class AppHeader extends React.Component {
 }
 
 AppHeader.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(AppHeader);
