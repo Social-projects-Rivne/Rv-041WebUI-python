@@ -1,15 +1,15 @@
 import React from "react";
 import CategoriesList from "../components/MenuPage/CategoriesList";
 import MenuItemList from "../components/MenuPage/MenuItemList";
+import { Grid } from "@material-ui/core";
 
 class MenuPage extends React.Component {
   state = {
     Categories: [],
-    Items: []
+    Items: {}
   };
 
   componentDidMount() {
-    console.log(this.props);
     const { restId, menuId } = this.props.match.params;
     const url =
       "http://localhost:6543/api/restaurant/" + restId + "/menu/" + menuId;
@@ -29,10 +29,14 @@ class MenuPage extends React.Component {
 
   render() {
     return (
-      <>
-        <CategoriesList cats={this.state.Categories} />
-        {/* <MenuItemList items={this.state.Items} /> */}
-      </>
+      <Grid container spacing={16}>
+        <Grid item xs={12} md={4}>
+          <CategoriesList cats={this.state.Categories} />
+        </Grid>
+        <Grid item xs={12} md={8}>
+          <MenuItemList items={this.state.Items} cats={this.state.Categories} />
+        </Grid>
+      </Grid>
     );
   }
 }
