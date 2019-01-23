@@ -5,7 +5,7 @@ import PageContainer from "./PageContainer";
 
 const LogInPage = props => {
   return (
-    <PageContainer width="small">
+    <PageContainer fullHeight width="small">
       <AppContext.Consumer>
         {state => {
           if (state.auth) {

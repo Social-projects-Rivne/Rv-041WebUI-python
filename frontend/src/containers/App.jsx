@@ -1,9 +1,7 @@
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
-import Router from "../router";
+import Routes from "../Routes";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppContext from "../components/AppContext";
-import AppHeader from "../components/AppHeader";
 import { hot } from "react-hot-loader";
 
 class App extends React.Component {
@@ -31,12 +29,7 @@ class App extends React.Component {
         value={{ ...this.state, changeState: this.changeState }}
       >
         <CssBaseline />
-        <BrowserRouter>
-          <React.Fragment>
-            <AppHeader />
-            <Router />
-          </React.Fragment>
-        </BrowserRouter>
+        <Routes />
       </AppContext.Provider>
     );
   }

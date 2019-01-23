@@ -1,15 +1,26 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
+import { Link } from "react-router-dom";
 import {
   Button,
   Card,
   CardContent,
   Grid,
   CardHeader,
-  Typography
+  Typography,
+  Divider,
+  Snackbar
 } from "@material-ui/core/";
-import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
-import Snackbar from "@material-ui/core/Snackbar";
+import { withStyles } from "@material-ui/core/styles";
 import SnackbarContent from "./SnackbarContent";
+
+const styles = theme => ({
+  root: {
+    margin: "auto",
+    marginTop: theme.spacing.unit * 16
+  }
+});
 
 class Login extends React.Component {
   constructor(props) {
@@ -75,22 +86,30 @@ class Login extends React.Component {
 
   render() {
     const { error, errorMes } = this.state;
+    const { classes } = this.props;
+
     return (
-      <Card>
+      <Card className={classes.root}>
         <CardHeader
           title={
-            <Typography variant="h5" align="center">
-              Log In to Your Account
-            </Typography>
+            <>
+              <Typography variant="h5" align="center">
+                Sign In
+              </Typography>
+              <Typography variant="subtitle1" align="center">
+                to continue E-Restaurant
+              </Typography>
+            </>
           }
         />
+        <Divider />
         <CardContent>
           <ValidatorForm
             ref="form"
             onSubmit={e => this.handleSubmit(e)}
             debounceTime={500}
           >
-            <Grid container spacing={24}>
+            <Grid container spacing={32}>
               <Grid item xs={12}>
                 <TextValidator
                   label="Enter your Email"
@@ -134,9 +153,12 @@ class Login extends React.Component {
                 />
               </Snackbar>
               <Grid item xs={12}>
-                <Grid container justify="flex-end">
+                <Grid container justify="space-between">
+                  <Button component={Link} to="/sign-up" color="primary">
+                    Create account
+                  </Button>
                   <Button type="submit" color="primary" variant="contained">
-                    Submit
+                    Sign In
                   </Button>
                 </Grid>
               </Grid>
@@ -148,4 +170,10 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+Login.propTypes = {
+  classes: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+  state: PropTypes.object.isRequired
+};
+
+export default withStyles(styles)(Login);

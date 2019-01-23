@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, BrowserRouter } from "react-router-dom";
 import HomePage from "./containers/HomePage";
 import RestautantListPage from "./containers/RestaurantListPage";
 import MyRestaurantsPage from "./containers/MyRestaurantsPage";
@@ -9,6 +9,7 @@ import LogInPage from "./containers/LogInPage";
 import SignUpPage from "./containers/SignUpPage";
 import ProfilePage from "./containers/ProfilePage";
 import UserInfoPage from "./containers/UserInfo";
+import AppHeader from "./components/AppHeader";
 
 const routes = [
   {
@@ -57,15 +58,21 @@ const routes = [
   }
 ];
 
-class Router extends React.Component {
+class Routes extends React.Component {
   render() {
+    console.log(this.props);
     return (
-      <Switch>
-        {routes.map(({ path, component }) => (
-          <Route exact key={component} path={path} component={component} />
-        ))}
-      </Switch>
+      <BrowserRouter>
+        <>
+          <AppHeader />
+          <Switch>
+            {routes.map(({ path, component }) => (
+              <Route exact key={component} path={path} component={component} />
+            ))}
+          </Switch>
+        </>
+      </BrowserRouter>
     );
   }
 }
-export default Router;
+export default Routes;

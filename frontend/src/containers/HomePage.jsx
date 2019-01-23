@@ -5,7 +5,7 @@ import PageContainer from "./PageContainer";
 
 const HomePage = () => {
   return (
-    <PageContainer fullWidth>
+    <PageContainer fullHeight fullWidth>
       <AppSlider />
       <TagsList />
     </PageContainer>

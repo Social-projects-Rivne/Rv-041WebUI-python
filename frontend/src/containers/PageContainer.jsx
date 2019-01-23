@@ -5,36 +5,44 @@ import { withStyles } from "@material-ui/core/styles";
 import { Card, CardContent, CardHeader } from "@material-ui/core";
 
 const styles = theme => ({
-  small: {
-    maxWidth: theme.breakpoints.values.sm,
+  root: {
+    paddingTop: theme.spacing.unit * 8,
+    paddingBottom: theme.spacing.unit * 8,
     paddingLeft: theme.spacing.unit * 2,
     paddingRight: theme.spacing.unit * 2,
     marginLeft: "auto",
     marginRight: "auto",
     [theme.breakpoints.up("sm")]: {
       paddingLeft: theme.spacing.unit * 3,
-      paddingRight: theme.spacing.unit * 3
+      paddingRight: theme.spacing.unit * 3,
+      paddingTop: theme.spacing.unit * 4,
+      paddingBottom: theme.spacing.unit * 4
     }
+  },
+  small: {
+    maxWidth: theme.breakpoints.values.sm
   },
   medium: {
     width: "auto",
-    paddingLeft: theme.spacing.unit * 2,
-    paddingRight: theme.spacing.unit * 2,
-    marginLeft: "auto",
-    marginRight: "auto",
-    [theme.breakpoints.up("sm")]: {
-      paddingLeft: theme.spacing.unit * 3,
-      paddingRight: theme.spacing.unit * 3
-    },
     [theme.breakpoints.up("lg")]: {
       width: theme.breakpoints.values.lg
     }
   },
-  widthFull: {
-    width: "100%"
+  fullWidth: {
+    width: "100%",
+    paddingLeft: 0,
+    paddingRight: 0,
+    [theme.breakpoints.up("sm")]: {
+      paddingLeft: 0,
+      paddingRight: 0
+    }
   },
   fullHeight: {
-    height: "100%"
+    paddingTop: 0,
+    paddingBottom: 0,
+    display: "flex",
+    flexWrap: "wrap",
+    height: `calc(100vh - ${theme.spacing.unit * 8}px)`
   }
 });
 
@@ -56,7 +64,8 @@ const PageContainer = props => {
         classes.root,
         {
           [classes[width]]: !fullWidth,
-          [classes.fullHeight]: fullHeight
+          [classes.fullHeight]: fullHeight,
+          [classes.fullWidth]: fullWidth
         },
         className
       )}
