@@ -11,6 +11,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 from passlib.hash import pbkdf2_sha256
+from validator import validation
 
 from .meta import Base
 
@@ -39,6 +40,17 @@ class User(Base):
 
     @staticmethod
     def add(database, form_data):
+        schema = {
+            "description": "Validate form inputs",
+            "type": "object",
+            "properties": {
+                "name": {"type": "string"},
+                "email": {"type": "string", "format": "email"},
+                "password": {"type": "string", "minLength": 8}
+            },
+            "required": ["name", "email", "password"]
+        }
+        validation(schema, form_data)
         name = form_data['name']
         email = form_data['email']
         password = form_data['password']
