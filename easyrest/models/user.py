@@ -1,6 +1,4 @@
-"""
-This module describe data model for "users" table
-"""
+"""This module describe data model for "users" table"""
 
 from sqlalchemy import (
     Column,
@@ -17,10 +15,12 @@ from .meta import Base
 
 
 class User(Base):
-    """
-    The data model of "users" table
-    Defines data structure of "users" table
-    Relationsips:
+    """The data model of "users" table.
+
+    Defines data structure of "users" table and methods of
+    working with the model.
+
+    Relationships:
         User->Restaurant: one to many
         User->Token: one to many
         User->UserStatus: one to one
@@ -40,6 +40,16 @@ class User(Base):
 
     @staticmethod
     def add(database, form_data):
+        """Method for writing user data to a database.
+
+        Method gets the database session and form data.
+        Validates form inputs according to json schema,
+        hashes the password and writes everything into the database.
+
+        :param database: Database session
+        :param form_data: JSON-decoded variant of the form inputs
+
+        """
         schema = {
             "description": "Validate form inputs",
             "type": "object",
