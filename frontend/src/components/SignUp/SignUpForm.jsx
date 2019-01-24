@@ -115,11 +115,10 @@ class SignUpForm extends React.Component {
                       label="Password"
                       onChange={this.handleChange}
                       className={classes.textField}
-                      validators={['required', "minStringLength:8", "matchRegexp:.*[a-zA-Z\u0430-\u044f\u0410-\u042f].*"]}
+                      validators={['required', "minStringLength:8"]}
                       errorMessages={[
                         "Password is required",
-                        "Password must have at least 8 characters",
-                        "Please use at least 1 letter"
+                        "Password must have at least 8 characters"
                         ]}
                       value={this.state.password}
                       type="password"
