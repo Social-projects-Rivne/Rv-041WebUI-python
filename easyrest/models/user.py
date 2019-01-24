@@ -10,6 +10,7 @@ from sqlalchemy import (
     ForeignKey,
 )
 from sqlalchemy.orm import relationship
+from passlib.hash import pbkdf2_sha256
 
 from .meta import Base
 
@@ -35,3 +36,12 @@ class User(Base):
     tokens = relationship("Token")
     status = relationship('UserStatus')
     restaurants = relationship('Restaurant')
+
+    @staticmethod
+    def add(database, form_data):
+        name = form_data['name']
+        email = form_data['email']
+        password = form_data['password']
+        password_hash = pbkdf2_sha256.hash(password)
+
+        database.add(User(name=name, email=email, password=password_hash))
