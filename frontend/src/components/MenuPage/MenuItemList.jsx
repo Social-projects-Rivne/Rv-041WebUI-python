@@ -10,7 +10,7 @@ const styles = theme => ({
 const MenuItemList = props => {
   const { classes, items, cats } = props;
   return (
-    <Grid container direction="column" spacing={16}>
+    <Grid container direction="column" spacing={16} wrap="nowrap">
       {items &&
         cats &&
         cats.map(cat => {

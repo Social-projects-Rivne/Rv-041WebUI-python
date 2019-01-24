@@ -1,22 +1,24 @@
 import React from "react";
-import { withStyles } from "@material-ui/core/styles";
+import PropTypes from "prop-types";
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
+import { Link } from "react-router-dom";
 import {
   Button,
   Card,
   CardContent,
   Grid,
   CardHeader,
-  Typography
+  Typography,
+  Divider,
+  Snackbar
 } from "@material-ui/core/";
-import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
-import Snackbar from "@material-ui/core/Snackbar";
+import { withStyles } from "@material-ui/core/styles";
 import SnackbarContent from "./SnackbarContent";
 
 const styles = theme => ({
   root: {
-    maxWidth: 800,
-    margin: "0 auto",
-    marginTop: 20
+    margin: "auto",
+    marginTop: theme.spacing.unit * 16
   }
 });
 
@@ -83,81 +85,95 @@ class Login extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
     const { error, errorMes } = this.state;
+    const { classes } = this.props;
+
     return (
-      <div className={classes.root}>
-        <Card>
-          <CardHeader
-            title={
+      <Card className={classes.root}>
+        <CardHeader
+          title={
+            <>
               <Typography variant="h5" align="center">
-                Log In to Your Account
+                Sign In
               </Typography>
-            }
-          />
-          <CardContent>
-            <ValidatorForm
-              ref="form"
-              onSubmit={e => this.handleSubmit(e)}
-              debounceTime={500}
-            >
-              <Grid container spacing={24}>
-                <Grid item xs={12}>
-                  <TextValidator
-                    label="Enter your Email"
-                    onChange={e => this.handleChange(e, "email")}
-                    validators={["required", "isEmail"]}
-                    errorMessages={["Email is required", "Email is not valid"]}
-                    value={this.state.email}
-                    name="email"
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextValidator
-                    label="Enter your Password"
-                    onChange={e => this.handleChange(e, "password")}
-                    validators={["required"]}
-                    errorMessages={["Password is required"]}
-                    value={this.state.password}
-                    name="password"
-                    type="password"
-                    fullWidth
-                  />
-                </Grid>
-                <Snackbar
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right"
-                  }}
-                  open={this.state.error}
-                  autoHideDuration={10000}
+              <Typography variant="subtitle1" align="center">
+                to continue E-Restaurant
+              </Typography>
+            </>
+          }
+        />
+        <Divider />
+        <CardContent>
+          <ValidatorForm
+            ref="form"
+            onSubmit={e => this.handleSubmit(e)}
+            debounceTime={500}
+          >
+            <Grid container spacing={32}>
+              <Grid item xs={12}>
+                <TextValidator
+                  label="Enter your Email"
+                  onChange={e => this.handleChange(e, "email")}
+                  validators={["required", "isEmail"]}
+                  errorMessages={["Email is required", "Email is not valid"]}
+                  value={this.state.email}
+                  name="email"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextValidator
+                  label="Enter your Password"
+                  onChange={e => this.handleChange(e, "password")}
+                  validators={["required"]}
+                  errorMessages={["Password is required"]}
+                  value={this.state.password}
+                  name="password"
+                  type="password"
+                  fullWidth
+                />
+              </Grid>
+              <Snackbar
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right"
+                }}
+                open={error}
+                autoHideDuration={10000}
+                onClose={this.handleClose}
+              >
+                <SnackbarContent
                   onClose={this.handleClose}
-                >
-                  <SnackbarContent
-                    onClose={this.handleClose}
-                    variant="error"
-                    message={
-                      <Typography color="inherit" align="center">
-                        {errorMes || "No connection to the server"}
-                      </Typography>
-                    }
-                  />
-                </Snackbar>
-                <Grid item xs={12}>
-                  <Grid container justify="flex-end">
-                    <Button type="submit" color="primary" variant="contained">
-                      Submit
-                    </Button>
-                  </Grid>
+                  variant="error"
+                  message={
+                    <Typography color="inherit" align="center">
+                      {errorMes || "No connection to the server"}
+                    </Typography>
+                  }
+                />
+              </Snackbar>
+              <Grid item xs={12}>
+                <Grid container justify="space-between">
+                  <Button component={Link} to="/sign-up" color="primary">
+                    Create account
+                  </Button>
+                  <Button type="submit" color="primary" variant="contained">
+                    Sign In
+                  </Button>
                 </Grid>
               </Grid>
-            </ValidatorForm>
-          </CardContent>
-        </Card>
-      </div>
+            </Grid>
+          </ValidatorForm>
+        </CardContent>
+      </Card>
     );
   }
 }
+
+Login.propTypes = {
+  classes: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+  state: PropTypes.object.isRequired
+};
 
 export default withStyles(styles)(Login);

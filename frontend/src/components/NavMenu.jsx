@@ -1,16 +1,33 @@
 import React from "react";
 import { withStyles, Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const styles = theme => ({
-  root: { flexGrow: 1 },
-  navItem: {},
+  root: { display: "flex", marginLeft: "auto", alignSelf: "stretch" },
+  navItem: {
+    "&.active": {
+      "& $navItemActive": {
+        transform: "scale(1)"
+      }
+    }
+  },
+  navItemActive: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: theme.spacing.unit / 2,
+    backgroundColor: theme.palette.common.white,
+    transform: "scale(0)",
+    transformOrigin: "bottom",
+    transition: theme.transitions.create("transform")
+  }
 });
 
 const Menu = [
   { name: "Home", route: "/" },
   { name: "Restaurants List", route: "/restaurants" },
-  { name: "Restaurants Map", route: "/restaurants-map" },
+  { name: "Restaurants Map", route: "/restaurants-map" }
 ];
 
 class NavMenu extends React.Component {
@@ -20,14 +37,16 @@ class NavMenu extends React.Component {
       <nav className={classes.root}>
         {Menu.map(item => (
           <Button
+            exact
             key={item.name}
             color="inherit"
             disableRipple
-            component={Link}
+            component={NavLink}
             to={item.route}
             className={classes.navItem}
           >
             {item.name}
+            <span className={classes.navItemActive} />
           </Button>
         ))}
       </nav>

@@ -1,12 +1,13 @@
 import React from "react";
-import SignUpForm from "../components/SignUp/SignUpForm"
+import SignUpForm from "../components/SignUp/SignUpForm";
+import PageContainer from "./PageContainer";
 
-class SignUpPage extends React.Component {
-  render() {
-    return (
+const SignUpPage = () => {
+  return (
+    <PageContainer fullHeight width="small">
       <SignUpForm />
-    );
-  }
-}
+    </PageContainer>
+  );
+};
 
 export default SignUpPage;

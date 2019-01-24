@@ -11,7 +11,9 @@ import {
 import { Link } from "react-router-dom";
 
 const styles = theme => ({
-  root: {}
+  root: {
+    marginLeft: theme.spacing.unit * 6
+  }
 });
 
 class UserMenu extends React.Component {
@@ -61,20 +63,24 @@ class UserMenu extends React.Component {
     const isOwner = role === "Owner";
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
-    const { classes } = this.props;
+    const { classes, isLogIn, isSignUp } = this.props;
     const match = "";
 
     return (
       <div className={classes.root}>
         {!auth && (
           <div className={classes.userMenu}>
-            <Button color="inherit" component={Link} to={`${match}/log-in`}>
-              Log In
-            </Button>
-            /{" "}
-            <Button color="inherit" component={Link} to={`${match}/sign-up`}>
-              Sign Up
-            </Button>
+            {!isLogIn && (
+              <Button color="inherit" component={Link} to={`${match}/log-in`}>
+                Sign In
+              </Button>
+            )}
+            {!isLogIn && !isSignUp && "/"}
+            {!isSignUp && (
+              <Button color="inherit" component={Link} to={`${match}/sign-up`}>
+                Sign Up
+              </Button>
+            )}
           </div>
         )}
         {auth && (

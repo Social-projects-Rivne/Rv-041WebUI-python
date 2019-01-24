@@ -1,11 +1,12 @@
 import React from "react";
 import TagsTab from "../components/RestaurantList/TagsTab";
+import PageContainer from "./PageContainer";
 
 const RestautantListPage = props => {
   return (
-    <React.Fragment>
+    <PageContainer>
       <TagsTab url={props} />
-    </React.Fragment>
+    </PageContainer>
   );
 };
 

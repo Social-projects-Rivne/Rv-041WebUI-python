@@ -73,10 +73,9 @@ def fill_db(session):
 
         Menu_models = [Menu(**menu_dict) for menu_dict in Menus]
 
-        menu_item_number = randint(0, 10)
-
         Menu_items_all_cat = []
         for cat_model in Cat_models:
+            menu_item_number = randint(0, 10)
             Menu_item_models = []
             for j in range(menu_item_number):
                 menu_item = Meals[randint(0, meals_len-1)]
