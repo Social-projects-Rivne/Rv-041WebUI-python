@@ -36,8 +36,10 @@ def login_post(request):
     token = remember(request, user)
     body = {
         "role": user.status.name,
-        "token": token
+        "token": token,
+        "user_name": user.name
     }
+    print body
     return wrap(body)
 
 

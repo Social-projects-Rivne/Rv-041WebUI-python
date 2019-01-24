@@ -67,10 +67,6 @@ class Login extends React.Component {
             token,
             role
           });
-          this.setState({
-            error: false,
-            errorMes: ""
-          });
           this.props.history.push("/restaurants");
         } else {
           throw error;

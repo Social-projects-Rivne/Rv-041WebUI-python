@@ -9,10 +9,10 @@ import {
   IconButton
 } from "@material-ui/core";
 import { ArrowBack } from "@material-ui/icons";
-import NavMenu from "./NavMenu";
-import UserMenu from "./UserMenu";
+import NavMenu from "../components/AppHeader/NavMenu";
+import UserMenu from "../components/AppHeader/UserMenu";
 import { Link } from "react-router-dom";
-import AppContext from "./AppContext";
+import AppContext from "../components/AppContext";
 
 const styles = theme => ({
   logoLink: {
@@ -30,6 +30,7 @@ class AppHeader extends React.Component {
     const { classes, history } = this.props;
     const isLogIn = history.location.pathname === "/log-in";
     const isSignUp = history.location.pathname === "/sign-up";
+
     return (
       <AppBar position="static">
         <Toolbar style={{ justifyContent: "space-between" }}>

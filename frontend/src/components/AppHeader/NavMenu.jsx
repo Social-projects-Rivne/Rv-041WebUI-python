@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { withStyles, Button } from "@material-ui/core";
 import { NavLink } from "react-router-dom";
 
@@ -53,5 +54,9 @@ class NavMenu extends React.Component {
     );
   }
 }
+
+NavMenu.propTypes = {
+  classes: PropTypes.object.isRequired
+};
 
 export default withStyles(styles)(NavMenu);

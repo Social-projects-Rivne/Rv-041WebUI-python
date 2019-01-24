@@ -9,7 +9,7 @@ import LogInPage from "./containers/LogInPage";
 import SignUpPage from "./containers/SignUpPage";
 import ProfilePage from "./containers/ProfilePage";
 import UserInfoPage from "./containers/UserInfo";
-import AppHeader from "./components/AppHeader";
+import AppHeader from "./containers/AppHeader";
 
 const routes = [
   {

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   withStyles,
   Divider,
@@ -64,20 +65,18 @@ class UserMenu extends React.Component {
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const { classes, isLogIn, isSignUp } = this.props;
-    const match = "";
-
     return (
       <div className={classes.root}>
         {!auth && (
           <div className={classes.userMenu}>
             {!isLogIn && (
-              <Button color="inherit" component={Link} to={`${match}/log-in`}>
+              <Button color="inherit" component={Link} to={`/log-in`}>
                 Sign In
               </Button>
             )}
             {!isLogIn && !isSignUp && "/"}
             {!isSignUp && (
-              <Button color="inherit" component={Link} to={`${match}/sign-up`}>
+              <Button color="inherit" component={Link} to={`/sign-up`}>
                 Sign Up
               </Button>
             )}
@@ -111,7 +110,7 @@ class UserMenu extends React.Component {
               <MenuItem
                 onClick={this.handleClose}
                 component={Link}
-                to={`${match}/profile`}
+                to={`/profile`}
               >
                 My Profile
               </MenuItem>
@@ -137,5 +136,11 @@ class UserMenu extends React.Component {
     );
   }
 }
+
+UserMenu.propTypes = {
+  classes: PropTypes.object.isRequired,
+  isLogIn: PropTypes.bool.isRequired,
+  isSignUp: PropTypes.bool.isRequired
+};
 
 export default withStyles(styles)(UserMenu);

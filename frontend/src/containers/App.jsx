@@ -9,14 +9,21 @@ class App extends React.Component {
   state = {
     auth: false,
     role: "",
-    token: ""
+    token: "",
+    userName: ""
   };
 
   componentDidMount() {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
+    const userName = localStorage.getItem("user_name");
     if (token && role) {
-      this.setState({ auth: true, token: token, role: role });
+      this.setState({
+        auth: true,
+        token: token,
+        role: role,
+        userName: userName
+      });
     }
   }
 
