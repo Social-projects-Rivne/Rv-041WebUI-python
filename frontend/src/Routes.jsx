@@ -60,18 +60,15 @@ const routes = [
 
 class Routes extends React.Component {
   render() {
-    console.log(this.props);
     return (
-      <BrowserRouter>
-        <>
-          <AppHeader />
-          <Switch>
-            {routes.map(({ path, component }) => (
-              <Route exact key={component} path={path} component={component} />
-            ))}
-          </Switch>
-        </>
-      </BrowserRouter>
+      <>
+        <Route component={AppHeader} />
+        <Switch>
+          {routes.map(({ path, component }) => (
+            <Route exact key={component} path={path} component={component} />
+          ))}
+        </Switch>
+      </>
     );
   }
 }

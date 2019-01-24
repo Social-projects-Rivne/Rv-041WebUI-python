@@ -1,5 +1,6 @@
 import React from "react";
 import Routes from "../Routes";
+import { BrowserRouter } from "react-router-dom";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppContext from "../components/AppContext";
 import { hot } from "react-hot-loader";
@@ -25,12 +26,14 @@ class App extends React.Component {
 
   render() {
     return (
-      <AppContext.Provider
-        value={{ ...this.state, changeState: this.changeState }}
-      >
-        <CssBaseline />
-        <Routes />
-      </AppContext.Provider>
+      <BrowserRouter>
+        <AppContext.Provider
+          value={{ ...this.state, changeState: this.changeState }}
+        >
+          <CssBaseline />
+          <Routes />
+        </AppContext.Provider>
+      </BrowserRouter>
     );
   }
 }

@@ -1,16 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import { AppBar, Toolbar, Typography } from "@material-ui/core";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Fab,
+  IconButton
+} from "@material-ui/core";
+import { ArrowBack } from "@material-ui/icons";
 import NavMenu from "./NavMenu";
 import UserMenu from "./UserMenu";
 import { Link } from "react-router-dom";
 import AppContext from "./AppContext";
 
 const styles = theme => ({
-  grow: {
-    flexGrow: 1
-  },
   logoLink: {
     textDecoration: "none",
     color: "#fff"
@@ -18,19 +22,34 @@ const styles = theme => ({
 });
 
 class AppHeader extends React.Component {
+  handleBackClick = () => {
+    this.props.history.goBack();
+  };
+
   render() {
-    const { classes } = this.props;
+    const { classes, history } = this.props;
+    const isLogIn = history.location.pathname === "/log-in";
+    const isSignUp = history.location.pathname === "/sign-up";
     return (
       <AppBar position="static">
-        <Toolbar>
-          <Typography variant="button" className={classes.grow}>
-            <Link className={classes.logoLink} to="/">
-              Easy-rest
-            </Link>
-          </Typography>
-          <NavMenu />
+        <Toolbar style={{ justifyContent: "space-between" }}>
+          {isLogIn || isSignUp ? (
+            <IconButton color="inherit" onClick={this.handleBackClick}>
+              <ArrowBack />
+            </IconButton>
+          ) : (
+            <Typography variant="button">
+              <Link className={classes.logoLink} to="/">
+                Easy-rest
+              </Link>
+            </Typography>
+          )}
+
+          {!isSignUp && !isLogIn && <NavMenu />}
           <AppContext.Consumer>
-            {state => <UserMenu ctx={state} />}
+            {state => (
+              <UserMenu isLogIn={isLogIn} isSignUp={isSignUp} ctx={state} />
+            )}
           </AppContext.Consumer>
         </Toolbar>
       </AppBar>
@@ -39,7 +58,8 @@ class AppHeader extends React.Component {
 }
 
 AppHeader.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(AppHeader);
