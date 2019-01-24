@@ -60,7 +60,7 @@ class SignUpForm extends React.Component {
       method: "POST",
       body: JSON.stringify(formData),
     };
-    fetch("http://localhost:6543/api/sign-up", requestConfig)
+    fetch("http://localhost:6543/api/sign_up", requestConfig)
       .then(response => response.json())
       .then(response => this.setState({serverResponse: response.success}))
       .catch(error => this.setState({errors: true}));
