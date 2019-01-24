@@ -124,7 +124,7 @@ class SignUpForm extends React.Component {
                       type="password"
                       margin="normal"
                       name="password"
-                      helperText="Password must have minimum 8 characters and including at least 1 letter"
+                      helperText="Password must have minimum 8 characters"
                     />
                     <TextValidator
                       label="Confirm password"
