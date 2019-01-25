@@ -1,15 +1,12 @@
 import React from "react";
+import PropTypes, { array } from "prop-types";
 import RestaurantItem from "../components/RestaurantItem";
 import { withStyles, Grid } from "@material-ui/core/";
 
-const styles = theme => ({
-  root: {}
-});
-
 const RestaurantList = props => {
-  const { classes, data } = props;
+  const { data } = props;
   return (
-    <div className={classes.root}>
+    <div>
       {data.length !== 0 && (
         <Grid container spacing={16}>
           {data.map(rest => {
@@ -32,4 +29,8 @@ const RestaurantList = props => {
   );
 };
 
-export default withStyles(styles)(RestaurantList);
+RestaurantList.propTypes = {
+  data: PropTypes.array.isRequired
+};
+
+export default RestaurantList;

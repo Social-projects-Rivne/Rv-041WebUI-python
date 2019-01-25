@@ -3,8 +3,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import AddIcon from "@material-ui/icons/Add";
 import Edit from "@material-ui/icons/Edit";
-import green from "@material-ui/core/colors/green";
-import amber from "@material-ui/core/colors/amber";
+import { green, amber } from "@material-ui/core/colors/";
 import {
   Fab,
   withStyles,

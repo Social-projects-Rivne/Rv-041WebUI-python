@@ -11,9 +11,10 @@ const styles = theme => ({
     height: "100%"
   },
   tab: {
+    color: theme.palette.main,
     transition: theme.transitions.create("opacity"),
     "&.active": {
-      color: theme.palette.primary.main,
+      color: theme.palette.secondary.light,
       opacity: 1
     }
   }
@@ -24,7 +25,6 @@ const ProfileTabs = props => {
   return (
     <div className={classes.root}>
       <Tab
-        disableRipple
         className={classes.tab}
         component={NavLink}
         to="/profile/personal_info"

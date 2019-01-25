@@ -17,7 +17,7 @@ import AppContext from "../components/AppContext";
 const styles = theme => ({
   logoLink: {
     textDecoration: "none",
-    color: "#fff"
+    color: theme.palette.text.primary
   }
 });
 
@@ -34,7 +34,7 @@ class AppHeader extends React.Component {
     return (
       <AppBar position="static">
         <Toolbar style={{ justifyContent: "space-between" }}>
-          {isLogIn || isSignUp ? (
+          {(isLogIn || isSignUp) && history.action !== "POP" ? (
             <IconButton color="inherit" onClick={this.handleBackClick}>
               <ArrowBack />
             </IconButton>

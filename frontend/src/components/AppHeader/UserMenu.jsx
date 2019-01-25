@@ -16,7 +16,7 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit * 6
   },
   avatar: {
-    backgroundColor: theme.palette.secondary.dark
+    backgroundColor: theme.palette.secondary.light
   }
 });
 
@@ -71,19 +71,28 @@ class UserMenu extends React.Component {
     const open = Boolean(anchorEl);
     const { classes, isLogIn, isSignUp } = this.props;
     const avatarChar = userName.slice(0, 1).toUpperCase();
-
     return (
       <div className={classes.root}>
         {!auth && (
           <div className={classes.userMenu}>
             {!isLogIn && (
-              <Button color="inherit" replace component={Link} to={`/log-in`}>
+              <Button
+                color="inherit"
+                replace={isSignUp}
+                component={Link}
+                to={`/log-in`}
+              >
                 Sign In
               </Button>
             )}
             {!isLogIn && !isSignUp && "/"}
             {!isSignUp && (
-              <Button color="inherit" replace component={Link} to={`/sign-up`}>
+              <Button
+                color="inherit"
+                replace={isLogIn}
+                component={Link}
+                to={`/sign-up`}
+              >
                 Sign Up
               </Button>
             )}
@@ -120,11 +129,9 @@ class UserMenu extends React.Component {
                 My Profile
               </MenuItem>
               {isOwner && (
-                <div>
-                  <MenuItem component={Link} to="/profile/my_restaurants">
-                    My restaurant
-                  </MenuItem>
-                </div>
+                <MenuItem component={Link} to="/profile/my_restaurants">
+                  My restaurant
+                </MenuItem>
               )}
               <Divider />
               <MenuItem onClick={this.handleLogout}>Log Out</MenuItem>

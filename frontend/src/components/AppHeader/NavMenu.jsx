@@ -18,7 +18,7 @@ const styles = theme => ({
     left: 0,
     right: 0,
     height: theme.spacing.unit / 2,
-    backgroundColor: theme.palette.common.white,
+    backgroundColor: theme.palette.secondary.light,
     transform: "scale(0)",
     transformOrigin: "bottom",
     transition: theme.transitions.create("transform")
