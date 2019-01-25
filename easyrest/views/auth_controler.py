@@ -37,7 +37,7 @@ def login_post(request):
     body = {
         "role": user.status.name,
         "token": token,
-        "user_name": user.name
+        "userName": user.name
     }
     print body
     return wrap(body)

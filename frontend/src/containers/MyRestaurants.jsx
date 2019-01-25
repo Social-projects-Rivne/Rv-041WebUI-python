@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import RestaurantList from "../components/RestaurantList";
 import AddUpdateRestaurant from "../components/Profile/AddUpdateRestaurant";
 
-class MyRestaurant extends Component {
+class MyRestaurants extends Component {
   state = {
     myRestaurants: []
   };
@@ -25,16 +25,16 @@ class MyRestaurant extends Component {
   render() {
     const { owner, myRestaurants } = this.state;
     return (
-      <div>
+      <>
         <RestaurantList data={myRestaurants} />
         <AddUpdateRestaurant
           id={null}
           requestType="post"
           onAdd={this.handleAddRestaurant}
         />
-      </div>
+      </>
     );
   }
 }
 
-export default MyRestaurant;
+export default MyRestaurants;

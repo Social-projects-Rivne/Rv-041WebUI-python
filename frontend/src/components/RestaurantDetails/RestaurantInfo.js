@@ -8,10 +8,7 @@ import {
 } from "@material-ui/core/";
 
 const styles = {
-  root: {
-    paddingLeft: 24,
-    paddingRight: 24
-  }
+  root: {}
 };
 
 class RestaurantInfo extends React.Component {

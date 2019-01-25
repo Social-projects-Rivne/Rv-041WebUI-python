@@ -14,6 +14,9 @@ import { Link } from "react-router-dom";
 const styles = theme => ({
   root: {
     marginLeft: theme.spacing.unit * 6
+  },
+  avatar: {
+    backgroundColor: theme.palette.secondary.dark
   }
 });
 
@@ -47,10 +50,12 @@ class UserMenu extends React.Component {
       .then(() => {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
+        localStorage.removeItem("userName");
         this.props.ctx.changeState({
           auth: false,
           token: "",
-          role: ""
+          role: "",
+          userName: ""
         });
         this.setState({ anchorEl: null });
       })
@@ -60,23 +65,25 @@ class UserMenu extends React.Component {
   };
 
   render() {
-    const { auth, role } = this.props.ctx;
+    const { auth, role, userName } = this.props.ctx;
     const isOwner = role === "Owner";
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const { classes, isLogIn, isSignUp } = this.props;
+    const avatarChar = userName.slice(0, 1).toUpperCase();
+
     return (
       <div className={classes.root}>
         {!auth && (
           <div className={classes.userMenu}>
             {!isLogIn && (
-              <Button color="inherit" component={Link} to={`/log-in`}>
+              <Button color="inherit" replace component={Link} to={`/log-in`}>
                 Sign In
               </Button>
             )}
             {!isLogIn && !isSignUp && "/"}
             {!isSignUp && (
-              <Button color="inherit" component={Link} to={`/sign-up`}>
+              <Button color="inherit" replace component={Link} to={`/sign-up`}>
                 Sign Up
               </Button>
             )}
@@ -85,18 +92,21 @@ class UserMenu extends React.Component {
         {auth && (
           <div className={classes.userMenu}>
             <IconButton
+              style={{ padding: 0 }}
               color="inherit"
               aria-owns={open ? "menu-appbar" : undefined}
               aria-haspopup="true"
               onClick={this.handleMenu}
             >
-              <Avatar>V</Avatar>
+              <Avatar className={classes.avatar}>{avatarChar}</Avatar>
             </IconButton>
             <Menu
               id="menu-appbar"
+              getContentAnchorEl={null}
               anchorEl={anchorEl}
+              onClick={this.handleClose}
               anchorOrigin={{
-                vertical: "top",
+                vertical: "bottom",
                 horizontal: "right"
               }}
               transformOrigin={{
@@ -105,24 +115,13 @@ class UserMenu extends React.Component {
               }}
               open={open}
               onClose={this.handleClose}
-              style={{ marginTop: 60 }}
             >
-              <MenuItem
-                onClick={this.handleClose}
-                component={Link}
-                to={`/profile`}
-              >
+              <MenuItem component={Link} to={`/profile/personal_info`}>
                 My Profile
               </MenuItem>
-              <MenuItem onClick={this.handleClose}>Current orders</MenuItem>
-              <MenuItem onClick={this.handleClose}>My account</MenuItem>
               {isOwner && (
                 <div>
-                  <MenuItem
-                    component={Link}
-                    to="/profile/my-restaurants"
-                    onClick={this.handleClose}
-                  >
+                  <MenuItem component={Link} to="/profile/my_restaurants">
                     My restaurant
                   </MenuItem>
                 </div>

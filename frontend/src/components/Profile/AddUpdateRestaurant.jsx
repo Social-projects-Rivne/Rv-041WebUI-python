@@ -226,7 +226,7 @@ class AddUpdateRestaurant extends React.Component {
     return (
       <CardContent>
         <div className={classes.header}>
-          <Typography variant="title">
+          <Typography variant="h6">
             {requestType === "post" ? "Add new" : "Update"} restaurant:
           </Typography>
           <Fab

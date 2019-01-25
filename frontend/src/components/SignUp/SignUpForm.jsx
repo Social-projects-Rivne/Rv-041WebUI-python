@@ -159,7 +159,7 @@ class SignUpForm extends React.Component {
                     {this.state.errors && (
                       <Grid item>
                         <Typography
-                          variant="body2"
+                          variant="body1"
                           color="error"
                           align="center"
                         >
@@ -170,7 +170,12 @@ class SignUpForm extends React.Component {
                   </Grid>
                   <Grid item xs={12}>
                     <Grid container justify="space-between">
-                      <Button component={Link} to="/log-in" color="primary">
+                      <Button
+                        replace
+                        component={Link}
+                        to="/log-in"
+                        color="primary"
+                      >
                         Sign in instead
                       </Button>
                       <Button

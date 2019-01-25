@@ -1,34 +1,39 @@
 import React from "react";
-import { withStyles, Grid, Card } from "@material-ui/core";
+import { Grid, Card, CardContent } from "@material-ui/core";
 import ProfileTabs from "../components/Profile/ProfileTabs";
-import MyRestaurant from "./MyRestaurant";
-
-const styles = () => ({
-  root: {
-    maxWidth: "1280px",
-    marginRight: "auto",
-    marginLeft: "auto",
-    paddingRight: 24,
-    paddingLeft: 24,
-  },
-});
+import MyRestaurants from "./MyRestaurants";
+import UserInfoPage from "./UserInfo";
+import PageContainer from "./PageContainer";
+import { Route, Switch } from "react-router-dom";
 
 const Profile = props => {
-  const { classes } = props;
   return (
-    <div className={classes.root}>
+    <PageContainer>
       <Card>
-        <Grid container spacing={0}>
-          <Grid item xs={10}>
-            <MyRestaurant />
+        <CardContent>
+          <Grid container spacing={24}>
+            <Grid item xs={10}>
+              <Switch>
+                <Route
+                  exact
+                  path={`${props.match.url}/personal_info`}
+                  component={UserInfoPage}
+                />
+                <Route
+                  exact
+                  path={`${props.match.url}/my_restaurants`}
+                  component={MyRestaurants}
+                />
+              </Switch>
+            </Grid>
+            <Grid item xs={2}>
+              <ProfileTabs />
+            </Grid>
           </Grid>
-          <Grid item xs={2}>
-            <ProfileTabs />
-          </Grid>
-        </Grid>
+        </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 };
 
-export default withStyles(styles)(Profile);
+export default Profile;

@@ -58,14 +58,17 @@ class Login extends React.Component {
       .then(response => response.json())
       .then(input => {
         const { success, error, data } = input;
-        const { role, token } = data;
-        if (success && role && token) {
+        const { role, token, userName } = data;
+
+        if (success && role && token && userName) {
           localStorage.setItem("token", token);
           localStorage.setItem("role", role);
+          localStorage.setItem("userName", userName);
           this.props.state.changeState({
             auth: true,
             token,
-            role
+            role,
+            userName
           });
           this.props.history.push("/restaurants");
         } else {
@@ -150,7 +153,12 @@ class Login extends React.Component {
               </Snackbar>
               <Grid item xs={12}>
                 <Grid container justify="space-between">
-                  <Button component={Link} to="/sign-up" color="primary">
+                  <Button
+                    replace
+                    component={Link}
+                    to="/sign-up"
+                    color="primary"
+                  >
                     Create account
                   </Button>
                   <Button type="submit" color="primary" variant="contained">
