@@ -9,6 +9,7 @@ import LogInPage from "./containers/LogInPage";
 import SignUpPage from "./containers/SignUpPage";
 import Profile from "./containers/Profile";
 import UserInfoPage from "./containers/UserInfo";
+import RestaurantsForApprovalPage from "./containers/RestaurantsForApprovalPage";
 
 const routes = [
   {
@@ -54,6 +55,10 @@ const routes = [
   {
     path: "/profile/my_restaurants",
     component: MyRestaurantsPage
+  },
+  {
+    path: "/approval/restaurants",
+    component: RestaurantsForApprovalPage
   }
 ];
 
