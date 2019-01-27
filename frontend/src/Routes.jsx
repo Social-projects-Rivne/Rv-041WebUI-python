@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch, BrowserRouter } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import HomePage from "./containers/HomePage";
 import RestautantListPage from "./containers/RestaurantListPage";
 import RestaurantsMapPage from "./containers/RestaurantsMapPage";
@@ -17,7 +17,8 @@ const routes = [
   },
   {
     path: "/restaurants",
-    component: RestautantListPage
+    component: RestautantListPage,
+    exact: true
   },
   {
     path: "/restaurants/:id",

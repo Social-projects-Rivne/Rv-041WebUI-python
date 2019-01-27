@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import RestaurantList from "../components/RestaurantList";
-import AddUpdateRestaurant from "../components/Profile/AddUpdateRestaurant";
+import React from "react";
+import RestaurantList from "../components/RestaurantList/RestaurantList";
+import AddUpdateRestaurant from "../components/UserRestaurants/AddUpdateRestaurant";
 
-class MyRestaurants extends Component {
+class MyRestaurants extends React.Component {
   state = {
     myRestaurants: []
   };
@@ -23,7 +23,8 @@ class MyRestaurants extends Component {
   };
 
   render() {
-    const { owner, myRestaurants } = this.state;
+    const { myRestaurants } = this.state;
+
     return (
       <>
         <RestaurantList data={myRestaurants} />

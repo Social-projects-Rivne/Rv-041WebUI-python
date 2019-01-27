@@ -2,11 +2,7 @@ import React from "react";
 import UserAvatarWithInfo from "../components/UserInfo/UserAvatarWithInfo";
 
 const UserInfoPage = props => {
-  return (
-    <React.Fragment>
-      <UserAvatarWithInfo />
-    </React.Fragment>
-  );
+  return <UserAvatarWithInfo />;
 };
 
 export default UserInfoPage;

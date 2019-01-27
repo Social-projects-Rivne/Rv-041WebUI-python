@@ -1,7 +1,12 @@
 import React from "react";
+import PageContainer from "./PageContainer";
 
-const RestaurantsMapPage = pops => {
-  return <div>This is RestaurantsMapPage</div>;
+const RestaurantsMapPage = props => {
+  return (
+    <PageContainer>
+      <div>This is RestaurantsMapPage</div>
+    </PageContainer>
+  );
 };
 
 export default RestaurantsMapPage;

@@ -8,7 +8,7 @@ import {
   CssBaseline,
   MuiThemeProvider
 } from "@material-ui/core";
-import { blue, purple, grey } from "@material-ui/core/colors/";
+import { lightBlue } from "@material-ui/core/colors/";
 
 const theme = createMuiTheme({
   typography: {
@@ -16,14 +16,10 @@ const theme = createMuiTheme({
   },
   palette: {
     primary: {
-      main: blue[300]
+      main: lightBlue[900]
     },
     secondary: {
-      main: purple[700]
-    },
-    background: {
-      default: grey[200],
-      paper: grey[50]
+      main: lightBlue[200]
     }
   }
 });

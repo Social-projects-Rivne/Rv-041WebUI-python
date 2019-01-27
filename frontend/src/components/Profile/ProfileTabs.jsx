@@ -1,6 +1,6 @@
 import React from "react";
 import { Person, Comment, AddBox, History, ListAlt } from "@material-ui/icons";
-import { Tab, withStyles } from "@material-ui/core";
+import { Tab, withStyles, Divider } from "@material-ui/core";
 import { NavLink } from "react-router-dom";
 
 const styles = theme => ({
@@ -11,10 +11,9 @@ const styles = theme => ({
     height: "100%"
   },
   tab: {
-    color: theme.palette.main,
     transition: theme.transitions.create("opacity"),
     "&.active": {
-      color: theme.palette.secondary.light,
+      color: theme.palette.secondary.dark,
       opacity: 1
     }
   }

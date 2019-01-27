@@ -39,7 +39,7 @@ def login_post(request):
         "token": token,
         "userName": user.name
     }
-    print body
+
     return wrap(body)
 
 

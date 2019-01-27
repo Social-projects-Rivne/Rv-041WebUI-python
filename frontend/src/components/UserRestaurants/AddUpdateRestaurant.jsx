@@ -223,7 +223,7 @@ class AddUpdateRestaurant extends React.Component {
     } = this.state;
 
     return (
-      <CardContent>
+      <>
         <div className={classes.header}>
           <Typography variant="h6">
             {requestType === "post" ? "Add new" : "Update"} restaurant:
@@ -382,7 +382,7 @@ class AddUpdateRestaurant extends React.Component {
             </IconButton>
           ]}
         />
-      </CardContent>
+      </>
     );
   }
 }
