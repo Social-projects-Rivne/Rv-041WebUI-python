@@ -13,9 +13,9 @@ class MyRest extends React.Component {
     componentDidMount() {
         const headers = new Headers({
             'Content-Type': 'application/json',
-            'Authorization': this.state.token
+            "x-auth-token": localStorage.getItem("token")
         });
-        fetch(`http://localhost:6543/my_restaurant`,{
+        fetch("http://localhost:6543/api/user_restaurants",{
             method: "GET",
             headers
         })
