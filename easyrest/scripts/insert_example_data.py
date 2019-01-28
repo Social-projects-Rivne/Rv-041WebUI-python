@@ -44,27 +44,39 @@ def fill_db(session):
 
     session.add_all(UserStatuses)
 
-    # Create 5 users with status Client
-    Users = [User(name=fake.name(),
-                  email=fake.email(),
-                  password="123%s" % i,
-                  status=UserStatuses[1],
-                  phone_number=fake.phone_number(),
-                  birth_date=fake.date_of_birth(
-                      tzinfo=None, minimum_age=18, maximum_age=100)
-                  ) for i in range(5)]
-
+    # Create 5 users with status Owner
+    number_of_owners = 5
+    Users = []
+    for i in range(number_of_owners):
+        user_name = fake.name()
+        Users.append(User(name=user_name,
+                          email=user_name.lower().replace(" ", "")+'@test.com',
+                          password="123%s" % i,
+                          status=UserStatuses[1],
+                          phone_number="+38098" + str(1000000 + i),
+                          birth_date=fake.date_of_birth(
+                              tzinfo=None, minimum_age=18, maximum_age=100)
+                          )
+                     )
     session.add_all(Users)
 
+    # Restaurant status can be 0-waiting for confirmation, 1-active (confirmed), 2-archived
+    rest_status = 0
+
     for i in range(10):
+        if rest_status == 3:
+            rest_status = 0
+        company_name = fake.company()
         rest = {
-            "name": fake.company(),
+            "name": company_name,
             "address_id": fake.address(),
             "description": fake.text(max_nb_chars=200),
-            "phone": fake.ean8()
+            "phone": "+380362" + str(100000 + i),
+            "status": rest_status
         }
+        rest_status = rest_status + 1
 
-        menu_model = Menu(name=fake.company())
+        menu_model = Menu(name=company_name + " Menu")
         rest_model = Restaurant(**rest)
 
         Menu_item_models = []
@@ -72,9 +84,9 @@ def fill_db(session):
 
         for i in range(menu_item_number):
             menu_item = {
-                "name": fake.domain_word(),
-                "description": fake.text(max_nb_chars=200),
-                "ingredients": fake.sentence(
+                "name": "Menu item : " + fake.domain_word(),
+                "description": "Description : " + fake.text(max_nb_chars=200),
+                "ingredients": "Ingredients : " + fake.sentence(
                     nb_words=6,
                     variable_nb_words=True,
                     ext_word_list=None)
@@ -114,11 +126,13 @@ def fill_db(session):
 
     # add users
     for i in range(menu_item_number):
-        current_user = User(name=fake.name(),
-                            email=fake.email(),
+        user_name = fake.name()
+        current_user = User(name=user_name,
+                            email=user_name.lower().replace(" ", "")+'@test.com',
                             password="123%s" % i,
                             status=UserStatuses[0],
-                            phone_number=fake.phone_number(),
+                            phone_number="+38098" +
+                            str(1000000 + number_of_owners + i),
                             birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
         user_model.append(current_user)
 
