@@ -26,7 +26,7 @@ class RestaurantsForApprovalPage extends Component {
             headers: headers
         };
 
-        fetch('http://localhost:6543/api/approval/restaurants', fetchInit)
+        fetch('http://localhost:6543/api/approval_restaurants', fetchInit)
             .then(response => (response.status === 403 ? this.setState({needRedirection: true, success: false}): response.json()))
             .then(data => this.setState({unapprovedRestaurants: data.data, success: data.success, error: data.error}))
             .catch(err => this.setState({success: false, error: err.message}))
@@ -34,7 +34,7 @@ class RestaurantsForApprovalPage extends Component {
 
     }
 
-    handleRestaurantApprovement = (restaurant_id, request_method, e) => {
+    handleRestaurantApprovement = (restaurant_id, request_method) => {
 
         const headers = new Headers({
             'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ class RestaurantsForApprovalPage extends Component {
             body: JSON.stringify({id: restaurant_id}),
         };
 
-        fetch('http://localhost:6543/api/approval/restaurants', fetchInit)
+        fetch('http://localhost:6543/api/approval_restaurants', fetchInit)
             .then(response => (response.status === 403 ? this.setState({needRedirection: true, success: false}): response.json()))
             .then(data => this.setState((prevState) => {
               return{

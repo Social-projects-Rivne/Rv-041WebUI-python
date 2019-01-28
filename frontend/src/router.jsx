@@ -10,6 +10,7 @@ import SignUpPage from "./containers/SignUpPage";
 import Profile from "./containers/Profile";
 import UserInfoPage from "./containers/UserInfo";
 import RestaurantsForApprovalPage from "./containers/RestaurantsForApprovalPage";
+import ModeratorPanel from "./containers/ModeratorPanel";
 
 const routes = [
   {
@@ -57,8 +58,8 @@ const routes = [
     component: MyRestaurantsPage
   },
   {
-    path: "/approval/restaurants",
-    component: RestaurantsForApprovalPage
+    path: "/moderator",
+    component: ModeratorPanel
   }
 ];
 

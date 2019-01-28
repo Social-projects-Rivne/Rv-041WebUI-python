@@ -8,18 +8,16 @@ function RestaurantsForApproval(props) {
     const {unapprovedRestaurants, handleRestaurantApprovement} = props;
 
     return(
-      <Grid container justify="center" direction="row" alignItems="center" spacing={16} alignContent="stretch">
+      <Grid container direction="row" alignItems="center" spacing={8}>
         {unapprovedRestaurants.map(restaurantInfo => {
-          return <Grid item xs={12} max-width="50%" key={restaurantInfo.id}>
+          return <Grid item xs={6} key={restaurantInfo.id}>
 
             <RestaurantForApproval
               key={restaurantInfo.id}
               restaurant={restaurantInfo}
               handleRestaurantApprovement={handleRestaurantApprovement}
             />
-
           </Grid>
-
         })}
       </Grid>
     );

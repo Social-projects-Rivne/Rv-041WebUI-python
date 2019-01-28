@@ -29,6 +29,7 @@ const styles = theme => ({
   },
   actions: {
     display: 'flex',
+    justifyContent: 'flex-end'
   },
   expand: {
     transform: 'rotate(0deg)',
@@ -37,9 +38,6 @@ const styles = theme => ({
       duration: theme.transitions.duration.shortest,
     }),
   },
-  expandOpen: {
-    transform: 'rotate(180deg)',
-  },
   avatar: {
     backgroundColor: red[500],
   },
@@ -47,55 +45,52 @@ const styles = theme => ({
 
 function RestaurantForApproval(props){
 
-    const {name, address_id, owner_id, id} = props.restaurant;
+    const {name, address_id, owner_id, id, owner_name, phone, creation_date} = props.restaurant;
     const {classes, handleRestaurantApprovement} = props;
+
+    const date = new Date(creation_date*1000);
 
     return(
         <div>
-        <Card className={classes.card}>
+          <Card className={classes.card}>
 
-            <CardHeader
-                avatar={
-                <Avatar aria-label={name} className={classes.avatar}>
-                    {name[0]}
-                </Avatar>
-                }
-                action={
-                   <IconButton>
-                      <MoreVertIcon />
-                   </IconButton>
-                }
-                title={name}
-                subheader="January 25, 2019"
-            />
-
-            <CardContent>
-
-              <CardMedia
-                className={classes.media}
-                image="https://media-cdn.tripadvisor.com/media/photo-f/04/43/20/9c/whisky-corner.jpg"
-                title="Paella dish"
+              <CardHeader
+                  avatar={
+                  <Avatar aria-label={name} className={classes.avatar}>
+                      {name[0]}
+                  </Avatar>
+                  }
+                  title={name}
+                  subheader={'Added: ' + String(date.toISOString().slice(0,10))}
               />
 
-              <Typography component="p">
-                Address: {address_id}
-                <br/>
-                Telephone: +380666666666
-              </Typography>
+              <CardContent>
 
-            </CardContent>
+                <CardMedia
+                  className={classes.media}
+                  image="https://media-cdn.tripadvisor.com/media/photo-f/04/43/20/9c/whisky-corner.jpg"
+                  title={name}
+                />
 
-            <CardActions>
-              <Button size="small" color="primary" onClick={() => handleRestaurantApprovement(id, "POST")}>
-                Approve
-              </Button>
-              <Button size="small" color="secondary" onClick={() => handleRestaurantApprovement(id, "DELETE")}>
-                Disapprove
-              </Button>
-            </CardActions>
+                <Typography component="p">
+                  Owner: {owner_name}
+                  <br/>
+                  Address: {address_id}
+                  <br/>
+                  Telephone: {phone}
+                </Typography>
 
+              </CardContent>
 
-        </Card>
+              <CardActions className={classes.actions}>
+                <Button size="small" color="secondary" onClick={() => handleRestaurantApprovement(id, "DELETE")}>
+                  Disapprove
+                </Button>
+                <Button size="small" color="primary" onClick={() => handleRestaurantApprovement(id, "POST")}>
+                  Approve
+                </Button>
+              </CardActions>
+          </Card>
         </div>
     );
 

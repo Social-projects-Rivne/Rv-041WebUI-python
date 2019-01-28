@@ -20,7 +20,7 @@ def includeme(config):
                      request_method="GET")
     config.add_route('user_restaurants', 'user_restaurants')
     config.add_route('user_restaurant', 'user_restaurant/{id:[1-9]\d*}')
-    config.add_route('get_unapproved_restaurants', 'approval/restaurants',
+    config.add_route('get_unapproved_restaurants', 'approval_restaurants',
                      request_method="GET")
-    config.add_route('approve_restaurant', 'approval/restaurants',
+    config.add_route('approve_restaurant', 'approval_restaurants',
                      request_method=["POST", "DELETE"])
