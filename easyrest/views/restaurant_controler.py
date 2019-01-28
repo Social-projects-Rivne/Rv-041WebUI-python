@@ -258,11 +258,8 @@ def update_user_restaurant(request):
             rest.name = name
         if address:
             rest.address_id = address
-
         rest.description = description
-
         rest.phone = phone
-
         tag_models = [request.dbsession.query(
             Tag).filter_by(name=tag).first() for tag in tags]
         rest.tag = tag_models
