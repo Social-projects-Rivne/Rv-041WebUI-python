@@ -22,7 +22,7 @@ class MenuItemList extends React.Component {
         const top = this.heightsList[i + 1];
         const bot = this.heightsList[i];
         if (curScroll >= bot && curScroll <= top) {
-          this.props.scroll(i - 1);
+          // this.props.scroll(i - 1);
           return;
         }
       }

@@ -18,8 +18,7 @@ const CategoriesList = props => {
         <CardContent>
           <Grid container>
             {cats.map((cat, index) => {
-              const act = active == index ? "active" : "";
-              console.log(act, active == index, active);
+              const act = ""; // active == index ? "active" : "";
               return (
                 <Grid key={"Cat" + index} item xs={12}>
                   <Button
