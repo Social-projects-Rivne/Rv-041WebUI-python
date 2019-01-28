@@ -9,9 +9,9 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 from passlib.hash import pbkdf2_sha256
-from validator import validation
 
 from .meta import Base
+from validator import validation
 
 
 class User(Base):
@@ -28,11 +28,11 @@ class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     name = Column(Text)
-    email = Column(Text)
+    email = Column(Text, unique=True)
     phone_number = Column(Text)
     birth_date = Column(Date)
     password = Column(Text)
-    status_id = Column(Integer, ForeignKey('user_statuses.id'))
+    status_id = Column(Integer, ForeignKey('user_statuses.id'), default=1)
 
     tokens = relationship("Token")
     status = relationship('UserStatus')
