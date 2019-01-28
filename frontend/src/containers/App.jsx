@@ -3,7 +3,7 @@ import Routes from "../Routes";
 import { BrowserRouter } from "react-router-dom";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppContext from "../components/AppContext";
-import { hot } from "react-hot-loader";
+// import { hot } from "react-hot-loader";
 
 class App extends React.Component {
   state = {
@@ -38,4 +38,5 @@ class App extends React.Component {
   }
 }
 
-export default hot(module)(App);
+export default App;
+// export default hot(module)(App);

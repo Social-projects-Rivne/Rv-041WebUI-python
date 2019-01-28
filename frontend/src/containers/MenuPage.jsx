@@ -7,7 +7,9 @@ import PageContainer from "./PageContainer";
 class MenuPage extends React.Component {
   state = {
     Categories: [],
-    Items: {}
+    Items: {},
+    heghtsList: [],
+    activeCat: 0
   };
 
   componentDidMount() {
@@ -28,17 +30,28 @@ class MenuPage extends React.Component {
       );
   }
 
+  handleCatScroll = index => {
+    if (this.state.activeCat !== index) {
+      console.log(index);
+      this.setState({ activeCat: index });
+    }
+  };
+
   render() {
     return (
       <PageContainer>
         <Grid container spacing={16}>
           <Grid item xs={12} md={2}>
-            <CategoriesList cats={this.state.Categories} />
+            <CategoriesList
+              cats={this.state.Categories}
+              active={this.state.activeCat}
+            />
           </Grid>
           <Grid item xs={12} md={10}>
             <MenuItemList
               items={this.state.Items}
               cats={this.state.Categories}
+              scroll={this.handleCatScroll}
             />
           </Grid>
         </Grid>
