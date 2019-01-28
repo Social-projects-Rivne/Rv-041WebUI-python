@@ -55,7 +55,8 @@ def fill_db(session):
                           password="123%s" % i,
                           status=UserStatuses[1],
                           phone_number="+38098" + str(1000000 + i),
-                          birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100)
+                          birth_date=fake.date_of_birth(
+                              tzinfo=None, minimum_age=18, maximum_age=100)
                           )
                      )
     session.add_all(Users)
@@ -132,7 +133,8 @@ def fill_db(session):
                             email=user_name.lower().replace(" ", "")+'@test.com',
                             password="123%s" % i,
                             status=UserStatuses[0],
-                            phone_number="+38098" + str(1000000 + number_of_owners + i),
+                            phone_number="+38098" +
+                            str(1000000 + number_of_owners + i),
                             birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
         user_model.append(current_user)
 

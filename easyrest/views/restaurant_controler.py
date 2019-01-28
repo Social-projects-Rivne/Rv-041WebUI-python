@@ -197,7 +197,7 @@ def create_user_restaurant(request):
         return wrap([], success=False, error=msg)
 
     tag_models = [request.dbsession.query(
-        Tag).filter_by(name=tag["name"]).first() for tag in tags]
+        Tag).filter_by(name=tag).first() for tag in tags]
 
     rest = Restaurant(name=name, description=description,
                       phone=phone, address_id=address)
@@ -264,7 +264,7 @@ def update_user_restaurant(request):
             rest.address_id = address
         if tags:
             tag_models = [request.dbsession.query(
-                Tag).filter_by(name=tag["name"]).first() for tag in tags]
+                Tag).filter_by(name=tag).first() for tag in tags]
             rest.tag = tag_models
         request.response.status_code = 201
         return wrap(rest.as_dict(), message="Restaurant was successfully updated")
