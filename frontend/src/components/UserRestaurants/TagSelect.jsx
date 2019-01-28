@@ -20,6 +20,7 @@ const MenuProps = {
 
 const TagSelect = props => {
   const { allTags, onTagsChange, tags } = props;
+
   return (
     <FormControl fullWidth>
       <InputLabel htmlFor="tags">Tags</InputLabel>

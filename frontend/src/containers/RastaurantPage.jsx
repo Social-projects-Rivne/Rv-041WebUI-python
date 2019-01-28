@@ -3,6 +3,7 @@ import RestaurantInfo from "../components/RestaurantDetails/RestaurantInfo";
 import PageContainer from "./PageContainer";
 import CollapseForm from "../components/CollapseForm";
 import UpdateRestaurantForm from "../components/UserRestaurants/UpdateRestaurantForm";
+import Edit from "@material-ui/icons/Edit";
 
 export class RastaurantPage extends Component {
   state = {
@@ -24,8 +25,13 @@ export class RastaurantPage extends Component {
     return (
       <PageContainer>
         <RestaurantInfo restInfo={this.state.restInfo} />
-        <CollapseForm>
+        <CollapseForm
+          tooltipText="Update restaurant"
+          formTitle="Update your restaurant info:"
+          tooltipIcon={<Edit />}
+        >
           <UpdateRestaurantForm
+            restInfo={this.state.restInfo}
             restId={this.props.match.params.id}
             onUpdate={this.handleUpdateRestaurant}
           />

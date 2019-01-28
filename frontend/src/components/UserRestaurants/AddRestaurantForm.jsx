@@ -1,7 +1,7 @@
 import React from "react";
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { TextField, Grid, Button } from "@material-ui/core";
 import TagSelect from "./TagSelect";
-import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
 export class AddRestaurantForm extends React.Component {
   state = {
@@ -12,6 +12,7 @@ export class AddRestaurantForm extends React.Component {
       description: "",
       tags: []
     },
+
     allTags: []
   };
 
@@ -39,11 +40,15 @@ export class AddRestaurantForm extends React.Component {
           : response.json().then(Promise.reject.bind(Promise));
       })
       .then(newRestaurant => {
+        this.props.handleSuccesEvent(
+          newRestaurant.success,
+          newRestaurant.message
+        );
         this.props.onAdd(newRestaurant.data);
         this.clearForm();
       })
       .catch(err => {
-        console.log(err);
+        this.props.handleSuccesEvent(err.success, err.message);
       });
   };
 

@@ -256,16 +256,16 @@ def update_user_restaurant(request):
     try:
         if name:
             rest.name = name
-        if description:
-            rest.description = description
-        if phone:
-            rest.phone = phone
         if address:
             rest.address_id = address
-        if tags:
-            tag_models = [request.dbsession.query(
-                Tag).filter_by(name=tag).first() for tag in tags]
-            rest.tag = tag_models
+
+        rest.description = description
+
+        rest.phone = phone
+
+        tag_models = [request.dbsession.query(
+            Tag).filter_by(name=tag).first() for tag in tags]
+        rest.tag = tag_models
         request.response.status_code = 201
         return wrap(rest.as_dict(), message="Restaurant was successfully updated")
     except Exception:

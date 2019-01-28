@@ -30,7 +30,10 @@ class MyRestaurants extends React.Component {
     return (
       <>
         <RestaurantList data={myRestaurants} />
-        <CollapseForm>
+        <CollapseForm
+          tooltipText="Add restaurant"
+          formTitle="Create new restaurant:"
+        >
           <AddRestaurantForm onAdd={this.handleAddRestaurant} />
         </CollapseForm>
       </>

@@ -1,14 +1,7 @@
 import React from "react";
 import { TextField, Grid, Button } from "@material-ui/core";
 import TagSelect from "./TagSelect";
-
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: 250
-    }
-  }
-};
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
 export class UpdateRestaurantForm extends React.Component {
   state = {
@@ -23,6 +16,18 @@ export class UpdateRestaurantForm extends React.Component {
   };
 
   componentDidMount() {
+    const { restInfo } = this.props;
+
+    this.setState({
+      updatedRestaurant: {
+        name: restInfo.name,
+        phone: restInfo.phone,
+        address: restInfo.address_id,
+        description: restInfo.description,
+        tags: restInfo.tags ? restInfo.tags.map(tag => tag.name) : []
+      }
+    });
+
     fetch("http://localhost:6543/api/tag")
       .then(response => response.json())
       .then(tags => this.setState({ allTags: tags.data }));
@@ -47,10 +52,14 @@ export class UpdateRestaurantForm extends React.Component {
           : response.json().then(Promise.reject.bind(Promise));
       })
       .then(updatedRestaurant => {
+        this.props.handleSuccesEvent(
+          updatedRestaurant.success,
+          updatedRestaurant.message
+        );
         this.props.onUpdate(updatedRestaurant.data);
       })
       .catch(err => {
-        console.log(err);
+        this.props.handleSuccesEvent(err.success, err.message);
       });
   };
 
@@ -77,9 +86,10 @@ export class UpdateRestaurantForm extends React.Component {
 
   render() {
     const { allTags, updatedRestaurant } = this.state;
+    const { handleCloseFormClick } = this.props;
 
     return (
-      <form
+      <ValidatorForm
         onSubmit={this.handleSubmit}
         onChange={this.handleFormChange}
         noValidate
@@ -87,19 +97,25 @@ export class UpdateRestaurantForm extends React.Component {
       >
         <Grid container spacing={16} justify="space-between">
           <Grid item xs={12}>
-            <TextField
+            <TextValidator
               value={updatedRestaurant.name}
               name="name"
               label="Restaurant Name"
+              required
               fullWidth
+              validators={["required"]}
+              errorMessages={["Restaurant name cannot be empty"]}
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <TextValidator
               value={updatedRestaurant.address}
               name="address"
               label="Restaurant Address"
+              required
               fullWidth
+              validators={["required"]}
+              errorMessages={["Restaurant address cannot be empty"]}
             />
           </Grid>
           <Grid item xs={12}>
@@ -129,7 +145,7 @@ export class UpdateRestaurantForm extends React.Component {
           </Grid>
           <Grid item xs={3}>
             <Button
-              onClick={this.handleCloseFormClick}
+              onClick={handleCloseFormClick}
               variant="contained"
               color="secondary"
               fullWidth
@@ -145,11 +161,11 @@ export class UpdateRestaurantForm extends React.Component {
               fullWidth
               onClick={this.handleFormSubmit}
             >
-              Add
+              Update
             </Button>
           </Grid>
         </Grid>
-      </form>
+      </ValidatorForm>
     );
   }
 }

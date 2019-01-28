@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import AddIcon from "@material-ui/icons/Add";
 import {
   Fab,
@@ -9,9 +10,11 @@ import {
   CardContent,
   Tooltip,
   CardHeader,
-  Divider
+  Divider,
+  Snackbar
 } from "@material-ui/core";
 import classnames from "classnames";
+import SnackbarContent from "./SnackbarContent";
 
 const styles = theme => ({
   root: {
@@ -30,7 +33,10 @@ const styles = theme => ({
 
 class CollapseForm extends React.Component {
   state = {
-    formExpanded: false
+    formExpanded: false,
+    snackbarOpen: false,
+    success: false,
+    snackbarMsg: ""
   };
 
   handleExpandFormClick = () => {
@@ -45,20 +51,42 @@ class CollapseForm extends React.Component {
     });
   };
 
+  handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    this.setState({ snackbarOpen: false });
+  };
+
+  handleSuccesEvent = (succes, msg) => {
+    this.setState({
+      snackbarOpen: true,
+      success: succes,
+      snackbarMsg: msg
+    });
+  };
+
   render() {
-    const { classes, children } = this.props;
-    const { formExpanded } = this.state;
+    const {
+      classes,
+      children,
+      tooltipText,
+      formTitle,
+      tooltipIcon
+    } = this.props;
+    const { formExpanded, success, snackbarMsg, snackbarOpen } = this.state;
 
     const childrenWithProps = React.Children.map(children, child =>
       React.cloneElement(child, {
-        handleCloseFormClick: this.handleCloseFormClick
+        handleCloseFormClick: this.handleCloseFormClick,
+        handleSuccesEvent: this.handleSuccesEvent
       })
     );
 
     return (
       <>
         <div className={classes.root}>
-          <Tooltip title="Add Restaurant" placement="left">
+          <Tooltip title={tooltipText} placement="left">
             <Fab
               className={classnames(classes.fab, {
                 [classes.fabDisabled]: formExpanded
@@ -69,22 +97,54 @@ class CollapseForm extends React.Component {
               color="primary"
               disabled={formExpanded}
             >
-              <AddIcon />
+              {tooltipIcon}
             </Fab>
           </Tooltip>
         </div>
         <Collapse in={formExpanded} timeout="auto" unmountOnExit>
           <Card>
-            <CardHeader
-              title={<Typography variant="h6">Add new restaurant:</Typography>}
-            />
-            <Divider />
+            {formTitle && (
+              <CardHeader
+                title={<Typography variant="h6">{formTitle}</Typography>}
+              />
+            )}
+            {formTitle && <Divider />}
             <CardContent>{childrenWithProps}</CardContent>
           </Card>
         </Collapse>
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right"
+          }}
+          open={snackbarOpen}
+          autoHideDuration={success ? 3000 : null}
+          onClose={this.handleSnackbarClose}
+        >
+          <SnackbarContent
+            onClose={this.handleSnackbarClose}
+            variant={success ? "success" : "error"}
+            message={
+              <Typography color="inherit" align="center">
+                {snackbarMsg || success || "Something went wrong"}
+              </Typography>
+            }
+          />
+        </Snackbar>
       </>
     );
   }
 }
+
+CollapseForm.propTypes = {
+  classes: PropTypes.object,
+  tooltipText: PropTypes.string,
+  formTitle: PropTypes.string
+};
+
+CollapseForm.defaultProps = {
+  tooltipText: "Add",
+  tooltipIcon: <AddIcon />
+};
 
 export default withStyles(styles)(CollapseForm);
