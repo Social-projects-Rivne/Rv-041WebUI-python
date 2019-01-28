@@ -1,40 +1,7 @@
 import React from "react";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-import AddIcon from "@material-ui/icons/Add";
-import Edit from "@material-ui/icons/Edit";
-import { green, amber } from "@material-ui/core/colors/";
-import {
-  Fab,
-  withStyles,
-  Typography,
-  Collapse,
-  Card,
-  CardContent,
-  TextField,
-  Grid,
-  Button,
-  Select,
-  ListItemText,
-  MenuItem,
-  Input,
-  Checkbox,
-  InputLabel,
-  FormControl,
-  Snackbar,
-  Tooltip,
-  CardHeader,
-  Divider
-} from "@material-ui/core";
+import { TextField, Grid, Button } from "@material-ui/core";
 import TagSelect from "./TagSelect";
-
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: 250
-    }
-  }
-};
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
 export class AddRestaurantForm extends React.Component {
   state = {
@@ -65,11 +32,19 @@ export class AddRestaurantForm extends React.Component {
         "x-auth-token": localStorage.getItem("token")
       },
       body: JSON.stringify(newRestaurant)
-    }).then(response => {
-      return response.status >= 200 && response.status < 300
-        ? response.json()
-        : response.json().then(Promise.reject.bind(Promise));
-    });
+    })
+      .then(response => {
+        return response.status >= 200 && response.status < 300
+          ? response.json()
+          : response.json().then(Promise.reject.bind(Promise));
+      })
+      .then(newRestaurant => {
+        this.props.onAdd(newRestaurant.data);
+        this.clearForm();
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   handleFormChange = event => {
@@ -84,6 +59,18 @@ export class AddRestaurantForm extends React.Component {
     }));
   };
 
+  clearForm = () => {
+    this.setState({
+      newRestaurant: {
+        name: "",
+        address: "",
+        phone: "",
+        description: "",
+        tags: []
+      }
+    });
+  };
+
   handleTagsChange = event => {
     let value = event.target.value;
     let name = event.target.name;
@@ -95,9 +82,10 @@ export class AddRestaurantForm extends React.Component {
 
   render() {
     const { allTags, newRestaurant } = this.state;
+    const { handleCloseFormClick } = this.props;
 
     return (
-      <form
+      <ValidatorForm
         onSubmit={this.handleSubmit}
         onChange={this.handleFormChange}
         noValidate
@@ -105,21 +93,25 @@ export class AddRestaurantForm extends React.Component {
       >
         <Grid container spacing={16} justify="space-between">
           <Grid item xs={12}>
-            <TextField
+            <TextValidator
               value={newRestaurant.name}
               required
               name="name"
               label="Restaurant Name"
               fullWidth
+              validators={["required"]}
+              errorMessages={["Name is required"]}
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <TextValidator
               value={newRestaurant.address}
               required
               name="address"
               label="Restaurant Address"
               fullWidth
+              validators={["required"]}
+              errorMessages={["Address is required"]}
             />
           </Grid>
           <Grid item xs={12}>
@@ -149,7 +141,7 @@ export class AddRestaurantForm extends React.Component {
           </Grid>
           <Grid item xs={3}>
             <Button
-              onClick={this.handleCloseFormClick}
+              onClick={handleCloseFormClick}
               variant="contained"
               color="secondary"
               fullWidth
@@ -169,7 +161,7 @@ export class AddRestaurantForm extends React.Component {
             </Button>
           </Grid>
         </Grid>
-      </form>
+      </ValidatorForm>
     );
   }
 }

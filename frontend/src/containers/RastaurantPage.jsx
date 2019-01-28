@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import RestaurantInfo from "../components/RestaurantDetails/RestaurantInfo";
-import AddUpdateRestaurant from "../components/UserRestaurants/AddUpdateRestaurant";
 import PageContainer from "./PageContainer";
+import CollapseForm from "../components/CollapseForm";
+import UpdateRestaurantForm from "../components/UserRestaurants/UpdateRestaurantForm";
 
 export class RastaurantPage extends Component {
   state = {
@@ -15,19 +16,20 @@ export class RastaurantPage extends Component {
       .then(rest => this.setState({ restInfo: rest.data[0] }));
   }
 
-  handleUpdateRestaurant = restObj => {
-    this.setState({ restInfo: restObj });
+  handleUpdateRestaurant = updatedRestaurant => {
+    this.setState({ restInfo: updatedRestaurant });
   };
 
   render() {
     return (
       <PageContainer>
         <RestaurantInfo restInfo={this.state.restInfo} />
-        <AddUpdateRestaurant
-          requestType="put"
-          onUpdate={this.handleUpdateRestaurant}
-          id={this.props.match.params.id}
-        />
+        <CollapseForm>
+          <UpdateRestaurantForm
+            restId={this.props.match.params.id}
+            onUpdate={this.handleUpdateRestaurant}
+          />
+        </CollapseForm>
       </PageContainer>
     );
   }

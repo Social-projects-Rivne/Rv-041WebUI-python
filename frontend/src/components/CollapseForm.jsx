@@ -7,14 +7,11 @@ import {
   Collapse,
   Card,
   CardContent,
-  Grid,
-  Button,
   Tooltip,
   CardHeader,
   Divider
 } from "@material-ui/core";
 import classnames from "classnames";
-import AddRestaurantForm from "./AddRestaurantForm";
 
 const styles = theme => ({
   root: {
@@ -31,7 +28,7 @@ const styles = theme => ({
   }
 });
 
-class AddUpdateRestaurant extends React.Component {
+class CollapseForm extends React.Component {
   state = {
     formExpanded: false
   };
@@ -48,14 +45,15 @@ class AddUpdateRestaurant extends React.Component {
     });
   };
 
-  handleFormSubmit = e => {
-    e.preventDefault();
-    console.log(e, "submitted");
-  };
-
   render() {
-    const { classes } = this.props;
+    const { classes, children } = this.props;
     const { formExpanded } = this.state;
+
+    const childrenWithProps = React.Children.map(children, child =>
+      React.cloneElement(child, {
+        handleCloseFormClick: this.handleCloseFormClick
+      })
+    );
 
     return (
       <>
@@ -81,9 +79,7 @@ class AddUpdateRestaurant extends React.Component {
               title={<Typography variant="h6">Add new restaurant:</Typography>}
             />
             <Divider />
-            <CardContent>
-              <AddRestaurantForm />
-            </CardContent>
+            <CardContent>{childrenWithProps}</CardContent>
           </Card>
         </Collapse>
       </>
@@ -91,4 +87,4 @@ class AddUpdateRestaurant extends React.Component {
   }
 }
 
-export default withStyles(styles)(AddUpdateRestaurant);
+export default withStyles(styles)(CollapseForm);

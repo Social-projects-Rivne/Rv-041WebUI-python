@@ -26,7 +26,8 @@ const styles = theme => ({
   },
   details: {
     flex: 9999,
-    minWidth: "25em"
+    minWidth: "25em",
+    display: "flex"
   },
   tagItem: {
     margin: theme.spacing.unit / 2
@@ -44,18 +45,20 @@ function RestaurantListItem(props) {
       />
       <CardContent className={classes.details}>
         <Grid container spacing={16}>
-          <Grid item>
+          <Grid item xs={12}>
             <Typography variant="h5" component="h2">
               {name}
             </Typography>
           </Grid>
-          <Grid item>
-            <Typography component="p">
-              {description.length > 230
-                ? description.slice(0, 230) + "..."
-                : description}
-            </Typography>
-          </Grid>
+          {description && (
+            <Grid item xs={12}>
+              <Typography component="p">
+                {description.length > 230
+                  ? description.slice(0, 230) + "..."
+                  : description}
+              </Typography>
+            </Grid>
+          )}
           <Divider />
           <Grid item container justify="space-between">
             <Grid item>
@@ -70,8 +73,8 @@ function RestaurantListItem(props) {
             )}
           </Grid>
           <Divider />
-          {tags && (
-            <Grid item>
+          {tags && tags.length !== 0 && (
+            <Grid item xs={12}>
               {tags.map(tag => (
                 <Chip
                   key={tag.name}
@@ -81,7 +84,13 @@ function RestaurantListItem(props) {
               ))}
             </Grid>
           )}
-          <Grid spacing={16} item container justify="flex-end">
+          <Grid
+            style={{ marginTop: "auto" }}
+            spacing={16}
+            item
+            container
+            justify="flex-end"
+          >
             <Grid item>
               <Button
                 variant="contained"

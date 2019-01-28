@@ -1,31 +1,5 @@
 import React from "react";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-import AddIcon from "@material-ui/icons/Add";
-import Edit from "@material-ui/icons/Edit";
-import { green, amber } from "@material-ui/core/colors/";
-import {
-  Fab,
-  withStyles,
-  Typography,
-  Collapse,
-  Card,
-  CardContent,
-  TextField,
-  Grid,
-  Button,
-  Select,
-  ListItemText,
-  MenuItem,
-  Input,
-  Checkbox,
-  InputLabel,
-  FormControl,
-  Snackbar,
-  Tooltip,
-  CardHeader,
-  Divider
-} from "@material-ui/core";
+import { TextField, Grid, Button } from "@material-ui/core";
 import TagSelect from "./TagSelect";
 
 const MenuProps = {
@@ -38,7 +12,7 @@ const MenuProps = {
 
 export class UpdateRestaurantForm extends React.Component {
   state = {
-    newRestaurant: {
+    updatedRestaurant: {
       name: "",
       address: "",
       phone: "",
@@ -56,20 +30,28 @@ export class UpdateRestaurantForm extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    const { newRestaurant } = this.state;
 
-    fetch("http://localhost:6543/api/user_restaurants", {
-      method: "POST",
+    const { updatedRestaurant } = this.state;
+
+    fetch(`http://localhost:6543/api/user_restaurant/${this.props.restId}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "x-auth-token": localStorage.getItem("token")
       },
-      body: JSON.stringify(newRestaurant)
-    }).then(response => {
-      return response.status >= 200 && response.status < 300
-        ? response.json()
-        : response.json().then(Promise.reject.bind(Promise));
-    });
+      body: JSON.stringify(updatedRestaurant)
+    })
+      .then(response => {
+        return response.status >= 200 && response.status < 300
+          ? response.json()
+          : response.json().then(Promise.reject.bind(Promise));
+      })
+      .then(updatedRestaurant => {
+        this.props.onUpdate(updatedRestaurant.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   handleFormChange = event => {
@@ -77,8 +59,8 @@ export class UpdateRestaurantForm extends React.Component {
     let value = event.target.value;
 
     this.setState(prevState => ({
-      newRestaurant: {
-        ...prevState.newRestaurant,
+      updatedRestaurant: {
+        ...prevState.updatedRestaurant,
         [name]: value
       }
     }));
@@ -89,12 +71,12 @@ export class UpdateRestaurantForm extends React.Component {
     let name = event.target.name;
 
     this.setState(prevState => ({
-      newRestaurant: { ...prevState.newRestaurant, [name]: value }
+      updatedRestaurant: { ...prevState.updatedRestaurant, [name]: value }
     }));
   };
 
   render() {
-    const { allTags, newRestaurant } = this.state;
+    const { allTags, updatedRestaurant } = this.state;
 
     return (
       <form
@@ -106,8 +88,7 @@ export class UpdateRestaurantForm extends React.Component {
         <Grid container spacing={16} justify="space-between">
           <Grid item xs={12}>
             <TextField
-              value={newRestaurant.name}
-              required
+              value={updatedRestaurant.name}
               name="name"
               label="Restaurant Name"
               fullWidth
@@ -115,8 +96,7 @@ export class UpdateRestaurantForm extends React.Component {
           </Grid>
           <Grid item xs={12}>
             <TextField
-              value={newRestaurant.address}
-              required
+              value={updatedRestaurant.address}
               name="address"
               label="Restaurant Address"
               fullWidth
@@ -124,7 +104,7 @@ export class UpdateRestaurantForm extends React.Component {
           </Grid>
           <Grid item xs={12}>
             <TextField
-              value={newRestaurant.phone}
+              value={updatedRestaurant.phone}
               name="phone"
               label="Restaurant Phone"
               fullWidth
@@ -132,7 +112,7 @@ export class UpdateRestaurantForm extends React.Component {
           </Grid>
           <Grid item xs={12}>
             <TextField
-              value={newRestaurant.description}
+              value={updatedRestaurant.description}
               name="description"
               label="Restaurant Description"
               multiline
@@ -142,7 +122,7 @@ export class UpdateRestaurantForm extends React.Component {
           </Grid>
           <Grid item xs={12}>
             <TagSelect
-              tags={newRestaurant.tags}
+              tags={updatedRestaurant.tags}
               allTags={allTags}
               onTagsChange={this.handleTagsChange}
             />
