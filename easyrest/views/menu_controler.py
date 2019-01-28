@@ -63,26 +63,41 @@ def get_cats_controler(request):
     Args:
         request: current pyramid request
     """
-    menu_id = request.matchdict['menu_id']
+    menu_id = int(request.matchdict['menu_id'])
+    rest_id = request.matchdict['rest_id']
 
-    result = request.dbsession.query(MenuItem, Category).filter(
-        MenuItem.menu_id == menu_id).filter(
-        Category.id == MenuItem.category_id).all()
+    rest = request.dbsession.query(Restaurant).get(rest_id)
+    try:
+        menu = rest.menu[menu_id - 1]
+    except IndexError:
+        request.response.status_code = 404
+        return {}
 
-    data_dict = {}
-    cats_list = []
-    for item, cat in result:
-        category, item_dict = cat.name, item.as_dict()
-        if category in data_dict:
-            data_dict[category].append(item_dict)
-        else:
-            data_dict[category] = [item_dict]
-            cats_list.append(category)
+    if menu.image is None:
+        result = request.dbsession.query(MenuItem, Category).filter(
+            MenuItem.menu_id == menu.id).filter(
+            Category.id == MenuItem.category_id).order_by(Category.name).all()
+        data_dict = {}
+        cats_list = []
+        for item, cat in result:
+            category, item_dict = cat.name, item.as_dict()
+            if category in data_dict:
+                data_dict[category].append(item_dict)
+            else:
+                data_dict[category] = [item_dict]
+                cats_list.append(category)
 
-    body = wrap({
-        "Items": data_dict,
-        "Categories": cats_list
-    })
+        body = wrap({
+            "Items": data_dict,
+            "Categories": cats_list,
+            "isImage": False
+        })
+    else:
+        body = wrap({
+            "isImage": True,
+            "imageUrl": menu.image
+        })
+
     return body
 
 

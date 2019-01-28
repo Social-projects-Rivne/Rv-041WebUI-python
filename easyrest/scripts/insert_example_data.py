@@ -7,7 +7,7 @@ from faker import Faker
 
 from tags_data import Tags
 from ..models import Tag, Menu, Restaurant, MenuItem, User, UserStatus, Category
-from menu_data import Menus, Categories, Meals
+from menu_data import Menus, Categories, Meals, Images
 
 
 def fill_db(session):
@@ -64,6 +64,9 @@ def fill_db(session):
     # Restaurant status can be 0-waiting for confirmation, 1-active (confirmed), 2-archived
     rest_status = 0
 
+    Cat_models = [Category(**cat) for cat in Categories]
+    meals_len = len(Meals)
+
     for i in range(10):
         if rest_status == 3:
             rest_status = 0
@@ -93,6 +96,7 @@ def fill_db(session):
 
             Menu_items_all_cat.extend(Menu_item_models)
         Menu_models[0].menu_items = Menu_items_all_cat
+        Menu_models[1].image = Images[randint(0, len(Images))]
 
         # using model relationship defined in models.restaurant
         # asign menu to restaurant

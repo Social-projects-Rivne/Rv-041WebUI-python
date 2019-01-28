@@ -5,18 +5,17 @@ Menus = [
         "name": "Common"
     },
     {
-        "name": "Winter special"
-    },
-    {
-        "name": "Summer special"
-    },
-    {
-        "name": "Authem special"
-    },
-    {
-        "name": "Spring special"
+        "name": "Image Menu"
     }
 ]
+Images = [
+    "https://image.freepik.com/vector-gratis/ilustracion-vectorial-menu-oferta-especial-varias-hierbas-especias-condimentos-condimentos_1441-521.jpg",
+    "http://000g2tw.myregisteredwp.com/wp-content/uploads/sites/3810/2017/08/Menu-Pic-081817.jpg",
+    "https://sfuo.ca/1848/wp-content/uploads/sites/7/1848-Menu-EN.jpg",
+    "http://coolhandlukes.ca/wp-content/uploads/2011/07/menu-in.jpg",
+    "https://static1.squarespace.com/static/58f611bf725e257176ce6e89/t/5bbea118ec212df1907dd38e/1539219773633/Dinner%20Menu%20-%2010.8.18%20.jpg"
+]
+
 Categories = [
     {
         "name": "Soup"  # 1
