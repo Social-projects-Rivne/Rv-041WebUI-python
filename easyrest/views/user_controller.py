@@ -1,4 +1,4 @@
-"""This module describe menu controller
+"""This module describe user controller
 This module describes behavior of /sign_up route
 """
 
@@ -44,6 +44,5 @@ def sign_up(request):
     try:
         User.add(database, form_data)
         return wrap([], success=True)
-    except Exception as e:
-        print str(e)
+    except Exception:
         return wrap([], success=False)
