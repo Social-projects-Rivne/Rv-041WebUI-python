@@ -75,7 +75,7 @@ def get_all_restaurant_controler(request):
                 },
             ]
     """
-    rests = request.dbsession.query(Restaurant).all()
+    rests = request.dbsession.query(Restaurant).filter_by(status=1).all()
     rests_dict = asign_tags(rests)
     if not rests_dict:
         raise HTTPNotFound("No restaurants in database")

@@ -11,6 +11,7 @@ import {
   Chip,
   Grid
 } from "@material-ui/core/";
+import { amber, green } from "@material-ui/core/colors/";
 
 import { Link } from "react-router-dom";
 
@@ -31,11 +32,23 @@ const styles = theme => ({
   },
   tagItem: {
     margin: theme.spacing.unit / 2
+  },
+  active: {
+    background: green[500]
+  },
+  notApproved: {
+    background: amber[700]
   }
 });
 
+const restaurantStatus = {
+  0: ["ACTIVE", "active"],
+  1: ["NOT APPROVED", "notApproved"],
+  2: ["ARCHIVED"]
+};
+
 function RestaurantListItem(props) {
-  const { classes, restData } = props;
+  const { classes, restData, showDetails } = props;
   return (
     <Card className={classes.card}>
       <CardMedia
@@ -45,10 +58,22 @@ function RestaurantListItem(props) {
       />
       <CardContent className={classes.details}>
         <Grid container spacing={16}>
-          <Grid item xs={12}>
-            <Typography variant="h5" component="h2">
+          <Grid
+            item
+            container
+            xs={12}
+            justify="space-between"
+            alignItems="center"
+          >
+            <Typography variant="h5" component="h2" align="left">
               {restData.name}
             </Typography>
+            {showDetails && (
+              <Chip
+                label={restaurantStatus[restData.status][0]}
+                className={classes[restaurantStatus[restData.status][1]]}
+              />
+            )}
           </Grid>
           {restData.description && (
             <Grid item xs={12}>
@@ -75,7 +100,7 @@ function RestaurantListItem(props) {
             )}
           </Grid>
           <Divider />
-          {restData.tags && restData.tags.length !== 0 && (
+          {showDetails && (
             <Grid item xs={12}>
               {restData.tags.map(tag => (
                 <Chip
@@ -122,9 +147,14 @@ function RestaurantListItem(props) {
   );
 }
 
+RestaurantListItem.defaultProps = {
+  showDetails: false
+};
+
 RestaurantListItem.propTypes = {
   classes: PropTypes.object.isRequired,
-  restData: PropTypes.object.isRequired
+  restData: PropTypes.object.isRequired,
+  showDetails: PropTypes.bool
 };
 
 export default withStyles(styles)(RestaurantListItem);
