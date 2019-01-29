@@ -45,7 +45,8 @@ class Base(object):
         for c in self.__table__.columns:
             s += '%s = %s, ' % (c.name, getattr(self, c.name))
         s += ')'
-        return s
+        print s
+        return ""
 
     def as_dict(self):
         """Converts model into python dictionary

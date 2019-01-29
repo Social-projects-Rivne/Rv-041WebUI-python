@@ -189,7 +189,7 @@ def user_restaurants(request):
     request_method="POST",
     renderer='json'
 )
-@restrict_access(user_types=['Owner'])
+@restrict_access(user_types=['Client', 'Owner'])
 def create_user_restaurant(request):
     """
     POST request controller. Create new restaurant in database and return created item
@@ -210,9 +210,14 @@ def create_user_restaurant(request):
     rest = Restaurant(name=name, description=description,
                       phone=phone, address_id=address)
     rest.tag = tag_models
+    user = request.token.user
     rest.user = request.token.user
+
     try:
         request.dbsession.add(rest)
+        print(user.status)
+        if user.status.name == 'Client':
+            user.status_id = 2
         request.dbsession.flush()
         rest_with_tags = asign_tags([rest])
         request.response.status_code = 201

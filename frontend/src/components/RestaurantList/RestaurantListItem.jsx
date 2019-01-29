@@ -101,6 +101,16 @@ function RestaurantListItem(props) {
                 details
               </Button>
             </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                component={Link}
+                to={"/restaurant/" + id + "/menu/1"}
+                color="primary"
+              >
+                Watch Menu
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
       </CardContent>
