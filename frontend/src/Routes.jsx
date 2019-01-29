@@ -26,7 +26,7 @@ const routes = [
     component: RestaurantPage
   },
   {
-    path: "/restaurants/:restId/menu/:menuId",
+    path: "/restaurant/:restId/menu/:menuId",
     component: MenuPage
   },
   {
