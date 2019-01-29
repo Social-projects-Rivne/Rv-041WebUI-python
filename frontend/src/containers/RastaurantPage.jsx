@@ -4,6 +4,7 @@ import PageContainer from "./PageContainer";
 import CollapseForm from "../components/CollapseForm";
 import UpdateRestaurantForm from "../components/UserRestaurants/UpdateRestaurantForm";
 import Edit from "@material-ui/icons/Edit";
+import AppContext from "../components/AppContext";
 
 export class RastaurantPage extends Component {
   state = {
@@ -11,10 +12,24 @@ export class RastaurantPage extends Component {
   };
 
   componentDidMount() {
+    console.log(AppContext);
     const restId = this.props.match.params.id;
-    fetch(`http://localhost:6543/api/restaurant/${restId}`)
-      .then(response => response.json())
-      .then(rest => this.setState({ restInfo: rest.data[0] }));
+    fetch(`http://localhost:6543/api/restaurant/${restId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": localStorage.getItem("token")
+      }
+    })
+      .then(response => {
+        return response.status >= 200 && response.status < 300
+          ? response.json()
+          : response.json().then(Promise.reject.bind(Promise));
+      })
+      .then(rest => this.setState({ restInfo: rest.data[0] }))
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   handleUpdateRestaurant = updatedRestaurant => {
@@ -22,21 +37,28 @@ export class RastaurantPage extends Component {
   };
 
   render() {
+    const { userRole, restInfo } = this.state;
     return (
-      <PageContainer>
-        <RestaurantInfo restInfo={this.state.restInfo} />
-        <CollapseForm
-          tooltipText="Update restaurant"
-          formTitle="Update your restaurant info:"
-          tooltipIcon={<Edit />}
-        >
-          <UpdateRestaurantForm
-            restInfo={this.state.restInfo}
-            restId={this.props.match.params.id}
-            onUpdate={this.handleUpdateRestaurant}
-          />
-        </CollapseForm>
-      </PageContainer>
+      <AppContext.Consumer>
+        {state => (
+          <PageContainer>
+            <RestaurantInfo restInfo={restInfo} />
+            {state.auth && (
+              <CollapseForm
+                tooltipText="Update restaurant"
+                formTitle="Update your restaurant info:"
+                tooltipIcon={<Edit />}
+              >
+                <UpdateRestaurantForm
+                  restInfo={restInfo}
+                  restId={this.props.match.params.id}
+                  onUpdate={this.handleUpdateRestaurant}
+                />
+              </CollapseForm>
+            )}
+          </PageContainer>
+        )}
+      </AppContext.Consumer>
     );
   }
 }
