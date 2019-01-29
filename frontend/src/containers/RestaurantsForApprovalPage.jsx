@@ -1,5 +1,7 @@
 import React, {Component} from "react";
+import {Snackbar, Typography} from "@material-ui/core";
 import GeneralError from "../components/ErrorPages/GeneralError";
+import SnackbarContent from "../components/SnackbarContent";
 import RestaurantsForApproval from "../components/RestaurantsForApproval/RestaurantsForApproval";
 import {redirectToSignUp} from "../Service/NeedAuthorization";
 
@@ -12,6 +14,8 @@ class RestaurantsForApprovalPage extends Component {
         error: "",
         token: localStorage.getItem("token"),
         unapprovedRestaurants: [],
+        snackbarOpen:false,
+        snackbarMsg: "",
     };
 
     componentDidMount() {
@@ -27,11 +31,11 @@ class RestaurantsForApprovalPage extends Component {
         };
 
         fetch('http://localhost:6543/api/approval_restaurants', fetchInit)
-            .then(response => (response.status === 403 ? this.setState({needRedirection: true, success: false}): response.json()))
-            .then(data => this.setState({unapprovedRestaurants: data.data, success: data.success, error: data.error}))
+            .then(response => (response.status === 403 ? this.setState({needRedirection: true,
+                                                                        success: false}): response.json()))
+            .then(data => this.setState({unapprovedRestaurants: data.data,
+                                         success: data.success, error: data.error}))
             .catch(err => this.setState({success: false, error: err.message}))
-
-
     }
 
     handleRestaurantApprovement = (restaurant_id, request_method) => {
@@ -47,21 +51,39 @@ class RestaurantsForApprovalPage extends Component {
             body: JSON.stringify({id: restaurant_id}),
         };
 
+        let operationName = "";
+        if (request_method === "POST"){
+          operationName = "Approved";
+        }
+        if (request_method === "DELETE"){
+          operationName = "Disapproved";
+        }
+
         fetch('http://localhost:6543/api/approval_restaurants', fetchInit)
-            .then(response => (response.status === 403 ? this.setState({needRedirection: true, success: false}): response.json()))
+            .then(response => (!(response.status >= 200 && response.status < 300)
+                                 ?Promise.reject(response.status)
+                                  :response.json()))
             .then(data => this.setState((prevState) => {
               return{
                 success: data.success,
-                unapprovedRestaurants: prevState.unapprovedRestaurants.filter(restaurantInfo => {return restaurantInfo.id!==restaurant_id})
+                unapprovedRestaurants: prevState.unapprovedRestaurants.filter(restaurantInfo => {return restaurantInfo.id!==restaurant_id}),
+                snackbarOpen: true,
+                snackbarMsg: operationName
               }
             }))
-            .catch(err => this.setState({success: false, error: err.message}))
+            .catch(err => this.setState({success: false, error: err, snackbarOpen: true, snackbarMsg: operationName}))
     };
 
+    handleSnackbarClose = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      this.setState({ snackbarOpen: false });
+    };
 
     render() {
 
-        const {needRedirection, unapprovedRestaurants, success, error} = this.state;
+        const {needRedirection, unapprovedRestaurants, success, error, snackbarOpen, snackbarMsg} = this.state;
 
         //prevent for rendering without fetch completing (init value is "null")
         if (success === null){
@@ -76,10 +98,29 @@ class RestaurantsForApprovalPage extends Component {
             if(success){
                 return (
                     <React.Fragment>
-                        <RestaurantsForApproval
-                          unapprovedRestaurants={unapprovedRestaurants}
-                          handleRestaurantApprovement={this.handleRestaurantApprovement}
+                      <RestaurantsForApproval
+                        unapprovedRestaurants={unapprovedRestaurants}
+                        handleRestaurantApprovement={this.handleRestaurantApprovement}
+                      />
+                      <Snackbar
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "right"
+                        }}
+                        open={snackbarOpen}
+                        autoHideDuration={success ? 3000 : null}
+                        onClose={this.handleSnackbarClose}
+                      >
+                        <SnackbarContent
+                          onClose={this.handleSnackbarClose}
+                          variant={success ? "success" : "error"}
+                          message={
+                            <Typography color="inherit" align="center">
+                              {snackbarMsg || success || "Something went wrong"}
+                            </Typography>
+                          }
                         />
+                      </Snackbar>
                     </React.Fragment>
                 );
             }

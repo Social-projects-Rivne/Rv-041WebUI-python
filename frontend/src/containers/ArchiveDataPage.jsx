@@ -1,8 +1,8 @@
 import React from "react";
 
-const Archive = props => {
+const ArchivePage = props => {
 
     return (<p>{props.archiveStatus}</p>)
 };
 
-export default Archive;
+export default ArchivePage;
