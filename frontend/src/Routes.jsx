@@ -4,6 +4,7 @@ import HomePage from "./containers/HomePage";
 import RestautantListPage from "./containers/RestaurantListPage";
 import RestaurantsMapPage from "./containers/RestaurantsMapPage";
 import RestaurantPage from "./containers/RastaurantPage";
+import MenuPage from "./containers/MenuPage";
 import LogInPage from "./containers/LogInPage";
 import SignUpPage from "./containers/SignUpPage";
 import RestaurantsForApprovalPage from "./containers/RestaurantsForApprovalPage";
@@ -27,6 +28,10 @@ const routes = [
     component: RestaurantPage
   },
   {
+    path: "/restaurant/:restId/menu/:menuId",
+    component: MenuPage
+  },
+  {
     path: "/profile/my_restaurant/:id",
     component: RestaurantPage
   },
@@ -45,6 +50,7 @@ const routes = [
   {
     path: "/profile",
     component: ProfilePage
+  },
   {
     path: "/moderator",
     component: ModeratorPanel

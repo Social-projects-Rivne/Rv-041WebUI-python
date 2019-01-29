@@ -8,6 +8,9 @@ from pyramid.httpexceptions import HTTPNotFound
 
 from ..scripts.json_helpers import wrap
 from ..models.restaurant import Restaurant
+from ..models.menu import Menu
+from ..models.menu_item import MenuItem
+from ..models.category import Category
 
 
 def asign_items(menu):
@@ -17,7 +20,7 @@ def asign_items(menu):
     return menu_dict
 
 
-@view_config(route_name='get_menu', renderer='json', request_method='GET')
+@view_config(route_name='get_menus', renderer='json', request_method='GET')
 def get_menu_controler(request):
     """GET request controler to return menu and
     its items for restaurant specified by id
@@ -30,24 +33,91 @@ def get_menu_controler(request):
                 "success": success,
                 "error": error
             }
-        Where data is list with menus asign for current restaurant
-        (Now list with one element). Format:
+        Where data is list with menus asign for current restaurant. Format:
             [
                 {
                     "id": "menuId" + id,
-                    "menu_items": [{
-                        "id": "menuItemId" + id,
-                        "description": description,
-                        "ingredients": ingredients,
-                        "menu_id": menu_id
-                    }, ]
+                    "name": (str),
+                    "rest_id": (int)
                 }
             ]
     """
-    rest_id = request.matchdict['id']
+    rest_id = request.matchdict['rest_id']
     rest = request.dbsession.query(Restaurant).get(rest_id)
     if not rest:
         raise HTTPNotFound("Restaurant with id=%s not found" % (rest_id))
-    menu_dict = asign_items(rest.menu)
-    body = wrap([menu_dict])
+    menus = [menu.as_dict() for menu in rest.menu]
+    body = wrap(menus)
+    return body
+
+
+@view_config(route_name='get_all_with_cats', renderer='json', request_method='GET')
+def get_cats_controler(request):
+    """GET request controler to return menu items 
+    for restaurant specified by id and menu id
+    Args:
+        request: current pyramid request
+    Return:
+        404 if menu or restaurant don`t exist
+        If menu has data(not image menu) format:
+        {
+            Items: (list of dicts) menu items
+            Categories: (list)
+            isImage: False
+        }
+        if menu has image:
+        {
+            isImage: True,
+            imageUrl: (str)
+        }
+    """
+    menu_id = int(request.matchdict['menu_id'])
+    rest_id = request.matchdict['rest_id']
+
+    rest = request.dbsession.query(Restaurant).get(rest_id)
+    try:
+        menu = rest.menu[menu_id - 1]
+    except IndexError:
+        raise HTTPNotFound()
+
+    if menu.image is not None:
+        body = wrap({
+            "isImage": True,
+            "imageUrl": menu.image
+        })
+        return body
+
+    result = request.dbsession.query(MenuItem, Category).filter(
+        MenuItem.menu_id == menu.id).filter(
+        Category.id == MenuItem.category_id).order_by(Category.name).all()
+    data_dict = {}
+    cats_list = []
+    for item, cat in result:
+        category, item_dict = cat.name, item.as_dict()
+        if category in data_dict:
+            data_dict[category].append(item_dict)
+        else:
+            data_dict[category] = [item_dict]
+            cats_list.append(category)
+
+    body = wrap({
+        "Items": data_dict,
+        "Categories": cats_list,
+        "isImage": False
+    })
+
+    return body
+
+
+@view_config(route_name='get_by_category', renderer='json', request_method='GET')
+def get_by_cat_controler(request):
+    """For future use in sorting by category
+    """
+    menu_id = request.matchdict['menu_id']
+    cat_id = request.matchdict['cat_id']
+    menu_models = request.dbsession.query(MenuItem).filter_by(
+        menu_id=menu_id, category_id=cat_id).all()
+
+    menu_items = [item.as_dict() for item in menu_models]
+    body = wrap(menu_items)
     return body

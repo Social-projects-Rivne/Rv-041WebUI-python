@@ -1,14 +1,14 @@
 """This script populate Data base with fake data."""
 
 from random import randint, seed
-import datetime as dt
 import time
 
 from faker import Faker
 from passlib.hash import pbkdf2_sha256
 
 from tags_data import Tags
-from ..models import Tag, Menu, Restaurant, MenuItem, User, UserStatus
+from ..models import Tag, Menu, Restaurant, MenuItem, User, UserStatus, Category
+from menu_data import Menus, Categories, Meals, Images
 
 
 def fill_db(session):
@@ -66,6 +66,9 @@ def fill_db(session):
     # Restaurant status can be 0-waiting for confirmation, 1-active (confirmed), 2-archived
     rest_status = 0
 
+    Cat_models = [Category(**cat) for cat in Categories]
+    meals_len = len(Meals)
+
     for i in range(10):
         if rest_status == 3:
             rest_status = 0
@@ -80,31 +83,27 @@ def fill_db(session):
         }
         rest_status = rest_status + 1
 
-        menu_model = Menu(name=company_name + " Menu")
         rest_model = Restaurant(**rest)
 
-        Menu_item_models = []
-        menu_item_number = 10
+        Menu_models = [Menu(**menu_dict) for menu_dict in Menus]
 
-        for i in range(menu_item_number):
-            menu_item = {
-                "name": "Menu item : " + fake.domain_word(),
-                "description": "Description : " + fake.text(max_nb_chars=200),
-                "ingredients": "Ingredients : " + fake.sentence(
-                    nb_words=6,
-                    variable_nb_words=True,
-                    ext_word_list=None)
-            }
-            menu_item_model = MenuItem(**menu_item)
-            Menu_item_models.append(menu_item_model)
+        Menu_items_all_cat = []
+        for cat_model in Cat_models:
+            menu_item_number = randint(0, 10)
+            Menu_item_models = []
+            for j in range(menu_item_number):
+                menu_item = Meals[randint(0, meals_len-1)]
+                menu_item_model = MenuItem(**menu_item)
+                menu_item_model.category = cat_model
+                Menu_item_models.append(menu_item_model)
+
+            Menu_items_all_cat.extend(Menu_item_models)
+        Menu_models[0].menu_items = Menu_items_all_cat
+        Menu_models[1].image = Images[randint(0, len(Images))]
 
         # using model relationship defined in models.restaurant
         # asign menu to restaurant
-        rest_model.menu = menu_model
-
-        # using model relationship defined in models.menu
-        # asign menu_items to menu
-        rest_model.menu.menu_item = Menu_item_models
+        rest_model.menu = Menu_models
 
         # using model relationship defined in models.restaurant
         # asign one of 5 users to restaurant
