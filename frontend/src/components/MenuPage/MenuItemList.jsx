@@ -1,6 +1,5 @@
 import React from "react";
 import { withStyles, Grid, Typography, Button } from "@material-ui/core";
-import MenuItem from "./MenuItem";
 import CatTitle from "./CatTitle";
 
 const styles = theme => ({

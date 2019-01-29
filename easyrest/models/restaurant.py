@@ -21,8 +21,8 @@ class Restaurant(Base):
     association table tag_associations
     "status" attribute is Integer, where 0-waiting for confirmation, 1-active (confirmed), 2-archived
     Relationship:
-        restaurants -> menus
-        restaurants -> tags
+        restaurants -> menus (One to Many)
+        restaurants -> tags (Many to Many)
     """
     __tablename__ = 'restaurants'
     id = Column(Integer, primary_key=True)

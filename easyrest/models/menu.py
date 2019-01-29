@@ -17,7 +17,8 @@ class Menu(Base):
     """
     The data model of "menus" table
     Defines data structure of "menus" table
-    Relationship: menus -> menu_items
+    Relationship: 
+        menus -> menu_items (One to Many)
     """
     __tablename__ = 'menus'
     id = Column(Integer, primary_key=True)

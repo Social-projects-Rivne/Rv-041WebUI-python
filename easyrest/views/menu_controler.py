@@ -33,17 +33,12 @@ def get_menu_controler(request):
                 "success": success,
                 "error": error
             }
-        Where data is list with menus asign for current restaurant
-        (Now list with one element). Format:
+        Where data is list with menus asign for current restaurant. Format:
             [
                 {
                     "id": "menuId" + id,
-                    "menu_items": [{
-                        "id": "menuItemId" + id,
-                        "description": description,
-                        "ingredients": ingredients,
-                        "menu_id": menu_id
-                    }, ]
+                    "name": (str),
+                    "rest_id": (int)
                 }
             ]
     """
@@ -58,10 +53,23 @@ def get_menu_controler(request):
 
 @view_config(route_name='get_all_with_cats', renderer='json', request_method='GET')
 def get_cats_controler(request):
-    """GET request controler to return menu and
-    its items for restaurant specified by id
+    """GET request controler to return menu items 
+    for restaurant specified by id and menu id
     Args:
         request: current pyramid request
+    Return:
+        404 if menu or restaurant don`t exist
+        If menu has data(not image menu) format:
+        {
+            Items: (list of dicts) menu items
+            Categories: (list)
+            isImage: False
+        }
+        if menu has image:
+        {
+            isImage: True,
+            imageUrl: (str)
+        }
     """
     menu_id = int(request.matchdict['menu_id'])
     rest_id = request.matchdict['rest_id']
@@ -70,33 +78,33 @@ def get_cats_controler(request):
     try:
         menu = rest.menu[menu_id - 1]
     except IndexError:
-        request.response.status_code = 404
-        return {}
+        raise HTTPNotFound()
 
-    if menu.image is None:
-        result = request.dbsession.query(MenuItem, Category).filter(
-            MenuItem.menu_id == menu.id).filter(
-            Category.id == MenuItem.category_id).order_by(Category.name).all()
-        data_dict = {}
-        cats_list = []
-        for item, cat in result:
-            category, item_dict = cat.name, item.as_dict()
-            if category in data_dict:
-                data_dict[category].append(item_dict)
-            else:
-                data_dict[category] = [item_dict]
-                cats_list.append(category)
-
-        body = wrap({
-            "Items": data_dict,
-            "Categories": cats_list,
-            "isImage": False
-        })
-    else:
+    if menu.image is not None:
         body = wrap({
             "isImage": True,
             "imageUrl": menu.image
         })
+        return body
+
+    result = request.dbsession.query(MenuItem, Category).filter(
+        MenuItem.menu_id == menu.id).filter(
+        Category.id == MenuItem.category_id).order_by(Category.name).all()
+    data_dict = {}
+    cats_list = []
+    for item, cat in result:
+        category, item_dict = cat.name, item.as_dict()
+        if category in data_dict:
+            data_dict[category].append(item_dict)
+        else:
+            data_dict[category] = [item_dict]
+            cats_list.append(category)
+
+    body = wrap({
+        "Items": data_dict,
+        "Categories": cats_list,
+        "isImage": False
+    })
 
     return body
 
