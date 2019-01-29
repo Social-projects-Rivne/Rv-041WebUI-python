@@ -1,5 +1,5 @@
 import React from "react";
-import { withStyles, Grid, Typography, Button } from "@material-ui/core";
+import { withStyles, Grid } from "@material-ui/core";
 import CatTitle from "./CatTitle";
 
 const styles = theme => ({
@@ -33,7 +33,7 @@ class MenuItemList extends React.Component {
   };
 
   render() {
-    const { classes, items, cats, scroll } = this.props;
+    const { items, cats, scroll } = this.props;
     return (
       <Grid container direction="column" spacing={16} wrap="nowrap">
         {items &&

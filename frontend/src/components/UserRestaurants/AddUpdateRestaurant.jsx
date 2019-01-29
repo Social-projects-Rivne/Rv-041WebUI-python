@@ -224,12 +224,6 @@ class AddUpdateRestaurant extends React.Component {
     return (
       <>
         <div className={classes.header}>
-<<<<<<< HEAD:frontend/src/components/UserRestaurants/AddUpdateRestaurant.jsx
-          <Typography variant="h6">
-            {requestType === "post" ? "Add new" : "Update"} restaurant:
-          </Typography>
-=======
->>>>>>> develop:frontend/src/components/Profile/AddUpdateRestaurant.jsx
           <Fab
             className={classnames(classes.fab, {
               [classes.fabDisabled]: formExpanded

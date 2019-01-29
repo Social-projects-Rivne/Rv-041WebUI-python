@@ -20,7 +20,7 @@ const styles = theme => ({
 });
 
 const CategoriesList = props => {
-  const { classes, cats, active } = props;
+  const { classes, cats } = props;
   return (
     <Card className={classes.root}>
       {cats && (

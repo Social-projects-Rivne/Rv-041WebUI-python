@@ -56,7 +56,7 @@ class MenuItem extends React.Component {
 
   render() {
     const { classes, item } = this.props;
-    const { img, description, ingredients, name, id } = item;
+    const { img, description, ingredients, name } = item;
 
     return (
       <div className={classes.root}>
