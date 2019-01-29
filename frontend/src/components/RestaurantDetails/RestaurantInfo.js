@@ -39,6 +39,8 @@ class RestaurantInfo extends React.Component {
             <Typography variant="body1" gutterBottom component="p">
               {restInfo.description}
             </Typography>
+              <button>delete</button>
+              <button>menu</button>
           </div>
         </CardContent>
       </Card>
