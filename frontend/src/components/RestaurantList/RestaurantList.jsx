@@ -2,19 +2,19 @@ import React from "react";
 import PropTypes from "prop-types";
 import RestaurantListItem from "./RestaurantListItem";
 import { Grid } from "@material-ui/core/";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import {Link} from "react-router-dom";
+// import Tabs from "@material-ui/core/Tabs";
+// import Tab from "@material-ui/core/Tab";
+// import {Link} from "react-router-dom";
 
 const RestaurantList = props => {
   const { data } = props;
   return (
     <Grid container spacing={16}>
-        <Tabs value="ok" variant="scrollable" scrollButtons="on">
-            <Tab label="Active" component={Link} to={{ search: "" }} />
-            <Tab label="Not approved" component={Link} to={{ search: "" }} />
-            <Tab label="Archive" component={Link} to={{ search: "" }} />
-        </Tabs>
+        {/*<Tabs value="ok" variant="scrollable" scrollButtons="on">*/}
+            {/*<Tab label="Active" component={Link} to={{ search: "" }} />*/}
+            {/*<Tab label="Not approved" component={Link} to={{ search: "" }} />*/}
+            {/*<Tab label="Archive" component={Link} to={{ search: "" }} />*/}
+        {/*</Tabs>*/}
       {data.map(rest => {
         return (
           <Grid key={rest.id} item xs={12}>

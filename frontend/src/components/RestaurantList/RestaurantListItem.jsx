@@ -86,11 +86,19 @@ function RestaurantListItem(props) {
               <Button
                 variant="contained"
                 component={Link}
-                to={"/profile/my_restaurant/" + id}
+                to={"/restaurant/" + id}
                 color="primary"
               >
                 details
               </Button>
+                {/*<Button*/}
+                    {/*variant="contained"*/}
+                    {/*component={Link}*/}
+                    {/*to={"/profile/my_restaurant/" + id}*/}
+                    {/*color="primary"*/}
+                {/*>*/}
+                    {/*delete*/}
+                {/*</Button>*/}
             </Grid>
           </Grid>
         </Grid>

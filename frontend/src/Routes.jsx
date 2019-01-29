@@ -4,6 +4,7 @@ import HomePage from "./containers/HomePage";
 import RestautantListPage from "./containers/RestaurantListPage";
 import RestaurantsMapPage from "./containers/RestaurantsMapPage";
 import RestaurantPage from "./containers/RastaurantPage";
+// import MyRestaurant from "./containers/MyRestaurants";
 import LogInPage from "./containers/LogInPage";
 import SignUpPage from "./containers/SignUpPage";
 import ProfilePage from "./containers/ProfilePage";
@@ -21,7 +22,7 @@ const routes = [
     exact: true
   },
   {
-    path: "/restaurants/:id",
+    path: "/restaurant/:id",
     component: RestaurantPage
   },
   {
