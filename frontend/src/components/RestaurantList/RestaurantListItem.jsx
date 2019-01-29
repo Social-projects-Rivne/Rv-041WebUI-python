@@ -11,6 +11,7 @@ import {
   Chip,
   Grid
 } from "@material-ui/core/";
+import { amber, green } from "@material-ui/core/colors/";
 
 import { Link } from "react-router-dom";
 
@@ -31,11 +32,18 @@ const styles = theme => ({
   },
   tagItem: {
     margin: theme.spacing.unit / 2
-  }
+  },
+    active:{
+        background: green[500]
+
+    },
+    notApproved:{
+        background: amber[700]
+    }
 });
 
 function RestaurantListItem(props) {
-  const { classes, id, name, description, address, phone, tags } = props;
+  const { classes, id, name, description, address, phone, tags, status } = props;
   return (
     <Card className={classes.card}>
       <CardMedia
@@ -45,10 +53,23 @@ function RestaurantListItem(props) {
       />
       <CardContent className={classes.details}>
         <Grid container spacing={16}>
-          <Grid item xs={12}>
-            <Typography variant="h5" component="h2">
+
+          <Grid item container xs={12} justify="space-between" alignItems="center">
+            <Typography variant="h5" component="h2" align="left">
               {name}
             </Typography>
+              {(status===1) && (<Chip
+                  label="ACTIVE"
+                  className={classes.active}
+              />)}
+              {(status===0) && (<Chip
+                  label="NOT APPROVED"
+                  className={classes.notApproved}
+              />)}
+              {(status===2) && (<Chip
+                  label="ARCHIVED"
+                  className={classes.tagItem}
+              />)}
           </Grid>
           {description && (
             <Grid item xs={12}>

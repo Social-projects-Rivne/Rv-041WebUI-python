@@ -13,7 +13,7 @@ const styles = {
 
 class RestaurantInfo extends React.Component {
   render() {
-    const { classes, restInfo, auth, ableUpdate } = this.props;
+    const {restInfo, auth, ableUpdate } = this.props;
     return (
       <Card>
         <CardContent>

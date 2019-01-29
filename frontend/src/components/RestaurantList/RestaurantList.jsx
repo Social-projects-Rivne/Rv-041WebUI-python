@@ -17,6 +17,7 @@ const RestaurantList = props => {
               address={rest.address_id}
               phone={rest.phone}
               tags={rest.tags}
+              status={rest.status}
             />
           </Grid>
         );
