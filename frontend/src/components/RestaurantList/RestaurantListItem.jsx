@@ -42,8 +42,8 @@ const styles = theme => ({
 });
 
 const restaurantStatus = {
-  0: ["ACTIVE", "active"],
-  1: ["NOT APPROVED", "notApproved"],
+  0: ["NOT APPROVED", "notApproved"],
+  1: ["ACTIVE", "active"],
   2: ["ARCHIVED"]
 };
 
