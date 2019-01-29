@@ -19,6 +19,7 @@ class Restaurant(Base):
     Defines data structure of "restaurants" table
     Has many to many relationship with tags, using
     association table tag_associations
+    "status" attribute is Integer, where 0-waiting for confirmation, 1-active (confirmed), 2-archived
     Relationship:
         restaurants -> menus
         restaurants -> tags
@@ -31,6 +32,7 @@ class Restaurant(Base):
     phone = Column(Text)
     owner_id = Column(Integer, ForeignKey('users.id'))
     menu_id = Column(Integer, ForeignKey('menus.id'))
+    status = Column(Integer)
 
     menu = relationship("Menu")
     user = relationship("User")

@@ -27,12 +27,10 @@ import classnames from "classnames";
 
 const styles = theme => ({
   header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: theme.spacing.unit * 2
+    display: "flex"
   },
   fab: {
+    marginLeft: "auto",
     transform: "scale(1)",
     transition: theme.transitions.create("transform")
   },
@@ -81,15 +79,16 @@ class AddUpdateRestaurant extends React.Component {
       fetch(`http://localhost:6543/api/restaurant/${this.props.id}`)
         .then(response => response.json())
         .then(rest => rest.data[0])
-        .then(restInfo =>
+        .then(restInfo => {
+          const tagsName = restInfo.tags.map(tag => tag.name);
           this.setState({
             name: restInfo.name,
             address: restInfo.address_id,
             phone: restInfo.phone,
             description: restInfo.description,
-            tags: [...restInfo.tags]
-          })
-        );
+            tags: tagsName
+          });
+        });
 
     fetch("http://localhost:6543/api/tag")
       .then(response => response.json())
@@ -225,9 +224,12 @@ class AddUpdateRestaurant extends React.Component {
     return (
       <>
         <div className={classes.header}>
+<<<<<<< HEAD:frontend/src/components/UserRestaurants/AddUpdateRestaurant.jsx
           <Typography variant="h6">
             {requestType === "post" ? "Add new" : "Update"} restaurant:
           </Typography>
+=======
+>>>>>>> develop:frontend/src/components/Profile/AddUpdateRestaurant.jsx
           <Fab
             className={classnames(classes.fab, {
               [classes.fabDisabled]: formExpanded
@@ -244,6 +246,9 @@ class AddUpdateRestaurant extends React.Component {
         <Collapse in={formExpanded} timeout="auto" unmountOnExit>
           <Card>
             <CardContent>
+              <Typography variant="title">
+                {requestType === "post" ? "Add new" : "Update"} restaurant:
+              </Typography>
               <form
                 onSubmit={event => this.handleSubmit(event, requestType, id)}
                 className={classes.form}
@@ -306,18 +311,12 @@ class AddUpdateRestaurant extends React.Component {
                         value={tags}
                         onChange={this.handleTagsChange}
                         input={<Input id="select-multiple-checkbox" />}
-                        renderValue={selected => {
-                          let selectedStr = selected
-                            .map(selectedItem => selectedItem.name)
-                            .join(", ");
-
-                          return selectedStr;
-                        }}
+                        renderValue={selected => selected.join(", ")}
                         MenuProps={MenuProps}
                       >
                         {allTags.map(tag => (
-                          <MenuItem key={tag.id} value={tag}>
-                            <Checkbox checked={tags.indexOf(tag) > -1} />
+                          <MenuItem key={tag.id} value={tag.name}>
+                            <Checkbox checked={tags.indexOf(tag.name) > -1} />
                             <ListItemText primary={tag.name} />
                           </MenuItem>
                         ))}
