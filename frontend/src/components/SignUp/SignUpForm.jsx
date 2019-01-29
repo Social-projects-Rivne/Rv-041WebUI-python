@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import SubmittedForm from "./SubmittedForm";
 import { withStyles } from "@material-ui/core/styles";
 import {
   Button,
@@ -9,10 +8,12 @@ import {
   CardContent,
   Typography,
   Divider,
-  CardHeader
+  CardHeader,
+  Snackbar
 } from "@material-ui/core/";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
+import SnackbarContent from "../SnackbarContent";
 
 const styles = theme => ({
   root: {
@@ -39,6 +40,12 @@ class SignUpForm extends React.Component {
       return true;
     });
   }
+  handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    this.setState({ error: false });
+  };
 
   handleChange = e => {
     this.setState({ [e.target.name]: e.target.value });
@@ -55,16 +62,27 @@ class SignUpForm extends React.Component {
     };
     fetch("http://localhost:6543/api/sign_up", requestConfig)
       .then(response => response.json())
-      .then(response => this.setState({ serverResponse: response.success }))
-      .catch(error => this.setState({ errors: true }));
+      .then(json => {
+        if (json.success) {
+          this.setState({ serverResponse: true });
+        } else {
+          throw json;
+        }
+      })
+      .catch(error =>
+        this.setState({
+          error: true,
+          errorMes:
+            error.errorMes ||
+            "Ooops something went wrong! Please try again later."
+        })
+      );
   };
 
   render() {
     const { classes } = this.props;
     if (this.state.serverResponse) {
-      return (
-        <SubmittedForm classes={classes} message={"Thanks for registration!"} />
-      );
+      return <Redirect to="/log-in" />;
     } else {
       return (
         <Grid container justify="center" className={classes.root}>
@@ -124,11 +142,11 @@ class SignUpForm extends React.Component {
                       label="Password"
                       onChange={this.handleChange}
                       className={classes.textField}
-                      validators={['required', "minStringLength:8"]}
+                      validators={["required", "minStringLength:8"]}
                       errorMessages={[
                         "Password is required",
                         "Password must have at least 8 characters"
-                        ]}
+                      ]}
                       value={this.state.password}
                       type="password"
                       name="password"
@@ -185,6 +203,25 @@ class SignUpForm extends React.Component {
                 </Grid>
               </CardContent>
             </ValidatorForm>
+            <Snackbar
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right"
+              }}
+              open={this.state.error}
+              autoHideDuration={10000}
+              onClose={this.handleClose}
+            >
+              <SnackbarContent
+                onClose={this.handleClose}
+                variant="error"
+                message={
+                  <Typography color="inherit" align="center">
+                    {this.state.errorMes || "No connection to the server"}
+                  </Typography>
+                }
+              />
+            </Snackbar>
           </Card>
         </Grid>
       );
