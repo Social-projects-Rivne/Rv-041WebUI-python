@@ -132,13 +132,13 @@ def get_restaurant_controler(request):
     if rest is None:
         raise HTTPNotFound("Restaurant with id=%s not found" % (rest_id))
     else:
-        if request.token and request.token.user == rest.user:
+        if request.token is not None and request.token.user.id == rest.user.id:
             is_owner = True
 
         rest_with_tags = asign_tags([rest])
         body = wrap(rest_with_tags)
         body['is_owner'] = is_owner
-        print body
+
     return body
 
 

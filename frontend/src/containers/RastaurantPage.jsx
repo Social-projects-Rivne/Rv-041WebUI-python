@@ -8,11 +8,11 @@ import AppContext from "../components/AppContext";
 
 export class RastaurantPage extends Component {
   state = {
-    restInfo: []
+    restInfo: [],
+    ableUpdate: false
   };
 
   componentDidMount() {
-    console.log(AppContext);
     const restId = this.props.match.params.id;
     fetch(`http://localhost:6543/api/restaurant/${restId}`, {
       method: "GET",
@@ -26,7 +26,9 @@ export class RastaurantPage extends Component {
           ? response.json()
           : response.json().then(Promise.reject.bind(Promise));
       })
-      .then(rest => this.setState({ restInfo: rest.data[0] }))
+      .then(rest =>
+        this.setState({ restInfo: rest.data[0], ableUpdate: rest.is_owner })
+      )
       .catch(err => {
         console.log(err);
       });
@@ -37,13 +39,13 @@ export class RastaurantPage extends Component {
   };
 
   render() {
-    const { userRole, restInfo } = this.state;
+    const { userRole, restInfo, ableUpdate } = this.state;
     return (
       <AppContext.Consumer>
         {state => (
           <PageContainer>
             <RestaurantInfo restInfo={restInfo} />
-            {state.auth && (
+            {state.auth && ableUpdate && (
               <CollapseForm
                 tooltipText="Update restaurant"
                 formTitle="Update your restaurant info:"
