@@ -1,5 +1,6 @@
 """Script contains helper functions to work with json such as:
     wrap(): wraper to make response acording to style
+    form_dict(): returns dictionary formed from passed keys and values collections as parameters
 """
 
 
@@ -25,3 +26,18 @@ def wrap(data=[], success=True, error=None, message=None,):
         "message": message
     }
     return data_dict
+
+
+def form_dict(data, keys):
+    """
+    this function collide keys from "keys" parameter with values from "data" parameter to form dictionary
+    :param data: list with data
+    :param keys: list of keys for formed dictionary
+    :return: dictionary with data from "data" and keys from "keys"
+    """
+    result = {}
+    if len(data) != len(keys):
+        return result
+    for i in range(len(data)):
+        result[keys[i]] = data[i]
+    return result

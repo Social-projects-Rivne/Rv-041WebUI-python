@@ -18,7 +18,7 @@ def add_cors_headers_response_callback(event):
         """
         response.headers.update({
             'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST,GET,DELETE,PUT,OPTIONS',
+            'Access-Control-Allow-Methods': 'POST,GET,DELETE,PUT,OPTIONS,HEAD,HEADER',
             'Access-Control-Allow-Headers': 'Date, Content-Type, Accept, X-Auth-Token',
             # to allow React see header 'X-Auth-Token'
             'Access-Control-Expose-Headers': 'X-Auth-Token',
