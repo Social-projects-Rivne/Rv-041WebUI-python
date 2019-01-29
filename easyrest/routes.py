@@ -26,3 +26,6 @@ def includeme(config):
                      "GET", "POST"])
     config.add_route('user_restaurant', 'user_restaurant/{id:[1-9]\d*}', request_method=[
                      "GET", "PUT"])
+    config.add_route('authorize_moderator', 'moderator',
+                     request_method="GET")
+

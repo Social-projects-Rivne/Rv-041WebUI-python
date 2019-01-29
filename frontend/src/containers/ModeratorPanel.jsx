@@ -14,10 +14,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import {restaurant} from '@material-ui/icons';
 
+import Archive from "./ArchiveDataPage";
+import Messages from "./MessagesFeedbacksPage";
+import GeneralError from "../components/ErrorPages/GeneralError";
 import RestaurantsForApprovalPage from "./RestaurantsForApprovalPage";
 import Users from "./UsersPage";
-import Messages from "./MessagesFeedbacksPage";
-import Archive from "./ArchiveDataPage";
 
 const drawerWidth = 240;
 
@@ -48,6 +49,10 @@ const styles = theme => ({
 class PermanentDrawerLeft extends React.Component {
 
   state = {
+    isLoading: true,
+    accessAllowed: false,
+    error: "",
+    token: localStorage.getItem("token"),
     renderingComponent: <RestaurantsForApprovalPage />,
   };
 
@@ -61,12 +66,42 @@ class PermanentDrawerLeft extends React.Component {
   };
 
   icons = {
-    Restaurants: <restaurant/>,
+    Restaurants: null,
   };
 
   classes = this.props.classes;
 
+  componentDidMount() {
+
+      const headers = new Headers({
+          'Content-Type': 'application/json',
+          'X-Auth-Token': this.state.token
+      });
+
+      const fetchInit = {
+          method: "GET",
+          headers: headers
+      };
+
+      fetch('http://localhost:6543/api/moderator', fetchInit)
+          .then(response => (!(response.status >= 200 && response.status < 300)
+                            ?Promise.reject(response.status)
+                            :response.json()))
+          .then(data => this.setState({isLoading: false, accessAllowed: data.success}))
+          .catch(err => this.setState({isLoading: false, accessAllowed: false, error: err}))
+  }
+
   render() {
+
+    const {isLoading, accessAllowed, error} = this.state;
+
+    if(isLoading){
+      return(null);
+    }
+
+    if(!accessAllowed){
+      return(<GeneralError error={error}/>);
+    }
 
     return (
       <div className={this.classes.root}>

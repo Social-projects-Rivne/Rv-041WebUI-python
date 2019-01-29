@@ -11,6 +11,24 @@ from ..scripts.json_helpers import wrap
 from ..scripts.json_helpers import form_dict
 
 
+@view_config(route_name='authorize_moderator', renderer='json', request_method='GET')
+@restrict_access(user_types=["Moderator"])
+def authorize_moderator_controller(request):
+    """
+    GET request controller to check if user was logged in as Moderator
+    Args:
+        request: current pyramid request
+    Returns:
+        Json string(not pretty) created from dictionary with format:
+            {
+                "data": None,
+                "success": True,
+                "error": error
+            }
+    """
+    return wrap()
+
+
 @view_config(route_name='get_unapproved_restaurants', renderer='json', request_method='GET')
 @restrict_access(user_types=["Moderator"])
 def get_unapproved_restaurants_controller(request):
