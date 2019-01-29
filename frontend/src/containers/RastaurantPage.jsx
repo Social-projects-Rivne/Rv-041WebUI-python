@@ -44,7 +44,7 @@ export class RastaurantPage extends Component {
       <AppContext.Consumer>
         {state => (
           <PageContainer>
-            <RestaurantInfo restInfo={restInfo} />
+            <RestaurantInfo restInfo={restInfo} auth={state.auth} ableUpdate={ableUpdate}/>
             {state.auth && ableUpdate && (
               <CollapseForm
                 tooltipText="Update restaurant"

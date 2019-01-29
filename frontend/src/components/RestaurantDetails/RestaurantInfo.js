@@ -13,7 +13,7 @@ const styles = {
 
 class RestaurantInfo extends React.Component {
   render() {
-    const { classes, restInfo } = this.props;
+    const { classes, restInfo, auth, ableUpdate } = this.props;
     return (
       <Card>
         <CardContent>
@@ -39,6 +39,7 @@ class RestaurantInfo extends React.Component {
             <Typography variant="body1" gutterBottom component="p">
               {restInfo.description}
             </Typography>
+              {auth && ableUpdate && (<button>ok</button>)}
           </div>
         </CardContent>
       </Card>
