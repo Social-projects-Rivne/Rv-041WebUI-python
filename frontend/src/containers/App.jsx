@@ -1,22 +1,48 @@
 import React from "react";
+import Routes from "../Routes";
 import { BrowserRouter } from "react-router-dom";
-import Router from "../router";
 import AppContext from "../components/AppContext";
-import PageContainer from "../containers/PageContainer";
 import { hot } from "react-hot-loader";
+import {
+  createMuiTheme,
+  CssBaseline,
+  MuiThemeProvider
+} from "@material-ui/core";
+import { lightBlue } from "@material-ui/core/colors/";
+
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true
+  },
+  palette: {
+    primary: {
+      main: lightBlue[900]
+    },
+    secondary: {
+      main: lightBlue[200]
+    }
+  }
+});
 
 class App extends React.Component {
   state = {
     auth: false,
     role: "",
-    token: ""
+    token: "",
+    userName: ""
   };
 
   componentDidMount() {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
-    if (token && role) {
-      this.setState({ auth: true, token: token, role: role });
+    const userName = localStorage.getItem("userName");
+    if (token && role && userName) {
+      this.setState({
+        auth: true,
+        token: token,
+        role: role,
+        userName: userName
+      });
     }
   }
 
@@ -26,15 +52,16 @@ class App extends React.Component {
 
   render() {
     return (
-      <AppContext.Provider
-        value={{ ...this.state, changeState: this.changeState }}
-      >
+      <MuiThemeProvider theme={theme}>
         <BrowserRouter>
-          <PageContainer>
-            <Router />
-          </PageContainer>
+          <AppContext.Provider
+            value={{ ...this.state, changeState: this.changeState }}
+          >
+            <CssBaseline />
+            <Routes />
+          </AppContext.Provider>
         </BrowserRouter>
-      </AppContext.Provider>
+      </MuiThemeProvider>
     );
   }
 }

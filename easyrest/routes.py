@@ -16,10 +16,10 @@ def includeme(config):
                      request_method="GET")
     config.add_route('get_user_info', 'profile',
                      request_method="GET")
-    config.add_route('user_restaurants', 'user_restaurants', request_method=[
-                     "GET", "POST"])
-    config.add_route('user_restaurant', 'user_restaurant/{id:[1-9]\d*}', request_method=[
-                     "GET", "PUT"])
+    config.add_route('user_restaurants', 'user_restaurants',
+                     request_method=["GET", "POST"])
+    config.add_route(
+        'user_restaurant', 'user_restaurant/{id:[1-9]\d*}', request_method=["PUT"])
     config.add_route('options_handling', '/{catch_all:.*}',
                      request_method="OPTIONS")
     config.add_route('sign_up', 'sign_up', request_method="POST")

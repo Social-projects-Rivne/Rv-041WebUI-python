@@ -41,69 +41,55 @@ class TagsList extends Component {
   componentDidMount() {
     fetch("http://localhost:6543/api/tag")
       .then(response => response.json())
-      .then(data => this.setState({ tags: data.data }));
+      .then(tags => {
+        const sortedTags = tags.data.sort((a, b) => b.priority - a.priority);
+        this.setState({
+          tags: sortedTags
+        });
+      });
   }
 
   render() {
     const { classes } = this.props;
     const { tags } = this.state;
-
-    const tagsLength = tags.length;
+    const tagsArr = [{ name: "View All", priority: -1 }, ...tags];
 
     return (
       <div className={classes.root}>
-        {tagsLength > 0 && (
+        {tagsArr.length > 0 && (
           <GridList
             spacing={16}
             className={classes.gridList}
-            cols={tagsLength > 5 ? 5.5 : tagsLength + 1}
+            cols={tagsArr.length > 5 ? 5.5 : tagsArr.length}
           >
-            <GridListTile to="/restaurants" component={Link}>
-              <img
-                alt="View All"
-                src="https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=300&h=300&q=60"
-              />
-              <GridListTileBar
-                title="View All"
-                classes={{
-                  root: classes.titleBar,
-                  title: classes.title
-                }}
-                actionIcon={
-                  <IconButton>
-                    <StarBorderIcon className={classes.title} />
-                  </IconButton>
+            {tagsArr.map((tag, index) => (
+              <GridListTile
+                to={
+                  index === 0 ? "/restaurants" : `/restaurants?tag=${tag.name}`
                 }
-              />
-            </GridListTile>
-            {tags
-              .sort((a, b) => a.priority - b.priority)
-              .map(tag => (
-                <GridListTile
-                  to={`/restaurants?tag=${tag.name}`}
-                  component={Link}
-                  key={tag.name}
-                >
-                  {
-                    <img
-                      src="https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=300&h=300&q=20"
-                      alt={tag.name}
-                    />
-                  }
-                  <GridListTileBar
-                    title={tag.name}
-                    classes={{
-                      root: classes.titleBar,
-                      title: classes.title
-                    }}
-                    actionIcon={
-                      <IconButton>
-                        <StarBorderIcon className={classes.title} />
-                      </IconButton>
-                    }
+                component={Link}
+                key={tag.name}
+              >
+                {
+                  <img
+                    src="https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=300&h=300&q=20"
+                    alt={tag.name}
                   />
-                </GridListTile>
-              ))}
+                }
+                <GridListTileBar
+                  title={tag.name}
+                  classes={{
+                    root: classes.titleBar,
+                    title: classes.title
+                  }}
+                  actionIcon={
+                    <IconButton>
+                      <StarBorderIcon className={classes.title} />
+                    </IconButton>
+                  }
+                />
+              </GridListTile>
+            ))}
           </GridList>
         )}
       </div>
