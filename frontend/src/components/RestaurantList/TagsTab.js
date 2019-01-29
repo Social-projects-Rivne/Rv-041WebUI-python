@@ -4,6 +4,7 @@ import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import RestaurantListItem from "./RestaurantListItem";
 import { Link } from "react-router-dom";
@@ -19,6 +20,9 @@ TabContainer.propTypes = {
 const styles = {
   root: {
     flexGrow: 1
+  },
+  item: {
+    marginTop: 16
   }
 };
 
@@ -30,7 +34,9 @@ class TagsTab extends React.Component {
   componentDidMount() {
     fetch("http://localhost:6543/api/restaurant")
       .then(response => response.json())
-      .then(data => this.setState({ rests: data.data }))
+      .then(data => {
+        this.setState({ rests: data.data });
+      })
       .catch(err => console.log(err));
   }
 
@@ -76,16 +82,9 @@ class TagsTab extends React.Component {
         {value === 0 && params === null && (
           <TabContainer>
             {this.state.rests.map(rest => {
-              return (
-                <RestaurantListItem
-                  key={rest.id}
-                  name={rest.name}
-                  description={rest.description}
-                  phone={rest.phone}
-                  address={rest.address_id}
-                  id={rest.id}
-                />
-              );
+              return <Grid className={classes.item}>
+                  <RestaurantListItem restData={rest} />
+              </Grid>;
             })}
           </TabContainer>
         )}
@@ -95,16 +94,9 @@ class TagsTab extends React.Component {
               <TabContainer key={i}>
                 {this.state.rests.map(rest => {
                   if (rest.tags.filter(p => p.name === value).length !== 0) {
-                    return (
-                      <RestaurantListItem
-                        key={rest.id}
-                        name={rest.name}
-                        description={rest.description}
-                        phone={rest.phone}
-                        address={rest.address_id}
-                        id={rest.id}
-                      />
-                    );
+                    return <Grid className={classes.item}>
+                        <RestaurantListItem restData={rest} />
+                    </Grid>;
                   }
                   return "";
                 })}
