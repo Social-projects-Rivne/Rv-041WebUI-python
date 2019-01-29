@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { withStyles, Button } from "@material-ui/core";
 import { NavLink } from "react-router-dom";
 
@@ -17,7 +18,7 @@ const styles = theme => ({
     left: 0,
     right: 0,
     height: theme.spacing.unit / 2,
-    backgroundColor: theme.palette.common.white,
+    backgroundColor: theme.palette.secondary.light,
     transform: "scale(0)",
     transformOrigin: "bottom",
     transition: theme.transitions.create("transform")
@@ -53,5 +54,9 @@ class NavMenu extends React.Component {
     );
   }
 }
+
+NavMenu.propTypes = {
+  classes: PropTypes.object.isRequired
+};
 
 export default withStyles(styles)(NavMenu);

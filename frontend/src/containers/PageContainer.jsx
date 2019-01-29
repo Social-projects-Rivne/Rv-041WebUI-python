@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
-import { Card, CardContent, CardHeader } from "@material-ui/core";
 
 const styles = theme => ({
   root: {
@@ -43,6 +42,10 @@ const styles = theme => ({
     display: "flex",
     flexWrap: "wrap",
     height: `calc(100vh - ${theme.spacing.unit * 8}px)`
+  },
+  noPadding: {
+    paddingTop: 0,
+    paddingBottom: 0
   }
 });
 
@@ -53,6 +56,7 @@ const PageContainer = props => {
     className,
     fullHeight,
     fullWidth,
+    noPadding,
     style,
     width,
     ...other
@@ -65,7 +69,8 @@ const PageContainer = props => {
         {
           [classes[width]]: !fullWidth,
           [classes.fullHeight]: fullHeight,
-          [classes.fullWidth]: fullWidth
+          [classes.fullWidth]: fullWidth,
+          [classes.noPadding]: noPadding
         },
         className
       )}
@@ -83,6 +88,7 @@ PageContainer.propTypes = {
   className: PropTypes.string,
   fullHeight: PropTypes.bool,
   fullWidth: PropTypes.bool,
+  noPadding: PropTypes.bool,
   style: PropTypes.object,
   width: PropTypes.oneOf(["small", "medium", "full"])
 };
@@ -90,7 +96,8 @@ PageContainer.propTypes = {
 PageContainer.defaultProps = {
   fullHeight: false,
   fullWidth: false,
-  width: "medium"
+  width: "medium",
+  noPadding: false
 };
 
 export default withStyles(styles)(PageContainer);

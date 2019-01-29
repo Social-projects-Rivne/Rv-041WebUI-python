@@ -1,34 +1,45 @@
 import React from "react";
-import { withStyles, Grid, Card } from "@material-ui/core";
+import PropTypes from "prop-types";
+import { Grid, Card, CardContent } from "@material-ui/core";
 import ProfileTabs from "../components/Profile/ProfileTabs";
-import MyRestaurant from "./MyRestaurant";
+import MyRestaurants from "./MyRestaurants";
+import UserInfoPage from "./UserInfo";
+import PageContainer from "./PageContainer";
+import { Route, Switch } from "react-router-dom";
 
-const styles = () => ({
-  root: {
-    maxWidth: "1280px",
-    marginRight: "auto",
-    marginLeft: "auto",
-    paddingRight: 24,
-    paddingLeft: 24,
-  },
-});
-
-const Profile = props => {
-  const { classes } = props;
+const ProfilePage = props => {
+  const { match } = props;
   return (
-    <div className={classes.root}>
+    <PageContainer>
       <Card>
-        <Grid container spacing={0}>
-          <Grid item xs={10}>
-            <MyRestaurant />
+        <CardContent>
+          <Grid container spacing={16}>
+            <Grid item xs={10}>
+              <Switch>
+                <Route
+                  exact
+                  path={`${match.url}/personal_info`}
+                  component={UserInfoPage}
+                />
+                <Route
+                  exact
+                  path={`${match.url}/my_restaurants`}
+                  component={MyRestaurants}
+                />
+              </Switch>
+            </Grid>
+            <Grid item xs={2}>
+              <ProfileTabs />
+            </Grid>
           </Grid>
-          <Grid item xs={2}>
-            <ProfileTabs />
-          </Grid>
-        </Grid>
+        </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 };
 
-export default withStyles(styles)(Profile);
+ProfilePage.propTypes = {
+  match: PropTypes.object.isRequired
+};
+
+export default ProfilePage;

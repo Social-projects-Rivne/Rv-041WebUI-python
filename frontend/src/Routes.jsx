@@ -1,25 +1,25 @@
 import React from "react";
-import { Route, Switch, BrowserRouter } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import HomePage from "./containers/HomePage";
 import RestautantListPage from "./containers/RestaurantListPage";
-import MyRestaurantsPage from "./containers/MyRestaurantsPage";
 import RestaurantsMapPage from "./containers/RestaurantsMapPage";
 import RestaurantPage from "./containers/RastaurantPage";
 import MenuPage from "./containers/MenuPage";
 import LogInPage from "./containers/LogInPage";
 import SignUpPage from "./containers/SignUpPage";
 import ProfilePage from "./containers/ProfilePage";
-import UserInfoPage from "./containers/UserInfo";
-import AppHeader from "./components/AppHeader";
+import AppHeader from "./containers/AppHeader";
 
 const routes = [
   {
     path: "/",
-    component: HomePage
+    component: HomePage,
+    exact: true
   },
   {
     path: "/restaurants",
-    component: RestautantListPage
+    component: RestautantListPage,
+    exact: true
   },
   {
     path: "/restaurants/:id",
@@ -48,18 +48,6 @@ const routes = [
   {
     path: "/profile",
     component: ProfilePage
-  },
-  {
-    path: "/profile/persona_info",
-    component: UserInfoPage
-  },
-  {
-    path: "/profile/current_orders",
-    component: ProfilePage
-  },
-  {
-    path: "/profile/my-restaurants",
-    component: MyRestaurantsPage
   }
 ];
 
@@ -69,8 +57,13 @@ class Routes extends React.Component {
       <>
         <Route component={AppHeader} />
         <Switch>
-          {routes.map(({ path, component }) => (
-            <Route exact key={component} path={path} component={component} />
+          {routes.map(({ path, component, exact }) => (
+            <Route
+              exact={exact}
+              key={component}
+              path={path}
+              component={component}
+            />
           ))}
         </Switch>
       </>

@@ -5,7 +5,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
-import RestaurantItem from "./RestaurantItem";
+import RestaurantListItem from "./RestaurantListItem";
 import { Link } from "react-router-dom";
 
 function TabContainer(props) {
@@ -77,11 +77,12 @@ class TagsTab extends React.Component {
           <TabContainer>
             {this.state.rests.map(rest => {
               return (
-                <RestaurantItem
+                <RestaurantListItem
                   key={rest.id}
                   name={rest.name}
                   description={rest.description}
-                  address={rest.addres_id}
+                  phone={rest.phone}
+                  address={rest.address_id}
                   id={rest.id}
                 />
               );
@@ -95,11 +96,12 @@ class TagsTab extends React.Component {
                 {this.state.rests.map(rest => {
                   if (rest.tags.filter(p => p.name === value).length !== 0) {
                     return (
-                      <RestaurantItem
+                      <RestaurantListItem
                         key={rest.id}
                         name={rest.name}
                         description={rest.description}
-                        address={rest.addres_id}
+                        phone={rest.phone}
+                        address={rest.address_id}
                         id={rest.id}
                       />
                     );
