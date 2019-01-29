@@ -31,7 +31,8 @@ class Restaurant(Base):
     description = Column(Text)
     phone = Column(Text)
     owner_id = Column(Integer, ForeignKey('users.id'))
-    status = Column(Integer)
+    status = Column(Integer, default=0)
+    creation_date = Column(Integer)
 
     menu = relationship("Menu")
     user = relationship("User")

@@ -4,6 +4,7 @@
 from pyramid.view import view_config
 from pyramid.authentication import AuthTicket
 from pyramid.httpexceptions import HTTPForbidden
+from passlib.hash import pbkdf2_sha256
 
 from ..scripts.json_helpers import wrap
 from ..models.user import User
@@ -30,7 +31,7 @@ def login_post(request):
     email, password = req_json["email"], req_json["password"]
     user = request.dbsession.query(User).filter_by(email=email).first()
 
-    if user is None or user.password != password:
+    if user is None or not pbkdf2_sha256.verify(password, user.password):
         raise HTTPForbidden("Email or password is invalid")
 
     token = remember(request, user)

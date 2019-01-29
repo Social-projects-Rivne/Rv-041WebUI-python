@@ -1,9 +1,10 @@
 """This script populate Data base with fake data."""
 
 from random import randint, seed
-import datetime as dt
+import time
 
 from faker import Faker
+from passlib.hash import pbkdf2_sha256
 
 from tags_data import Tags
 from ..models import Tag, Menu, Restaurant, MenuItem, User, UserStatus, Category
@@ -46,13 +47,14 @@ def fill_db(session):
     session.add_all(UserStatuses)
 
     # Create 5 users with status Owner
+    # and with hashed password "1111
     number_of_owners = 5
     Users = []
     for i in range(number_of_owners):
         user_name = fake.name()
         Users.append(User(name=user_name,
                           email=user_name.lower().replace(" ", "")+'@test.com',
-                          password="123%s" % i,
+                          password=pbkdf2_sha256.hash("1111"),
                           status=UserStatuses[1],
                           phone_number="+38098" + str(1000000 + i),
                           birth_date=fake.date_of_birth(
@@ -76,7 +78,8 @@ def fill_db(session):
             "address_id": fake.address(),
             "description": fake.text(max_nb_chars=200),
             "phone": "+380362" + str(100000 + i),
-            "status": rest_status
+            "status": rest_status,
+            "creation_date": int(time.time())
         }
         rest_status = rest_status + 1
 
@@ -124,17 +127,36 @@ def fill_db(session):
 
         Rest_models.append(rest_model)
 
-    # add users
+    # add users with hashed password "1111"
     for i in range(menu_item_number):
         user_name = fake.name()
         current_user = User(name=user_name,
                             email=user_name.lower().replace(" ", "")+'@test.com',
-                            password="123%s" % i,
+                            password=pbkdf2_sha256.hash("1111"),
                             status=UserStatuses[0],
                             phone_number="+38098" +
                             str(1000000 + number_of_owners + i),
                             birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
         user_model.append(current_user)
+
+    # add Moderator and Admin
+    user_name = fake.name()
+    moderator = User(name="Peter Moderator",
+                     email='petermoderator'+'@test.com',
+                     password="1",
+                     status=UserStatuses[2],
+                     phone_number="+380666666661",
+                     birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
+    user_model.append(moderator)
+
+    user_name = fake.name()
+    admin = User(name="Steve Admin",
+                      email="steveadmin"+'@test.com',
+                      password="1",
+                      status=UserStatuses[3],
+                      phone_number="+380666666662",
+                      birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
+    user_model.append(admin)
 
     # insert data into database
     session.add_all(Rest_models)
