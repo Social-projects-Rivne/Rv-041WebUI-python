@@ -3,6 +3,8 @@ This module describes behavior of /sign_up route
 """
 
 from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPForbidden
+from sqlalchemy.exc import IntegrityError
 
 from ..scripts.json_helpers import wrap
 from ..models.user import User
@@ -43,6 +45,9 @@ def sign_up(request):
     database = request.dbsession
     try:
         User.add(database, form_data)
+        database.flush()
         return wrap([], success=True)
-    except Exception:
-        return wrap([], success=False)
+    except IntegrityError:
+        print "123123"
+        database.rollback()
+        raise HTTPForbidden("User already exists!")
