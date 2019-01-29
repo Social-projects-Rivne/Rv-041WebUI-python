@@ -88,7 +88,7 @@ function RestaurantListItem(props) {
           <Grid item container justify="space-between">
             <Grid item>
               <Typography style={{ paddingRight: "16px" }} variant="subtitle2">
-                Address: {restData.address}
+                Address: {restData.address_id}
               </Typography>
             </Grid>
             {restData.phone && (
