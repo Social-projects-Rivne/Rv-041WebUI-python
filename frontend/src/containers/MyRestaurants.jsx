@@ -1,6 +1,7 @@
 import React from "react";
 import RestaurantList from "../components/RestaurantList/RestaurantList";
-import AddUpdateRestaurant from "../components/UserRestaurants/AddUpdateRestaurant";
+import CollapseForm from "../components/CollapseForm";
+import AddRestaurantForm from "../components/UserRestaurants/AddRestaurantForm";
 
 class MyRestaurants extends React.Component {
   state = {
@@ -18,21 +19,23 @@ class MyRestaurants extends React.Component {
       .then(rests => this.setState({ myRestaurants: rests.data }));
   }
 
-  handleAddRestaurant = restObj => {
-    this.setState({ myRestaurants: this.state.myRestaurants.concat(restObj) });
+  handleAddRestaurant = newRestaurant => {
+    this.setState({
+      myRestaurants: [...this.state.myRestaurants, ...newRestaurant]
+    });
   };
 
   render() {
     const { myRestaurants } = this.state;
-
     return (
       <>
         <RestaurantList data={myRestaurants} />
-        <AddUpdateRestaurant
-          id={null}
-          requestType="post"
-          onAdd={this.handleAddRestaurant}
-        />
+        <CollapseForm
+          tooltipText="Add restaurant"
+          formTitle="Create new restaurant:"
+        >
+          <AddRestaurantForm onAdd={this.handleAddRestaurant} />
+        </CollapseForm>
       </>
     );
   }

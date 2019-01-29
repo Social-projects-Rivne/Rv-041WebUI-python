@@ -6,6 +6,7 @@ This module describes behavior of /restaurant/{id} and
 from pyramid.view import view_config
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPForbidden
 
 from ..scripts.json_helpers import wrap
 from ..models.restaurant import Restaurant
@@ -124,13 +125,20 @@ def get_restaurant_controler(request):
             "error": Restaurant with id={} not found
         }
     """
+    is_owner = False
     rest_id = request.matchdict["id"]
-    query = request.dbsession.query(Restaurant).get(int(rest_id))
-    if query is None:
+    rest = request.dbsession.query(Restaurant).get(int(rest_id))
+
+    if rest is None:
         raise HTTPNotFound("Restaurant with id=%s not found" % (rest_id))
     else:
-        rest_with_tags = asign_tags([query])
+        if request.token is not None and request.token.user.id == rest.user.id:
+            is_owner = True
+
+        rest_with_tags = asign_tags([rest])
         body = wrap(rest_with_tags)
+        body['is_owner'] = is_owner
+
     return body
 
 
@@ -221,28 +229,6 @@ def create_user_restaurant(request):
 
 @view_config(
     route_name='user_restaurant',
-    request_method="GET",
-    renderer='json'
-)
-@restrict_access(user_types=['Owner'])
-def get_user_restaurant(request):
-    """
-    GET request controller. Get restaurant for single owner user
-    """
-    rest_id = request.matchdict["id"]
-
-    rest = request.dbsession.query(Restaurant).get(int(rest_id))
-    if rest is None:
-        raise HTTPNotFound("Restaurant with id=%s not found" % (rest_id))
-    else:
-        rest_with_tags = asign_tags([rest])
-        body = wrap(rest_with_tags)
-
-    return body
-
-
-@view_config(
-    route_name='user_restaurant',
     request_method="PUT",
     renderer='json'
 )
@@ -251,6 +237,7 @@ def update_user_restaurant(request):
     """
     PUT request controller. Update restaurant in database and return updated item
     """
+
     rest_data = request.json_body
     rest_id = request.matchdict["id"]
     rest = request.dbsession.query(Restaurant).get(int(rest_id))
@@ -258,21 +245,21 @@ def update_user_restaurant(request):
     name, description, phone, address, tags = rest_data["name"], rest_data[
         "description"], rest_data["phone"], rest_data["address"], rest_data["tags"]
 
-    try:
-        if name:
-            rest.name = name
-        if description:
+    if request.token.user == rest.user:
+        try:
+            if name:
+                rest.name = name
+            if address:
+                rest.address_id = address
             rest.description = description
-        if phone:
             rest.phone = phone
-        if address:
-            rest.address_id = address
-        if tags:
             tag_models = [request.dbsession.query(
                 Tag).filter_by(name=tag).first() for tag in tags]
             rest.tag = tag_models
-        request.response.status_code = 201
-        return wrap(rest.as_dict(), message="Restaurant was successfully updated")
-    except Exception:
-        request.response.status_code = 500
-        return wrap([], success=False, error='Cannot update your retaurant.')
+            request.response.status_code = 201
+            return wrap(rest.as_dict(), message="Restaurant was successfully updated")
+        except Exception:
+            request.response.status_code = 500
+            return wrap([], success=False, error='Cannot update your retaurant.')
+    else:
+        raise HTTPForbidden("No acces")

@@ -62,7 +62,7 @@ def restrict_access(user_types):
                 if user_type in user_types:
                     return func(request)
                 else:
-                    raise HTTPForbidden("You can not access this route")           
+                    raise HTTPForbidden("You can not access this route")
             else:
                 raise HTTPForbidden("Need token for access")
         return wrap
@@ -77,7 +77,8 @@ def get_token(request):
     get token model by token_id.
     """
     token = request.headers.get('X-Auth-Token')
-    if token is not None:
+
+    if token is not None and token not in ["null", "undefined"]:
         token = request.dbsession.query(Token).filter_by(token=token).first()
         if token is not None:
             return token
