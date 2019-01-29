@@ -128,6 +128,9 @@ class UserMenu extends React.Component {
               <MenuItem component={Link} to={`/profile/personal_info`}>
                 My Profile
               </MenuItem>
+              <MenuItem component={Link} to={`/profile/my_restaurants`}>
+                My Restaurants
+              </MenuItem>
               {isOwner && (
                 <MenuItem component={Link} to="/profile/my_restaurants">
                   My restaurant

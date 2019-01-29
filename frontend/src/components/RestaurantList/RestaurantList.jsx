@@ -10,14 +10,7 @@ const RestaurantList = props => {
       {data.map(rest => {
         return (
           <Grid key={rest.id} item xs={12}>
-            <RestaurantListItem
-              id={rest.id}
-              name={rest.name}
-              description={rest.description}
-              address={rest.address_id}
-              phone={rest.phone}
-              tags={rest.tags}
-            />
+            <RestaurantListItem restData={rest} />
           </Grid>
         );
       })}

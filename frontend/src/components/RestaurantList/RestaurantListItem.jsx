@@ -35,27 +35,27 @@ const styles = theme => ({
 });
 
 function RestaurantListItem(props) {
-  const { classes, id, name, description, address, phone, tags } = props;
+  const { classes, restData } = props;
   return (
     <Card className={classes.card}>
       <CardMedia
         className={classes.media}
         image="https://media-cdn.tripadvisor.com/media/photo-f/04/43/20/9c/whisky-corner.jpg"
-        title={name}
+        title={restData.name}
       />
       <CardContent className={classes.details}>
         <Grid container spacing={16}>
           <Grid item xs={12}>
             <Typography variant="h5" component="h2">
-              {name}
+              {restData.name}
             </Typography>
           </Grid>
-          {description && (
+          {restData.description && (
             <Grid item xs={12}>
               <Typography component="p">
-                {description.length > 230
-                  ? description.slice(0, 230) + "..."
-                  : description}
+                {restData.description.length > 230
+                  ? restData.description.slice(0, 230) + "..."
+                  : restData.description}
               </Typography>
             </Grid>
           )}
@@ -63,19 +63,21 @@ function RestaurantListItem(props) {
           <Grid item container justify="space-between">
             <Grid item>
               <Typography style={{ paddingRight: "16px" }} variant="subtitle2">
-                Address: {address}
+                Address: {restData.address}
               </Typography>
             </Grid>
-            {phone && (
+            {restData.phone && (
               <Grid item>
-                <Typography variant="subtitle2">Phone: {phone}</Typography>
+                <Typography variant="subtitle2">
+                  Phone: {restData.phone}
+                </Typography>
               </Grid>
             )}
           </Grid>
           <Divider />
-          {tags && tags.length !== 0 && (
+          {restData.tags && restData.tags.length !== 0 && (
             <Grid item xs={12}>
-              {tags.map(tag => (
+              {restData.tags.map(tag => (
                 <Chip
                   key={tag.name}
                   label={tag.name}
@@ -95,22 +97,24 @@ function RestaurantListItem(props) {
               <Button
                 variant="contained"
                 component={Link}
-                to={"/profile/my_restaurant/" + id}
+                to={"/profile/my_restaurant/" + restData.id}
                 color="primary"
               >
                 details
               </Button>
             </Grid>
-            <Grid item>
-              <Button
-                variant="contained"
-                component={Link}
-                to={"/restaurant/" + id + "/menu/1"}
-                color="primary"
-              >
-                Watch Menu
-              </Button>
-            </Grid>
+            {restData.has_menu && (
+              <Grid item>
+                <Button
+                  variant="contained"
+                  component={Link}
+                  to={"/restaurant/" + restData.id + "/menu/1"}
+                  color="primary"
+                >
+                  Watch Menu
+                </Button>
+              </Grid>
+            )}
           </Grid>
         </Grid>
       </CardContent>
@@ -120,12 +124,7 @@ function RestaurantListItem(props) {
 
 RestaurantListItem.propTypes = {
   classes: PropTypes.object.isRequired,
-  id: PropTypes.number.isRequired,
-  name: PropTypes.string.isRequired,
-  description: PropTypes.string,
-  address: PropTypes.string,
-  phone: PropTypes.string,
-  tags: PropTypes.array
+  restData: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(RestaurantListItem);

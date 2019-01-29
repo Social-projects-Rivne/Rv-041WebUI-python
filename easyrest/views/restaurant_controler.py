@@ -2,7 +2,7 @@
 This module describes behavior of /restaurant/{id} and
 /restaurant routes
 """
-
+import time
 from pyramid.view import view_config
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPNotFound
@@ -31,9 +31,11 @@ def asign_tags(rests):
     rests_list = []
     for rest in rests:
         tags = rest.tag
+        has_menu = len(rest.menu) != 0
         tags_list = [tag.as_dict() for tag in tags]
         rest_dict = rest.as_dict()
         rest_dict.update({"tags": tags_list})
+        rest_dict.update({"has_menu": has_menu})
         rests_list.append(rest_dict)
     return rests_list
 
@@ -147,7 +149,7 @@ def get_restaurant_controler(request):
     renderer='json',
     request_method='GET'
 )
-@restrict_access(user_types=['Owner'])
+@restrict_access(user_types=['Client', 'Owner'])
 def user_restaurants(request):
     """GET request controler to return my restaurants and
     its tags
@@ -196,8 +198,8 @@ def create_user_restaurant(request):
     """
     rest_data = request.json_body
 
-    name, description, phone, address, tags = rest_data["name"], rest_data[
-        "description"], rest_data["phone"], rest_data["address"], rest_data["tags"]
+    name, description, phone, address, tags, creation_date = rest_data["name"], rest_data[
+        "description"], rest_data["phone"], rest_data["address"], rest_data["tags"], int(time.time())
 
     if not name or not address:
         msg = "Fill all required fields"
@@ -208,7 +210,7 @@ def create_user_restaurant(request):
         Tag).filter_by(name=tag).first() for tag in tags]
 
     rest = Restaurant(name=name, description=description,
-                      phone=phone, address_id=address)
+                      phone=phone, address_id=address, creation_date=creation_date)
     rest.tag = tag_models
     user = request.token.user
     rest.user = request.token.user
