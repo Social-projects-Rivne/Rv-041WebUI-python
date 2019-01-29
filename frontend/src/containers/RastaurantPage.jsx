@@ -20,10 +20,9 @@ export class RastaurantPage extends Component {
   };
 
   render() {
-      console.log('url',this.props.url);
     return (
       <PageContainer>
-        <RestaurantInfo restInfo={this.state.restInfo} url={this.props.url}/>
+        <RestaurantInfo restInfo={this.state.restInfo} url={this.props.match}/>
         <AddUpdateRestaurant
           requestType="put"
           onUpdate={this.handleUpdateRestaurant}
