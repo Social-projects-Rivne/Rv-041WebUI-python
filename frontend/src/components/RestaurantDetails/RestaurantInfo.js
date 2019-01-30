@@ -85,7 +85,6 @@ class RestaurantInfo extends React.Component {
                       delete
                   </Button>
               </Grid>)}
-
           </div>
         </CardContent>
       </Card>
