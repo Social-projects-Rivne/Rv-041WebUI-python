@@ -9,7 +9,7 @@ import {
   Grid
 } from "@material-ui/core/";
 import {Link} from "react-router-dom";
-import {amber, green} from "@material-ui/core/colors/index";
+import {amber, green, red} from "@material-ui/core/colors/index";
 
 const styles = {
   root: {},
@@ -18,7 +18,11 @@ const styles = {
     },
   notApproved: {
         background: amber[700]
-    }
+    },
+  btn:{
+      background: red[700],
+      color: "white"
+  }
 };
 const deleteStatus = 2;
 function handleRestaurantDelete()  {
@@ -73,9 +77,9 @@ class RestaurantInfo extends React.Component {
               {auth && ableUpdate && (restInfo.status!==deleteStatus) &&(<Grid container justify="flex-end">
                   <Button
                       variant="contained"
-                      color="primary"
+                      className={this.props.classes.btn}
                       component={Link}
-                      to={"/restaurants/"}
+                      to={"/profile/my_restaurants/"}
                       onClick={handleRestaurantDelete.bind(this)}
                   >
                       delete
