@@ -39,7 +39,7 @@ const ProfileTabs = props => {
         component={NavLink}
         to="/profile/my_restaurants"
         icon={<AddBox />}
-        label="Add Restaurant"
+        label="My Restaurants"
       />
     </div>
   );

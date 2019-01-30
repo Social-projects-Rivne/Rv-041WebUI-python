@@ -3,6 +3,7 @@ import RestaurantList from "../components/RestaurantList/RestaurantList";
 import CollapseForm from "../components/CollapseForm";
 import AddRestaurantForm from "../components/UserRestaurants/AddRestaurantForm";
 import { Typography } from "@material-ui/core";
+import AppContext from "../components/AppContext";
 
 class MyRestaurants extends React.Component {
   state = {
@@ -18,7 +19,6 @@ class MyRestaurants extends React.Component {
     })
       .then(response => response.json())
       .then(rests => {
-        console.log(rests);
         this.setState({ myRestaurants: rests.data });
       });
   }
@@ -32,19 +32,25 @@ class MyRestaurants extends React.Component {
   render() {
     const { myRestaurants } = this.state;
     return (
-      <>
-        {myRestaurants.length > 0 ? (
-          <RestaurantList data={myRestaurants} />
-        ) : (
-          <Typography variant="h6">Create your first restaurant:</Typography>
+      <AppContext.Consumer>
+        {ctx => (
+          <>
+            {myRestaurants.length > 0 ? (
+              <RestaurantList data={myRestaurants} />
+            ) : (
+              <Typography variant="h6">
+                Create your first restaurant:
+              </Typography>
+            )}
+            <CollapseForm
+              tooltipText="Add restaurant"
+              formTitle="Create new restaurant:"
+            >
+              <AddRestaurantForm ctx={ctx} onAdd={this.handleAddRestaurant} />
+            </CollapseForm>
+          </>
         )}
-        <CollapseForm
-          tooltipText="Add restaurant"
-          formTitle="Create new restaurant:"
-        >
-          <AddRestaurantForm onAdd={this.handleAddRestaurant} />
-        </CollapseForm>
-      </>
+      </AppContext.Consumer>
     );
   }
 }

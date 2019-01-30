@@ -52,7 +52,10 @@ class TagsList extends Component {
   render() {
     const { classes } = this.props;
     const { tags } = this.state;
-    const tagsArr = [{ name: "View All", priority: -1 }, ...tags];
+    const tagsArr = [
+      { name: "View All", priority: -1, icon: "view_all" },
+      ...tags
+    ];
 
     return (
       <div className={classes.root}>
@@ -70,12 +73,7 @@ class TagsList extends Component {
                 component={Link}
                 key={tag.name}
               >
-                {
-                  <img
-                    src="https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=300&h=300&q=20"
-                    alt={tag.name}
-                  />
-                }
+                {<img src={`../tag_icons/${tag.icon}.svg`} alt={tag.name} />}
                 <GridListTileBar
                   title={tag.name}
                   classes={{

@@ -12,7 +12,6 @@ export class AddRestaurantForm extends React.Component {
       description: "",
       tags: []
     },
-
     allTags: []
   };
 
@@ -45,6 +44,8 @@ export class AddRestaurantForm extends React.Component {
           newRestaurant.message
         );
         this.props.onAdd(newRestaurant.data);
+        localStorage.setItem("role", "Owner");
+        this.props.ctx.changeState({ role: "Owner" });
         this.clearForm();
       })
       .catch(err => {
