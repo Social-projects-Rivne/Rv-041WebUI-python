@@ -12,9 +12,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
-import {restaurant} from '@material-ui/icons';
+import MailIcon from '@material-ui/icons/Mail';
+import {Restaurant, AccountCircle, Work, Feedback, Report, Archive} from '@material-ui/icons';
 
-import Archive from "./ArchiveDataPage";
+import ArchivePage from "./ArchiveDataPage";
 import Messages from "./MessagesFeedbacksPage";
 import GeneralError from "../components/ErrorPages/GeneralError";
 import RestaurantsForApprovalPage from "./RestaurantsForApprovalPage";
@@ -54,6 +55,7 @@ class PermanentDrawerLeft extends React.Component {
     error: "",
     token: localStorage.getItem("token"),
     renderingComponent: <RestaurantsForApprovalPage />,
+    selectedItemName: "Restaurants",
   };
 
   components = {
@@ -62,11 +64,16 @@ class PermanentDrawerLeft extends React.Component {
     Owners: <Users userStatus="Owners"/>,
     Feedbacks: <Messages messageStatus="Feedbacks"/>,
     Reports: <Messages messageStatus="Reports"/>,
-    Archive: <Archive archiveStatus="Archive"/>,
+    Archive: <ArchivePage archiveStatus="Archive"/>,
   };
 
   icons = {
-    Restaurants: null,
+    Restaurants: <Restaurant />,
+    Users: <AccountCircle />,
+    Owners: <Work />,
+    Feedbacks: <Feedback />,
+    Reports: <Report />,
+    Archive: <Archive />,
   };
 
   classes = this.props.classes;
@@ -105,7 +112,6 @@ class PermanentDrawerLeft extends React.Component {
 
     return (
       <div className={this.classes.root}>
-        <CssBaseline />
         <Drawer
           className={this.classes.drawer}
           variant="permanent"
@@ -115,11 +121,13 @@ class PermanentDrawerLeft extends React.Component {
           anchor="left"
         >
           <div className={this.classes.toolbar} />
-          <Divider />
           <List>
             {['Restaurants', 'Users', 'Owners', 'Feedbacks', 'Reports'].map((text, index) => (
-              <ListItem button key={text} onClick={() => {
-                this.setState({renderingComponent: this.components[text]})
+              <ListItem button
+                selected={this.state.selectedItemName === text}
+                key={text}
+                onClick={() => {
+                this.setState({renderingComponent: this.components[text], selectedItemName: text})
                 }}>
                 <ListItemIcon>{this.icons[text]}</ListItemIcon>
                 <ListItemText primary={text} />
@@ -129,8 +137,11 @@ class PermanentDrawerLeft extends React.Component {
           <Divider />
           <List>
             {['Archive'].map((text, index) => (
-              <ListItem button key={text} onClick={() => {
-                this.setState({renderingComponent: this.components[text]})
+              <ListItem button
+                selected={this.state.selectedItemName === text}
+                key={text}
+                onClick={() => {
+                this.setState({renderingComponent: this.components[text], selectedItemName: text})
                 }}>
                 <ListItemIcon>{this.icons[text]}</ListItemIcon>
                 <ListItemText primary={text} />
