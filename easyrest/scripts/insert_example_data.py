@@ -143,7 +143,7 @@ def fill_db(session):
     user_name = fake.name()
     moderator = User(name="Peter Moderator",
                      email='petermoderator'+'@test.com',
-                     password="1",
+                     password=pbkdf2_sha256.hash("1"),
                      status=UserStatuses[2],
                      phone_number="+380666666661",
                      birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
@@ -152,7 +152,7 @@ def fill_db(session):
     user_name = fake.name()
     admin = User(name="Steve Admin",
                       email="steveadmin"+'@test.com',
-                      password="1",
+                      password=pbkdf2_sha256.hash("1"),
                       status=UserStatuses[3],
                       phone_number="+380666666662",
                       birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))

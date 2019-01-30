@@ -70,7 +70,11 @@ class Login extends React.Component {
             role,
             userName
           });
-          this.props.history.push("/restaurants");
+          if (role === "Moderator"){
+            this.props.history.push("/moderator");
+          } else{
+            this.props.history.push("/restaurants");
+          }
         } else {
           throw error;
         }

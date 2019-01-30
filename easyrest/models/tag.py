@@ -25,6 +25,7 @@ class Tag(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Text)
     priority = Column(Integer)
+    icon = Column(Text)
 
     rest = relationship(
         "Restaurant",
