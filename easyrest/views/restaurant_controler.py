@@ -217,7 +217,6 @@ def create_user_restaurant(request):
 
     try:
         request.dbsession.add(rest)
-        print(user.status)
         if user.status.name == 'Client':
             user.status_id = 2
         request.dbsession.flush()
