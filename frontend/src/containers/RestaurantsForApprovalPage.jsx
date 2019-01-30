@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Snackbar, Typography} from "@material-ui/core";
+import {Snackbar, Typography, Button} from "@material-ui/core";
 import GeneralError from "../components/ErrorPages/GeneralError";
 import SnackbarContent from "../components/SnackbarContent";
 import RestaurantsForApproval from "../components/RestaurantsForApproval/RestaurantsForApproval";
@@ -16,6 +16,7 @@ class RestaurantsForApprovalPage extends Component {
         unapprovedRestaurants: [],
         snackbarOpen:false,
         snackbarMsg: "",
+        currentRestaurantId: null,
     };
 
     componentDidMount() {
@@ -38,7 +39,7 @@ class RestaurantsForApprovalPage extends Component {
             .catch(err => this.setState({success: false, error: err.message}))
     }
 
-    handleRestaurantApprovement = (restaurant_id, request_method) => {
+    handleRestaurantApprovement = (restaurant_id, request_method, restaurant_status) => {
 
         const headers = new Headers({
             'Content-Type': 'application/json',
@@ -48,7 +49,7 @@ class RestaurantsForApprovalPage extends Component {
         const fetchInit = {
             method: request_method,
             headers: headers,
-            body: JSON.stringify({id: restaurant_id}),
+            body: JSON.stringify({id: restaurant_id, status:restaurant_status}),
         };
 
         let operationName = "";
@@ -66,12 +67,23 @@ class RestaurantsForApprovalPage extends Component {
             .then(data => this.setState((prevState) => {
               return{
                 success: data.success,
-                unapprovedRestaurants: prevState.unapprovedRestaurants.filter(restaurantInfo => {return restaurantInfo.id!==restaurant_id}),
+                unapprovedRestaurants: prevState.unapprovedRestaurants.map(restaurantInfo => {
+                                                                            if(restaurantInfo.id===restaurant_id){
+                                                                              restaurantInfo.status = restaurant_status;
+                                                                              return restaurantInfo;
+                                                                            } else{
+                                                                              return restaurantInfo;
+                                                                            }}),
                 snackbarOpen: true,
-                snackbarMsg: operationName
+                snackbarMsg: operationName,
+                currentRestaurantId: restaurant_id
               }
             }))
-            .catch(err => this.setState({success: false, error: err, snackbarOpen: true, snackbarMsg: operationName}))
+            .catch(err => this.setState({success: false,
+                                         error: "" + err,
+                                         snackbarOpen: true,
+                                         snackbarMsg: operationName,
+                                         currentRestaurantId: restaurant_id}))
     };
 
     handleSnackbarClose = (event, reason) => {
@@ -80,6 +92,16 @@ class RestaurantsForApprovalPage extends Component {
       }
       this.setState({ snackbarOpen: false });
     };
+
+    snackbarAction = (
+      <Button
+          color="secondary"
+          size="small"
+          onClick={() => this.handleRestaurantApprovement(this.state.currentRestaurantId, "POST", 0)}
+        >
+        Undo
+      </Button>
+    );
 
     render() {
 
@@ -113,6 +135,7 @@ class RestaurantsForApprovalPage extends Component {
                       >
                         <SnackbarContent
                           onClose={this.handleSnackbarClose}
+                          action={success ? this.snackbarAction : null}
                           variant={success ? "success" : "error"}
                           message={
                             <Typography color="inherit" align="center">

@@ -10,14 +10,15 @@ function RestaurantsForApproval(props) {
     return(
       <Grid container direction="row" alignItems="center" spacing={8}>
         {unapprovedRestaurants.map(restaurantInfo => {
-          return <Grid item xs={6} key={restaurantInfo.id}>
-
-            <RestaurantForApproval
-              key={restaurantInfo.id}
-              restaurant={restaurantInfo}
-              handleRestaurantApprovement={handleRestaurantApprovement}
-            />
-          </Grid>
+          if(restaurantInfo.status === 0){
+            return <Grid item xs={6} key={restaurantInfo.id}>
+              <RestaurantForApproval
+                key={restaurantInfo.id}
+                restaurant={restaurantInfo}
+                handleRestaurantApprovement={handleRestaurantApprovement}
+              />
+            </Grid>
+          }
         })}
       </Grid>
     );

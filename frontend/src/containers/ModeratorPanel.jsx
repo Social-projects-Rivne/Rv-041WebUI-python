@@ -95,7 +95,7 @@ class PermanentDrawerLeft extends React.Component {
                             ?Promise.reject(response.status)
                             :response.json()))
           .then(data => this.setState({isLoading: false, accessAllowed: data.success}))
-          .catch(err => this.setState({isLoading: false, accessAllowed: false, error: err}))
+          .catch(err => this.setState({isLoading: false, accessAllowed: false, error: "" + err}))
   }
 
   render() {
