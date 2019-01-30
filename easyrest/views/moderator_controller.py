@@ -55,11 +55,12 @@ def get_unapproved_restaurants_controller(request):
     unapproved_restaurants =\
         request.dbsession.query(Restaurant).filter_by(status=0).all()
     if unapproved_restaurants:
-        keys = ["id", "creation_date", "name", "address_id", "phone", "owner_id", "owner_name"]
+        keys = ["id", "status", "creation_date", "name", "address_id", "phone", "owner_id", "owner_name"]
         data = []
         for restaurant in unapproved_restaurants:
             restaurant_data = [
                 restaurant.id,
+                restaurant.status,
                 restaurant.creation_date,
                 restaurant.name,
                 restaurant.address_id,
@@ -78,7 +79,7 @@ def get_unapproved_restaurants_controller(request):
 @restrict_access(user_types=["Moderator"])
 def approve_restaurant_controller(request):
     """
-    POST request controller to handle restaurant approvement by moderator
+    POST request controller to handle restaurant approvement or reverting approval by moderator
     Args:
         request: current pyramid request
     Returns:
@@ -92,10 +93,11 @@ def approve_restaurant_controller(request):
     """
     restaurant_data = request.json_body
     restaurant_id = restaurant_data["id"]
+    restaurant_status = restaurant_data["status"]
     db_session = request.dbsession
     try:
         restaurant = db_session.query(Restaurant).get(int(restaurant_id))
-        restaurant.status = 1
+        restaurant.status = restaurant_status
     except:
         return wrap(success=False, error="Restaurant update failure")
     return wrap(success=True)

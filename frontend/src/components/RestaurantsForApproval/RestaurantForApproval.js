@@ -83,10 +83,10 @@ function RestaurantForApproval(props){
               </CardContent>
 
               <CardActions className={classes.actions}>
-                <Button size="small" color="secondary" onClick={() => handleRestaurantApprovement(id, "DELETE")}>
+                <Button size="small" color="secondary" onClick={() => handleRestaurantApprovement(id, "DELETE", 2)}>
                   Disapprove
                 </Button>
-                <Button size="small" color="primary" onClick={() => handleRestaurantApprovement(id, "POST")}>
+                <Button size="small" color="primary" onClick={() => handleRestaurantApprovement(id, "POST", 1)}>
                   Approve
                 </Button>
               </CardActions>
