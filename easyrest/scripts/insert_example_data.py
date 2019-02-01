@@ -7,7 +7,7 @@ from faker import Faker
 from passlib.hash import pbkdf2_sha256
 
 from tags_data import Tags
-from ..models import Tag, Menu, Restaurant, MenuItem, User, UserStatus, Category
+from ..models import Tag, Menu, Restaurant, MenuItem, User, UserStatus, Category, Order, OrderAssoc
 from menu_data import Menus, Categories, Meals, Images
 
 
@@ -139,6 +139,44 @@ def fill_db(session):
                             birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
         user_model.append(current_user)
 
+    # Example orders
+    order = Order(date_created=int(time.time()), status=0)
+    user = user_model[-1]
+    user.orders.append(order)
+    items = Rest_models[-1].menu[0].menu_items[0:10]
+    user.orders[-1].quantity.append(OrderAssoc(quantity=1))
+    user.orders[-1].quantity.append(OrderAssoc(quantity=2))
+    user.orders[-1].quantity.append(OrderAssoc(quantity=3))
+    user.orders[-1].quantity.append(OrderAssoc(quantity=4))
+    user.orders[-1].quantity.append(OrderAssoc(quantity=5))
+
+    user.orders[-1].restaurant = Rest_models[-1]
+
+    user.orders[-1].quantity[0].item = items[0]
+    user.orders[-1].quantity[1].item = items[1]
+    user.orders[-1].quantity[2].item = items[2]
+    user.orders[-1].quantity[3].item = items[3]
+    user.orders[-1].quantity[4].item = items[4]
+    user.orders[-1].quantity[-1].item = items[5]
+
+    order = Order(date_created=int(time.time()), status=0)
+    user = user_model[-1]
+    user.orders.append(order)
+    items = Rest_models[-1].menu[0].menu_items[0:10]
+    user.orders[-1].quantity.append(OrderAssoc(quantity=10))
+    user.orders[-1].quantity.append(OrderAssoc(quantity=20))
+    user.orders[-1].quantity.append(OrderAssoc(quantity=30))
+    user.orders[-1].quantity.append(OrderAssoc(quantity=40))
+    user.orders[-1].quantity.append(OrderAssoc(quantity=50))
+
+    user.orders[-1].restaurant = Rest_models[-1]
+
+    user.orders[-1].quantity[0].item = items[0]
+    user.orders[-1].quantity[1].item = items[1]
+    user.orders[-1].quantity[2].item = items[2]
+    user.orders[-1].quantity[3].item = items[3]
+    user.orders[-1].quantity[4].item = items[4]
+    user.orders[-1].quantity[-1].item = items[5]
     # add Moderator and Admin
     user_name = fake.name()
     moderator = User(name="Peter Moderator",

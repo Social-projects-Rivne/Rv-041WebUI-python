@@ -34,9 +34,10 @@ class User(Base):
     password = Column(Text)
     status_id = Column(Integer, ForeignKey('user_statuses.id'), default=1)
 
-    tokens = relationship("Token")
+    tokens = relationship('Token')
     status = relationship('UserStatus')
     restaurants = relationship('Restaurant')
+    orders = relationship('Order')
 
     @staticmethod
     def add(database, form_data):
