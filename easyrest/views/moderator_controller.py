@@ -53,7 +53,7 @@ def get_unapproved_restaurants_controller(request):
     """
 
     unapproved_restaurants =\
-        request.dbsession.query(Restaurant).filter_by(status=0).all()
+        request.dbsession.query(Restaurant).all()
     if unapproved_restaurants:
         keys = ["id", "status", "creation_date", "name", "address_id", "phone", "owner_id", "owner_name"]
         data = []

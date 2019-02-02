@@ -19,6 +19,10 @@ class RestaurantsForApprovalPage extends Component {
         currentRestaurantId: null,
     };
 
+    /*statusOpposites = {
+      0: {method: "", status: }
+    };*/
+
     componentDidMount() {
 
         const headers = new Headers({
@@ -82,7 +86,7 @@ class RestaurantsForApprovalPage extends Component {
             .catch(err => this.setState({success: false,
                                          error: "" + err,
                                          snackbarOpen: true,
-                                         snackbarMsg: operationName,
+                                         snackbarMsg: "" + err,
                                          currentRestaurantId: restaurant_id}))
     };
 
@@ -106,6 +110,7 @@ class RestaurantsForApprovalPage extends Component {
     render() {
 
         const {needRedirection, unapprovedRestaurants, success, error, snackbarOpen, snackbarMsg} = this.state;
+        const {restaurantStatus} = this.props;
 
         //prevent for rendering without fetch completing (init value is "null")
         if (success === null){
@@ -123,6 +128,7 @@ class RestaurantsForApprovalPage extends Component {
                       <RestaurantsForApproval
                         unapprovedRestaurants={unapprovedRestaurants}
                         handleRestaurantApprovement={this.handleRestaurantApprovement}
+                        restaurantStatus={restaurantStatus}
                       />
                       <Snackbar
                         anchorOrigin={{

@@ -2,7 +2,10 @@ import React from "react";
 
 const Messages = props => {
 
-    return (<p>{props.messageStatus}</p>)
+    return (<div>
+              <p>Messages</p>
+              <p>{props.messageStatus}</p>
+           </div>);
 };
 
 export default Messages;

@@ -41,8 +41,10 @@ const styles = theme => ({
 });
 
 function RestaurantForApproval(props) {
+
   const {
     name,
+    status,
     address_id,
     owner_id,
     id,
@@ -51,8 +53,48 @@ function RestaurantForApproval(props) {
     creation_date
   } = props.restaurant;
   const { classes, handleRestaurantApprovement } = props;
-
   const date = new Date(creation_date * 1000);
+  //make button array, depending on Restaurant status
+  let buttonArray = [];
+
+  switch (status) {
+    case 0:
+      buttonArray.push(<Button
+        size="small"
+        color="secondary"
+        onClick={() => handleRestaurantApprovement(id, "DELETE", 2)}
+      >
+        Disapprove
+      </Button>);
+      buttonArray.push(<Button
+        size="small"
+        color="primary"
+        onClick={() => handleRestaurantApprovement(id, "POST", 1)}
+      >
+        Approve
+      </Button>);
+      break;
+    case 1:
+      buttonArray.push(<Button
+        size="small"
+        color="secondary"
+        onClick={() => handleRestaurantApprovement(id, "DELETE", 2)}
+      >
+        Delete
+      </Button>);
+      break;
+    case 2:
+      buttonArray.push(<Button
+        size="small"
+        color="primary"
+        onClick={() => handleRestaurantApprovement(id, "POST", 1)}
+      >
+        Restore
+      </Button>);
+      break;
+    default:
+      ;
+  }
 
   return (
     <div>
@@ -84,20 +126,7 @@ function RestaurantForApproval(props) {
         </CardContent>
 
         <CardActions className={classes.actions}>
-          <Button
-            size="small"
-            color="secondary"
-            onClick={() => handleRestaurantApprovement(id, "DELETE", 2)}
-          >
-            Disapprove
-          </Button>
-          <Button
-            size="small"
-            color="primary"
-            onClick={() => handleRestaurantApprovement(id, "POST", 1)}
-          >
-            Approve
-          </Button>
+          {buttonArray.map(button => button)}
         </CardActions>
       </Card>
     </div>

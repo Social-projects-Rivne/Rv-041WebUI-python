@@ -1,4 +1,5 @@
 import React from "react";
+import { Router, Route, Switch } from "react-router-dom";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -19,7 +20,9 @@ import {
   Work,
   Feedback,
   Report,
-  Archive
+  Archive,
+  ExpandLess,
+  ExpandMore
 } from "@material-ui/icons";
 
 import ArchivePage from "./ArchiveDataPage";
@@ -28,6 +31,7 @@ import GeneralError from "../components/ErrorPages/GeneralError";
 import RestaurantsForApprovalPage from "./RestaurantsForApprovalPage";
 import Users from "./UsersPage";
 import ClassNames from "classnames";
+import GenericTabs from "../Service/GenericTabs";
 
 const drawerWidth = 240;
 
@@ -54,23 +58,58 @@ const styles = theme => ({
   }
 });
 
-class PermanentDrawerLeft extends React.Component {
+const routes = [
+  {
+    path: "/moderator/",
+    component: RestaurantsForApprovalPage,
+    exact: true
+  },
+  {
+    path: "/moderator/restaurants",
+    component: RestaurantsForApprovalPage,
+    exact: true
+  },
+  {
+    path: "/moderator/users",
+    component: Users,
+    exact: true
+  },
+  {
+    path: "/moderator/messages",
+    component: Messages,
+    exact: true
+  }
+];
+
+
+class ModeratorPanel extends React.Component {
   state = {
     isLoading: true,
     accessAllowed: false,
     error: "",
     token: localStorage.getItem("token"),
-    renderingComponent: <RestaurantsForApprovalPage />,
-    selectedItemName: "Restaurants"
+    /*renderingComponent: <RestaurantsForApprovalPage />,*/
+    selectedItemName: "Restaurants",
+    selectedStatus: "All",
   };
 
-  components = {
-    Restaurants: <RestaurantsForApprovalPage />,
-    Users: <Users userStatus="Users" />,
-    Owners: <Users userStatus="Owners" />,
-    Feedbacks: <Messages messageStatus="Feedbacks" />,
-    Reports: <Messages messageStatus="Reports" />,
-    Archive: <ArchivePage archiveStatus="Archive" />
+  tags = ["All", "Unapproved", "Approved", "Archived"];
+
+  tagsValues = {"All": [0, 1, 2],
+    "Unapproved": [0],
+    "Approved": [1],
+    "Archived": [2],
+  }
+
+  components = () => {
+    return(
+      {Restaurants: <RestaurantsForApprovalPage restaurantStatus={this.tagsValues[this.state.selectedStatus]}/>,
+      Users: <Users userStatus="Users" />,
+      Owners: <Users userStatus="Owners" />,
+      Feedbacks: <Messages messageStatus="Feedbacks" />,
+      Reports: <Messages messageStatus="Reports" />,
+      Archive: <ArchivePage archiveStatus="Archive" />}
+    );
   };
 
   icons = {
@@ -92,7 +131,7 @@ class PermanentDrawerLeft extends React.Component {
 
     const fetchInit = {
       method: "GET",
-      headers: headers
+      headers: headers,
     };
 
     fetch("http://localhost:6543/api/moderator", fetchInit)
@@ -113,9 +152,15 @@ class PermanentDrawerLeft extends React.Component {
       );
   }
 
+  handleTabChange = (event, value) => {
+    this.setState({ selectedStatus: this.tags[value]});
+  };
+
   render() {
-    const { isLoading, accessAllowed, error } = this.state;
+
+    const { isLoading, accessAllowed, error, selectedStatus } = this.state;
     const { classes } = this.props;
+
     if (isLoading) {
       return null;
     }
@@ -144,7 +189,7 @@ class PermanentDrawerLeft extends React.Component {
                   key={text}
                   onClick={() => {
                     this.setState({
-                      renderingComponent: this.components[text],
+                      /*renderingComponent: this.components()[text],*/
                       selectedItemName: text
                     });
                   }}
@@ -164,7 +209,7 @@ class PermanentDrawerLeft extends React.Component {
                 key={text}
                 onClick={() => {
                   this.setState({
-                    renderingComponent: this.components[text],
+                    /*renderingComponent: this.components()[text],*/
                     selectedItemName: text
                   });
                 }}
@@ -175,14 +220,34 @@ class PermanentDrawerLeft extends React.Component {
             ))}
           </List>
         </Drawer>
-        <main className={classes.content}>{this.state.renderingComponent}</main>
+        <main className={classes.content}>
+          <div>
+            <GenericTabs
+              tags={this.tags}
+              selectedValue={this.tags.indexOf(selectedStatus)}
+              handleTabChange={this.handleTabChange}
+            />
+          </div>
+          {/*this.components()[this.state.selectedItemName]*/}
+          <Switch>
+            {routes.map(({ path, component, exact }) => (
+              <Route
+                exact={exact}
+                key={component}
+                path={path}
+                component={component}
+              />
+              ))
+            }
+          </Switch>
+        </main>
       </div>
     );
   }
 }
 
-PermanentDrawerLeft.propTypes = {
+ModeratorPanel.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(PermanentDrawerLeft);
+export default withStyles(styles)(ModeratorPanel);
