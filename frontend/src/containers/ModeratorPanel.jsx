@@ -1,6 +1,6 @@
 import React from "react";
-import { Router, Route, Switch } from "react-router-dom";
-import PropTypes from "prop-types";
+import { Router, Route, Switch, Link } from "react-router-dom";
+import PropTypes, { string } from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -58,30 +58,6 @@ const styles = theme => ({
   }
 });
 
-const routes = [
-  {
-    path: "/moderator/",
-    component: RestaurantsForApprovalPage,
-    exact: true
-  },
-  {
-    path: "/moderator/restaurants",
-    component: RestaurantsForApprovalPage,
-    exact: true
-  },
-  {
-    path: "/moderator/users",
-    component: Users,
-    exact: true
-  },
-  {
-    path: "/moderator/messages",
-    component: Messages,
-    exact: true
-  }
-];
-
-
 class ModeratorPanel extends React.Component {
   state = {
     isLoading: true,
@@ -93,7 +69,11 @@ class ModeratorPanel extends React.Component {
     selectedStatus: "All",
   };
 
-  tags = ["All", "Unapproved", "Approved", "Archived"];
+  tags = {
+    Restaurants: ["All", "Unapproved", "Approved", "Archived"],
+    Users: ["All", "Owners", "Users"],
+    Messages: ["All", "Feedbacks", "Reports"]
+  };
 
   tagsValues = {"All": [0, 1, 2],
     "Unapproved": [0],
@@ -101,24 +81,61 @@ class ModeratorPanel extends React.Component {
     "Archived": [2],
   }
 
-  components = () => {
-    return(
-      {Restaurants: <RestaurantsForApprovalPage restaurantStatus={this.tagsValues[this.state.selectedStatus]}/>,
-      Users: <Users userStatus="Users" />,
-      Owners: <Users userStatus="Owners" />,
-      Feedbacks: <Messages messageStatus="Feedbacks" />,
-      Reports: <Messages messageStatus="Reports" />,
-      Archive: <ArchivePage archiveStatus="Archive" />}
+  routes = () =>{
+    return( 
+      [
+        {
+          path: "/moderator/",
+          /*component: RestaurantsForApprovalPage,*/
+          render: (props) => {
+            return (
+              <RestaurantsForApprovalPage
+                restaurantStatus={this.tagsValues[this.state.selectedStatus]}
+              />
+            );
+          },
+          exact: true
+        },
+        {
+          path: "/moderator/restaurants",
+          /*component: RestaurantsForApprovalPage,*/
+          render: (props) => {
+            return (
+              <RestaurantsForApprovalPage
+                restaurantStatus={this.tagsValues[this.state.selectedStatus]}
+              />
+            );
+          },
+          exact: true
+        },
+        {
+          path: "/moderator/users",
+          /*component: Users,*/
+          render: (props) => {
+            return (
+              <Users/>
+            );
+          },
+          exact: true
+        },
+        {
+          path: "/moderator/messages",
+          /*component: Messages,*/
+          render: (props) => {
+            return (
+              <Messages/>
+            );
+          },
+          exact: true
+        }
+      ]
     );
-  };
-
+  }; 
+  
   icons = {
     Restaurants: <Restaurant />,
     Users: <AccountCircle />,
-    Owners: <Work />,
-    Feedbacks: <Feedback />,
-    Reports: <Report />,
-    Archive: <Archive />
+    Messages: <Report />
   };
 
   classes = this.props.classes;
@@ -153,12 +170,12 @@ class ModeratorPanel extends React.Component {
   }
 
   handleTabChange = (event, value) => {
-    this.setState({ selectedStatus: this.tags[value]});
+    this.setState({ selectedStatus: this.tags[this.state.selectedItemName][value]});
   };
 
   render() {
 
-    const { isLoading, accessAllowed, error, selectedStatus } = this.state;
+    const { isLoading, accessAllowed, error, selectedItemName, selectedStatus } = this.state;
     const { classes } = this.props;
 
     if (isLoading) {
@@ -181,18 +198,14 @@ class ModeratorPanel extends React.Component {
         >
           <div className={classes.toolbar} />
           <List>
-            {["Restaurants", "Users", "Owners", "Feedbacks", "Reports"].map(
+            {["Restaurants", "Users", "Messages"].map(
               (text, index) => (
                 <ListItem
                   button
                   selected={this.state.selectedItemName === text}
                   key={text}
-                  onClick={() => {
-                    this.setState({
-                      /*renderingComponent: this.components()[text],*/
-                      selectedItemName: text
-                    });
-                  }}
+                  onClick={() => {this.setState({selectedItemName: text})}}
+                  component={Link} to={ "/moderator/" + text.toLowerCase() }
                 >
                   <ListItemIcon>{this.icons[text]}</ListItemIcon>
                   <ListItemText primary={text} />
@@ -200,42 +213,23 @@ class ModeratorPanel extends React.Component {
               )
             )}
           </List>
-          <Divider />
-          <List>
-            {["Archive"].map((text, index) => (
-              <ListItem
-                button
-                selected={this.state.selectedItemName === text}
-                key={text}
-                onClick={() => {
-                  this.setState({
-                    /*renderingComponent: this.components()[text],*/
-                    selectedItemName: text
-                  });
-                }}
-              >
-                <ListItemIcon>{this.icons[text]}</ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
         </Drawer>
         <main className={classes.content}>
           <div>
             <GenericTabs
-              tags={this.tags}
-              selectedValue={this.tags.indexOf(selectedStatus)}
+              tags={this.tags[selectedItemName]}
+              selectedValue={this.tags[selectedItemName].indexOf(selectedStatus)}
               handleTabChange={this.handleTabChange}
             />
           </div>
           {/*this.components()[this.state.selectedItemName]*/}
           <Switch>
-            {routes.map(({ path, component, exact }) => (
+            {this.routes().map(({ path, render, exact }, index) => (
               <Route
                 exact={exact}
-                key={component}
+                key={index}
                 path={path}
-                component={component}
+                render={render}
               />
               ))
             }

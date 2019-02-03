@@ -60,6 +60,7 @@ function RestaurantForApproval(props) {
   switch (status) {
     case 0:
       buttonArray.push(<Button
+        key={0}
         size="small"
         color="secondary"
         onClick={() => handleRestaurantApprovement(id, "DELETE", 2)}
@@ -67,6 +68,7 @@ function RestaurantForApproval(props) {
         Disapprove
       </Button>);
       buttonArray.push(<Button
+        key={1}
         size="small"
         color="primary"
         onClick={() => handleRestaurantApprovement(id, "POST", 1)}
@@ -76,6 +78,7 @@ function RestaurantForApproval(props) {
       break;
     case 1:
       buttonArray.push(<Button
+        key={0}
         size="small"
         color="secondary"
         onClick={() => handleRestaurantApprovement(id, "DELETE", 2)}
@@ -85,6 +88,7 @@ function RestaurantForApproval(props) {
       break;
     case 2:
       buttonArray.push(<Button
+        key={0}
         size="small"
         color="primary"
         onClick={() => handleRestaurantApprovement(id, "POST", 1)}
