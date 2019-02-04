@@ -17,11 +17,11 @@ class RestaurantsForApprovalPage extends Component {
         snackbarOpen:false,
         snackbarMsg: "",
         currentRestaurantId: null,
+        /*previousRestaurantOperation: {
+          request_method: null,
+          restaurant_status: null
+        }*/
     };
-
-    /*statusOpposites = {
-      0: {method: "", status: }
-    };*/
 
     componentDidMount() {
 
@@ -80,7 +80,11 @@ class RestaurantsForApprovalPage extends Component {
                                                                             }}),
                 snackbarOpen: true,
                 snackbarMsg: operationName,
-                currentRestaurantId: restaurant_id
+                currentRestaurantId: restaurant_id,
+                /*previousRestaurantOperation: () => {return {
+                  "request_method": request_method,
+                  "restaurant_status": restaurant_status
+                }}*/
               }
             }))
             .catch(err => this.setState({success: false,
@@ -101,7 +105,9 @@ class RestaurantsForApprovalPage extends Component {
       <Button
           color="secondary"
           size="small"
-          onClick={() => this.handleRestaurantApprovement(this.state.currentRestaurantId, "POST", 0)}
+          onClick={() => this.handleRestaurantApprovement(this.state.currentRestaurantId, 
+                                                          /*this.state.previousRestaurantOperation.request_method, 
+          this.state.previousRestaurantOperation.restaurant_status*/"POST", 0)}
         >
         Undo
       </Button>

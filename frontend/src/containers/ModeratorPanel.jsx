@@ -93,7 +93,7 @@ class ModeratorPanel extends React.Component {
           render: (props) => {
             return (
               <RestaurantsForApprovalPage
-                restaurantStatus={this.tagsValues[this.state.selectedStatus]}
+                restaurantStatus={this.tagsValues[this.state.selectedStatus.Restaurants]}
               />
             );
           },
@@ -104,7 +104,7 @@ class ModeratorPanel extends React.Component {
           render: (props) => {
             return (
               <RestaurantsForApprovalPage
-                restaurantStatus={this.tagsValues[this.state.selectedStatus]}
+                restaurantStatus={this.tagsValues[this.state.selectedStatus.Restaurants]}
               />
             );
           },
@@ -170,8 +170,12 @@ class ModeratorPanel extends React.Component {
   }
 
   handleTabChange = (event, value) => {
-    this.setState({ selectedStatus: this.tags[this.state.selectedItemName][value]});
-  };
+    this.setState((prevState) => {
+      const newSelectedStatus = prevState.selectedStatus;
+      newSelectedStatus[prevState.selectedItemName] = this.tags[prevState.selectedItemName][value];
+      return { selectedStatus: newSelectedStatus };
+    }
+  )}    
 
   render() {
 
@@ -218,11 +222,10 @@ class ModeratorPanel extends React.Component {
           <div>
             <GenericTabs
               tags={this.tags[selectedItemName]}
-              selectedValue={this.tags[selectedItemName].indexOf(selectedStatus)}
+              selectedValue={this.tags[selectedItemName].indexOf(selectedStatus[selectedItemName])}
               handleTabChange={this.handleTabChange}
             />
           </div>
-          {/*this.components()[this.state.selectedItemName]*/}
           <Switch>
             {this.routes().map(({ path, render, exact }, index) => (
               <Route
