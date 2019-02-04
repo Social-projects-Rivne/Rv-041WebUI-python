@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {
+  FormControl,
+  InputLabel,
   Select,
   MenuItem,
   Checkbox,
@@ -29,7 +31,7 @@ const ListSelect = props => {
       MenuProps={MenuProps}
     >
       {list.map(listItem => (
-        <MenuItem key={listItem.name} value={listItem.name}>
+        <MenuItem key={listItem.id} value={listItem.name}>
           <Checkbox checked={selectedItems.indexOf(listItem.name) > -1} />
           <ListItemText primary={listItem.name} />
         </MenuItem>

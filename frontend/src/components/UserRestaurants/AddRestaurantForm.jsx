@@ -7,7 +7,7 @@ import {
   FormControl,
   InputLabel
 } from "@material-ui/core";
-import ListSelect from "./ListSelect";
+import ListSelect from "../ListSelect";
 
 export class AddRestaurantForm extends React.Component {
   state = {
@@ -149,8 +149,8 @@ export class AddRestaurantForm extends React.Component {
               <InputLabel htmlFor="tags">Tags</InputLabel>
               <ListSelect
                 name="tags"
-                list={allTags}
                 selectedItems={newRestaurant.tags}
+                list={allTags}
                 onListChange={this.handleTagsChange}
               />
             </FormControl>

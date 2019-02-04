@@ -6,7 +6,7 @@ import {
   FormControl,
   InputLabel
 } from "@material-ui/core";
-import ListSelect from "./ListSelect";
+import ListSelect from "../ListSelect";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
 export class UpdateRestaurantForm extends React.Component {
