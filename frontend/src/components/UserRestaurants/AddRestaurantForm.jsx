@@ -149,8 +149,8 @@ export class AddRestaurantForm extends React.Component {
               <InputLabel htmlFor="tags">Tags</InputLabel>
               <ListSelect
                 name="tags"
-                list={allTags}
                 selectedItems={newRestaurant.tags}
+                list={allTags}
                 onListChange={this.handleTagsChange}
               />
             </FormControl>
