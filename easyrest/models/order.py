@@ -10,7 +10,7 @@ from sqlalchemy import (
     Float
 )
 from sqlalchemy.orm import relationship
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
 
 from .meta import Base
 from .order_assoc import OrderAssoc
@@ -35,7 +35,7 @@ class Order(Base):
     user_id = Column(Integer, ForeignKey('users.id'))
     rest_id = Column(Integer, ForeignKey('restaurants.id'))
 
-    quantity = relationship("OrderAssoc")
+    items = relationship("OrderAssoc")
     user = relationship("User")
     restaurant = relationship("Restaurant")
 
@@ -44,36 +44,49 @@ class Order(Base):
     #   order = request.dbsession.query(Order).get(order_id)
     #   order.get_items(request.dbsession)
     def get_items(self, session):
-        model = self.quantity
+        model = self.items
         items = []
         for i, item in enumerate(model):
             item1 = item.item
             d = item1.as_dict()
             d.update({"quantity": item.quantity})
-            d.update({"q_id": i})
+            d.update({"q_id": item.id})
             items.append(d)
         return items
 
     def add_item(self, session, quantity, item_id):
         q = OrderAssoc(quantity=quantity)
-        i = session.query(MenuItem).get(item_id)
-        if i is None:
+        food = session.query(MenuItem).get(item_id)
+        if food is None:
             raise HTTPNotFound("Item id did not exist")
-        if i.menu.rest_id != self.rest_id:
+        if food.menu.rest_id != self.rest_id:
             raise HTTPNotFound("Item id did not consist with restaurant")
+        # dublicate check
+        flag = session.query(session.query(OrderAssoc).filter(
+            OrderAssoc.item_id == item_id, OrderAssoc.order_id == self.id).exists()).scalar()
+        if flag:
+            raise HTTPBadRequest("Item dublication in order")
+        print(flag)
         # i = session.query(MenuItem).filter(
         #     MenuItem.id == item_id, MenuItem.menu.rest_id == self.rest_id).first()
 
-        q.item = i
-        self.quantity.append(q)
+        q.food = food
+        self.items.append(q)
 
     def remove_item(self, session, item_id):
         item = session.query(OrderAssoc).filter(
             OrderAssoc.item_id == item_id, OrderAssoc.order_id == self.id)
         item.delete()
 
-    def change_quantity(self, session, q_id, value):
-        try:
-            self.quantity[q_id].quantity = value
-        except IndexError:
-            raise HTTPNotFound("This item doesn`t in your order")
+    def change_quantity(self, session, item_id, value):
+        item = session.query(OrderAssoc).filter(
+            OrderAssoc.order_id == self.id, OrderAssoc.item_id == item_id).first()
+
+        if item is None:
+            raise HTTPNotFound("Item or order not found")
+        item.quantity = value
+        print(item)
+        # try:
+        #     self.item[q_id].quantity = value
+        # except IndexError:
+        #     raise HTTPNotFound("This item doesn`t in your order")

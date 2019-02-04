@@ -48,7 +48,7 @@ class Base(object):
         print s
         return ""
 
-    def as_dict(self, exclude=[]):
+    def as_dict(self, exclude=[], include=[]):
         """Converts model into python dictionary
         Returns:
             dictionary
@@ -62,6 +62,9 @@ class Base(object):
         for c in self.__table__.columns:
             if c.name in exclude:
                 continue
+            if len(include) != 0:
+                if c.name not in include:
+                    continue
             value = getattr(self, c.name)
             if isinstance(value, (datetime.datetime, datetime.date)):
                 value = value.isoformat()

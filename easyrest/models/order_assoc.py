@@ -27,4 +27,4 @@ class OrderAssoc(Base):
     order_id = Column(Integer, ForeignKey('orders.id'))
 
     order = relationship('Order')
-    item = relationship('MenuItem')
+    food = relationship('MenuItem')

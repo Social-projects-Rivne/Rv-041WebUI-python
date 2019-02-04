@@ -13,14 +13,23 @@ from ..models.user import User
 
 @view_config(route_name='get_orders', renderer='json', request_method='GET')
 def get_orders(request):
-    order_ids = [1, 2]
+    # order_ids = [1, 2]
 
-    b = []
-    for order_id in order_ids:
-        order = request.dbsession.query(Order).get(order_id)
-        a = order.get_items(request.dbsession)
-        b.append(a)
-    dict_ = b
+    # b = []
+    # for order_id in order_ids:
+    #     order = request.dbsession.query(Order).get(order_id)
+    #     a = order.get_items(request.dbsession)
+    #     b.append(a)
+    # dict_ = b
+
+    # order_ids = [1, 2]
+
+    # b = []
+    # for order_id in order_ids:
+    #     order = request.dbsession.query(Order).get(order_id)
+    #     a = order.change_quantity(request.dbsession)
+    #     b.append(a)
+    # dict_ = b
 
     # items = []
     # for item in order.quantity:
@@ -77,31 +86,23 @@ def change_q(request):
     order_id, q_value, item_id = int(json["order_id"]), int(
         json["q_value"]), int(json["item_id"])
 
-    try:
-        # order_id index of order in connected list
-        order = request.token.user.orders[order_id]
-    except IndexError:
-        raise HTTPNotFound("You dont have that order")
+    # a = request.dbsession.query(OrderAssoc).filter(
+    #     OrderAssoc.order_id == Order.id, OrderAssoc.item_id == item_id).filter(
+    #         Order.id == order_id, Order.user_id == request.token.user.id).all()
+    # print(a[0].order.id)
 
+    # Worked!
+    # order = request.dbsession.query(Order).filter(
+    #     Order.id == order_id, Order.user_id == request.token.user.id).first()
+    # order.change_quantity(request.dbsession, item_id, q_value)
+    # print(order)
+
+    order = request.dbsession.query(Order).filter(
+        Order.id == order_id, Order.user_id == request.token.user.id).first()
     order.add_item(request.dbsession, q_value, item_id)
 
-    # items = []
-    # for item in order.quantity:
-    #     item1 = item.item
-    #     d = item1.as_dict()
-    #     d.update({"quantity": item.quantity})
-    #     items.append(d)
-    # dict_ = {
-    #     "user": order.user.as_dict(["password", "email", "birth_date"]),
-    #     "quantity": [item.as_dict() for item in order.quantity],
-    #     "items": items,  # [item.item.as_dict() for item in order.quantity],
-    #     "order": order.as_dict()
-    # }
-    # dict_ = {
-    #     "order": [item.as_dict() for item in request.dbsession.query(User).get(14).orders]
-    # }
-    # dict_ = {
-    #     "order": [item.as_dict() for item in request.token.user.orders]
-    #     "items": [item.as_dict() for item in [for order in request.token.user.orders]]
-    # }
+    # json = request.json_body
+    # order_id, q_value, item_id = int(json["order_id"]), int(
+    #     json["q_value"]), int(json["item_id"])
+
     return ""
