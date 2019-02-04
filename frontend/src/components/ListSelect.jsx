@@ -41,9 +41,10 @@ const ListSelect = props => {
 };
 
 ListSelect.porpTypes = {
-  allTags: PropTypes.array.isRequired,
-  onTagsChange: PropTypes.func.isRequired,
-  tags: PropTypes.array.isRequired.isRequired
+  list: PropTypes.array.isRequired,
+  onListChange: PropTypes.func.isRequired,
+  selectedItems: PropTypes.array.isRequired,
+  name: PropTypes.string
 };
 
 export default ListSelect;
