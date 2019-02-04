@@ -27,25 +27,25 @@ Categories = [
         "name": "Coctails"  # 3
     },
     {
-        "name": "Hard liquer"  # 6
+        "name": "Hard liquer"  # 4
     },
     {
-        "name": "With beer"  # 7
+        "name": "With beer"  # 5
     },
     {
-        "name": "Pizza"  # 8
+        "name": "Pizza"  # 6
     },
     {
-        "name": "Salats"  # 9
+        "name": "Salats"  # 7
     },
     {
-        "name": "Bakery"  # 11
+        "name": "Bakery"  # 8
     },
     {
-        "name": "Meat"  # 12
+        "name": "Meat"  # 9
     },
     {
-        "name": "Pasta"  # 13
+        "name": "Pasta"  # 10
     }
 ]
 Meals = [

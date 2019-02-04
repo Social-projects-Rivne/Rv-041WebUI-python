@@ -20,6 +20,8 @@ def includeme(config):
                      request_method="GET")
     config.add_route('get_by_category', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}/{cat_id:\d+}',
                      request_method="GET")
+    config.add_route('get_all_categories', 'categories',
+                     request_method="GET")
     config.add_route('get_user_info', 'profile',
                      request_method="GET")
     config.add_route('authorize_moderator', 'moderator',

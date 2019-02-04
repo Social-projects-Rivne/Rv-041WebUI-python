@@ -20,6 +20,22 @@ def asign_items(menu):
     return menu_dict
 
 
+@view_config(route_name='get_all_categories', renderer='json', request_method='GET')
+def get_all_categories(request):
+    """
+    GET request controler to return all categories
+    Args:
+        request: current pyramid request
+    """
+    categories_query = request.dbsession.query(Category)
+    categories = categories_query.all()
+
+    categories_as_dict = [category.as_dict() for category in categories]
+    body = wrap(categories_as_dict)
+
+    return body
+
+
 @view_config(route_name='get_menus', renderer='json', request_method='GET')
 def get_menu_controler(request):
     """GET request controler to return menu and
@@ -53,7 +69,7 @@ def get_menu_controler(request):
 
 @view_config(route_name='get_all_with_cats', renderer='json', request_method='GET')
 def get_cats_controler(request):
-    """GET request controler to return menu items 
+    """GET request controler to return menu items
     for restaurant specified by id and menu id
     Args:
         request: current pyramid request
