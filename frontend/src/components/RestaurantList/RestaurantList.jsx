@@ -10,9 +10,9 @@ const RestaurantList = props => {
       {data.map((rest, index) => {
         return (
           <Grow
-            in={data}
+            in={true}
             key={rest.id}
-            {...(data ? { timeout: Math.atan(index) * 2500 } : {})}
+            {...(data ? { timeout: Math.atan(index + 1) * 1500 } : {})}
           >
             <Grid item xs={12}>
               <RestaurantListItem showDetails restData={rest} />
@@ -23,8 +23,6 @@ const RestaurantList = props => {
     </Grid>
   );
 };
-
-console.log("sss");
 
 RestaurantList.propTypes = {
   data: PropTypes.array.isRequired
