@@ -18,8 +18,8 @@ const MenuProps = {
   }
 };
 
-const TagSelect = props => {
-  const { allTags, onTagsChange, tags } = props;
+const ListSelect = props => {
+  const { list, onListChange, selectedItems } = props;
 
   return (
     <FormControl fullWidth>
@@ -32,10 +32,10 @@ const TagSelect = props => {
         renderValue={selected => selected.join(", ")}
         MenuProps={MenuProps}
       >
-        {allTags.map(tag => (
-          <MenuItem key={tag.id} value={tag.name}>
-            <Checkbox checked={tags.indexOf(tag.name) > -1} />
-            <ListItemText primary={tag.name} />
+        {list.map(listItem => (
+          <MenuItem key={listItem.id} value={listItem.name}>
+            <Checkbox checked={selectedItems.indexOf(listItem.name) > -1} />
+            <ListItemText primary={listItem.name} />
           </MenuItem>
         ))}
       </Select>
@@ -43,10 +43,10 @@ const TagSelect = props => {
   );
 };
 
-TagSelect.porpTypes = {
+ListSelect.porpTypes = {
   allTags: PropTypes.array.isRequired,
   onTagsChange: PropTypes.func.isRequired,
   tags: PropTypes.array.isRequired.isRequired
 };
 
-export default TagSelect;
+export default ListSelect;

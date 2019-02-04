@@ -15,7 +15,6 @@ export class AddMenuItemForm extends React.Component {
   };
 
   componentDidMount() {
-    console.log("123");
     fetch("http://localhost:6543/api/categories")
       .then(response => response.json())
       .then(categories => this.setState({ allCategories: categories.data }));
@@ -58,24 +57,24 @@ export class AddMenuItemForm extends React.Component {
     let value = event.target.value;
 
     this.setState(prevState => ({
-      newRestaurant: {
-        ...prevState.newRestaurant,
+      newMenuItem: {
+        ...prevState.newMenuItem,
         [name]: value
       }
     }));
   };
 
-  clearForm = () => {
-    this.setState({
-      newRestaurant: {
-        name: "",
-        address: "",
-        phone: "",
-        description: "",
-        tags: []
-      }
-    });
-  };
+  // clearForm = () => {
+  //   this.setState({
+  //     newRestaurant: {
+  //       name: "",
+  //       address: "",
+  //       phone: "",
+  //       description: "",
+  //       tags: []
+  //     }
+  //   });
+  // };
 
   handleTagsChange = event => {
     let value = event.target.value;
@@ -115,7 +114,7 @@ export class AddMenuItemForm extends React.Component {
               name="description"
               label="Item Description"
               multiline
-              rows="4"
+              rows="3"
               fullWidth
             />
           </Grid>
