@@ -4,6 +4,8 @@ import MenuItemList from "../components/MenuPage/MenuItemList";
 import { Grid, Card, CardMedia, withStyles } from "@material-ui/core";
 import PageContainer from "./PageContainer";
 import GeneralError from "../components/ErrorPages/GeneralError";
+import CollapseForm from "../components/CollapseForm";
+import AddMenuItemForm from "../components/MenuPage/AddMenuItemForm";
 
 const styles = theme => ({
   image: { height: "100%", backgroundSize: "contain" },
@@ -62,7 +64,6 @@ class MenuPage extends React.Component {
 
   handleCatScroll = index => {
     if (this.state.activeCat !== index) {
-      console.log(index);
       this.setState({ activeCat: index });
     }
   };
@@ -96,6 +97,12 @@ class MenuPage extends React.Component {
                   cats={this.state.Categories}
                   scroll={this.handleCatScroll}
                 />
+                <CollapseForm
+                  tooltipText="Add menu item"
+                  formTitle="Create new menu item:"
+                >
+                  <AddMenuItemForm />
+                </CollapseForm>
               </Grid>
             </Grid>
           )}
