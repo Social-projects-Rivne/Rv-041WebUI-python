@@ -66,7 +66,11 @@ class ModeratorPanel extends React.Component {
     token: localStorage.getItem("token"),
     /*renderingComponent: <RestaurantsForApprovalPage />,*/
     selectedItemName: "Restaurants",
-    selectedStatus: "All",
+    selectedStatus: {
+      "Restaurants": "All",
+      "Users": "All",
+      "Messages": "All",
+    }
   };
 
   tags = {
@@ -86,7 +90,6 @@ class ModeratorPanel extends React.Component {
       [
         {
           path: "/moderator/",
-          /*component: RestaurantsForApprovalPage,*/
           render: (props) => {
             return (
               <RestaurantsForApprovalPage
@@ -98,7 +101,6 @@ class ModeratorPanel extends React.Component {
         },
         {
           path: "/moderator/restaurants",
-          /*component: RestaurantsForApprovalPage,*/
           render: (props) => {
             return (
               <RestaurantsForApprovalPage
@@ -110,7 +112,6 @@ class ModeratorPanel extends React.Component {
         },
         {
           path: "/moderator/users",
-          /*component: Users,*/
           render: (props) => {
             return (
               <Users/>
@@ -120,7 +121,6 @@ class ModeratorPanel extends React.Component {
         },
         {
           path: "/moderator/messages",
-          /*component: Messages,*/
           render: (props) => {
             return (
               <Messages/>
