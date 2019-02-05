@@ -63,7 +63,7 @@ function RestaurantForApproval(props) {
         key={0}
         size="small"
         color="secondary"
-        onClick={() => handleRestaurantApprovement(id, "DELETE", 2)}
+        onClick={() => handleRestaurantApprovement(id, "DELETE", 2, status)}
       >
         Disapprove
       </Button>);
@@ -71,7 +71,7 @@ function RestaurantForApproval(props) {
         key={1}
         size="small"
         color="primary"
-        onClick={() => handleRestaurantApprovement(id, "POST", 1)}
+        onClick={() => handleRestaurantApprovement(id, "POST", 1, status)}
       >
         Approve
       </Button>);
@@ -81,7 +81,7 @@ function RestaurantForApproval(props) {
         key={0}
         size="small"
         color="secondary"
-        onClick={() => handleRestaurantApprovement(id, "DELETE", 2)}
+        onClick={() => handleRestaurantApprovement(id, "DELETE", 2, status)}
       >
         Delete
       </Button>);
@@ -91,7 +91,7 @@ function RestaurantForApproval(props) {
         key={0}
         size="small"
         color="primary"
-        onClick={() => handleRestaurantApprovement(id, "POST", 1)}
+        onClick={() => handleRestaurantApprovement(id, "POST", 1, status)}
       >
         Restore
       </Button>);

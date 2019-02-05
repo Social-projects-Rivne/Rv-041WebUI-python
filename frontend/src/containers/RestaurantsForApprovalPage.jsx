@@ -17,10 +17,7 @@ class RestaurantsForApprovalPage extends Component {
         snackbarOpen:false,
         snackbarMsg: "",
         currentRestaurantId: null,
-        /*previousRestaurantOperation: {
-          request_method: null,
-          restaurant_status: null
-        }*/
+        previousRestaurantStatus: null
     };
 
     componentDidMount() {
@@ -43,13 +40,16 @@ class RestaurantsForApprovalPage extends Component {
             .catch(err => this.setState({success: false, error: err.message}))
     }
 
-    handleRestaurantApprovement = (restaurant_id, request_method, restaurant_status) => {
+    handleRestaurantApprovement = (restaurant_id,
+                                   request_method,
+                                   restaurant_status,
+                                   prev_rest_status) => {
 
         const headers = new Headers({
             'Content-Type': 'application/json',
             'X-Auth-Token': this.state.token
         });
-
+        /*console.log(prev_rest_status);*/
         const fetchInit = {
             method: request_method,
             headers: headers,
@@ -81,10 +81,7 @@ class RestaurantsForApprovalPage extends Component {
                 snackbarOpen: true,
                 snackbarMsg: operationName,
                 currentRestaurantId: restaurant_id,
-                /*previousRestaurantOperation: () => {return {
-                  "request_method": request_method,
-                  "restaurant_status": restaurant_status
-                }}*/
+                previousRestaurantStatus: prev_rest_status
               }
             }))
             .catch(err => this.setState({success: false,
@@ -105,9 +102,11 @@ class RestaurantsForApprovalPage extends Component {
       <Button
           color="secondary"
           size="small"
-          onClick={() => this.handleRestaurantApprovement(this.state.currentRestaurantId, 
-                                                          /*this.state.previousRestaurantOperation.request_method, 
-          this.state.previousRestaurantOperation.restaurant_status*/"POST", 0)}
+          onClick={() => {
+            this.handleRestaurantApprovement(this.state.currentRestaurantId, 
+              this.state.previousRestaurantStatus === 2 ? "DELETE" :"POST",
+              this.state.previousRestaurantStatus);}
+          }
         >
         Undo
       </Button>
