@@ -29,9 +29,9 @@ def authorize_moderator_controller(request):
     return wrap()
 
 
-@view_config(route_name='get_unapproved_restaurants', renderer='json', request_method='GET')
+@view_config(route_name='get_restaurants', renderer='json', request_method='GET')
 @restrict_access(user_types=["Moderator"])
-def get_unapproved_restaurants_controller(request):
+def get_restaurants_controller(request):
     """
     GET request controller to return information about unapproved restaurants for moderator
     Args:
@@ -75,7 +75,7 @@ def get_unapproved_restaurants_controller(request):
     return wrap_data
 
 
-@view_config(route_name='approve_restaurant', renderer='json', request_method='POST')
+@view_config(route_name='manage_restaurants', renderer='json', request_method='POST')
 @restrict_access(user_types=["Moderator"])
 def approve_restaurant_controller(request):
     """
@@ -103,7 +103,7 @@ def approve_restaurant_controller(request):
     return wrap(success=True)
 
 
-@view_config(route_name='approve_restaurant', renderer='json', request_method='DELETE')
+@view_config(route_name='manage_restaurants', renderer='json', request_method='DELETE')
 @restrict_access(user_types=["Moderator"])
 def disapprove_restaurant_controller(request):
     """

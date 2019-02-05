@@ -24,9 +24,9 @@ def includeme(config):
                      request_method="GET")
     config.add_route('authorize_moderator', 'moderator',
                      request_method="GET")
-    config.add_route('get_unapproved_restaurants', 'approval_restaurants',
+    config.add_route('get_restaurants', 'moderator/restaurants',
                      request_method="GET")
-    config.add_route('approve_restaurant', 'approval_restaurants',
+    config.add_route('manage_restaurants', 'moderator/restaurants',
                      request_method=["POST", "DELETE"])
     config.add_route('user_restaurants', 'user_restaurants',
                      request_method=["GET", "POST"])

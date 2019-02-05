@@ -32,7 +32,7 @@ class RestaurantsForApprovalPage extends Component {
             headers: headers
         };
 
-        fetch('http://localhost:6543/api/approval_restaurants', fetchInit)
+        fetch('http://localhost:6543/api/moderator/restaurants', fetchInit)
             .then(response => (response.status === 403 ? this.setState({needRedirection: true,
                                                                         success: false}): response.json()))
             .then(data => this.setState({unapprovedRestaurants: data.data,
@@ -43,7 +43,7 @@ class RestaurantsForApprovalPage extends Component {
     handleRestaurantApprovement = (restaurant_id,
                                    request_method,
                                    restaurant_status,
-                                   prev_rest_status) => {
+                                   prev_rest_status, snackbarOpen = true) => {
 
         const headers = new Headers({
             'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ class RestaurantsForApprovalPage extends Component {
           operationName = "Disapproved";
         }
 
-        fetch('http://localhost:6543/api/approval_restaurants', fetchInit)
+        fetch('http://localhost:6543/api/moderator/restaurants', fetchInit)
             .then(response => (!(response.status >= 200 && response.status < 300)
                                  ?Promise.reject(response.status)
                                   :response.json()))
@@ -78,7 +78,7 @@ class RestaurantsForApprovalPage extends Component {
                                                                             } else{
                                                                               return restaurantInfo;
                                                                             }}),
-                snackbarOpen: true,
+                snackbarOpen: snackbarOpen,
                 snackbarMsg: operationName,
                 currentRestaurantId: restaurant_id,
                 previousRestaurantStatus: prev_rest_status
@@ -105,7 +105,9 @@ class RestaurantsForApprovalPage extends Component {
           onClick={() => {
             this.handleRestaurantApprovement(this.state.currentRestaurantId, 
               this.state.previousRestaurantStatus === 2 ? "DELETE" :"POST",
-              this.state.previousRestaurantStatus);}
+              this.state.previousRestaurantStatus,
+              null,
+              false);}
           }
         >
         Undo
