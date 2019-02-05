@@ -1,6 +1,13 @@
 import React from "react";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
-import { TextField, Grid, Button } from "@material-ui/core";
+import {
+  TextField,
+  Grid,
+  Button,
+  FormControl,
+  InputLabel
+} from "@material-ui/core";
+import ListSelect from "../ListSelect";
 
 export class AddMenuItemForm extends React.Component {
   state = {
@@ -76,10 +83,10 @@ export class AddMenuItemForm extends React.Component {
   //   });
   // };
 
-  handleTagsChange = event => {
+  handleCategoriesChange = event => {
     let value = event.target.value;
     let name = event.target.name;
-
+    console.log(name, value);
     this.setState(prevState => ({
       newMenuItem: { ...prevState.newMenuItem, [name]: value }
     }));
@@ -117,6 +124,27 @@ export class AddMenuItemForm extends React.Component {
               rows="3"
               fullWidth
             />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              value={newMenuItem.ingredients}
+              name="ingredients"
+              label="Item Ingredients"
+              multiline
+              rows="3"
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputLabel htmlFor="categories">Categories</InputLabel>
+              <ListSelect
+                name="categories"
+                selectedItems={newMenuItem.categories}
+                list={allCategories}
+                onListChange={this.handleCategoriesChange}
+              />
+            </FormControl>
           </Grid>
           <Grid item xs={3}>
             <Button
