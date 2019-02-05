@@ -13,13 +13,6 @@ from ..models.menu_item import MenuItem
 from ..models.category import Category
 
 
-def asign_items(menu):
-    menu_dict = menu.as_dict()
-    menu_items = [item.as_dict() for item in menu.menu_item]
-    menu_dict.update({"menu_items": menu_items})
-    return menu_dict
-
-
 @view_config(route_name='get_menus', renderer='json', request_method='GET')
 def get_menu_controler(request):
     """GET request controler to return menu and
@@ -51,7 +44,7 @@ def get_menu_controler(request):
     return body
 
 
-@view_config(route_name='get_all_with_cats', renderer='json', request_method='GET')
+@view_config(route_name='menu_items', renderer='json', request_method='GET')
 def get_cats_controler(request):
     """GET request controler to return menu items 
     for restaurant specified by id and menu id
@@ -87,18 +80,8 @@ def get_cats_controler(request):
         })
         return body
 
-    result = request.dbsession.query(MenuItem, Category).filter(
-        MenuItem.menu_id == menu.id).filter(
-        Category.id == MenuItem.category_id).order_by(Category.name).all()
-    data_dict = {}
-    cats_list = []
-    for item, cat in result:
-        category, item_dict = cat.name, item.as_dict()
-        if category in data_dict:
-            data_dict[category].append(item_dict)
-        else:
-            data_dict[category] = [item_dict]
-            cats_list.append(category)
+    cats_list, data_dict = menu.get_items_with_cat(
+        request.dbsession, exclude=["menu_id"])
 
     body = wrap({
         "Items": data_dict,

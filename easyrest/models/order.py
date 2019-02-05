@@ -43,12 +43,12 @@ class Order(Base):
     # Exm:
     #   order = request.dbsession.query(Order).get(order_id)
     #   order.get_items(request.dbsession)
-    def get_items(self, session):
+    def get_items(self, session, exclude=[], include=[]):
         model = self.items
         items = []
-        for i, item in enumerate(model):
-            item1 = item.item
-            d = item1.as_dict()
+        for item in model:
+            food = item.item
+            d = food.as_dict(exclude=exclude, include=include)
             d.update({"quantity": item.quantity})
             d.update({"q_id": item.id})
             items.append(d)
@@ -66,9 +66,6 @@ class Order(Base):
             OrderAssoc.item_id == item_id, OrderAssoc.order_id == self.id).exists()).scalar()
         if flag:
             raise HTTPBadRequest("Item dublication in order")
-        print(flag)
-        # i = session.query(MenuItem).filter(
-        #     MenuItem.id == item_id, MenuItem.menu.rest_id == self.rest_id).first()
 
         q.food = food
         self.items.append(q)
@@ -84,9 +81,7 @@ class Order(Base):
 
         if item is None:
             raise HTTPNotFound("Item or order not found")
+
         item.quantity = value
-        print(item)
-        # try:
-        #     self.item[q_id].quantity = value
-        # except IndexError:
-        #     raise HTTPNotFound("This item doesn`t in your order")
+
+        return item
