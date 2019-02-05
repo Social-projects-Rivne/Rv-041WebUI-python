@@ -6,6 +6,7 @@ import {
   Select,
   MenuItem,
   Checkbox,
+  Radio,
   ListItemText,
   Input
 } from "@material-ui/core";
@@ -19,20 +20,26 @@ const MenuProps = {
 };
 
 const ListSelect = props => {
-  const { list, onListChange, selectedItems, name } = props;
+  const { list, onListChange, selectedItems, name, radio } = props;
 
   return (
     <Select
-      multiple
+      multiple={!radio}
       value={selectedItems}
       onChange={onListChange}
       input={<Input id={name} name={name} />}
-      renderValue={selected => selected.join(", ")}
+      renderValue={selected =>
+        radio ? selected.toString() : selected.join(", ")
+      }
       MenuProps={MenuProps}
     >
       {list.map(listItem => (
         <MenuItem key={listItem.id} value={listItem.name}>
-          <Checkbox checked={selectedItems.indexOf(listItem.name) > -1} />
+          {radio ? (
+            <Radio checked={selectedItems.indexOf(listItem.name) > -1} />
+          ) : (
+            <Checkbox checked={selectedItems.indexOf(listItem.name) > -1} />
+          )}
           <ListItemText primary={listItem.name} />
         </MenuItem>
       ))}
@@ -40,11 +47,16 @@ const ListSelect = props => {
   );
 };
 
+ListSelect.defaultProps = {
+  radio: false
+};
+
 ListSelect.porpTypes = {
   list: PropTypes.array.isRequired,
   onListChange: PropTypes.func.isRequired,
   selectedItems: PropTypes.array.isRequired,
-  name: PropTypes.string
+  name: PropTypes.string,
+  radio: PropTypes.bool
 };
 
 export default ListSelect;

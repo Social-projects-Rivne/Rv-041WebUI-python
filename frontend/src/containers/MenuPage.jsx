@@ -69,7 +69,8 @@ class MenuPage extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    console.log(this.props);
+    const { classes, match } = this.props;
     if (this.state.error) {
       return <GeneralError error={this.state.errorMes} />;
     } else {
@@ -101,7 +102,7 @@ class MenuPage extends React.Component {
                   tooltipText="Add menu item"
                   formTitle="Create new menu item:"
                 >
-                  <AddMenuItemForm />
+                  <AddMenuItemForm params={match.params} />
                 </CollapseForm>
               </Grid>
             </Grid>

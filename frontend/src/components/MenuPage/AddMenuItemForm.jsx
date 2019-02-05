@@ -1,5 +1,9 @@
 import React from "react";
-import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
+import {
+  ValidatorForm,
+  TextValidator,
+  SelectValidator
+} from "react-material-ui-form-validator";
 import {
   TextField,
   Grid,
@@ -29,31 +33,28 @@ export class AddMenuItemForm extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    const { newRestaurant } = this.state;
+    const { newMenuItem } = this.state;
 
-    fetch("http://localhost:6543/api/user_restaurants", {
+    fetch("http://localhost:6543/api/restaurant/8/menu/1", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "x-auth-token": localStorage.getItem("token")
       },
-      body: JSON.stringify(newRestaurant)
+      body: JSON.stringify(newMenuItem)
     })
-      .then(response => {
-        return response.status >= 200 && response.status < 300
-          ? response.json()
-          : response.json().then(Promise.reject.bind(Promise));
-      })
-      .then(newRestaurant => {
-        this.props.handleSuccesEvent(
-          newRestaurant.success,
-          newRestaurant.message
-        );
-        this.props.onAdd(newRestaurant.data);
-        localStorage.setItem("role", "Owner");
-        this.props.ctx.changeState({ role: "Owner" });
-        this.clearForm();
-      })
+      // .then(response => {
+      //   return response.status >= 200 && response.status < 300
+      //     ? response.json()
+      //     : response.json().then(Promise.reject.bind(Promise));
+      // })
+      // .then(newMenuItem => {
+      //   this.props.handleSuccesEvent(newMenuItem.success, newMenuItem.message);
+      //   this.props.onAdd(newMenuItem.data);
+      //   localStorage.setItem("role", "Owner");
+      //   this.props.ctx.changeState({ role: "Owner" });
+      //   this.clearForm();
+      // })
       .catch(err => {
         this.props.handleSuccesEvent(err.success, err.message);
       });
@@ -86,7 +87,6 @@ export class AddMenuItemForm extends React.Component {
   handleCategoriesChange = event => {
     let value = event.target.value;
     let name = event.target.name;
-    console.log(name, value);
     this.setState(prevState => ({
       newMenuItem: { ...prevState.newMenuItem, [name]: value }
     }));
@@ -107,10 +107,10 @@ export class AddMenuItemForm extends React.Component {
           <Grid item xs={12}>
             <TextValidator
               value={newMenuItem.name}
-              required
               name="name"
               label="Item Name"
               fullWidth
+              required
               validators={["required"]}
               errorMessages={["Name is required"]}
             />
@@ -126,19 +126,23 @@ export class AddMenuItemForm extends React.Component {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <TextValidator
               value={newMenuItem.ingredients}
               name="ingredients"
               label="Item Ingredients"
               multiline
               rows="3"
               fullWidth
+              required
+              validators={["required"]}
+              errorMessages={["Ingredients is required"]}
             />
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
               <InputLabel htmlFor="categories">Categories</InputLabel>
               <ListSelect
+                radio
                 name="categories"
                 selectedItems={newMenuItem.categories}
                 list={allCategories}

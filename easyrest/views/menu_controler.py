@@ -11,6 +11,7 @@ from ..models.restaurant import Restaurant
 from ..models.menu import Menu
 from ..models.menu_item import MenuItem
 from ..models.category import Category
+from ..auth import restrict_access
 
 
 def asign_items(menu):
@@ -67,7 +68,7 @@ def get_menu_controler(request):
     return body
 
 
-@view_config(route_name='get_all_with_cats', renderer='json', request_method='GET')
+@view_config(route_name='menu_items', renderer='json', request_method='GET')
 def get_cats_controler(request):
     """GET request controler to return menu items
     for restaurant specified by id and menu id
@@ -123,6 +124,19 @@ def get_cats_controler(request):
     })
 
     return body
+
+
+@view_config(
+    route_name='menu_items',
+    request_method="POST",
+    renderer='json'
+)
+@restrict_access(user_types=['Client', 'Owner'])
+def create_restaurant_menu_item(request):
+    """
+    POST request controller. Create new restaurant menu item in database and return created item
+    """
+    print request.json_body
 
 
 @view_config(route_name='get_by_category', renderer='json', request_method='GET')
