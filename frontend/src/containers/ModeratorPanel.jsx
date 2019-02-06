@@ -29,7 +29,7 @@ import ArchivePage from "./ArchiveDataPage";
 import Messages from "./MessagesFeedbacksPage";
 import GeneralError from "../components/ErrorPages/GeneralError";
 import RestaurantsForApprovalPage from "./RestaurantsForApprovalPage";
-import Users from "./UsersPage";
+import ModeratorUsersPage from "./ModeratorUsersPage";
 import ClassNames from "classnames";
 import GenericTabs from "../Service/GenericTabs";
 
@@ -64,18 +64,19 @@ class ModeratorPanel extends React.Component {
     accessAllowed: false,
     error: "",
     token: localStorage.getItem("token"),
-    /*renderingComponent: <RestaurantsForApprovalPage />,*/
     selectedItemName: "Restaurants",
     selectedStatus: {
       "Restaurants": "All",
       "Users": "All",
+      "Owners": "All",
       "Messages": "All",
     }
   };
 
   tags = {
     Restaurants: ["All", "Unapproved", "Approved", "Archived"],
-    Users: ["All", "Owners", "Users"],
+    Users: ["All", "Active", "Banned"],
+    Owners: ["All", "Active", "Banned"],
     Messages: ["All", "Feedbacks", "Reports"]
   };
 
@@ -114,7 +115,22 @@ class ModeratorPanel extends React.Component {
           path: "/moderator/users",
           render: (props) => {
             return (
-              <Users/>
+              <ModeratorUsersPage
+                /*userStatus={this.tagsValues[this.state.selectedStatus.Users]}*/
+                userStatus={0}
+              />
+            );
+          },
+          exact: true
+        },
+        {
+          path: "/moderator/owners",
+          render: (props) => {
+            return (
+              <ModeratorUsersPage
+                /*userStatus={this.tagsValues[this.state.selectedStatus.Users]}*/
+                userStatus={1}
+              />
             );
           },
           exact: true
