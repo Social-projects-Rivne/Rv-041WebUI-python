@@ -32,10 +32,10 @@ class User(Base):
     phone_number = Column(Text)
     birth_date = Column(Date)
     password = Column(Text)
-    status_id = Column(Integer, ForeignKey('user_statuses.id'), default=1)
+    role_id = Column(Integer, ForeignKey('user_roles.id'), default=1)
 
     tokens = relationship('Token')
-    status = relationship('UserStatus')
+    role = relationship('UserRole')
     restaurants = relationship('Restaurant')
     orders = relationship('Order')
 

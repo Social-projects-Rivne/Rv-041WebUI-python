@@ -19,7 +19,7 @@ from .tag import Tag
 from .tag_association import TagAssociation
 from .token import Token
 from .user import User
-from .user_status import UserStatus
+from .user_role import UserRole
 from .order import Order
 from .order_assoc import OrderAssoc
 

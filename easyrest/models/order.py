@@ -29,7 +29,7 @@ class Order(Base):
     id = Column(Integer, primary_key=True)
     date_created = Column(Integer)
     date_booked = Column(Integer)
-    status = Column(Text)
+    status = Column(Text, default="Draft")
     table = Column(Integer, default=0)
     total_price = Column(Float, default=0)
     user_id = Column(Integer, ForeignKey('users.id'))
@@ -43,11 +43,16 @@ class Order(Base):
     # Exm:
     #   order = request.dbsession.query(Order).get(order_id)
     #   order.get_items(request.dbsession)
+    def get_item(self, session, item_id, exclude=[], include=[]):
+        item = session.query(MenuItem).filter(
+            MenuItem.id == item_id, MenuItem.id == OrderAssoc.item_id, OrderAssoc.order_id == self.id).first()
+        return item.as_dict(exclude=exclude, include=include)
+
     def get_items(self, session, exclude=[], include=[]):
         model = self.items
         items = []
         for item in model:
-            food = item.item
+            food = item.food
             d = food.as_dict(exclude=exclude, include=include)
             d.update({"quantity": item.quantity})
             d.update({"q_id": item.id})
@@ -61,6 +66,7 @@ class Order(Base):
             raise HTTPNotFound("Item id did not exist")
         if food.menu.rest_id != self.rest_id:
             raise HTTPNotFound("Item id did not consist with restaurant")
+
         # dublicate check
         flag = session.query(session.query(OrderAssoc).filter(
             OrderAssoc.item_id == item_id, OrderAssoc.order_id == self.id).exists()).scalar()
@@ -73,7 +79,8 @@ class Order(Base):
     def remove_item(self, session, item_id):
         item = session.query(OrderAssoc).filter(
             OrderAssoc.item_id == item_id, OrderAssoc.order_id == self.id)
-        item.delete()
+        items_delited = item.delete()
+        return items_delited
 
     def change_quantity(self, session, item_id, value):
         item = session.query(OrderAssoc).filter(
@@ -85,3 +92,12 @@ class Order(Base):
         item.quantity = value
 
         return item
+
+    def count_total(self):
+        total = 0
+        for item in self.items:
+            q = item.quantity
+            p_per_item = item.food.price if item.food.price is not None else 3.50
+            total += q * p_per_item
+        self.total_price = total
+        return self.total_price

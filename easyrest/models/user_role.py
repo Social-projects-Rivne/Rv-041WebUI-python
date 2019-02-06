@@ -12,11 +12,11 @@ from sqlalchemy import (
 from .meta import Base
 
 
-class UserStatus(Base):
+class UserRole(Base):
     """
     The data model of "user_statuses" table
     Defines data structure of "user_statuses" table
     """
-    __tablename__ = 'user_statuses'
+    __tablename__ = 'user_roles'
     id = Column(Integer, primary_key=True)
     name = Column(Text)

@@ -124,7 +124,6 @@ def add_item(request):
     """Controller for add item with some quantity to order
     Expects:
     {
-        "order_id": (int)
         "q_value": (int)
         "item_id": (int)
     }
@@ -136,6 +135,8 @@ def add_item(request):
             message: None
         }
     """
+    order_id = request.matchdict["order_id"]
+
     try:
         json = request.json_body
     except ValueError as e:
@@ -146,10 +147,9 @@ def add_item(request):
         "type": "object",
         "properties": {
                 "order_id": {"type": "integer"},
-                "q_value": {"type": "integer"},
                 "item_id": {"type": "integer"}
         },
-        "required": ["order_id", "q_value", "item_id"]
+        "required": ["q_value", "item_id"]
     }
 
     try:
@@ -157,14 +157,13 @@ def add_item(request):
     except ValidationError as e:
         raise HTTPForbidden("Wrong input data %s" % e)
 
-    order_id, q_value, item_id = int(json["order_id"]), int(
-        json["q_value"]), int(json["item_id"])
+    q_value, item_id = int(json["q_value"]), int(json["item_id"])
 
     order = get_order(request, order_id)
 
     order.add_item(request.dbsession, q_value, item_id)
 
-    data = order.get_items(request.dbsession)
+    data = order.get_item(request.dbsession, item_id, exclude=["categoty_id"])
 
     return wrap(data)
 
@@ -286,9 +285,9 @@ def remove_item(request):
 
     order = get_order(request, order_id)
 
-    order.remove_item(request.dbsession, item_id)
+    items_delited = order.remove_item(request.dbsession, item_id)
 
-    return wrap()
+    return wrap(items_delited)
 
 
 @view_config(route_name='order_status', renderer='json', request_method='PUT')
@@ -331,37 +330,39 @@ def change_status(request):
 
     order = get_order(request, order_id)
 
-    status, action = order.status, json["action"]
+    status, role, action = order.status, request.token.user.role.name, json["action"]
 
     # State transition graph
-    # -> shortcut for press
+    # (status, role, action)
     # User->Submit = User press Submit
     grahp = {
-        ("Draft", "User->Submit"): "Waiting for confirm",
-        ("Draft", "User->Remove"): "Removed",
-        ("Waiting for confirm", "User->Undo"): "Draft",
-        ("Waiting for confirm", "RAdmin->Reject"): "Declined",
-        ("Waiting for confirm", "RAdmin->Accept"): "Accepted",
-        ("Declined", "User->Remove"): "Removed",
-        ("Declined", "User->Edit"): "Draft",
-        ("Declined", "User->Ok"): "History",
-        ("History", "User->Reorder"): "Draft",
-        ("Accepted", "RAdmin->Cancel"): "Declined",
-        ("Accepted", "RAdmin->Asign waiter"): "Asigned waiter",
-        ("Accepted", "Waiter->Asign waiter"): "Asigned waiter",
-        ("Accepted", "User->Edit"): "Draft",
-        ("Asigned waiter", "Waiter->Start order"): "In progress",
-        ("In progress", "RAdmin->User failed"): "Failed",
-        ("In progress", "User->Rest failed"): "Failed",
-        ("In progress", "Waiter->Close order"): "Waiting for feedback",
-        ("Failed", "Moderator->Reviewed"): "History",
-        ("Waiting for feedback", "User->Feedback"): "History",
-        ("Waiting for feedback", "User->Skip"): "History"
+        ("0", "Client", "bla"): "Draft",
+        ("Draft", "Client", "Submit"): "Waiting for confirm",
+        ("Draft", "Client", "Remove"): "Removed",
+        ("Waiting for confirm", "Client", "Undo"): "Draft",
+        ("Waiting for confirm", "Administrator", "Reject"): "Declined",
+        ("Waiting for confirm", "Administrator", "Accept"): "Accepted",
+        ("Declined", "Client", "Remove"): "Removed",
+        ("Declined", "Client", "Edit"): "Draft",
+        ("Declined", "Client", "Ok"): "History",
+        ("History", "Client", "Reorder"): "Draft",
+        ("Accepted", "Administrator", "Cancel"): "Declined",
+        ("Accepted", "Administrator", "Asign waiter"): "Asigned waiter",
+        ("Accepted", "Waiter", "Asign waiter"): "Asigned waiter",
+        ("Accepted", "Client", "Edit"): "Draft",
+        ("Asigned waiter", "Waiter", "Start order"): "In progress",
+        ("In progress", "Administrator", "Client failed"): "Failed",
+        ("In progress", "Client", "Rest failed"): "Failed",
+        ("In progress", "Waiter", "Close order"): "Waiting for feedback",
+        ("Failed", "Moderator", "Reviewed"): "History",
+        ("Waiting for feedback", "Client", "Feedback"): "History",
+        ("Waiting for feedback", "Client", "Skip"): "History"
     }
 
     try:
-        new_status = grahp[(status, action)]
+        new_status = grahp[(status, role, action)]
     except KeyError as e:
+        # object sending not for prodaction
         raise HTTPForbidden("Forbidden action %s" % e)
 
     order.status = new_status
@@ -376,6 +377,9 @@ def get_status(request):
 
     order = get_order(request, order_id)
 
-    data = order.status
+    data = {
+        "status": order.status,
+        "total price": order.count_total()
+    }
 
     return wrap(data)
