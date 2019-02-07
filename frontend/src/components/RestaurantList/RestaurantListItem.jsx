@@ -15,6 +15,7 @@ import {
 import { amber, green } from "@material-ui/core/colors/";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { Link } from "react-router-dom";
+import RestaurantListItemMenu from "./RestaurantListItemMenu";
 
 const styles = theme => ({
   card: {
@@ -52,7 +53,7 @@ const restaurantStatus = {
 };
 
 function RestaurantListItem(props) {
-  const { classes, restData, showDetails } = props;
+  const { classes, theme, restData, showDetails } = props;
 
   return (
     <Card className={classes.card}>
@@ -83,15 +84,9 @@ function RestaurantListItem(props) {
                 <Chip
                   label={restaurantStatus[restData.status][0]}
                   className={classes[restaurantStatus[restData.status][1]]}
+                  style={{ marginRight: "16px" }}
                 />
-                <IconButton
-                  variant="contained"
-                  color="primary"
-                  to={`/profile/my_restaurant/${restData.id}/edit`}
-                  component={Link}
-                >
-                  <MoreVertIcon />
-                </IconButton>
+                <RestaurantListItemMenu restData={restData} />
               </>
             )}
           </Grid>
@@ -107,7 +102,10 @@ function RestaurantListItem(props) {
           <Divider />
           <Grid item container justify="space-between">
             <Grid item>
-              <Typography style={{ paddingRight: "16px" }} variant="subtitle2">
+              <Typography
+                style={{ paddingRight: theme.spacing.unit * 2 }}
+                variant="subtitle2"
+              >
                 Address: {restData.address_id}
               </Typography>
             </Grid>
@@ -174,7 +172,8 @@ RestaurantListItem.defaultProps = {
 RestaurantListItem.propTypes = {
   classes: PropTypes.object.isRequired,
   restData: PropTypes.object.isRequired,
-  showDetails: PropTypes.bool
+  showDetails: PropTypes.bool,
+  theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(RestaurantListItem);
+export default withStyles(styles, { withTheme: true })(RestaurantListItem);

@@ -12,8 +12,6 @@ import {
 } from "@material-ui/core";
 import PageContainer from "./PageContainer";
 import GeneralError from "../components/ErrorPages/GeneralError";
-import CollapseForm from "../components/CollapseForm";
-import AddMenuItemForm from "../components/MenuPage/AddMenuItemForm";
 
 const styles = theme => ({
   image: { height: "100%", backgroundSize: "contain" },
@@ -72,14 +70,6 @@ class MenuPage extends React.Component {
       });
   }
 
-  onAddItem = newItem => {
-    let category = newItem.category;
-    let itemsCopy = Object.assign(this.state.Items);
-    itemsCopy[category].concat(newItem);
-
-    // this.setState({ Items: itemsCopy });
-  };
-
   handleCatScroll = index => {
     if (this.state.activeCat !== index) {
       this.setState({ activeCat: index });
@@ -124,15 +114,6 @@ class MenuPage extends React.Component {
                   cats={this.state.Categories}
                   scroll={this.handleCatScroll}
                 />
-                <CollapseForm
-                  tooltipText="Add menu item"
-                  formTitle="Create new menu item:"
-                >
-                  <AddMenuItemForm
-                    onAddItem={this.onAddItem}
-                    params={match.params}
-                  />
-                </CollapseForm>
               </Grid>
             </Grid>
           )}
