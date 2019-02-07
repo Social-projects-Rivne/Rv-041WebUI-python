@@ -159,11 +159,14 @@ def create_restaurant_menu_item(request):
     new_menu_item = MenuItem(name=name, description=description,
                              ingredients=ingredients, img=img, menu_id=menu_id, category_id=category_model.id, category=category_model)
 
-    # request.dbsession.add(new_menu_item)
-    # request.dbsession.flush()
+    request.dbsession.add(new_menu_item)
+    request.dbsession.flush()
+
+    new_menu_item_as_dict = new_menu_item.as_dict()
+    new_menu_item_as_dict["category"] = category_model.name
 
     request.response.status_code = 201
-    return wrap({category_model.name: [new_menu_item.as_dict()]}, message="New menu item was successfully created")
+    return wrap(new_menu_item_as_dict, message="New menu item was successfully created")
 
 
 @view_config(route_name='get_by_category', renderer='json', request_method='GET')

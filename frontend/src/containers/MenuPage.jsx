@@ -73,9 +73,11 @@ class MenuPage extends React.Component {
   }
 
   onAddItem = newItem => {
-    const itemsCopy = Object.assign(this.state.Items);
-    console.log(newItem);
-    console.log(itemsCopy["Hot"]);
+    let category = newItem.category;
+    let itemsCopy = Object.assign(this.state.Items);
+    itemsCopy[category].concat(newItem);
+
+    // this.setState({ Items: itemsCopy });
   };
 
   handleCatScroll = index => {

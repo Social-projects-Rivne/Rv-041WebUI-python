@@ -9,16 +9,20 @@ import {
   CardContent,
   Divider,
   Chip,
-  Grid
+  Grid,
+  IconButton
 } from "@material-ui/core/";
 import { amber, green } from "@material-ui/core/colors/";
-
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { Link } from "react-router-dom";
 
 const styles = theme => ({
   card: {
     display: "flex",
     flexWrap: "wrap"
+  },
+  itemName: {
+    flex: 1
   },
   media: {
     flex: 1,
@@ -49,6 +53,7 @@ const restaurantStatus = {
 
 function RestaurantListItem(props) {
   const { classes, restData, showDetails } = props;
+
   return (
     <Card className={classes.card}>
       <CardMedia
@@ -65,14 +70,29 @@ function RestaurantListItem(props) {
             justify="space-between"
             alignItems="center"
           >
-            <Typography variant="h5" component="h2" align="left">
+            <Typography
+              className={classes.itemName}
+              variant="h5"
+              component="h2"
+              align="left"
+            >
               {restData.name}
             </Typography>
             {showDetails && (
-              <Chip
-                label={restaurantStatus[restData.status][0]}
-                className={classes[restaurantStatus[restData.status][1]]}
-              />
+              <>
+                <Chip
+                  label={restaurantStatus[restData.status][0]}
+                  className={classes[restaurantStatus[restData.status][1]]}
+                />
+                <IconButton
+                  variant="contained"
+                  color="primary"
+                  to={`/profile/my_restaurant/${restData.id}/edit`}
+                  component={Link}
+                >
+                  <MoreVertIcon />
+                </IconButton>
+              </>
             )}
           </Grid>
           {restData.description && (

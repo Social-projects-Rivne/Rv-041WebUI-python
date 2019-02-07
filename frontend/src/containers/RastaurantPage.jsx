@@ -49,19 +49,6 @@ export class RastaurantPage extends Component {
               auth={state.auth}
               ableUpdate={ableUpdate}
             />
-            {state.auth && ableUpdate && (
-              <CollapseForm
-                tooltipText="Update restaurant"
-                formTitle="Update your restaurant info:"
-                tooltipIcon={<Edit />}
-              >
-                <UpdateRestaurantForm
-                  restInfo={restInfo}
-                  restId={this.props.match.params.id}
-                  onUpdate={this.handleUpdateRestaurant}
-                />
-              </CollapseForm>
-            )}
           </PageContainer>
         )}
       </AppContext.Consumer>
