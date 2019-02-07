@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Snackbar, Typography, Button} from "@material-ui/core";
 import GeneralError from "../components/ErrorPages/GeneralError";
 import SnackbarContent from "../components/SnackbarContent";
-import RestaurantsForApproval from "../components/RestaurantsForApproval/RestaurantsForApproval";
+import Users from "../components/ModeratorPanelComponents/Users";
 import {redirectToSignUp} from "../Service/NeedAuthorization";
 
 
@@ -23,13 +23,13 @@ class ModeratorUsersPage extends Component {
 
         const headers = new Headers({
             'Content-Type': 'application/json',
-            'X-Auth-Token': this.state.token
+            'X-Auth-Token': this.state.token,
+            /*'User-Status': this.props.user_status*/
         });
 
         const fetchInit = {
             method: "GET",
             headers: headers,
-            body: JSON.stringify({status: this.props.user_status})
         };
 
         fetch('http://localhost:6543/api/moderator/users', fetchInit)
@@ -118,7 +118,7 @@ class ModeratorUsersPage extends Component {
 
     render() {
 
-        const {unapprovedRestaurants, success, error, snackbarOpen, snackbarMsg} = this.state;
+        const {users, success, error, snackbarOpen, snackbarMsg} = this.state;
         const {userStatus} = this.props;
 
         //prevent for rendering without fetch completing (init value is "null")
@@ -129,8 +129,8 @@ class ModeratorUsersPage extends Component {
     if (success) {
       return (
         <React.Fragment>
-          <RestaurantsForApproval
-            unapprovedRestaurants={unapprovedRestaurants}
+          <Users
+            users={users}
             handleRestaurantApprovement={this.handleRestaurantApprovement}
             userStatus={userStatus}
           />

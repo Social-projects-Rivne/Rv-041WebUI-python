@@ -28,8 +28,8 @@ def includeme(config):
                      request_method="GET")
     config.add_route('moderator_manage_restaurants', 'moderator/restaurants',
                      request_method=["POST", "DELETE"])
-#    config.add_route('moderator_get_users', 'moderator/users',
-#                     request_method=["POST", "DELETE"])
+    config.add_route('moderator_get_users', 'moderator/users',
+                     request_method="GET")
 #    config.add_route('moderator_manage_users', 'moderator/users',
 #                     request_method=["POST", "DELETE"])
     config.add_route('user_restaurants', 'user_restaurants',

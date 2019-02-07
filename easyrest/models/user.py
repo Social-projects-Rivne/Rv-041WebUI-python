@@ -33,6 +33,7 @@ class User(Base):
     birth_date = Column(Date)
     password = Column(Text)
     status_id = Column(Integer, ForeignKey('user_statuses.id'), default=1)
+    is_active = Column(Integer, default=0)
 
     tokens = relationship("Token")
     status = relationship('UserStatus')
