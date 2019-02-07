@@ -1,7 +1,15 @@
 import React from "react";
 import CategoriesList from "../components/MenuPage/CategoriesList";
 import MenuItemList from "../components/MenuPage/MenuItemList";
-import { Grid, Card, CardMedia, withStyles } from "@material-ui/core";
+import {
+  Grid,
+  Card,
+  CardMedia,
+  withStyles,
+  Typography,
+  Divider,
+  Button
+} from "@material-ui/core";
 import PageContainer from "./PageContainer";
 import GeneralError from "../components/ErrorPages/GeneralError";
 import CollapseForm from "../components/CollapseForm";
@@ -30,7 +38,8 @@ class MenuPage extends React.Component {
     error: false,
     errorMes: null,
     heghtsList: [],
-    activeCat: 0
+    activeCat: 0,
+    restaurantName: ""
   };
 
   componentDidMount() {
@@ -56,11 +65,18 @@ class MenuPage extends React.Component {
         } else {
           this.setState({
             Categories: json.data.Categories,
-            Items: json.data.Items
+            Items: json.data.Items,
+            restaurantName: json.data.restaurantName
           });
         }
       });
   }
+
+  onAddItem = newItem => {
+    const itemsCopy = Object.assign(this.state.Items);
+    console.log(newItem);
+    console.log(itemsCopy["Hot"]);
+  };
 
   handleCatScroll = index => {
     if (this.state.activeCat !== index) {
@@ -69,13 +85,21 @@ class MenuPage extends React.Component {
   };
 
   render() {
-    console.log(this.props);
     const { classes, match } = this.props;
     if (this.state.error) {
       return <GeneralError error={this.state.errorMes} />;
     } else {
       return (
         <PageContainer>
+          <Grid container spacing={16}>
+            <Grid item xs={12}>
+              <Typography variant="h5">
+                {this.state.restaurantName} menu:
+              </Typography>
+              <Divider />
+            </Grid>
+          </Grid>
+
           {this.state.isImage && (
             <Card className={classes.imageDiv}>
               <CardMedia
@@ -102,7 +126,10 @@ class MenuPage extends React.Component {
                   tooltipText="Add menu item"
                   formTitle="Create new menu item:"
                 >
-                  <AddMenuItemForm params={match.params} />
+                  <AddMenuItemForm
+                    onAddItem={this.onAddItem}
+                    params={match.params}
+                  />
                 </CollapseForm>
               </Grid>
             </Grid>

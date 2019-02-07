@@ -20,7 +20,7 @@ export class AddMenuItemForm extends React.Component {
       description: "",
       ingredients: "",
       img: "",
-      categories: []
+      category: []
     },
     allCategories: []
   };
@@ -34,8 +34,9 @@ export class AddMenuItemForm extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     const { newMenuItem } = this.state;
+    const { menuId, restId } = this.props.params;
 
-    fetch("http://localhost:6543/api/restaurant/8/menu/1", {
+    fetch(`http://localhost:6543/api/restaurant/${restId}/menu/${menuId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,18 +44,14 @@ export class AddMenuItemForm extends React.Component {
       },
       body: JSON.stringify(newMenuItem)
     })
-      // .then(response => {
-      //   return response.status >= 200 && response.status < 300
-      //     ? response.json()
-      //     : response.json().then(Promise.reject.bind(Promise));
-      // })
-      // .then(newMenuItem => {
-      //   this.props.handleSuccesEvent(newMenuItem.success, newMenuItem.message);
-      //   this.props.onAdd(newMenuItem.data);
-      //   localStorage.setItem("role", "Owner");
-      //   this.props.ctx.changeState({ role: "Owner" });
-      //   this.clearForm();
-      // })
+      .then(response => {
+        return response.status >= 200 && response.status < 300
+          ? response.json()
+          : response.json().then(Promise.reject.bind(Promise));
+      })
+      .then(newMenuItem => {
+        this.props.onAddItem(newMenuItem.data);
+      })
       .catch(err => {
         this.props.handleSuccesEvent(err.success, err.message);
       });
@@ -140,11 +137,11 @@ export class AddMenuItemForm extends React.Component {
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputLabel htmlFor="categories">Categories</InputLabel>
+              <InputLabel htmlFor="category">Category</InputLabel>
               <ListSelect
                 radio
-                name="categories"
-                selectedItems={newMenuItem.categories}
+                name="category"
+                selectedItems={newMenuItem.category}
                 list={allCategories}
                 onListChange={this.handleCategoriesChange}
               />

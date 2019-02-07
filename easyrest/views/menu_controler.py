@@ -107,6 +107,7 @@ def get_cats_controler(request):
     result = request.dbsession.query(MenuItem, Category).filter(
         MenuItem.menu_id == menu.id).filter(
         Category.id == MenuItem.category_id).order_by(Category.name).all()
+
     data_dict = {}
     cats_list = []
     for item, cat in result:
@@ -120,6 +121,7 @@ def get_cats_controler(request):
     body = wrap({
         "Items": data_dict,
         "Categories": cats_list,
+        "restaurantName": rest.name,
         "isImage": False
     })
 
@@ -136,7 +138,32 @@ def create_restaurant_menu_item(request):
     """
     POST request controller. Create new restaurant menu item in database and return created item
     """
-    print request.json_body
+    menu_item_data = request.json_body
+
+    rest_id = request.matchdict['rest_id']
+    menu_type = int(request.matchdict['menu_id'])
+
+    menu_models = request.dbsession.query(
+        Menu).filter_by(rest_id=rest_id).all()
+
+    name = menu_item_data["name"]
+    description = menu_item_data["description"]
+    ingredients = menu_item_data["ingredients"]
+    img = menu_item_data["img"]
+    category = menu_item_data["category"]
+    menu_id = menu_models[menu_type - 1].id
+
+    category_model = request.dbsession.query(
+        Category).filter_by(name=category).first()
+
+    new_menu_item = MenuItem(name=name, description=description,
+                             ingredients=ingredients, img=img, menu_id=menu_id, category_id=category_model.id, category=category_model)
+
+    # request.dbsession.add(new_menu_item)
+    # request.dbsession.flush()
+
+    request.response.status_code = 201
+    return wrap({category_model.name: [new_menu_item.as_dict()]}, message="New menu item was successfully created")
 
 
 @view_config(route_name='get_by_category', renderer='json', request_method='GET')
