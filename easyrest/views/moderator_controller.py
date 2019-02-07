@@ -153,8 +153,7 @@ def get_users_controller(request):
             ]
         If user is unauthorized and not an admin - throw 403:
     """
-    # user_status = request.headers["User-Status"]
-    user_status = 1
+    user_status = request.headers.get('User-Status')
 
     users =\
         request.dbsession.query(User).filter(User.status_id == user_status).all()
@@ -170,7 +169,7 @@ def get_users_controller(request):
                 user.email,
                 user.birth_date
             ]
-            data.append(form_dict(user_data, keys))
+            data.append(form_dict(user_data, keys, True))
         wrap_data = wrap(data)
     else:
         wrap_data = wrap([])

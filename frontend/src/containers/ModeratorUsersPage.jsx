@@ -20,41 +20,41 @@ class ModeratorUsersPage extends Component {
     };
 
     componentDidMount() {
+      const headers = new Headers({
+        'Content-Type': 'application/json',
+        'X-Auth-Token': this.state.token,
+        'User-Status': this.props.userStatus
+      });
 
-        const headers = new Headers({
-            'Content-Type': 'application/json',
-            'X-Auth-Token': this.state.token,
-            /*'User-Status': this.props.user_status*/
-        });
+      const fetchInit = {
+        method: "GET",
+        headers: headers,
+      };
 
-        const fetchInit = {
-            method: "GET",
-            headers: headers,
-        };
-
-        fetch('http://localhost:6543/api/moderator/users', fetchInit)
-            .then(response => (!(response.status >= 200 && response.status < 300)
-                    ?Promise.reject(response.status)
-                    :response.json()))
-            .then(data => this.setState({users: data.data,
-                                         success: data.success, error: data.error}))
-            .catch(err => this.setState({success: false, error: err.message}))
+      fetch('http://localhost:6543/api/moderator/users', fetchInit)
+        .then(response => (!(response.status >= 200 && response.status < 300)
+          ? Promise.reject(response.status)
+          : response.json()))
+        .then(data => this.setState({
+          users: data.data,
+          success: data.success, error: data.error
+        }))
+        .catch(err => this.setState({ success: false, error: err.message }))
     }
 
     handleUserBann = (user_id,
                       request_method,
-                      user_status,
+                      userStatus,
                       prev_user_status, snackbarOpen = true) => {
 
         const headers = new Headers({
             'Content-Type': 'application/json',
             'X-Auth-Token': this.state.token
         });
-        /*console.log(prev_rest_status);*/
         const fetchInit = {
             method: request_method,
             headers: headers,
-            body: JSON.stringify({id: user_id, status: user_status}),
+            body: JSON.stringify({id: user_id, status: userStatus}),
         };
 
         let operationName = "";
@@ -74,7 +74,7 @@ class ModeratorUsersPage extends Component {
                 success: data.success,
                 users: prevState.users.map(userInfo => {
                   if (userInfo.id === user_id) {
-                    userInfo.status = user_status;
+                    userInfo.status = userStatus;
                     return userInfo;
                   } else {
                     return userInfo;

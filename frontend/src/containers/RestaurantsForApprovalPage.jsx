@@ -49,7 +49,6 @@ class RestaurantsForApprovalPage extends Component {
             'Content-Type': 'application/json',
             'X-Auth-Token': this.state.token
         });
-        /*console.log(prev_rest_status);*/
         const fetchInit = {
             method: request_method,
             headers: headers,

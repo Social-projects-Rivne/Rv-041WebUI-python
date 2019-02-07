@@ -64,7 +64,11 @@ class ModeratorPanel extends React.Component {
     accessAllowed: false,
     error: "",
     token: localStorage.getItem("token"),
-    selectedItemName: "Restaurants",
+    selectedItemName: ((this.props.location.pathname).charAt((this.props.location.pathname).lastIndexOf("/")+1).toUpperCase() + 
+            ((this.props.location.pathname).substring((this.props.location.pathname).lastIndexOf("/")+2)).toLowerCase()) 
+            ?  ((this.props.location.pathname).charAt((this.props.location.pathname).lastIndexOf("/")+1).toUpperCase() + 
+            ((this.props.location.pathname).substring((this.props.location.pathname).lastIndexOf("/")+2)).toLowerCase())
+            : "Restaurants",
     selectedStatus: {
       "Restaurants": "All",
       "Users": "All",
@@ -76,14 +80,24 @@ class ModeratorPanel extends React.Component {
   tags = {
     Restaurants: ["All", "Unapproved", "Approved", "Archived"],
     Users: ["All", "Active", "Banned"],
-    Owners: ["All", "Active", "Banned"],
+    Owners: ["All", "Active", "Inactive"],
     Messages: ["All", "Feedbacks", "Reports"]
   };
 
-  tagsValues = {"All": [0, 1, 2],
-    "Unapproved": [0],
-    "Approved": [1],
-    "Archived": [2],
+  tagsValues = {
+    Restaurants: {"All": [0, 1, 2],
+      "Unapproved": [0],
+      "Approved": [1],
+      "Archived": [2]
+    },
+    Users: {"All": [0, 1],
+      "Active": [1],
+      "Banned": [0]
+    },
+    Owners: {"All": [0, 1],
+      "Active": [1],
+      "Inactive": [0]
+    },
   }
 
   routes = () =>{
@@ -94,7 +108,7 @@ class ModeratorPanel extends React.Component {
           render: (props) => {
             return (
               <RestaurantsForApprovalPage
-                restaurantStatus={this.tagsValues[this.state.selectedStatus.Restaurants]}
+                restaurantStatus={this.tagsValues.Restaurants[this.state.selectedStatus.Restaurants]}
               />
             );
           },
@@ -105,7 +119,7 @@ class ModeratorPanel extends React.Component {
           render: (props) => {
             return (
               <RestaurantsForApprovalPage
-                restaurantStatus={this.tagsValues[this.state.selectedStatus.Restaurants]}
+                restaurantStatus={this.tagsValues.Restaurants[this.state.selectedStatus.Restaurants]}
               />
             );
           },
@@ -116,8 +130,8 @@ class ModeratorPanel extends React.Component {
           render: (props) => {
             return (
               <ModeratorUsersPage
-                /*userStatus={this.tagsValues[this.state.selectedStatus.Users]}*/
-                userStatus={0}
+                isActive={this.tagsValues.Users[this.state.selectedStatus.Users]}
+                userStatus={1}
               />
             );
           },
@@ -129,7 +143,7 @@ class ModeratorPanel extends React.Component {
             return (
               <ModeratorUsersPage
                 /*userStatus={this.tagsValues[this.state.selectedStatus.Users]}*/
-                userStatus={1}
+                userStatus={2}
               />
             );
           },
