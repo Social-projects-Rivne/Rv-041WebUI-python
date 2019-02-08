@@ -98,6 +98,7 @@ class MenuPage extends React.Component {
   };
 
   render() {
+    console.log("1");
     const { classes } = this.props;
     if (this.state.error) {
       return <GeneralError error={this.state.errorMes} />;
@@ -145,7 +146,6 @@ class MenuPage extends React.Component {
                     direction="left"
                     in={this.state.isCartOpen}
                     mountOnEnter
-                    unmountOnExit
                   >
                     <OrderCart items={this.state.cartItems} />
                   </Slide>

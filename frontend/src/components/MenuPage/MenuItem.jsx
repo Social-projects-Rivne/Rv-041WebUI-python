@@ -11,9 +11,10 @@ import {
   IconButton,
   CardActions,
   Divider,
-  Modal
+  Modal,
+  TextField
 } from "@material-ui/core";
-import { ExpandMore, Forward, Done } from "@material-ui/icons";
+import { ExpandMore, Forward, Done, Add, Remove } from "@material-ui/icons";
 import classNames from "classnames";
 
 const styles = {
@@ -66,6 +67,13 @@ class MenuItem extends React.Component {
     }));
     this.props.addItemHook(this.props.item);
   };
+  handleChange = name => event => {
+    if (event.target.value >= 1) {
+      this.setState({
+        [name]: event.target.value
+      });
+    }
+  };
 
   handleExpandClick = () => {
     this.setState(state => ({ expanded: !state.expanded }));
@@ -96,21 +104,29 @@ class MenuItem extends React.Component {
               />
             </Grid>
             <Grid item xs={9}>
-              <Grid container spacing={16}>
-                <Grid item xs={8}>
+              <Grid container alignItems="center" spacing={16}>
+                <Grid item xs={7}>
                   <CardHeader title={name} />
                 </Grid>
                 <Grid item xs={1}>
                   <Typography>{amount}</Typography>
                 </Grid>
                 <Grid item xs={1}>
-                  <Typography>{price + "$"}</Typography>
+                  <Typography>{price / 100 + "$"}</Typography>
                 </Grid>
-                <Grid item xs={1}>
-                  <Typography>{this.state.quantity}</Typography>
-                </Grid>
-                <Grid item xs={1}>
-                  <Typography>{this.state.quantity * price}</Typography>
+                <Grid item xs={2}>
+                  <TextField
+                    id="standard-number"
+                    value={this.state.quantity}
+                    onChange={this.handleChange("quantity")}
+                    min={"0"}
+                    type="number"
+                    className={classes.textField}
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                    margin="normal"
+                  />
                 </Grid>
               </Grid>
               <Divider variant="fullWidth" />

@@ -95,8 +95,8 @@ def fill_db(session):
             Menu_item_models = []
             for j in range(menu_item_number):
                 menu_item = Meals[randint(0, meals_len-1)]
-                menu_item.aupdate({
-                    "price": 3.50,
+                menu_item.update({
+                    "price": 350,
                     "amount": 0.2
                 })
                 menu_item_model = MenuItem(**menu_item)
