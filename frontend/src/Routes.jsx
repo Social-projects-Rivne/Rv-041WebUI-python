@@ -62,7 +62,8 @@ const routes = [
   },
   {
     path: "/moderator",
-    component: ModeratorPanel
+    component: ModeratorPanel,
+    access: ["Moderator"]
   }
 ];
 
@@ -79,6 +80,7 @@ class Routes extends React.Component {
                 key={component}
                 path={path}
                 component={component}
+                access={access}
               />
             ) : (
               <PrivateRoute
@@ -86,6 +88,7 @@ class Routes extends React.Component {
                 key={component}
                 path={path}
                 component={component}
+                access={access}
               />
             )
           )}

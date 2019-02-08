@@ -56,8 +56,6 @@ const styles = theme => ({
 
 class PermanentDrawerLeft extends React.Component {
   state = {
-    isLoading: true,
-    accessAllowed: false,
     error: "",
     token: localStorage.getItem("token"),
     renderingComponent: <RestaurantsForApprovalPage />,
@@ -84,45 +82,9 @@ class PermanentDrawerLeft extends React.Component {
 
   classes = this.props.classes;
 
-  componentDidMount() {
-    const headers = new Headers({
-      "Content-Type": "application/json",
-      "X-Auth-Token": this.state.token
-    });
-
-    const fetchInit = {
-      method: "GET",
-      headers: headers
-    };
-
-    fetch("http://localhost:6543/api/moderator", fetchInit)
-      .then(response =>
-        !(response.status >= 200 && response.status < 300)
-          ? Promise.reject(response.status)
-          : response.json()
-      )
-      .then(data =>
-        this.setState({ isLoading: false, accessAllowed: data.success })
-      )
-      .catch(err =>
-        this.setState({
-          isLoading: false,
-          accessAllowed: false,
-          error: "" + err
-        })
-      );
-  }
-
   render() {
-    const { isLoading, accessAllowed, error } = this.state;
+    const { accessAllowed, error } = this.state;
     const { classes } = this.props;
-    if (isLoading) {
-      return null;
-    }
-
-    if (!accessAllowed) {
-      return <GeneralError error={error} />;
-    }
 
     return (
       <div className={classes.root}>
