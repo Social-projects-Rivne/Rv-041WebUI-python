@@ -29,7 +29,8 @@ class Login extends React.Component {
       email: "",
       password: "",
       error: false,
-      errorMes: ""
+      errorMes: "",
+      redirectToReferrer: false
     };
   }
 
@@ -70,14 +71,16 @@ class Login extends React.Component {
             role,
             userName
           });
-          if (role === "Moderator"){
-            this.props.history.push("/moderator");
-          } else{
-            this.props.history.push("/restaurants");
-          }
+          this.setState({ redirectToReferrer: true });
         } else {
           throw error;
         }
+      })
+      .then(() => {
+        const { from } = this.props.location.state || {
+          from: { pathname: "/restaurants" }
+        };
+        this.state.redirectToReferrer && this.props.history.push(from);
       })
       .catch(error => {
         this.setState({

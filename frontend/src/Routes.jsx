@@ -12,6 +12,7 @@ import ModeratorPanel from "./containers/ModeratorPanel";
 import ProfilePage from "./containers/ProfilePage";
 import AppHeader from "./containers/AppHeader";
 import RestaurantManagmentPage from "./containers/RestaurantManagmentPage";
+import PrivateRoute from "./Service/PrivatRoute";
 
 const routes = [
   {
@@ -33,13 +34,14 @@ const routes = [
     component: MenuPage
   },
   {
-    path: "/profile/my_restaurant/:id",
+    path: "/profile/restaurants/:id",
     component: RestaurantPage,
     exact: true
   },
   {
-    path: "/profile/my_restaurant/:id/edit",
-    component: RestaurantManagmentPage
+    path: "/profile/restaurants/:id/edit",
+    component: RestaurantManagmentPage,
+    access: ["Client", "Owner"]
   },
   {
     path: "/restaurants-map",
@@ -55,7 +57,8 @@ const routes = [
   },
   {
     path: "/profile",
-    component: ProfilePage
+    component: ProfilePage,
+    access: ["Client", "Owner"]
   },
   {
     path: "/moderator",
@@ -69,14 +72,23 @@ class Routes extends React.Component {
       <>
         <Route component={AppHeader} />
         <Switch>
-          {routes.map(({ path, component, exact }) => (
-            <Route
-              exact={exact}
-              key={component}
-              path={path}
-              component={component}
-            />
-          ))}
+          {routes.map(({ path, component, exact, access }) =>
+            !access ? (
+              <Route
+                exact={exact}
+                key={component}
+                path={path}
+                component={component}
+              />
+            ) : (
+              <PrivateRoute
+                exact={exact}
+                key={component}
+                path={path}
+                component={component}
+              />
+            )
+          )}
         </Switch>
       </>
     );

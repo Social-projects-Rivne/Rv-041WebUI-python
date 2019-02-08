@@ -86,9 +86,8 @@ class TagsList extends Component {
       <div className={classes.root}>
         <Grid container>
           {tagsArr.map((tag, index) => (
-            <Grid item xs={3}>
+            <Grid key={tag.name} item xs={3}>
               <Link
-                key={tag.name}
                 className={classes.iconLink}
                 to={
                   index === 0 ? "/restaurants" : `/restaurants?tag=${tag.name}`

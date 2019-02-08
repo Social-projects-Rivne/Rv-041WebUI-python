@@ -66,7 +66,7 @@ class RestaurantListItemMenu extends React.Component {
           <Divider />
           <MenuItem
             component={Link}
-            to={`/profile/my_restaurant/${restData.id}/edit`}
+            to={`/profile/restaurants/${restData.id}/edit`}
             onClick={this.handleClose}
           >
             <ListItemIcon>

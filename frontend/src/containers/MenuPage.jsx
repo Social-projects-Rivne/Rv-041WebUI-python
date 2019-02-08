@@ -7,8 +7,7 @@ import {
   CardMedia,
   withStyles,
   Typography,
-  Divider,
-  Button
+  Divider
 } from "@material-ui/core";
 import PageContainer from "./PageContainer";
 import GeneralError from "../components/ErrorPages/GeneralError";
@@ -77,7 +76,7 @@ class MenuPage extends React.Component {
   };
 
   render() {
-    const { classes, match } = this.props;
+    const { classes } = this.props;
     if (this.state.error) {
       return <GeneralError error={this.state.errorMes} />;
     } else {
