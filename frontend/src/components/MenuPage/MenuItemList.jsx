@@ -47,6 +47,7 @@ class MenuItemList extends React.Component {
                 scroll={scroll}
                 key={cat + "Key"}
                 add={this.addHeight}
+                addItemHook={this.props.addItemHook}
               />
             );
           })}

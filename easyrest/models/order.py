@@ -55,7 +55,7 @@ class Order(Base):
             food = item.food
             d = food.as_dict(exclude=exclude, include=include)
             d.update({"quantity": item.quantity})
-            d.update({"q_id": item.id})
+            d.update({"item_id": item.id})
             items.append(d)
         return items
 

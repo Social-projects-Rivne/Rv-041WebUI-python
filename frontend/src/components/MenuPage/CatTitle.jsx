@@ -22,7 +22,7 @@ class CatTitle extends React.Component {
           const key = cat + item.id;
           return (
             <Grid item key={key}>
-              <MenuItem item={item} />
+              <MenuItem item={item} addItemHook={this.props.addItemHook} />
             </Grid>
           );
         })}
