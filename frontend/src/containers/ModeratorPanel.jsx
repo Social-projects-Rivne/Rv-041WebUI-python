@@ -152,7 +152,7 @@ class ModeratorPanel extends React.Component {
             return (
               <ModeratorUsersPage
                 isActive={this.tagsValues.Users[this.state.selectedStatus.Users]}
-                userStatus={1}
+                userStatus={"users"}
               />
             );
           },
@@ -164,7 +164,7 @@ class ModeratorPanel extends React.Component {
             return (
               <ModeratorUsersPage
                 /*userStatus={this.tagsValues[this.state.selectedStatus.Users]}*/
-                userStatus={2}
+                userStatus={"owners"}
               />
             );
           },

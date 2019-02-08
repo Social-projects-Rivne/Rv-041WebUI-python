@@ -153,8 +153,7 @@ def get_users_controller(request):
             ]
         If user is unauthorized and not an admin - throw 403:
     """
-    user_status = request.headers.get('User-Status')
-
+    user_status = 1
     users =\
         request.dbsession.query(User).filter(User.status_id == user_status).all()
     if users:

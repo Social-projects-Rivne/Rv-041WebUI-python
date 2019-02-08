@@ -23,15 +23,15 @@ class ModeratorUsersPage extends Component {
       const headers = new Headers({
         'Content-Type': 'application/json',
         'X-Auth-Token': this.state.token,
-        'User-Status': this.props.userStatus
       });
 
+      const fetchURL = 'http://localhost:6543/api/moderator/' + this.props.userStatus;
       const fetchInit = {
         method: "GET",
         headers: headers,
       };
 
-      fetch('http://localhost:6543/api/moderator/users', fetchInit)
+      fetch(fetchURL, fetchInit)
         .then(response => (!(response.status >= 200 && response.status < 300)
           ? Promise.reject(response.status)
           : response.json()))
@@ -118,13 +118,13 @@ class ModeratorUsersPage extends Component {
 
     render() {
 
-        const {users, success, error, snackbarOpen, snackbarMsg} = this.state;
-        const {userStatus} = this.props;
+      const { users, success, error, snackbarOpen, snackbarMsg } = this.state;
+      const { userStatus } = this.props;
 
-        //prevent for rendering without fetch completing (init value is "null")
-        if (success === null){
-            return null;
-        }
+      //prevent for rendering without fetch completing (init value is "null")
+      if (success === null) {
+        return null;
+      }
 
     if (success) {
       return (
