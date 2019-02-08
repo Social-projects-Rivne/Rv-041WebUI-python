@@ -58,17 +58,38 @@ const styles = theme => ({
   }
 });
 
+function getSelectedItemName(pathname){
+
+  const findedIndex = pathname.lastIndexOf("moderator");
+
+  if(findedIndex===-1){
+    return("Restaurants");
+  }
+
+  let firstCharIndex = 0;
+
+  if(pathname.charAt(findedIndex + 9)==="/"){
+    firstCharIndex = findedIndex + 10;  
+  } else{
+    return("Restaurants");
+  }
+
+  const firstChar = pathname.charAt(firstCharIndex).toUpperCase();
+  const restWord  = pathname.substring(firstCharIndex + 1).toLowerCase();
+
+  const fullWord = firstChar + restWord;
+  console.log(fullWord); 
+  return(fullWord ? fullWord : "Restaurants");
+
+}
+
 class ModeratorPanel extends React.Component {
   state = {
     isLoading: true,
     accessAllowed: false,
     error: "",
     token: localStorage.getItem("token"),
-    selectedItemName: ((this.props.location.pathname).charAt((this.props.location.pathname).lastIndexOf("/")+1).toUpperCase() + 
-            ((this.props.location.pathname).substring((this.props.location.pathname).lastIndexOf("/")+2)).toLowerCase()) 
-            ?  ((this.props.location.pathname).charAt((this.props.location.pathname).lastIndexOf("/")+1).toUpperCase() + 
-            ((this.props.location.pathname).substring((this.props.location.pathname).lastIndexOf("/")+2)).toLowerCase())
-            : "Restaurants",
+    selectedItemName: getSelectedItemName(this.props.location.pathname),
     selectedStatus: {
       "Restaurants": "All",
       "Users": "All",
@@ -157,6 +178,15 @@ class ModeratorPanel extends React.Component {
             );
           },
           exact: true
+        },
+        {
+          path: "",
+          render: (props) => {
+            return (
+              <GeneralError error="404 Not Found"/>
+            );
+          },
+          /*exact: true*/
         }
       ]
     );
