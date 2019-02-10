@@ -3,9 +3,6 @@ import { Router, Route, Switch, Link } from "react-router-dom";
 import PropTypes, { string } from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
@@ -37,19 +34,17 @@ const drawerWidth = 240;
 
 const styles = theme => ({
   root: {
-    display: "flex"
+    display: "flex",
+    /*zIndex: theme.zIndex.appBar - 1,*/
   },
-  appBar: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth
-  },
-  drawer: {
+  /*drawer: {
+    zIndex: theme.zIndex.appBar - 2,
     width: drawerWidth,
     flexShrink: 0
   },
   drawerPaper: {
     width: drawerWidth
-  },
+  },*/
   toolbar: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
@@ -78,7 +73,6 @@ function getSelectedItemName(pathname){
   const restWord  = pathname.substring(firstCharIndex + 1).toLowerCase();
 
   const fullWord = firstChar + restWord;
-  console.log(fullWord); 
   return(fullWord ? fullWord : "Restaurants");
 
 }
@@ -151,7 +145,7 @@ class ModeratorPanel extends React.Component {
           render: (props) => {
             return (
               <ModeratorUsersPage
-                isActive={this.tagsValues.Users[this.state.selectedStatus.Users]}
+                userActivity={this.tagsValues.Users[this.state.selectedStatus.Users]}
                 userStatus={"users"}
               />
             );
@@ -163,7 +157,7 @@ class ModeratorPanel extends React.Component {
           render: (props) => {
             return (
               <ModeratorUsersPage
-                /*userStatus={this.tagsValues[this.state.selectedStatus.Users]}*/
+                userActivity={this.tagsValues.Owners[this.state.selectedStatus.Owners]}
                 userStatus={"owners"}
               />
             );
@@ -195,6 +189,7 @@ class ModeratorPanel extends React.Component {
   icons = {
     Restaurants: <Restaurant />,
     Users: <AccountCircle />,
+    Owners: <Work />,
     Messages: <Report />
   };
 
@@ -252,17 +247,16 @@ class ModeratorPanel extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Drawer
+        {/*<Drawer
           className={classes.drawer}
           variant="permanent"
           classes={{
             paper: classes.drawerPaper
           }}
-          anchor="left"
-        >
+        >*/}
           <div className={classes.toolbar} />
           <List>
-            {["Restaurants", "Users", "Messages"].map(
+            {["Restaurants", "Users", "Owners", "Messages"].map(
               (text, index) => (
                 <ListItem
                   button
@@ -277,7 +271,7 @@ class ModeratorPanel extends React.Component {
               )
             )}
           </List>
-        </Drawer>
+        {/*</Drawer>*/}
         <main className={classes.content}>
           <div>
             <GenericTabs

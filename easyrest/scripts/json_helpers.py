@@ -35,7 +35,7 @@ def form_dict(data, keys, normalize_datetime=False):
     """
     this function collide keys from "keys" parameter with values from "data" parameter to form dictionary
     :param data: list with data
-    :param keys: list of keys for formed dictionary
+    :param keys: tuple of keys for formed dictionary
     :return: dictionary with data from "data" and keys from "keys"
     """
     result = {}

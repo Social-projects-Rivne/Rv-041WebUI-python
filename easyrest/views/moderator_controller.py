@@ -56,7 +56,7 @@ def get_restaurants_controller(request):
     unapproved_restaurants =\
         request.dbsession.query(Restaurant).all()
     if unapproved_restaurants:
-        keys = ["id", "status", "creation_date", "name", "address_id", "phone", "owner_id", "owner_name"]
+        keys = ("id", "status", "creation_date", "name", "address_id", "phone", "owner_id", "owner_name")
         data = []
         for restaurant in unapproved_restaurants:
             restaurant_data = [
@@ -157,11 +157,12 @@ def get_users_controller(request):
     users =\
         request.dbsession.query(User).filter(User.status_id == user_status).all()
     if users:
-        keys = ["id", "status", "name", "phone_number", "email", "birth_date"]
+        keys = ("id", "is_active", "status", "name", "phone_number", "email", "birth_date")
         data = []
         for user in users:
             user_data = [
                 user.id,
+                user.is_active,
                 user_status,
                 user.name,
                 user.phone_number,
@@ -175,3 +176,101 @@ def get_users_controller(request):
     return wrap_data
 
 
+@view_config(route_name='moderator_get_owners', renderer='json', request_method='GET')
+@restrict_access(user_types=["Moderator"])
+def get_owners_controller(request):
+    """
+    GET owner controller to return information about owners for moderator
+    Args:
+        request: current pyramid request
+    Returns:
+        Json string(not pretty) created from dictionary with format:
+            {
+                "data": data,
+                "success": success,
+                "error": error
+            }
+        Where data is list with owners, presented in database.
+        Style:
+            [owner
+                {
+                }
+            ]
+        If user is unauthorized and not an admin - throw 403:
+    """
+    user_status = 2
+    users =\
+        request.dbsession.query(User).filter(User.status_id == user_status).all()
+    if users:
+        keys = ("id", "is_active", "status", "name", "phone_number", "email", "birth_date", "restaurants")
+        data = []
+        for user in users:
+            user_data = [
+                user.id,
+                user.is_active,
+                user_status,
+                user.name,
+                user.phone_number,
+                user.email,
+                user.birth_date,
+                [restaurant.name for restaurant in user.restaurants]
+            ]
+            data.append(form_dict(user_data, keys, True))
+        wrap_data = wrap(data)
+    else:
+        wrap_data = wrap([])
+    return wrap_data
+
+
+@view_config(route_name='moderator_manage_users', renderer='json', request_method='POST')
+@restrict_access(user_types=["Moderator"])
+def manage_users_controller(request):
+    """
+    POST request controller to handle user activity changing by moderator
+    Args:
+        request: current pyramid request
+    Returns:
+        Json string(not pretty) created from dictionary with format:
+            {
+                "data": Null,
+                "success": success,
+                "error": error
+            }
+        If user is unauthorized and not an admin - throw 403:
+    """
+    data = request.json_body
+    id = data["id"]
+    db_session = request.dbsession
+    try:
+        user = db_session.query(User).get(int(id))
+        user.is_active = int(not user.is_active)
+    except:
+        return wrap(success=False, error="User activity change failure")
+    return wrap(success=True)
+
+
+@view_config(route_name='moderator_manage_owners', renderer='json', request_method='POST')
+@restrict_access(user_types=["Moderator"])
+def manage_owners_controller(request):
+    """
+    POST request controller to handle owner activity changing by moderator
+    Args:
+        request: current pyramid request
+    Returns:
+        Json string(not pretty) created from dictionary with format:
+            {
+                "data": Null,
+                "success": success,
+                "error": error
+            }
+        If user is unauthorized and not an admin - throw 403:
+    """
+    data = request.json_body
+    id = data["id"]
+    db_session = request.dbsession
+    try:
+        user = db_session.query(User).get(int(id))
+        user.is_active = int(not user.is_active)
+    except:
+        return wrap(success=False, error="Owner activity change failure")
+    return wrap(success=True)

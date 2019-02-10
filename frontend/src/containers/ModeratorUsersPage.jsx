@@ -8,131 +8,122 @@ import {redirectToSignUp} from "../Service/NeedAuthorization";
 
 class ModeratorUsersPage extends Component {
 
-    state = {
-        success: null,
-        error: "",
-        token: localStorage.getItem("token"),
-        users: [],
-        snackbarOpen:false,
-        snackbarMsg: "",
-        currentUserId: null,
-        previousUserStatus: null
+  state = {
+    success: null,
+    error: "",
+    token: localStorage.getItem("token"),
+    users: [],
+    snackbarOpen: false,
+    snackbarMsg: "",
+    currentUserId: null,
+    previousUserStatus: null,
+  };
+
+  componentDidMount() {
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      'X-Auth-Token': this.state.token,
+    });
+
+    const fetchURL = 'http://localhost:6543/api/moderator/' + this.props.userStatus;
+    const fetchInit = {
+      method: "GET",
+      headers: headers,
     };
 
-    componentDidMount() {
-      const headers = new Headers({
-        'Content-Type': 'application/json',
-        'X-Auth-Token': this.state.token,
-      });
+    fetch(fetchURL, fetchInit)
+      .then(response => (!(response.status >= 200 && response.status < 300)
+        ? Promise.reject(response.status)
+        : response.json()))
+      .then(data => this.setState({
+        users: data.data,
+        success: data.success, error: data.error
+      }))
+      .catch(err => this.setState({ success: false, error: err.message }))
+  }
 
-      const fetchURL = 'http://localhost:6543/api/moderator/' + this.props.userStatus;
-      const fetchInit = {
-        method: "GET",
-        headers: headers,
-      };
+  handleUserBann = (user_id) => {
 
-      fetch(fetchURL, fetchInit)
-        .then(response => (!(response.status >= 200 && response.status < 300)
-          ? Promise.reject(response.status)
-          : response.json()))
-        .then(data => this.setState({
-          users: data.data,
-          success: data.success, error: data.error
-        }))
-        .catch(err => this.setState({ success: false, error: err.message }))
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      'X-Auth-Token': this.state.token
+    });
+    const fetchURL = 'http://localhost:6543/api/moderator/' + this.props.userStatus;
+    const fetchInit = {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify({ id: user_id }),
+    };
+
+    fetch(fetchURL, fetchInit)
+      .then(response => (!(response.status >= 200 && response.status < 300)
+        ? Promise.reject(response.status)
+        : response.json()))
+      .then(data => this.setState((prevState) => {
+        return {
+          success: data.success,
+          users: prevState.users.map(userInfo => {
+            if (userInfo.id === user_id) {
+              userInfo.is_active = Number(!userInfo.is_active);
+              return userInfo;
+            } else {
+              return userInfo;
+            }
+          }),
+          currentUserId: user_id,
+        }
+      }))
+      .catch(err => this.setState({
+        success: false,
+        error: "" + err,
+        snackbarOpen: true,
+        snackbarMsg: "" + err,
+        currentUserId: user_id
+      }))
+  };
+
+  handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
     }
+    this.setState({ snackbarOpen: false });
+  };
 
-    handleUserBann = (user_id,
-                      request_method,
-                      userStatus,
-                      prev_user_status, snackbarOpen = true) => {
-
-        const headers = new Headers({
-            'Content-Type': 'application/json',
-            'X-Auth-Token': this.state.token
-        });
-        const fetchInit = {
-            method: request_method,
-            headers: headers,
-            body: JSON.stringify({id: user_id, status: userStatus}),
-        };
-
-        let operationName = "";
-        if (request_method === "POST"){
-          operationName = "Approved";
-        }
-        if (request_method === "DELETE"){
-          operationName = "Disapproved";
-        }
-
-        fetch('http://localhost:6543/api/moderator/users', fetchInit)
-            .then(response => (!(response.status >= 200 && response.status < 300)
-                                 ?Promise.reject(response.status)
-                                  :response.json()))
-            .then(data => this.setState((prevState) => {
-              return{
-                success: data.success,
-                users: prevState.users.map(userInfo => {
-                  if (userInfo.id === user_id) {
-                    userInfo.status = userStatus;
-                    return userInfo;
-                  } else {
-                    return userInfo;
-                  }
-                }),
-                snackbarOpen: snackbarOpen,
-                snackbarMsg: operationName,
-                currentUserId: user_id,
-                previousUserStatus: prev_user_status
-              }
-            }))
-            .catch(err => this.setState({success: false,
-                                         error: "" + err,
-                                         snackbarOpen: true,
-                                         snackbarMsg: "" + err,
-                                         currentUserId: user_id}))
-    };
-
-    handleSnackbarClose = (event, reason) => {
-      if (reason === 'clickaway') {
-        return;
+  snackbarAction = (
+    <Button
+      color="secondary"
+      size="small"
+      onClick={() => {
+        this.handleRestaurantApprovement(this.state.currentRestaurantId,
+          this.state.previousUserStatus === 2 ? "DELETE" : "POST",
+          this.state.previousUserStatus,
+          null,
+          false);
       }
-      this.setState({ snackbarOpen: false });
-    };
-
-    snackbarAction = (
-      <Button
-          color="secondary"
-          size="small"
-          onClick={() => {
-            this.handleRestaurantApprovement(this.state.currentRestaurantId, 
-              this.state.previousUserStatus === 2 ? "DELETE" :"POST",
-              this.state.previousUserStatus,
-              null,
-              false);}
-          }
-        >
-        Undo
+      }
+    >
+      Undo
       </Button>
-    );
+  );
 
-    render() {
+  render() {
 
-      const { users, success, error, snackbarOpen, snackbarMsg } = this.state;
-      const { userStatus } = this.props;
+    const { users, success, error, snackbarOpen, snackbarMsg } = this.state;
+    const { userActivity, userStatus } = this.props;
 
-      //prevent for rendering without fetch completing (init value is "null")
-      if (success === null) {
-        return null;
-      }
+    //prevent for rendering without fetch completing (init value is "null")
+    if (success === null) {
+      return null;
+    }
 
     if (success) {
       return (
         <React.Fragment>
           <Users
             users={users}
-            handleRestaurantApprovement={this.handleRestaurantApprovement}
-            userStatus={userStatus}
+            handleUserBann={this.handleUserBann}
+            userActivity={userActivity}
+            userStatus = {userStatus}
           />
           <Snackbar
             anchorOrigin={{
@@ -145,7 +136,6 @@ class ModeratorUsersPage extends Component {
           >
             <SnackbarContent
               onClose={this.handleSnackbarClose}
-              action={success ? this.snackbarAction : null}
               variant={success ? "success" : "error"}
               message={
                 <Typography color="inherit" align="center">

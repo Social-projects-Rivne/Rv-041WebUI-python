@@ -56,6 +56,8 @@ function RestaurantForApproval(props) {
   const date = new Date(creation_date * 1000);
   //make button array, depending on Restaurant status
   let buttonArray = [];
+  let statusColor = "inherit";
+  let statusMessage = "";
 
   switch (status) {
     case 0:
@@ -75,6 +77,8 @@ function RestaurantForApproval(props) {
       >
         Approve
       </Button>);
+      statusColor = "secondary";
+      statusMessage = "Unapproved";
       break;
     case 1:
       buttonArray.push(<Button
@@ -85,6 +89,8 @@ function RestaurantForApproval(props) {
       >
         Delete
       </Button>);
+      statusColor = "primary";
+      statusMessage = "Approved";
       break;
     case 2:
       buttonArray.push(<Button
@@ -95,6 +101,8 @@ function RestaurantForApproval(props) {
       >
         Restore
       </Button>);
+      statusColor = "error";
+      statusMessage = "Archived";
       break;
     default:
       ;
@@ -119,6 +127,10 @@ function RestaurantForApproval(props) {
             image="https://media-cdn.tripadvisor.com/media/photo-f/04/43/20/9c/whisky-corner.jpg"
             title={name}
           />
+
+          <Typography component="p" color={statusColor}>
+            {statusMessage}
+          </Typography>
 
           <Typography component="p">
             Owner: {owner_name}
