@@ -35,10 +35,10 @@ function Users(props) {
   const buttons = (userId) => {
     return {
       "0":  <Typography component="div" color="error">
-              <unstable_Box fontWeight="fontWeightRegular" m={1}>Bunned</unstable_Box >
+              <unstable_Box fontWeight="fontWeightRegular" m={1}>Banned</unstable_Box >
               <IconButton 
                 className={classes.button}
-                aria-label="Bunned"
+                aria-label="Banned"
                 color="secondary"
                 onClick={() => handleUserBann(userId)}
               >
