@@ -66,11 +66,24 @@ def get_draft_order(request):
     Return:
         Order.as_dict()
     """
+    try:
+        rest_id = int(request.params["rest_id"])
+    except KeyError:
+        raise HTTPNotFound("No rest_id found in Get params")
+    except ValueError:
+        raise HTTPForbidden("rest_id should be iteger")
+
+    print(request.token.user.id, rest_id)
+
     order = request.dbsession.query(Order).filter(
-        Order.status == "Draft", Order.user_id == request.token.user.id).first()
+        Order.status == "Draft",
+        Order.user_id == request.token.user.id,
+        Order.rest_id == rest_id).first()
+
     if order is None:
         raise HTTPNotFound("No order in draft")
-    data = order.as_dict(exclude=["user_id", "rest_id"])
+
+    data = order.as_dict(exclude=["user_id"])
     data.update({
         "items": order.get_items(request.dbsession)
     })
@@ -81,10 +94,12 @@ def get_draft_order(request):
 @restrict_access(user_types=["Client"])
 def parse_localStorage(request):
     """Controller for get dictionary from list of items ids
+    DEPRECATED
     Expects:
-    [
-        id (int), ...
-    ]
+    {
+        rest_id: (int),
+        items: [id (int), ...]
+    }
     Return:
     [
         MenuItem.as_dict(), ...
@@ -92,26 +107,29 @@ def parse_localStorage(request):
     """
 
     try:
-        menu_item_ids = request.json_body
+        json = request.json_body
     except ValueError as e:
         raise HTTPBadRequest("Not valid json")
 
     schema = {
         "description": "Validate json inputs",
-        "type": "array",
-        "items": {
-            "type": "integer",
-            "minimum": 0
+        "type": "object",
+        "properties": {
+                "rest_id": {"type": "integer"},
+                "items": {"type": "array", "items": {
+                    "type": "integer",
+                    "minimum": 0
+                }}
         },
     }
 
     try:
-        validation(schema, menu_item_ids)
+        validation(schema, json)
     except ValidationError as e:
         raise HTTPForbidden("Wrong input data %s" % e)
 
     menu_items = request.dbsession.query(
-        MenuItem).filter(MenuItem.id.in_(menu_item_ids)).all()
+        MenuItem).filter(MenuItem.id.in_(json)).all()
 
     data = [item.as_dict(exclude=["category_id"]) for item in menu_items]
 

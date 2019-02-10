@@ -42,6 +42,14 @@ const styles = {
       transform: "rotate(-180deg)"
     }
   },
+  borderRight: {
+    borderRight: "1px solid",
+    borderColor: "rgba(0, 0, 0, 0.12)"
+  },
+  borderLeft: {
+    borderLeft: "1px solid",
+    borderColor: "rgba(0, 0, 0, 0.12)"
+  },
   addButton: {}
 };
 
@@ -52,8 +60,7 @@ class MenuItem extends React.Component {
     image: null,
     quantity: 1,
     transferToCart: {
-      isOcured: false,
-      itemId: null
+      isOcured: false
     }
   };
 
@@ -80,7 +87,6 @@ class MenuItem extends React.Component {
   };
 
   handleOpenImage = e => {
-    console.log(e.currentTarget);
     this.setState(state => ({
       isOpen: !state.isOpen,
       image: this.props.item.img
@@ -105,28 +111,36 @@ class MenuItem extends React.Component {
             </Grid>
             <Grid item xs={9}>
               <Grid container alignItems="center" spacing={16}>
-                <Grid item xs={7}>
+                <Grid item xs={6}>
                   <CardHeader title={name} />
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item xs={1} className={classes.borderLeft}>
                   <Typography>{amount}</Typography>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid
+                  item
+                  xs={1}
+                  className={classNames(
+                    classes.borderLeft,
+                    classes.borderRight
+                  )}
+                >
                   <Typography>{price / 100 + "$"}</Typography>
                 </Grid>
                 <Grid item xs={2}>
                   <TextField
-                    id="standard-number"
+                    id="quantity"
                     value={this.state.quantity}
                     onChange={this.handleChange("quantity")}
-                    min={"0"}
                     type="number"
                     className={classes.textField}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
                     margin="normal"
                   />
+                </Grid>
+                <Grid item xs={2} className={classes.borderLeft}>
+                  <Typography>
+                    {(price / 100) * this.state.quantity + "$"}
+                  </Typography>
                 </Grid>
               </Grid>
               <Divider variant="fullWidth" />

@@ -146,7 +146,7 @@ def fill_db(session):
         user_model.append(current_user)
 
     # Example orders
-    order = Order(date_created=int(time.time()), status=0)
+    order = Order(date_created=int(time.time()), status="Draft")
     user = user_model[-1]
     user.orders.append(order)
     items = Rest_models[-1].menu[0].menu_items[0:10]
@@ -164,7 +164,7 @@ def fill_db(session):
     user.orders[-1].items[3].food = items[3]
     user.orders[-1].items[4].food = items[4]
     user.orders[-1].items[-1].food = items[5]
-    order = Order(date_created=int(time.time()), status=0)
+    order = Order(date_created=int(time.time()), status="Draft")
     user = user_model[-1]
     user.orders.append(order)
     items = Rest_models[-1].menu[0].menu_items[0:10]

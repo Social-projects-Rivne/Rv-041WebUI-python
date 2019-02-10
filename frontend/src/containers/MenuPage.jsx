@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import PageContainer from "./PageContainer";
-import OrderCart from "../components/MenuPage/OrderCart";
+import OrderCartList from "../components/MenuPage/OrderCartList";
 import GeneralError from "../components/ErrorPages/GeneralError";
 import classnames from "classnames";
 
@@ -79,8 +79,34 @@ class MenuPage extends React.Component {
             Items: json.data.Items
           });
         }
-      });
+      })
+      .then(
+        fetch("http://localhost:6543/api/order?rest_id=" + restId, {
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": localStorage.getItem("token")
+          }
+        })
+      )
+      .then(response =>
+        response.status === 404
+          ? this.setState({ error: true, errorMes: "" })
+          : response.json()
+      )
+      .then(json => {
+        this.setState({
+          cartItems: json.items
+        });
+        localStorage.setItem("OrderId", json.id);
+      })
+      .catch(err =>
+        this.setState({ error: true, errorMes: err || "Something went wrong" })
+      );
   }
+
+  sendCreateOrder = () => {
+    console.log("Create order");
+  };
 
   handleCartExpand = item => {
     this.setState(state => ({ isCartOpen: !state.isCartOpen }));
@@ -98,7 +124,6 @@ class MenuPage extends React.Component {
   };
 
   render() {
-    console.log("1");
     const { classes } = this.props;
     if (this.state.error) {
       return <GeneralError error={this.state.errorMes} />;
@@ -147,7 +172,7 @@ class MenuPage extends React.Component {
                     in={this.state.isCartOpen}
                     mountOnEnter
                   >
-                    <OrderCart items={this.state.cartItems} />
+                    <OrderCartList items={this.state.cartItems} />
                   </Slide>
                 )}
               </Grid>
