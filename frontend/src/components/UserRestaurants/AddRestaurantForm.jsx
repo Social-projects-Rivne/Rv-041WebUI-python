@@ -8,6 +8,8 @@ import {
   InputLabel
 } from "@material-ui/core";
 import ListSelect from "../ListSelect";
+import Markdown from "../Markdown";
+import MarkdownEditor from "../MarkdownEditor";
 
 export class AddRestaurantForm extends React.Component {
   state = {
@@ -135,14 +137,14 @@ export class AddRestaurantForm extends React.Component {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <MarkdownEditor
               value={newRestaurant.description}
               name="description"
-              label="Restaurant Description"
-              multiline
-              rows="4"
-              fullWidth
+              lable="Restaurant Description"
             />
+          </Grid>
+          <Grid item xs={12}>
+            <Markdown>{newRestaurant.description}</Markdown>
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>

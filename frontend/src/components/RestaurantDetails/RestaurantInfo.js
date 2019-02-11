@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core/";
 import { Link } from "react-router-dom";
 import { amber, green, red } from "@material-ui/core/colors/index";
+import Markdown from "../Markdown";
 
 const styles = theme => ({
   root: {},
@@ -72,15 +73,12 @@ class RestaurantInfo extends React.Component {
               <Typography gutterBottom variant="h4">
                 {restInfo.name}
               </Typography>
-
               <Typography gutterBottom variant="h6" component="p">
                 Address: {restInfo.address_id} <br />
                 Phone: {restInfo.phone}
               </Typography>
               <Divider style={{ marginBottom: "2em" }} />
-              <Typography variant="body1" gutterBottom component="p">
-                {restInfo.description}
-              </Typography>
+              <Markdown>{restInfo.description}</Markdown>
               {auth && ableUpdate && restInfo.status !== deleteStatus && (
                 <Grid container justify="flex-end">
                   <Button
