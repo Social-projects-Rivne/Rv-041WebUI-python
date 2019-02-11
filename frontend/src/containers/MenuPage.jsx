@@ -105,6 +105,29 @@ class MenuPage extends React.Component {
           })
       );
   }
+  sendAddItem = (item, orderId) => {
+    console.log(item);
+    fetch("http://localhost:6543/api/order/" + orderId, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": localStorage.getItem("token")
+      },
+      body: JSON.stringify({
+        item_id: item.id,
+        q_value: item.quantity
+      })
+    })
+      .then(response =>
+        response.status === 404 || response.status === 403
+          ? Promise.reject(response)
+          : response.json()
+      )
+      .then(json => {
+        console.log(json);
+      })
+      .catch(error => console.log(error));
+  };
 
   sendCreateOrder = item => {
     const orderId = localStorage.getItem("OrderId");
@@ -125,31 +148,12 @@ class MenuPage extends React.Component {
             : response.json()
         )
         .then(json => {
+          this.sendAddItem(item, orderId);
           localStorage.setItem("OrderId", json.data.order_id);
         })
         .catch(error => console.log(error));
     } else {
-      console.log(item);
-      fetch("http://localhost:6543/api/order/" + orderId, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-auth-token": localStorage.getItem("token")
-        },
-        body: JSON.stringify({
-          item_id: item.id,
-          q_value: item.quantity
-        })
-      })
-        .then(response =>
-          response.status === 404 || response.status === 403
-            ? Promise.reject(response)
-            : response.json()
-        )
-        .then(json => {
-          console.log(json);
-        })
-        .catch(error => console.log(error));
+      this.sendAddItem(item, orderId);
     }
   };
 
@@ -162,7 +166,7 @@ class MenuPage extends React.Component {
       return sItem === item;
     });
     console.log(dublicates);
-    if (dublicates.length > 0) {
+    if (dublicates.length == 0) {
       return 0;
     }
     this.state.cartItems.push(item);
@@ -205,6 +209,7 @@ class MenuPage extends React.Component {
                   cats={this.state.Categories}
                   scroll={this.handleCatScroll}
                   addItemHook={this.handleAddItem}
+                  inCartItems={this.state.cartItems}
                 />
               </Grid>
               <Grid item xs={12} md={2}>

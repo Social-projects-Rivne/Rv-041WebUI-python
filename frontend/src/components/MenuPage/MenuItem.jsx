@@ -14,7 +14,7 @@ import {
   Modal,
   TextField
 } from "@material-ui/core";
-import { ExpandMore, Forward, Done, Add, Remove } from "@material-ui/icons";
+import { ExpandMore, Forward, Done } from "@material-ui/icons";
 import classNames from "classnames";
 
 const styles = {
@@ -68,7 +68,6 @@ class MenuItem extends React.Component {
     console.log(this.props);
     this.setState(state => ({
       transferToCart: {
-        ...state.transferToCart,
         isOcured: !state.transferToCart.isOcured
       }
     }));
@@ -96,6 +95,18 @@ class MenuItem extends React.Component {
       image: this.props.item.img
     }));
   };
+  comcomponentWillReceiveProps() {
+    const inCartItems = this.props.inCartItems;
+    const isIt = inCartItems.filter(item => {
+      return item.id == this.props.item.id;
+    });
+    if (isIt.length != 0) {
+      this.setState({
+        transferToCart: { isOcured: true }
+      });
+    }
+    console.log(isIt, inCartItems, this.props.item.id);
+  }
 
   render() {
     const { classes, item } = this.props;
