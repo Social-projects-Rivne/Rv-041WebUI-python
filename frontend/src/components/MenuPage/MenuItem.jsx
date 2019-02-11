@@ -72,7 +72,11 @@ class MenuItem extends React.Component {
         isOcured: !state.transferToCart.isOcured
       }
     }));
-    this.props.addItemHook(this.props.item);
+    const item = {
+      ...this.props.item,
+      quantity: this.state.quantity
+    };
+    this.props.addItemHook(item);
   };
   handleChange = name => event => {
     if (event.target.value >= 1) {
@@ -179,7 +183,7 @@ class MenuItem extends React.Component {
                         <Forward />
                       </IconButton>
                     ) : (
-                      <IconButton disableFocusRipple disableRipple disabled>
+                      <IconButton disableRipple disabled>
                         <Done />
                       </IconButton>
                     )}

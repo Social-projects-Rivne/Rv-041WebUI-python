@@ -87,25 +87,70 @@ class MenuPage extends React.Component {
             "x-auth-token": localStorage.getItem("token")
           }
         })
-      )
-      .then(response =>
-        response.status === 404
-          ? this.setState({ error: true, errorMes: "" })
-          : response.json()
-      )
-      .then(json => {
-        this.setState({
-          cartItems: json.items
-        });
-        localStorage.setItem("OrderId", json.id);
-      })
-      .catch(err =>
-        this.setState({ error: true, errorMes: err || "Something went wrong" })
+          .then(response =>
+            response.status === 404 || response.status === 403
+              ? Promise.reject(response)
+              : response.json()
+          )
+          .then(json => {
+            console.log(json);
+            this.setState({
+              cartItems: json.data.items
+            });
+            localStorage.setItem("OrderId", json.data.id);
+          })
+          .catch(error => {
+            console.log(error);
+            localStorage.setItem("OrderId", null);
+          })
       );
   }
 
-  sendCreateOrder = () => {
-    console.log("Create order");
+  sendCreateOrder = item => {
+    const orderId = localStorage.getItem("OrderId");
+    if (orderId === "null" || orderId === "undefined") {
+      fetch("http://localhost:6543/api/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": localStorage.getItem("token")
+        },
+        body: JSON.stringify({
+          rest_id: this.props.match.params.restId
+        })
+      })
+        .then(response =>
+          response.status === 404 || response.status === 403
+            ? Promise.reject(response)
+            : response.json()
+        )
+        .then(json => {
+          localStorage.setItem("OrderId", json.data.order_id);
+        })
+        .catch(error => console.log(error));
+    } else {
+      console.log(item);
+      fetch("http://localhost:6543/api/order/" + orderId, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": localStorage.getItem("token")
+        },
+        body: JSON.stringify({
+          item_id: item.id,
+          q_value: item.quantity
+        })
+      })
+        .then(response =>
+          response.status === 404 || response.status === 403
+            ? Promise.reject(response)
+            : response.json()
+        )
+        .then(json => {
+          console.log(json);
+        })
+        .catch(error => console.log(error));
+    }
   };
 
   handleCartExpand = item => {
@@ -113,8 +158,16 @@ class MenuPage extends React.Component {
   };
 
   handleAddItem = item => {
-    this.setState(state => ({ isCartOpen: true }));
+    const dublicates = this.state.cartItems.filter(sItem => {
+      return sItem === item;
+    });
+    console.log(dublicates);
+    if (dublicates.length > 0) {
+      return 0;
+    }
     this.state.cartItems.push(item);
+    this.sendCreateOrder(item);
+    this.setState(state => ({ isCartOpen: true }));
   };
 
   handleCatScroll = index => {

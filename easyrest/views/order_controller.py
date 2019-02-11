@@ -11,6 +11,7 @@ from ..models.order import Order
 from ..models.order_assoc import OrderAssoc
 from ..models.menu_item import MenuItem
 from ..models.user import User
+from ..models.restaurant import Restaurant
 from ..auth import restrict_access
 from ..models.validator import validation
 from ..exceptions import ValidationError
@@ -44,15 +45,34 @@ def get_orders(request):
 @restrict_access(user_types=["Client"])
 def create_draft_order(request):
     """Controller for creating empty(in Draft) order
+    Expects:
+    {
+        rest_id: (int)
+    }
     Return:
     {
         order_id: (int) id of created order
     }
     """
-    order = Order(date_created=int(time.time()))
+    try:
+        rest_id = request.json_body["rest_id"]
+    except ValueError as e:
+        raise HTTPBadRequest("Not valid json")
+
+    rest = request.dbsession.query(Restaurant).get(rest_id)
+
+    if rest is None:
+        raise HTTPNotFound("No such rest")
+
+    order = Order(date_created=int(time.time()), status="Draft")
     user = request.token.user
     order.user = user
+    order.restaurant = rest
+    request.dbsession.add(order)
     request.dbsession.flush()
+    # if order.id is None:
+    #     raise HTTPBadRequest("Something went wrong")
+    print(order)
     data = {
         "order_id": order.id
     }
