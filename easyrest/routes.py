@@ -16,7 +16,7 @@ def includeme(config):
                      request_method="GET")
     config.add_route('get_menus', 'restaurant/{rest_id:\d+}/menu',
                      request_method="GET")
-    config.add_route('get_all_with_cats', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}',
+    config.add_route('menu_items', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}',
                      request_method="GET")
     config.add_route('get_by_category', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}/{cat_id:\d+}',
                      request_method="GET")
@@ -43,3 +43,11 @@ def includeme(config):
     config.add_route('delete_restaurant', 'delete_restaurant',
                      request_method="PUT")
     config.add_route('sign_up', 'sign_up', request_method="POST")
+    config.add_route('get_orders', 'orders', request_method="GET")
+    # acording to CRUD(Create, Read, Update, Delete)
+    #                 (POST,   GET,  PUT,    DELETE)
+    config.add_route('order', 'order', request_method=["POST", "GET", "PUT"])
+    config.add_route('order_by_id', 'order/{order_id:\d+}',
+                     request_method=["POST", "GET", "PUT", "DELETE"])
+    config.add_route('order_status', 'order/{order_id:\d+}/status',
+                     request_method=["GET", "PUT"])

@@ -156,7 +156,7 @@ def get_users_controller(request):
     """
     user_status = 1
     users =\
-        request.dbsession.query(User).filter(User.status_id == user_status).all()
+        request.dbsession.query(User).filter(User.role_id == user_status).all()
     if users:
         keys = ("id", "is_active", "status", "name", "phone_number", "email", "birth_date")
         data = []
@@ -201,7 +201,7 @@ def get_owners_controller(request):
     """
     user_status = 2
     users =\
-        request.dbsession.query(User).filter(User.status_id == user_status).all()
+        request.dbsession.query(User).filter(User.role_id == user_status).all()
     if users:
         keys = ("id", "is_active", "status", "name", "phone_number", "email", "birth_date", "restaurants")
         data = []
