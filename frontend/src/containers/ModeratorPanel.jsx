@@ -85,7 +85,7 @@ class ModeratorPanel extends React.Component {
   tags = {
     Restaurants: ["All", "Unapproved", "Approved", "Archived"],
     Users: ["All", "Active", "Banned"],
-    Owners: ["All", "Active", "Inactive"],
+    Owners: ["All", "Active", "Banned"],
     Messages: ["All", "Feedbacks", "Reports"]
   };
 
@@ -101,7 +101,7 @@ class ModeratorPanel extends React.Component {
     },
     Owners: {"All": [0, 1],
       "Active": [1],
-      "Inactive": [0]
+      "Banned": [0]
     },
   }
 

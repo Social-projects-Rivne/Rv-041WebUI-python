@@ -1,6 +1,7 @@
 """
 This module describe getting, approving/disapproving of unapproved restaurants by Moderator,
-This module describes behavior of "user_restaurants" route
+This module describe getting, banning/unbanning users and owners by Moderator,
+This module describes behavior of "moderator/restaurants", "moderator/users" and "moderator/owners" routes
 """
 
 from pyramid.view import view_config

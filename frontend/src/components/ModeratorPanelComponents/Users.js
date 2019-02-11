@@ -19,14 +19,13 @@ const styles = theme => ({
     overflowX: 'auto',
   },
   table: {
-    /*minWidth: 700,*/
+    minWidth: 700,
   },
 });
 
 function Users(props) {
 
   const { users, handleUserBann, userActivity, userStatus, classes } = props;
-  console.log(users)
 
   const buttons = (userId) => {
     return {
@@ -55,40 +54,40 @@ function Users(props) {
         <TableHead>
           <TableRow>
             <TableCell>
-              <Typography gutterBottom variant="h6" >
+              <Typography gutterBottom variant="subtitle2" >
                   Name
               </Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography gutterBottom variant="h6" >
+              <Typography gutterBottom variant="subtitle2" >
                   email
               </Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography gutterBottom variant="h6" >
+              <Typography gutterBottom variant="subtitle2" >
                   Phone number
               </Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography gutterBottom variant="h6" >
+              <Typography gutterBottom variant="subtitle2" >
                   Birth date
               </Typography>
             </TableCell>
             {userStatus === "owners" ? 
               <TableCell align="right">
-                <Typography gutterBottom variant="h6" >
+                <Typography gutterBottom variant="subtitle2" >
                     Restaurants
                 </Typography>
               </TableCell>
               : null
             }
             <TableCell align="right">
-              <Typography gutterBottom variant="h6" >
+              <Typography gutterBottom variant="subtitle2" >
                   Activity
               </Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography gutterBottom variant="h6" >
+              <Typography gutterBottom variant="subtitle2" >
                   Actions
               </Typography>
             </TableCell>
