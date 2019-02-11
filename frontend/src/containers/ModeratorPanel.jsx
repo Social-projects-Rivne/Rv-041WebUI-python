@@ -1,36 +1,26 @@
 import React from "react";
-import { Router, Route, Switch, Link } from "react-router-dom";
-import PropTypes, { string } from "prop-types";
+import PropTypes from 'prop-types';
+import { Route, Switch, Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
+/*import Drawer from "@material-ui/core/Drawer";*/
 import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
 import {
   Restaurant,
   AccountCircle,
   Work,
-  Feedback,
   Report,
-  Archive,
-  ExpandLess,
-  ExpandMore
 } from "@material-ui/icons";
 
-import ArchivePage from "./ArchiveDataPage";
 import Messages from "./MessagesFeedbacksPage";
 import GeneralError from "../components/ErrorPages/GeneralError";
 import RestaurantsForApprovalPage from "./RestaurantsForApprovalPage";
 import ModeratorUsersPage from "./ModeratorUsersPage";
-import ClassNames from "classnames";
 import GenericTabs from "../Service/GenericTabs";
 
-const drawerWidth = 240;
+/*const drawerWidth = 240;*/
 
 const styles = theme => ({
   root: {

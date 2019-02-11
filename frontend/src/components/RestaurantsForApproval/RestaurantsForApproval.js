@@ -2,7 +2,7 @@ import React from "react";
 import RestaurantForApproval from "./RestaurantForApproval";
 import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import Paper from '@material-ui/core/Paper';
+/*import Paper from '@material-ui/core/Paper';*/
 
 const styles = theme => ({
   root: {
@@ -17,7 +17,7 @@ function RestaurantsForApproval(props) {
   const { unapprovedRestaurants, 
           handleRestaurantApprovement,
           restaurantStatus,
-          classes } = props;
+          /*classes*/ } = props;
 
   return (
     /*<Paper className={classes.root}>*/

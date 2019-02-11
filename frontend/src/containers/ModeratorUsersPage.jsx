@@ -3,7 +3,6 @@ import {Snackbar, Typography, Button} from "@material-ui/core";
 import GeneralError from "../components/ErrorPages/GeneralError";
 import SnackbarContent from "../components/SnackbarContent";
 import Users from "../components/ModeratorPanelComponents/Users";
-import {redirectToSignUp} from "../Service/NeedAuthorization";
 
 
 class ModeratorUsersPage extends Component {

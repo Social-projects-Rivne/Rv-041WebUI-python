@@ -1,10 +1,7 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import {
-  Grid, 
-  Button,
   Typography,
-  unstable_Box,
   Table,
   TableBody,
   TableCell,
@@ -14,7 +11,6 @@ import {
   IconButton
 }from "@material-ui/core/";
 import {Lock, LockOpen} from '@material-ui/icons';
-import { amber, green } from "@material-ui/core/colors/index";
 
 const styles = theme => ({
   root: {
@@ -23,7 +19,7 @@ const styles = theme => ({
     overflowX: 'auto',
   },
   table: {
-    minWidth: 700,
+    /*minWidth: 700,*/
   },
 });
 
@@ -34,28 +30,22 @@ function Users(props) {
 
   const buttons = (userId) => {
     return {
-      "0":  <Typography component="div" color="error">
-              <unstable_Box fontWeight="fontWeightRegular" m={1}>Banned</unstable_Box >
-              <IconButton 
-                className={classes.button}
-                aria-label="Banned"
-                color="secondary"
-                onClick={() => handleUserBann(userId)}
-              >
-                <Lock />
-              </IconButton>
-            </Typography> ,
-      "1": <Typography component="div" color="primary">
-              <unstable_Box fontWeight="fontWeightRegular" m={1}>Active</unstable_Box >
-              <IconButton
-                className={classes.button}
-                aria-label="Active"
-                color="primary"
-                onClick={() => handleUserBann(userId)}
-              >
-                <LockOpen />
-              </IconButton>
-            </Typography>  
+      "0":  
+        <IconButton
+          className={classes.button}
+          color="secondary"
+          onClick={() => handleUserBann(userId)}
+        >
+          <Lock />
+        </IconButton>,
+      "1": 
+        <IconButton
+          className={classes.button}
+          color="primary"
+          onClick={() => handleUserBann(userId)}
+        >
+          <LockOpen />
+        </IconButton>
     };
   } 
   
@@ -65,36 +55,41 @@ function Users(props) {
         <TableHead>
           <TableRow>
             <TableCell>
-              <Typography component="h1">
-                Name
+              <Typography gutterBottom variant="h6" >
+                  Name
               </Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography component="h1">
-                email
+              <Typography gutterBottom variant="h6" >
+                  email
               </Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography component="h1">
-                Phone number
+              <Typography gutterBottom variant="h6" >
+                  Phone number
               </Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography component="h1">
-                Birth date
+              <Typography gutterBottom variant="h6" >
+                  Birth date
               </Typography>
             </TableCell>
             {userStatus === "owners" ? 
               <TableCell align="right">
-                <Typography component="h1">
-                  Restaurants
+                <Typography gutterBottom variant="h6" >
+                    Restaurants
                 </Typography>
               </TableCell>
               : null
             }
             <TableCell align="right">
-              <Typography component="h1">
-                Activity
+              <Typography gutterBottom variant="h6" >
+                  Activity
+              </Typography>
+            </TableCell>
+            <TableCell align="right">
+              <Typography gutterBottom variant="h6" >
+                  Actions
               </Typography>
             </TableCell>
           </TableRow>
@@ -116,6 +111,11 @@ function Users(props) {
                                                     {restaurantName}
                                                   </Typography>);})}
                                               </TableCell>: null}
+                  <TableCell align="right">
+                    <Typography component="p" color={userInfo.is_active ? "primary" : "error"}>
+                        {userInfo.is_active ? "Active" : "Banned"}
+                    </Typography>  
+                  </TableCell>
                   <TableCell align="right">
                     {buttons(userInfo.id)[""+ userInfo.is_active]}
                   </TableCell>
