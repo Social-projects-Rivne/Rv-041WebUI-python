@@ -6,6 +6,8 @@ Curently describes:
 """
 from pyramid.view import notfound_view_config
 from pyramid.view import forbidden_view_config
+from pyramid.view import exception_view_config
+from pyramid.httpexceptions import HTTPBadRequest
 
 from ..scripts.json_helpers import wrap
 
@@ -31,4 +33,16 @@ def notfound_view(error, request):
     :return: dictionary
     """
     request.response.status_code = 404
+    return wrap([], False, "%s: %s" % (error.title, error.args[0]))
+
+
+@exception_view_config(HTTPBadRequest, renderer='json')
+def badrequest_view(error, request):
+    """
+    Overrided notfound view for adding specific information to it.
+    :param error: object represents error
+    :param request: standard Pyramid Request object
+    :return: dictionary
+    """
+    request.response.status_code = 400
     return wrap([], False, "%s: %s" % (error.title, error.args[0]))

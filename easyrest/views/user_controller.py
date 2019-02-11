@@ -48,6 +48,5 @@ def sign_up(request):
         database.flush()
         return wrap([], success=True)
     except IntegrityError:
-        print "123123"
         database.rollback()
         raise HTTPForbidden("User already exists!")

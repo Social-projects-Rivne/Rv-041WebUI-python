@@ -7,7 +7,7 @@ from faker import Faker
 from passlib.hash import pbkdf2_sha256
 
 from tags_data import Tags
-from ..models import Tag, Menu, Restaurant, MenuItem, User, UserStatus, Category
+from ..models import Tag, Menu, Restaurant, MenuItem, User, UserRole, Category, Order, OrderAssoc
 from menu_data import Menus, Categories, Meals, Images
 
 
@@ -37,16 +37,18 @@ def fill_db(session):
 
     # create example user statuses(user types)
 
-    UserStatuses = [
-        UserStatus(name='Client'),
-        UserStatus(name='Owner'),
-        UserStatus(name='Moderator'),
-        UserStatus(name='Admin')
+    UserRoles = [
+        UserRole(name='Client'),
+        UserRole(name='Owner'),
+        UserRole(name='Moderator'),
+        UserRole(name='Admin'),
+        UserRole(name='Administrator'),
+        UserRole(name='Waiter')
     ]
 
-    session.add_all(UserStatuses)
+    session.add_all(UserRoles)
 
-    # Create 5 users with status Owner
+    # Create 5 users with role Owner
     # and with hashed password "1111
     number_of_owners = 5
     Users = []
@@ -55,7 +57,7 @@ def fill_db(session):
         Users.append(User(name=user_name,
                           email=user_name.lower().replace(" ", "")+'@test.com',
                           password=pbkdf2_sha256.hash("1111"),
-                          status=UserStatuses[1],
+                          role=UserRoles[1],
                           phone_number="+38098" + str(1000000 + i),
                           birth_date=fake.date_of_birth(
                               tzinfo=None, minimum_age=18, maximum_age=100)
@@ -63,7 +65,7 @@ def fill_db(session):
                      )
     session.add_all(Users)
 
-    # Restaurant status can be 0-waiting for confirmation, 1-active (confirmed), 2-archived
+    # Restaurant role can be 0-waiting for confirmation, 1-active (confirmed), 2-archived
     rest_status = 0
 
     Cat_models = [Category(**cat) for cat in Categories]
@@ -133,18 +135,57 @@ def fill_db(session):
         current_user = User(name=user_name,
                             email=user_name.lower().replace(" ", "")+'@test.com',
                             password=pbkdf2_sha256.hash("1111"),
-                            status=UserStatuses[0],
+                            role=UserRoles[0],
                             phone_number="+38098" +
                             str(1000000 + number_of_owners + i),
                             birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
         user_model.append(current_user)
 
+    # Example orders
+    order = Order(date_created=int(time.time()), status=0)
+    user = user_model[-1]
+    user.orders.append(order)
+    items = Rest_models[-1].menu[0].menu_items[0:10]
+    user.orders[-1].items.append(OrderAssoc(quantity=1))
+    user.orders[-1].items.append(OrderAssoc(quantity=2))
+    user.orders[-1].items.append(OrderAssoc(quantity=3))
+    user.orders[-1].items.append(OrderAssoc(quantity=4))
+    user.orders[-1].items.append(OrderAssoc(quantity=5))
+
+    user.orders[-1].restaurant = Rest_models[-1]
+
+    user.orders[-1].items[0].food = items[0]
+    user.orders[-1].items[1].food = items[1]
+    user.orders[-1].items[2].food = items[2]
+    user.orders[-1].items[3].food = items[3]
+    user.orders[-1].items[4].food = items[4]
+    user.orders[-1].items[-1].food = items[5]
+    order = Order(date_created=int(time.time()), status=0)
+    user = user_model[-1]
+    user.orders.append(order)
+    items = Rest_models[-1].menu[0].menu_items[0:10]
+    user.orders[-1].items.append(OrderAssoc(quantity=10))
+    user.orders[-1].items.append(OrderAssoc(quantity=20))
+    user.orders[-1].items.append(OrderAssoc(quantity=30))
+    user.orders[-1].items.append(OrderAssoc(quantity=40))
+    user.orders[-1].items.append(OrderAssoc(quantity=50))
+    user.orders[-1].items.append(OrderAssoc(quantity=60))
+
+    user.orders[-1].restaurant = Rest_models[-1]
+
+    user.orders[-1].items[0].food = items[0]
+    user.orders[-1].items[1].food = items[1]
+    user.orders[-1].items[2].food = items[2]
+    user.orders[-1].items[3].food = items[3]
+    user.orders[-1].items[4].food = items[4]
+    user.orders[-1].items[-1].food = items[5]
+    user.orders[-1].items[-1].food = items[6]
     # add Moderator and Admin
     user_name = fake.name()
     moderator = User(name="Peter Moderator",
                      email='petermoderator'+'@test.com',
                      password=pbkdf2_sha256.hash("1"),
-                     status=UserStatuses[2],
+                     role=UserRoles[2],
                      phone_number="+380666666661",
                      birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
     user_model.append(moderator)
@@ -153,10 +194,28 @@ def fill_db(session):
     admin = User(name="Steve Admin",
                       email="steveadmin"+'@test.com',
                       password=pbkdf2_sha256.hash("1"),
-                      status=UserStatuses[3],
+                      role=UserRoles[3],
                       phone_number="+380666666662",
                       birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
     user_model.append(admin)
+
+    user_name = fake.name()
+    admin = User(name="Peter Administrator",
+                      email="peteradmin"+'@test.com',
+                      password=pbkdf2_sha256.hash("1"),
+                      role=UserRoles[4],
+                      phone_number="+380666666662",
+                      birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
+    user_model.append(admin)
+
+    user_name = fake.name()
+    waiter = User(name="Stepan the Waiter",
+                  email="stepanwaiter"+'@test.com',
+                  password=pbkdf2_sha256.hash("1"),
+                  role=UserRoles[5],
+                  phone_number="+380666666662",
+                  birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
+    user_model.append(waiter)
 
     # insert data into database
     session.add_all(Rest_models)
