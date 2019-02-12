@@ -8,8 +8,7 @@ import {
   InputLabel
 } from "@material-ui/core";
 import ListSelect from "../ListSelect";
-import Markdown from "../Markdown";
-import MarkdownEditor from "../MarkdownEditor";
+import MarkdownEditor from "../Markdown/MarkdownEditor";
 
 export class AddRestaurantForm extends React.Component {
   state = {
@@ -18,7 +17,8 @@ export class AddRestaurantForm extends React.Component {
       address: "",
       phone: "",
       description: "",
-      tags: []
+      tags: [],
+      markup: {}
     },
     allTags: []
   };
@@ -94,6 +94,12 @@ export class AddRestaurantForm extends React.Component {
     }));
   };
 
+  handleMarkupChange = content => {
+    this.setState(prevState => ({
+      newRestaurant: { ...prevState.newRestaurant, markup: content }
+    }));
+  };
+
   render() {
     const { allTags, newRestaurant } = this.state;
     const { handleCloseFormClick } = this.props;
@@ -137,14 +143,14 @@ export class AddRestaurantForm extends React.Component {
             />
           </Grid>
           <Grid item xs={12}>
-            <MarkdownEditor
+            <TextField
               value={newRestaurant.description}
               name="description"
-              lable="Restaurant Description"
+              label="Restaurant Description"
+              fullWidth
+              multiline
+              rows="4"
             />
-          </Grid>
-          <Grid item xs={12}>
-            <Markdown>{newRestaurant.description}</Markdown>
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
@@ -156,6 +162,9 @@ export class AddRestaurantForm extends React.Component {
                 onListChange={this.handleTagsChange}
               />
             </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <MarkdownEditor onMarkupChange={this.handleMarkupChange} />
           </Grid>
           <Grid item xs={3}>
             <Button
