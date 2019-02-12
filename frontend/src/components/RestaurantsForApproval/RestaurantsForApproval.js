@@ -2,13 +2,12 @@ import React from "react";
 import RestaurantForApproval from "./RestaurantForApproval";
 import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-/*import Paper from '@material-ui/core/Paper';*/
+import Paper from '@material-ui/core/Paper';
 
 const styles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit * 3,
-    overflowX: 'auto',
+    marginTop: theme.spacing.unit * 3
   }
 });
 
@@ -17,11 +16,10 @@ function RestaurantsForApproval(props) {
   const { unapprovedRestaurants, 
           handleRestaurantApprovement,
           restaurantStatus,
-          /*classes*/ } = props;
+          classes } = props;
 
   return (
-    /*<Paper className={classes.root}>*/
-    <Grid container spacing={16}>
+    <Grid className={classes.root} container spacing={16}>
       {unapprovedRestaurants.map(restaurantInfo => {
         if (restaurantStatus.indexOf(restaurantInfo.status) !== -1 ) {
           return (
@@ -38,7 +36,6 @@ function RestaurantsForApproval(props) {
         }
       })}
     </Grid>
-    /*</Paper>*/
   );
 }
 
