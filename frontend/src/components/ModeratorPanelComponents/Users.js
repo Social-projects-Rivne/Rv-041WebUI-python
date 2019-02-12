@@ -120,9 +120,7 @@ function Users(props) {
                   </TableCell>
                 </TableRow>
               );
-            } else {
-              return null;
-            }
+            } 
           })}
         </TableBody>
       </Table>
