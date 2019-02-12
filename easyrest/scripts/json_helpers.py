@@ -31,23 +31,21 @@ def wrap(data=[], success=True, error=None, message=None,):
     return data_dict
 
 
-def form_dict(data, keys, normalize_datetime=False):
+def form_dict(record, keys, normalize_datetime=False):
     """
     this function collide keys from "keys" parameter with values from "data" parameter to form dictionary
-    :param data: list with data
+    :param record: collection with data
     :param keys: tuple of keys for formed dictionary
     :return: dictionary with data from "data" and keys from "keys"
     """
     result = {}
-    if len(data) != len(keys):
-        return result
-    for i in range(len(data)):
-        value = data[i]
+    for key in keys:
+        value = getattr(record, key)
         if normalize_datetime:
             value = date_time_normalize(value)
-        result[keys[i]] = value
+        result[key] = value
     return result
-
+    
 
 def date_time_normalize(date_time_object):
     if isinstance(date_time_object, (datetime.date, datetime.datetime)):

@@ -29,7 +29,7 @@ function Users(props) {
 
   const buttons = (userId) => {
     return {
-      "0":  
+      "false":  
         <IconButton
           className={classes.button}
           color="secondary"
@@ -37,7 +37,7 @@ function Users(props) {
         >
           <Lock />
         </IconButton>,
-      "1": 
+      "true": 
         <IconButton
           className={classes.button}
           color="primary"

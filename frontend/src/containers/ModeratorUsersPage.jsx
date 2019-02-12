@@ -63,7 +63,7 @@ class ModeratorUsersPage extends Component {
           success: data.success,
           users: prevState.users.map(userInfo => {
             if (userInfo.id === user_id) {
-              userInfo.is_active = Number(!userInfo.is_active);
+              userInfo.is_active = !userInfo.is_active;
               return userInfo;
             } else {
               return userInfo;

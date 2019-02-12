@@ -95,13 +95,13 @@ class ModeratorPanel extends React.Component {
       "Approved": [1],
       "Archived": [2]
     },
-    Users: {"All": [0, 1],
-      "Active": [1],
-      "Banned": [0]
+    Users: {"All": [false, true],
+      "Active": [true],
+      "Banned": [false]
     },
-    Owners: {"All": [0, 1],
-      "Active": [1],
-      "Banned": [0]
+    Owners: {"All": [false, true],
+      "Active": [true],
+      "Banned": [false]
     },
   }
 

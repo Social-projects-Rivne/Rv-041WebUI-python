@@ -57,20 +57,12 @@ def get_restaurants_controller(request):
     unapproved_restaurants =\
         request.dbsession.query(Restaurant).all()
     if unapproved_restaurants:
-        keys = ("id", "status", "creation_date", "name", "address_id", "phone", "owner_id", "owner_name")
+        keys = ("id", "status", "creation_date", "name", "address_id", "phone", "owner_id")
         data = []
         for restaurant in unapproved_restaurants:
-            restaurant_data = [
-                restaurant.id,
-                restaurant.status,
-                restaurant.creation_date,
-                restaurant.name,
-                restaurant.address_id,
-                restaurant.phone,
-                restaurant.owner_id,
-                restaurant.user.name
-            ]
-            data.append(form_dict(restaurant_data, keys))
+            restaurant_data = form_dict(restaurant, keys)
+            restaurant_data["owner_name"] = restaurant.user.name
+            data.append(restaurant_data)
         wrap_data = wrap(data)
     else:
         wrap_data = wrap([])
@@ -158,19 +150,12 @@ def get_users_controller(request):
     users =\
         request.dbsession.query(User).filter(User.role_id == user_status).all()
     if users:
-        keys = ("id", "is_active", "status", "name", "phone_number", "email", "birth_date")
+        keys = ("id", "is_active", "name", "phone_number", "email", "birth_date")
         data = []
         for user in users:
-            user_data = [
-                user.id,
-                user.is_active,
-                user_status,
-                user.name,
-                user.phone_number,
-                user.email,
-                user.birth_date
-            ]
-            data.append(form_dict(user_data, keys, True))
+            user_data = form_dict(user, keys, True)
+            user_data["status"] = user_status
+            data.append(user_data)
         wrap_data = wrap(data)
     else:
         wrap_data = wrap([])
@@ -203,20 +188,13 @@ def get_owners_controller(request):
     users =\
         request.dbsession.query(User).filter(User.role_id == user_status).all()
     if users:
-        keys = ("id", "is_active", "status", "name", "phone_number", "email", "birth_date", "restaurants")
+        keys = ("id", "is_active", "name", "phone_number", "email", "birth_date", "restaurants")
         data = []
         for user in users:
-            user_data = [
-                user.id,
-                user.is_active,
-                user_status,
-                user.name,
-                user.phone_number,
-                user.email,
-                user.birth_date,
-                [restaurant.name for restaurant in user.restaurants]
-            ]
-            data.append(form_dict(user_data, keys, True))
+            user_data = form_dict(user, keys, True)
+            user_data["status"] = user_status
+            user_data["restaurants"] = [restaurant.name for restaurant in user.restaurants]
+            data.append(user_data)
         wrap_data = wrap(data)
     else:
         wrap_data = wrap([])
@@ -244,7 +222,7 @@ def manage_users_controller(request):
     db_session = request.dbsession
     try:
         user = db_session.query(User).get(int(id))
-        user.is_active = int(not user.is_active)
+        user.is_active = not user.is_active
     except:
         return wrap(success=False, error="User activity change failure")
     return wrap(success=True)
@@ -271,7 +249,7 @@ def manage_owners_controller(request):
     db_session = request.dbsession
     try:
         user = db_session.query(User).get(int(id))
-        user.is_active = int(not user.is_active)
+        user.is_active = not user.is_active
     except:
         return wrap(success=False, error="Owner activity change failure")
     return wrap(success=True)
