@@ -26,9 +26,12 @@ export class RastaurantPage extends Component {
           ? response.json()
           : response.json().then(Promise.reject.bind(Promise));
       })
-      .then(rest =>
-        this.setState({ restInfo: rest.data[0], ableUpdate: rest.is_owner })
-      )
+      .then(rest => {
+        this.setState({
+          restInfo: rest.data[0],
+          ableUpdate: rest.is_owner
+        });
+      })
       .catch(err => {
         console.log(err);
       });

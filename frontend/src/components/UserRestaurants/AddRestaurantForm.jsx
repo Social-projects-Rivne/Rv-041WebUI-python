@@ -32,7 +32,6 @@ export class AddRestaurantForm extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     const { newRestaurant } = this.state;
-
     fetch("http://localhost:6543/api/user_restaurants", {
       method: "POST",
       headers: {
@@ -96,7 +95,10 @@ export class AddRestaurantForm extends React.Component {
 
   handleMarkupChange = content => {
     this.setState(prevState => ({
-      newRestaurant: { ...prevState.newRestaurant, markup: content }
+      newRestaurant: {
+        ...prevState.newRestaurant,
+        markup: JSON.stringify(content)
+      }
     }));
   };
 

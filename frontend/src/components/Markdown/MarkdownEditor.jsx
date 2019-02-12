@@ -22,10 +22,6 @@ class MarkdownEditor extends React.Component {
     this.setState({ editorState });
   };
 
-  setEditor = editor => {
-    this.editor = editor;
-  };
-
   toggleBlockType = blockType => {
     this.onChange(RichUtils.toggleBlockType(this.state.editorState, blockType));
   };
