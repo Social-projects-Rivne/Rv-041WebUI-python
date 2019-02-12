@@ -72,7 +72,6 @@ def create_draft_order(request):
     request.dbsession.flush()
     # if order.id is None:
     #     raise HTTPBadRequest("Something went wrong")
-    print(order)
     data = {
         "order_id": order.id
     }
@@ -92,8 +91,6 @@ def get_draft_order(request):
         raise HTTPNotFound("No rest_id found in Get params")
     except ValueError:
         raise HTTPForbidden("rest_id should be iteger")
-
-    print(request.token.user.id, rest_id)
 
     order = request.dbsession.query(Order).filter(
         Order.status == "Draft",
@@ -258,11 +255,10 @@ def set_quantity(request):
         "description": "Validate json inputs",
         "type": "object",
         "properties": {
-            "order_id": {"type": "integer"},
             "quantity": {"type": "integer"},
             "item_id": {"type": "integer"}
         },
-        "required": ["order_id", "quantity", "item_id"]
+        "required": ["quantity", "item_id"]
     }
 
     try:
@@ -270,8 +266,7 @@ def set_quantity(request):
     except ValidationError as e:
         raise HTTPForbidden("Wrong input data %s" % e)
 
-    order_id, quantity, item_id = int(json["order_id"]), int(
-        json["quantity"]), int(json["item_id"])
+    quantity, item_id = int(json["quantity"]), int(json["item_id"])
 
     order = get_order(request, order_id)
 
@@ -279,7 +274,7 @@ def set_quantity(request):
 
     data = item.as_dict()
 
-    return data
+    return wrap(data)
 
 
 @view_config(route_name='order_by_id', renderer='json', request_method='DELETE')
@@ -400,7 +395,7 @@ def change_status(request):
     try:
         new_status = grahp[(status, role, action)]
     except KeyError as e:
-        # object sending not for prodaction
+        # object sending not for production
         raise HTTPForbidden("Forbidden action %s" % e)
 
     order.status = new_status

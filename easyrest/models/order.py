@@ -7,7 +7,8 @@ from sqlalchemy import (
     Integer,
     Text,
     ForeignKey,
-    Float
+    Float,
+    Numeric
 )
 from sqlalchemy.orm import relationship
 from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
@@ -31,7 +32,7 @@ class Order(Base):
     date_booked = Column(Integer)
     status = Column(Text, default="Draft")
     table = Column(Integer, default=0)
-    total_price = Column(Float, default=0)
+    total_price = Column(Numeric(precision=10, scale=2), default=0)
     user_id = Column(Integer, ForeignKey('users.id'))
     rest_id = Column(Integer, ForeignKey('restaurants.id'))
 

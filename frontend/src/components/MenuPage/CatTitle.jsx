@@ -25,7 +25,7 @@ class CatTitle extends React.Component {
               <MenuItem
                 item={item}
                 addItemHook={this.props.addItemHook}
-                inCartItems={inCartItems}
+                locked={inCartItems.includes(item.id)}
               />
             </Grid>
           );

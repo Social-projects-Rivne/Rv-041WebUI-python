@@ -37,10 +37,7 @@ const styles = {
   },
   expandButton: {
     transform: "rotate(0deg)",
-    transition: "transform 0.2s ease-in-out",
-    "&.active": {
-      transform: "rotate(-180deg)"
-    }
+    transition: "transform 0.2s ease-in-out"
   },
   borderRight: {
     borderRight: "1px solid",
@@ -58,19 +55,10 @@ class MenuItem extends React.Component {
     expanded: false,
     isOpen: false,
     image: null,
-    quantity: 1,
-    transferToCart: {
-      isOcured: false
-    }
+    quantity: 1
   };
 
   handleTranferClick = () => {
-    console.log(this.props);
-    this.setState(state => ({
-      transferToCart: {
-        isOcured: !state.transferToCart.isOcured
-      }
-    }));
     const item = {
       ...this.props.item,
       quantity: this.state.quantity
@@ -95,18 +83,6 @@ class MenuItem extends React.Component {
       image: this.props.item.img
     }));
   };
-  comcomponentWillReceiveProps() {
-    const inCartItems = this.props.inCartItems;
-    const isIt = inCartItems.filter(item => {
-      return item.id == this.props.item.id;
-    });
-    if (isIt.length != 0) {
-      this.setState({
-        transferToCart: { isOcured: true }
-      });
-    }
-    console.log(isIt, inCartItems, this.props.item.id);
-  }
 
   render() {
     const { classes, item } = this.props;
@@ -182,22 +158,14 @@ class MenuItem extends React.Component {
                     </IconButton>
                   </Grid>
                   <Grid item xs={1}>
-                    {!this.state.transferToCart.isOcured ? (
-                      <IconButton
-                        onClick={this.handleTranferClick}
-                        aria-expanded={this.state.transferToCart.isOcured}
-                        aria-label="Add to cart"
-                        className={classNames(classes.addButton, {
-                          active: this.state.transferToCart.isOcured
-                        })}
-                      >
-                        <Forward />
-                      </IconButton>
-                    ) : (
-                      <IconButton disableRipple disabled>
-                        <Done />
-                      </IconButton>
-                    )}
+                    <IconButton
+                      disabled={this.props.locked}
+                      onClick={this.handleTranferClick}
+                      aria-label="Add to cart"
+                      className={classes.addButton}
+                    >
+                      {this.props.locked ? <Done /> : <Forward />}
+                    </IconButton>
                   </Grid>
                 </Grid>
               </CardActions>

@@ -5,25 +5,53 @@ import {
   CardMedia,
   Grid,
   TextField,
-  Typography
+  Typography,
+  IconButton,
+  Fab
 } from "@material-ui/core";
+import { Clear } from "@material-ui/icons";
 
 const styles = theme => ({
-  card: { height: "145px", marginTop: "4px", backgroundSize: "contain" },
-  media: {
-    height: "100%",
-    marginTop: "8px",
-
-    "&:hover $hiddenGrid": {
-      visibility: "visible",
-      opacity: "1"
+  card: {
+    height: "145px",
+    marginTop: "4px",
+    position: "relative",
+    backgroundSize: "contain",
+    "&:hover $media": {
+      transform: "scale(1.2)"
+    },
+    "&:hover $mask": {
+      opacity: 0.7
     }
   },
-  hiddenGrid: {
+  media: {
     height: "100%",
-    paddingLeft: "10px",
-    visibility: "hidden"
-  }
+    transition: theme.transitions.create("transform", { duration: 1000 }),
+    cursor: "pointer"
+  },
+  mask: {
+    transition: theme.transitions.create("opacity", { duration: 1000 }),
+    display: "flex",
+    opacity: 0,
+    padding: "16px",
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    margin: "auto",
+    backgroundColor: "#000",
+    color: "#fff",
+    fontWeight: "bold"
+  },
+  textField: {
+    "& $input": {
+      color: "#fff",
+      fontSize: "14px",
+      fontWeight: "400"
+    }
+  },
+  button: {}
 });
 
 class OrderCartItem extends React.Component {
@@ -36,6 +64,11 @@ class OrderCartItem extends React.Component {
       this.setState({
         [name]: event.target.value
       });
+      this.props.handleQuantityChange(
+        event,
+        event.target.value,
+        this.props.item.id
+      );
     }
   };
   render() {
@@ -43,34 +76,42 @@ class OrderCartItem extends React.Component {
     const { img, name, price } = item;
     return (
       <Card className={classes.card}>
-        <CardMedia className={classes.media} image={img} title={name}>
-          <Grid
-            container
-            alignItems="flex-end"
-            justify="center"
-            spacing={16}
-            className={classes.hiddenGrid}
-          >
-            <Grid item xs={4}>
-              <Typography>{price / 100 + "$"}</Typography>
+        <CardMedia className={classes.media} image={img} title={name} />
+        <div className={classes.mask}>
+          <Grid container spacing={16}>
+            <Grid item xs={12}>
+              <Fab
+                onClick={() => this.props.handleRemoveItem(item.id)}
+                aria-label="Remove item"
+                className={classes.button}
+                size="small"
+              >
+                <Clear />
+              </Fab>
             </Grid>
-            <Grid item xs={4}>
-              <TextField
-                id="quantity"
-                value={this.state.quantity}
-                onChange={this.handleChange("quantity")}
-                type="number"
-                className={classes.textField}
-                margin="normal"
-              />
+            <Grid item xs={12}>
+              {""}
             </Grid>
-            <Grid item xs={4}>
-              <Typography>
-                {(price / 100) * this.state.quantity + "$"}
-              </Typography>
+            <Grid item container justify="center" xs={12} spacing={16}>
+              <Grid item xs={4}>
+                <Typography color="inherit">{price + "$"}</Typography>
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  value={this.state.quantity}
+                  onChange={this.handleChange("quantity")}
+                  type="number"
+                  className={classes.textField}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Typography color="inherit">
+                  {(price / 100) * this.state.quantity + "$"}
+                </Typography>
+              </Grid>
             </Grid>
           </Grid>
-        </CardMedia>
+        </div>
       </Card>
     );
   }

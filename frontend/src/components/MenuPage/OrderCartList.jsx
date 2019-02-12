@@ -21,7 +21,14 @@ class OrderCartList extends React.Component {
       <Card className={classes.card}>
         <CardContent style={{ padding: "8px" }}>
           {items.map((item, index) => {
-            return <OrderCartItem item={item} key={item.name + index} />;
+            return (
+              <OrderCartItem
+                item={item}
+                key={item.name + index}
+                handleRemoveItem={this.props.handleRemoveItem}
+                handleQuantityChange={this.props.handleQuantityChange}
+              />
+            );
           })}
           {items.length > 0 && (
             <Button
@@ -29,6 +36,7 @@ class OrderCartList extends React.Component {
               variant="contained"
               color="primary"
               className={classes.submitButton}
+              onClick={this.props.sendSubmitOrder}
             >
               {"Submit order"}
             </Button>
