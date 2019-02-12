@@ -17,6 +17,7 @@ class RestaurantsForApprovalPage extends Component {
         snackbarOpen:false,
         snackbarMsg: "",
         currentRestaurantId: null,
+        previousRestaurantStatus: null
     };
 
     componentDidMount() {
@@ -31,7 +32,7 @@ class RestaurantsForApprovalPage extends Component {
             headers: headers
         };
 
-        fetch('http://localhost:6543/api/approval_restaurants', fetchInit)
+        fetch('http://localhost:6543/api/moderator/restaurants', fetchInit)
             .then(response => (response.status === 403 ? this.setState({needRedirection: true,
                                                                         success: false}): response.json()))
             .then(data => this.setState({unapprovedRestaurants: data.data,
@@ -39,13 +40,15 @@ class RestaurantsForApprovalPage extends Component {
             .catch(err => this.setState({success: false, error: err.message}))
     }
 
-    handleRestaurantApprovement = (restaurant_id, request_method, restaurant_status) => {
+    handleRestaurantApprovement = (restaurant_id,
+                                   request_method,
+                                   restaurant_status,
+                                   prev_rest_status, snackbarOpen = true) => {
 
         const headers = new Headers({
             'Content-Type': 'application/json',
             'X-Auth-Token': this.state.token
         });
-
         const fetchInit = {
             method: request_method,
             headers: headers,
@@ -60,7 +63,7 @@ class RestaurantsForApprovalPage extends Component {
           operationName = "Disapproved";
         }
 
-        fetch('http://localhost:6543/api/approval_restaurants', fetchInit)
+        fetch('http://localhost:6543/api/moderator/restaurants', fetchInit)
             .then(response => (!(response.status >= 200 && response.status < 300)
                                  ?Promise.reject(response.status)
                                   :response.json()))
@@ -74,15 +77,16 @@ class RestaurantsForApprovalPage extends Component {
                                                                             } else{
                                                                               return restaurantInfo;
                                                                             }}),
-                snackbarOpen: true,
+                snackbarOpen: snackbarOpen,
                 snackbarMsg: operationName,
-                currentRestaurantId: restaurant_id
+                currentRestaurantId: restaurant_id,
+                previousRestaurantStatus: prev_rest_status
               }
             }))
             .catch(err => this.setState({success: false,
                                          error: "" + err,
                                          snackbarOpen: true,
-                                         snackbarMsg: operationName,
+                                         snackbarMsg: "" + err,
                                          currentRestaurantId: restaurant_id}))
     };
 
@@ -97,7 +101,13 @@ class RestaurantsForApprovalPage extends Component {
       <Button
           color="secondary"
           size="small"
-          onClick={() => this.handleRestaurantApprovement(this.state.currentRestaurantId, "POST", 0)}
+          onClick={() => {
+            this.handleRestaurantApprovement(this.state.currentRestaurantId, 
+              this.state.previousRestaurantStatus === 2 ? "DELETE" :"POST",
+              this.state.previousRestaurantStatus,
+              null,
+              false);}
+          }
         >
         Undo
       </Button>
@@ -106,6 +116,7 @@ class RestaurantsForApprovalPage extends Component {
     render() {
 
         const {needRedirection, unapprovedRestaurants, success, error, snackbarOpen, snackbarMsg} = this.state;
+        const {restaurantStatus} = this.props;
 
         //prevent for rendering without fetch completing (init value is "null")
         if (success === null){
@@ -123,6 +134,7 @@ class RestaurantsForApprovalPage extends Component {
                       <RestaurantsForApproval
                         unapprovedRestaurants={unapprovedRestaurants}
                         handleRestaurantApprovement={this.handleRestaurantApprovement}
+                        restaurantStatus={restaurantStatus}
                       />
                       <Snackbar
                         anchorOrigin={{
