@@ -116,7 +116,7 @@ function Users(props) {
                     </Typography>  
                   </TableCell>
                   <TableCell align="right">
-                    {buttons(userInfo.id)[""+ userInfo.is_active]}
+                    {buttons(userInfo.id)[userInfo.is_active.toString()]}
                   </TableCell>
                 </TableRow>
               );

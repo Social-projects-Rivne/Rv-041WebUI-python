@@ -218,10 +218,10 @@ def manage_users_controller(request):
         If user is unauthorized and not an admin - throw 403:
     """
     data = request.json_body
-    id = data["id"]
+    user_id = data["id"]
     db_session = request.dbsession
     try:
-        user = db_session.query(User).get(int(id))
+        user = db_session.query(User).get(int(user_id))
         user.is_active = not user.is_active
     except:
         return wrap(success=False, error="User activity change failure")
@@ -245,10 +245,10 @@ def manage_owners_controller(request):
         If user is unauthorized and not an admin - throw 403:
     """
     data = request.json_body
-    id = data["id"]
+    owner_id = data["id"]
     db_session = request.dbsession
     try:
-        user = db_session.query(User).get(int(id))
+        user = db_session.query(User).get(int(owner_id))
         user.is_active = not user.is_active
     except:
         return wrap(success=False, error="Owner activity change failure")
