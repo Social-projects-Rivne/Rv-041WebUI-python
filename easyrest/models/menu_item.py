@@ -7,7 +7,8 @@ from sqlalchemy import (
     Integer,
     Text,
     ForeignKey,
-    Float
+    Float,
+    Numeric
 )
 from sqlalchemy.orm import relationship
 
@@ -27,8 +28,8 @@ class MenuItem(Base):
     description = Column(Text)
     ingredients = Column(Text)
     img = Column(Text)
-    price = Column(Float)
-    amount = Column(Float)
+    price = Column(Numeric(precision=10, scale=2))
+    amount = Column(Numeric())
     menu_id = Column(Integer, ForeignKey('menus.id'))
     category_id = Column(Integer, ForeignKey('categories.id'))
 

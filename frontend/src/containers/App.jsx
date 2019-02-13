@@ -34,15 +34,37 @@ class App extends React.Component {
 
   componentDidMount() {
     const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
-    const userName = localStorage.getItem("userName");
-    if (token && role && userName) {
-      this.setState({
-        auth: true,
-        token: token,
-        role: role,
-        userName: userName
-      });
+    if (token) {
+      fetch("http://localhost:6543/api/login", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token
+        }
+      })
+        .then(response => {
+          if ([404, 403].includes(response.status)) {
+            Promise.reject();
+          } else {
+            return response.json();
+          }
+        })
+        .then(json => {
+          this.setState({
+            auth: true,
+            role: json.data.role,
+            userName: json.data.userName,
+            token: json.data.token
+          });
+          localStorage.setItem("role", json.data.role);
+          localStorage.setItem("userName", json.data.userName);
+          localStorage.setItem("token", json.data.token);
+        })
+        .catch(error => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          localStorage.removeItem("userName");
+        });
     }
   }
 

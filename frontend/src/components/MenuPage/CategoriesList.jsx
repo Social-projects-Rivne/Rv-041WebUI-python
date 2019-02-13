@@ -16,6 +16,7 @@ const styles = theme => ({
       color: theme.palette.secondary.light
     }
   },
+
   backIcon: {}
 });
 

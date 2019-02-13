@@ -9,6 +9,7 @@ Attributes:
         using specified naming convention
 """
 import datetime
+from decimal import *
 
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.schema import MetaData
@@ -68,5 +69,8 @@ class Base(object):
             value = getattr(self, c.name)
             if isinstance(value, (datetime.datetime, datetime.date)):
                 value = value.isoformat()
+
+            if isinstance(value, Decimal):
+                value = float(value)
             data[c.name] = value
         return data
