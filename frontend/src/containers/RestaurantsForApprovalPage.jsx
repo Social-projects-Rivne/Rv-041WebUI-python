@@ -42,6 +42,9 @@ class RestaurantsForApprovalPage extends Component {
           error: data.error
         })
       )
+      .then(() => {
+        this.pushTabValues(this.state.unapprovedRestaurants);
+      })
       .catch(err => this.setState({ success: false, error: err.message }));
   }
 
@@ -97,6 +100,9 @@ class RestaurantsForApprovalPage extends Component {
           };
         })
       )
+      .then(() => {
+        this.pushTabValues(this.state.unapprovedRestaurants);
+      })
       .catch(err =>
         this.setState({
           success: false,
@@ -132,6 +138,26 @@ class RestaurantsForApprovalPage extends Component {
       Undo
     </Button>
   );
+
+  //push information about quantity to the Tab component
+  pushTabValues = (data) => {
+    const tagsValues = this.props.tagsValues;
+    const tagsNames = Object.keys(tagsValues);
+    let additionalValues = {};
+    for (let key in tagsNames) {
+      let quantity = 0;
+      const tagName = tagsNames[key];
+      const tagValue = tagsValues[tagName];
+      for (let i = 0; i < data.length; i++) { 
+        const info = data[i];
+        if (tagValue.indexOf(info.status) != -1){
+          quantity = quantity + 1;
+        }
+      }
+      additionalValues[tagName] = quantity;
+    }
+    return this.props.setAdditionalTabData(additionalValues)
+  }
 
   render() {
     const {

@@ -9,7 +9,8 @@ import {
   IconButton,
   Slide,
   Typography,
-  Snackbar
+  Snackbar,
+  Divider
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import PageContainer from "./PageContainer";
