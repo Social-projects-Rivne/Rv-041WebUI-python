@@ -56,8 +56,8 @@ class Login extends React.Component {
       headers: { "Content-Type": "application/json" }
     })
       .then(response => response.json())
-      .then(input => {
-        const { success, error, data } = input;
+      .then(json => {
+        const { success, error, data } = json;
         const { role, token, userName } = data;
 
         if (success && role && token && userName) {
@@ -70,13 +70,13 @@ class Login extends React.Component {
             role,
             userName
           });
-          if (role === "Moderator"){
+          if (role === "Moderator") {
             this.props.history.push("/moderator");
-          } else{
+          } else {
             this.props.history.push("/restaurants");
           }
         } else {
-          throw error;
+          Promise.reject(error);
         }
       })
       .catch(error => {

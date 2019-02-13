@@ -34,16 +34,34 @@ class App extends React.Component {
 
   componentDidMount() {
     const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
-    const userName = localStorage.getItem("userName");
-    if (token && role && userName) {
-      this.setState({
-        auth: true,
-        token: token,
-        role: role,
-        userName: userName
+    fetch("http://localhost:3000/api/login", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": token
+      }
+    })
+      .then(response =>
+        [404, 403, 400].includes(response.status)
+          ? response.json().then(Promise.reject())
+          : response.json()
+      )
+      .then(json => {
+        this.setState({
+          auth: true,
+          role: json.data.role,
+          userName: json.data.userName,
+          token: json.data.token
+        });
+        localStorage.setItem("role", json.data.role);
+        localStorage.setItem("userName", json.data.userName);
+        localStorage.setItem("token", json.data.token);
+      })
+      .catch(error => {
+        localStorage.setItem("role", "");
+        localStorage.setItem("userName", "");
+        localStorage.setItem("token", "");
       });
-    }
   }
 
   changeState = obj => {

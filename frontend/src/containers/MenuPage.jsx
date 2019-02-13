@@ -97,7 +97,7 @@ class MenuPage extends React.Component {
               : response.json()
           )
           .then(json => {
-            if (json.data.lenght > 0) {
+            if (json.data.items.lenght > 0 || !json.data.items) {
               this.setState({
                 cartItems: json.data.items,
                 SnackbarMsg: "Cart synchronized",

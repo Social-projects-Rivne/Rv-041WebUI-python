@@ -44,6 +44,16 @@ def login_post(request):
     return wrap(body)
 
 
+@view_config(route_name='login', renderer='json', request_method='GET')
+def check_token(request):
+    data = {
+        "token": request.token.token,
+        "role": request.token.user.role.name,
+        "userName": request.token.user.name
+    }
+    return wrap(data)
+
+
 @view_config(route_name='login', renderer='json', request_method='DELETE')
 @restrict_access(user_types=['Client', 'Owner', 'Moderator', 'Admin'])
 def login_del(request):
