@@ -39,25 +39,16 @@ export class RastaurantPage extends Component {
   };
 
   render() {
-    const { userRole, restInfo, ableUpdate } = this.state;
+    const { restInfo, ableUpdate } = this.state;
     return (
       <AppContext.Consumer>
         {state => (
           <PageContainer>
-            <RestaurantInfo restInfo={restInfo} auth={state.auth} ableUpdate={ableUpdate}/>
-            {state.auth && ableUpdate && (
-              <CollapseForm
-                tooltipText="Update restaurant"
-                formTitle="Update your restaurant info:"
-                tooltipIcon={<Edit />}
-              >
-                <UpdateRestaurantForm
-                  restInfo={restInfo}
-                  restId={this.props.match.params.id}
-                  onUpdate={this.handleUpdateRestaurant}
-                />
-              </CollapseForm>
-            )}
+            <RestaurantInfo
+              restInfo={restInfo}
+              auth={state.auth}
+              ableUpdate={ableUpdate}
+            />
           </PageContainer>
         )}
       </AppContext.Consumer>

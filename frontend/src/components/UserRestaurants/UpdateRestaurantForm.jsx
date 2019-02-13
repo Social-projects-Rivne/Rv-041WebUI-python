@@ -1,6 +1,12 @@
 import React from "react";
-import { TextField, Grid, Button } from "@material-ui/core";
-import TagSelect from "./TagSelect";
+import {
+  TextField,
+  Grid,
+  Button,
+  FormControl,
+  InputLabel
+} from "@material-ui/core";
+import ListSelect from "../ListSelect";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
 export class UpdateRestaurantForm extends React.Component {
@@ -137,11 +143,15 @@ export class UpdateRestaurantForm extends React.Component {
             />
           </Grid>
           <Grid item xs={12}>
-            <TagSelect
-              tags={updatedRestaurant.tags}
-              allTags={allTags}
-              onTagsChange={this.handleTagsChange}
-            />
+            <FormControl fullWidth>
+              <InputLabel htmlFor="tags">Tags</InputLabel>
+              <ListSelect
+                name="tags"
+                selectedItems={updatedRestaurant.tags}
+                list={allTags}
+                onListChange={this.handleTagsChange}
+              />
+            </FormControl>
           </Grid>
           <Grid item xs={3}>
             <Button

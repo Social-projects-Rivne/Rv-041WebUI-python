@@ -8,19 +8,16 @@ import { Link } from "react-router-dom";
 import AppContext from "../components/AppContext";
 
 const AppHeader = props => {
-  const handleBackClick = () => {
-    props.history.goBack();
-  };
   const { history } = props;
 
   const isLogIn = history.location.pathname === "/log-in";
   const isSignUp = history.location.pathname === "/sign-up";
 
   return (
-    <AppBar position="static">
+    <AppBar position="relative">
       <Toolbar style={{ justifyContent: "space-between" }}>
         {(isLogIn || isSignUp) && history.action !== "POP" ? (
-          <IconButton color="inherit" onClick={handleBackClick}>
+          <IconButton color="inherit" onClick={() => history.goBack()}>
             <ArrowBack />
           </IconButton>
         ) : (

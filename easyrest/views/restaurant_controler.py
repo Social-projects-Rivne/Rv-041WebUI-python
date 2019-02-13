@@ -203,7 +203,7 @@ def create_user_restaurant(request):
 
     if not name or not address:
         msg = "Fill all required fields"
-        request.response.status_code = 201
+        request.response.status_code = 400
         return wrap([], success=False, error=msg)
 
     tag_models = [request.dbsession.query(

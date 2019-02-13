@@ -10,6 +10,7 @@ import SignUpPage from "./containers/SignUpPage";
 import ModeratorPanel from "./containers/ModeratorPanel";
 import ProfilePage from "./containers/ProfilePage";
 import AppHeader from "./containers/AppHeader";
+import RestaurantManagmentPage from "./containers/RestaurantManagmentPage";
 
 const routes = [
   {
@@ -32,7 +33,12 @@ const routes = [
   },
   {
     path: "/profile/my_restaurant/:id",
-    component: RestaurantPage
+    component: RestaurantPage,
+    exact: true
+  },
+  {
+    path: "/profile/my_restaurant/:id/edit",
+    component: RestaurantManagmentPage
   },
   {
     path: "/restaurants-map",

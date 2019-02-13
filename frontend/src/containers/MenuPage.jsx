@@ -1,7 +1,15 @@
 import React from "react";
 import CategoriesList from "../components/MenuPage/CategoriesList";
 import MenuItemList from "../components/MenuPage/MenuItemList";
-import { Grid, Card, CardMedia, withStyles } from "@material-ui/core";
+import {
+  Grid,
+  Card,
+  CardMedia,
+  withStyles,
+  Typography,
+  Divider,
+  Button
+} from "@material-ui/core";
 import PageContainer from "./PageContainer";
 import GeneralError from "../components/ErrorPages/GeneralError";
 
@@ -28,7 +36,8 @@ class MenuPage extends React.Component {
     error: false,
     errorMes: null,
     heghtsList: [],
-    activeCat: 0
+    activeCat: 0,
+    restaurantName: ""
   };
 
   componentDidMount() {
@@ -54,7 +63,8 @@ class MenuPage extends React.Component {
         } else {
           this.setState({
             Categories: json.data.Categories,
-            Items: json.data.Items
+            Items: json.data.Items,
+            restaurantName: json.data.restaurantName
           });
         }
       });
@@ -62,18 +72,26 @@ class MenuPage extends React.Component {
 
   handleCatScroll = index => {
     if (this.state.activeCat !== index) {
-      console.log(index);
       this.setState({ activeCat: index });
     }
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, match } = this.props;
     if (this.state.error) {
       return <GeneralError error={this.state.errorMes} />;
     } else {
       return (
         <PageContainer>
+          <Grid container spacing={16}>
+            <Grid item xs={12}>
+              <Typography variant="h5">
+                {this.state.restaurantName} menu:
+              </Typography>
+              <Divider />
+            </Grid>
+          </Grid>
+
           {this.state.isImage && (
             <Card className={classes.imageDiv}>
               <CardMedia

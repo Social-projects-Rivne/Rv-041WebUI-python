@@ -17,8 +17,10 @@ def includeme(config):
     config.add_route('get_menus', 'restaurant/{rest_id:\d+}/menu',
                      request_method="GET")
     config.add_route('menu_items', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}',
-                     request_method="GET")
+                     request_method=["GET", "POST", "PUT", "DELETE"])
     config.add_route('get_by_category', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}/{cat_id:\d+}',
+                     request_method="GET")
+    config.add_route('get_all_categories', 'categories',
                      request_method="GET")
     config.add_route('get_user_info', 'profile',
                      request_method="GET")
