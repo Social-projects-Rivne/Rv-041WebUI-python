@@ -17,15 +17,16 @@ const styles = {
 
 function GenericTabs(props) {
 
-    const {selectedValue, tags, handleTabChange} = props;
+    const {selectedValue, tags, handleTabChange, tagsAdditionalInformation } = props;
 
     return(
 
       <AppBar position="static">
         <Tabs value={selectedValue} onChange={handleTabChange}>
           {tags.map(tag => {
+            const additionalInformation = tagsAdditionalInformation[tag];
             return(
-              <Tab key={tag} label={tag} />
+              <Tab key={tag} label={tag + (additionalInformation ? " (" + additionalInformation + ")" : " (0)") } />
             );
           })}
         </Tabs>
