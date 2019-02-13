@@ -23,7 +23,7 @@ def login_post(request):
         }
     Return:
         {
-            "role": user status string,
+            "role": user role string,
             "token": token
         }
     """
@@ -36,7 +36,7 @@ def login_post(request):
 
     token = remember(request, user)
     body = {
-        "role": user.status.name,
+        "role": user.role.name,
         "token": token,
         "userName": user.name
     }

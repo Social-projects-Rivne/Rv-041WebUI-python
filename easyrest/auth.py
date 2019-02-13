@@ -58,7 +58,7 @@ def restrict_access(user_types):
             """
             token = request.token
             if token is not None:
-                user_type = token.user.status.name
+                user_type = token.user.role.name
                 if user_type in user_types:
                     return func(request)
                 else:

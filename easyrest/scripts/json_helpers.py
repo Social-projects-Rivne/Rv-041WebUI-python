@@ -1,7 +1,10 @@
 """Script contains helper functions to work with json such as:
     wrap(): wraper to make response acording to style
     form_dict(): returns dictionary formed from passed keys and values collections as parameters
+    date_time_normalize(): function, which normaloze date_time object for proper json serialization
 """
+
+import datetime
 
 
 def wrap(data=[], success=True, error=None, message=None,):
@@ -28,16 +31,24 @@ def wrap(data=[], success=True, error=None, message=None,):
     return data_dict
 
 
-def form_dict(data, keys):
+def form_dict(record, keys, normalize_datetime=False):
     """
     this function collide keys from "keys" parameter with values from "data" parameter to form dictionary
-    :param data: list with data
-    :param keys: list of keys for formed dictionary
+    :param record: collection with data
+    :param keys: tuple of keys for formed dictionary
     :return: dictionary with data from "data" and keys from "keys"
     """
     result = {}
-    if len(data) != len(keys):
-        return result
-    for i in range(len(data)):
-        result[keys[i]] = data[i]
+    for key in keys:
+        value = getattr(record, key)
+        if normalize_datetime:
+            value = date_time_normalize(value)
+        result[key] = value
     return result
+    
+
+def date_time_normalize(date_time_object):
+    if isinstance(date_time_object, (datetime.date, datetime.datetime)):
+        return date_time_object.isoformat()
+    else:
+        return date_time_object

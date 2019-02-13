@@ -1,22 +1,15 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
-import { Link } from "react-router-dom";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 import Avatar from "@material-ui/core/Avatar";
-import IconButton from "@material-ui/core/IconButton";
 import red from "@material-ui/core/colors/red";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import ShareIcon from "@material-ui/icons/Share";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const styles = theme => ({
   card: {},
@@ -41,18 +34,71 @@ const styles = theme => ({
 });
 
 function RestaurantForApproval(props) {
+
   const {
     name,
+    status,
     address_id,
-    owner_id,
     id,
     owner_name,
     phone,
     creation_date
   } = props.restaurant;
   const { classes, handleRestaurantApprovement } = props;
-
   const date = new Date(creation_date * 1000);
+  //make button array, depending on Restaurant status
+  let buttonArray = [];
+  let statusColor = "inherit";
+  let statusMessage = "";
+
+  switch (status) {
+    case 0:
+      buttonArray.push(<Button
+        key={0}
+        size="small"
+        color="secondary"
+        onClick={() => handleRestaurantApprovement(id, "DELETE", 2, status)}
+      >
+        Disapprove
+      </Button>);
+      buttonArray.push(<Button
+        key={1}
+        size="small"
+        color="primary"
+        onClick={() => handleRestaurantApprovement(id, "POST", 1, status)}
+      >
+        Approve
+      </Button>);
+      statusColor = "secondary";
+      statusMessage = "Unapproved";
+      break;
+    case 1:
+      buttonArray.push(<Button
+        key={0}
+        size="small"
+        color="secondary"
+        onClick={() => handleRestaurantApprovement(id, "DELETE", 2, status)}
+      >
+        Delete
+      </Button>);
+      statusColor = "primary";
+      statusMessage = "Approved";
+      break;
+    case 2:
+      buttonArray.push(<Button
+        key={0}
+        size="small"
+        color="primary"
+        onClick={() => handleRestaurantApprovement(id, "POST", 1, status)}
+      >
+        Restore
+      </Button>);
+      statusColor = "error";
+      statusMessage = "Archived";
+      break;
+    default:
+      ;
+  }
 
   return (
     <div>
@@ -74,6 +120,10 @@ function RestaurantForApproval(props) {
             title={name}
           />
 
+          <Typography component="p" color={statusColor}>
+            {statusMessage}
+          </Typography>
+
           <Typography component="p">
             Owner: {owner_name}
             <br />
@@ -84,20 +134,7 @@ function RestaurantForApproval(props) {
         </CardContent>
 
         <CardActions className={classes.actions}>
-          <Button
-            size="small"
-            color="secondary"
-            onClick={() => handleRestaurantApprovement(id, "DELETE", 2)}
-          >
-            Disapprove
-          </Button>
-          <Button
-            size="small"
-            color="primary"
-            onClick={() => handleRestaurantApprovement(id, "POST", 1)}
-          >
-            Approve
-          </Button>
+          {buttonArray.map(button => button)}
         </CardActions>
       </Card>
     </div>
