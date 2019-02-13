@@ -54,7 +54,8 @@ class MenuPage extends React.Component {
     cartItems: [],
     SnackbarType: "",
     SnackbarMsg: "",
-    isSnackbarOpen: false
+    isSnackbarOpen: false,
+    orderDate: null
   };
 
   componentDidMount() {
@@ -97,15 +98,15 @@ class MenuPage extends React.Component {
               : response.json()
           )
           .then(json => {
-            if (json.data.items.lenght > 0 || !json.data.items) {
+            if (json.data.items.length > 0) {
               this.setState({
                 cartItems: json.data.items,
                 SnackbarMsg: "Cart synchronized",
                 isSnackbarOpen: true,
                 SnackbarType: "info"
               });
-              localStorage.setItem("OrderId", json.data.id);
             }
+            localStorage.setItem("OrderId", json.data.id || null);
           })
           .catch(error => {
             localStorage.setItem("OrderId", null);
@@ -280,17 +281,22 @@ class MenuPage extends React.Component {
       });
   };
 
-  sendSubmitOrder = () => {
+  sendSubmitOrder = date => {
     const orderId = localStorage.getItem("OrderId");
+    // let body1 = null;
+    // if (date) {
+    //   body1 = Object.assign({ action: "Submit" }, { book_date: date });
+    // } else {
+    //   body1 = { action: "Submit" };
+    // }
+    // console.log(body1);
     fetch("http://localhost:6543/api/order/" + orderId + "/status", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "x-auth-token": localStorage.getItem("token")
       },
-      body: JSON.stringify({
-        action: "Submit"
-      })
+      body: JSON.stringify({ action: "Submit" })
     })
       .then(response =>
         [404, 403, 400].includes(response.status)

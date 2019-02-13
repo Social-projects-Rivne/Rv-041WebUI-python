@@ -331,6 +331,7 @@ def change_status(request):
     Expects:
         {
             "action": (str) name of action
+            "book_date":
         }
     Return:
         {
