@@ -11,7 +11,6 @@ import {
 } from "@material-ui/core/";
 import { Link } from "react-router-dom";
 import { amber, green, red } from "@material-ui/core/colors/index";
-import { Editor, convertFromRaw, EditorState, RichUtils } from "draft-js";
 
 const styles = theme => ({
   root: {},
@@ -58,12 +57,6 @@ function handleRestaurantDelete() {
 class RestaurantInfo extends React.Component {
   render() {
     const { classes, restInfo, auth, ableUpdate } = this.props;
-    const editorState = EditorState.createEmpty();
-
-    var contentStates =
-      editorState || convertFromRaw(JSON.parse(restInfo.description_markup));
-
-    EditorState.set(editorState, { currentContent: contentStates });
 
     return (
       <Card>
@@ -87,7 +80,7 @@ class RestaurantInfo extends React.Component {
               <Typography gutterBottom component="p">
                 {restInfo.description}
               </Typography>
-              <Editor editorState={contentStates} />
+              <div dangerouslySetInnerHTML={{ __html: this.props.markup }} />
               {auth && ableUpdate && restInfo.status !== deleteStatus && (
                 <Grid container justify="flex-end">
                   <Button

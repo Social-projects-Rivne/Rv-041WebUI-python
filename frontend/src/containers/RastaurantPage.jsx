@@ -5,10 +5,13 @@ import CollapseForm from "../components/CollapseForm";
 import UpdateRestaurantForm from "../components/UserRestaurants/UpdateRestaurantForm";
 import Edit from "@material-ui/icons/Edit";
 import AppContext from "../components/AppContext";
+import converter from "../components/Markdown/Converter";
+import { convertFromRaw } from "draft-js";
 
 export class RastaurantPage extends Component {
   state = {
     restInfo: [],
+    restMarkup: "",
     ableUpdate: false
   };
 
@@ -27,6 +30,14 @@ export class RastaurantPage extends Component {
           : response.json().then(Promise.reject.bind(Promise));
       })
       .then(rest => {
+        if (rest.data[0].description_markup) {
+          const markup = converter(
+            convertFromRaw(JSON.parse(rest.data[0].description_markup))
+          );
+          this.setState({
+            restMarkup: markup
+          });
+        }
         this.setState({
           restInfo: rest.data[0],
           ableUpdate: rest.is_owner
@@ -42,7 +53,7 @@ export class RastaurantPage extends Component {
   };
 
   render() {
-    const { restInfo, ableUpdate } = this.state;
+    const { restInfo, restMarkup, ableUpdate } = this.state;
     return (
       <AppContext.Consumer>
         {state => (
@@ -51,6 +62,7 @@ export class RastaurantPage extends Component {
               restInfo={restInfo}
               auth={state.auth}
               ableUpdate={ableUpdate}
+              markup={restMarkup}
             />
           </PageContainer>
         )}
