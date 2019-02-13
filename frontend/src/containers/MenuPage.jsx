@@ -9,7 +9,8 @@ import {
   IconButton,
   Slide,
   Typography,
-  Snackbar
+  Snackbar,
+  Divider
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import PageContainer from "./PageContainer";
@@ -55,7 +56,8 @@ class MenuPage extends React.Component {
     SnackbarType: "",
     SnackbarMsg: "",
     isSnackbarOpen: false,
-    orderDate: null
+    orderDate: null,
+    restaurantName: ""
   };
 
   componentDidMount() {
@@ -81,7 +83,8 @@ class MenuPage extends React.Component {
         } else {
           this.setState({
             Categories: json.data.Categories,
-            Items: json.data.Items
+            Items: json.data.Items,
+            restaurantName: json.data.restaurantName
           });
         }
       })
@@ -335,6 +338,15 @@ class MenuPage extends React.Component {
     } else {
       return (
         <PageContainer>
+          <Grid container spacing={16}>
+            <Grid item xs={12}>
+              <Typography variant="h5">
+                {this.state.restaurantName} menu:
+              </Typography>
+              <Divider />
+            </Grid>
+          </Grid>
+
           {this.state.isImage && (
             <Card className={classes.imageDiv}>
               <CardMedia

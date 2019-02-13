@@ -57,6 +57,7 @@ function handleRestaurantDelete() {
 class RestaurantInfo extends React.Component {
   render() {
     const { classes, restInfo, auth, ableUpdate } = this.props;
+
     return (
       <Card>
         <CardContent>
@@ -72,15 +73,14 @@ class RestaurantInfo extends React.Component {
               <Typography gutterBottom variant="h4">
                 {restInfo.name}
               </Typography>
-
               <Typography gutterBottom variant="h6" component="p">
                 Address: {restInfo.address_id} <br />
                 Phone: {restInfo.phone}
               </Typography>
-              <Divider style={{ marginBottom: "2em" }} />
-              <Typography variant="body1" gutterBottom component="p">
+              <Typography gutterBottom component="p">
                 {restInfo.description}
               </Typography>
+              <div dangerouslySetInnerHTML={{ __html: this.props.markup }} />
               {auth && ableUpdate && restInfo.status !== deleteStatus && (
                 <Grid container justify="flex-end">
                   <Button

@@ -7,10 +7,11 @@ import RestaurantPage from "./containers/RastaurantPage";
 import MenuPage from "./containers/MenuPage";
 import LogInPage from "./containers/LogInPage";
 import SignUpPage from "./containers/SignUpPage";
-import RestaurantsForApprovalPage from "./containers/RestaurantsForApprovalPage";
 import ModeratorPanel from "./containers/ModeratorPanel";
 import ProfilePage from "./containers/ProfilePage";
 import AppHeader from "./containers/AppHeader";
+import RestaurantManagmentPage from "./containers/RestaurantManagmentPage";
+import PrivateRoute from "./Service/PrivatRoute";
 
 const routes = [
   {
@@ -32,8 +33,14 @@ const routes = [
     component: MenuPage
   },
   {
-    path: "/profile/my_restaurant/:id",
-    component: RestaurantPage
+    path: "/profile/restaurants/:id",
+    component: RestaurantPage,
+    exact: true
+  },
+  {
+    path: "/profile/restaurants/:id/edit",
+    component: RestaurantManagmentPage,
+    access: ["Client", "Owner"]
   },
   {
     path: "/restaurants-map",
@@ -49,11 +56,13 @@ const routes = [
   },
   {
     path: "/profile",
-    component: ProfilePage
+    component: ProfilePage,
+    access: ["Client", "Owner"]
   },
   {
     path: "/moderator",
-    component: ModeratorPanel
+    component: ModeratorPanel,
+    access: ["Moderator"]
   }
 ];
 
@@ -63,14 +72,25 @@ class Routes extends React.Component {
       <>
         <Route component={AppHeader} />
         <Switch>
-          {routes.map(({ path, component, exact }) => (
-            <Route
-              exact={exact}
-              key={component}
-              path={path}
-              component={component}
-            />
-          ))}
+          {routes.map(({ path, component, exact, access }) =>
+            !access ? (
+              <Route
+                exact={exact}
+                key={component}
+                path={path}
+                component={component}
+                access={access}
+              />
+            ) : (
+              <PrivateRoute
+                exact={exact}
+                key={component}
+                path={path}
+                component={component}
+                access={access}
+              />
+            )
+          )}
         </Switch>
       </>
     );

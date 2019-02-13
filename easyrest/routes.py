@@ -17,17 +17,27 @@ def includeme(config):
     config.add_route('get_menus', 'restaurant/{rest_id:\d+}/menu',
                      request_method="GET")
     config.add_route('menu_items', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}',
-                     request_method="GET")
+                     request_method=["GET", "POST", "PUT", "DELETE"])
     config.add_route('get_by_category', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}/{cat_id:\d+}',
+                     request_method="GET")
+    config.add_route('get_all_categories', 'categories',
                      request_method="GET")
     config.add_route('get_user_info', 'profile',
                      request_method="GET")
     config.add_route('authorize_moderator', 'moderator',
                      request_method="GET")
-    config.add_route('get_unapproved_restaurants', 'approval_restaurants',
+    config.add_route('moderator_get_restaurants', 'moderator/restaurants',
                      request_method="GET")
-    config.add_route('approve_restaurant', 'approval_restaurants',
+    config.add_route('moderator_manage_restaurants', 'moderator/restaurants',
                      request_method=["POST", "DELETE"])
+    config.add_route('moderator_get_users', 'moderator/users',
+                     request_method="GET")
+    config.add_route('moderator_manage_users', 'moderator/users',
+                     request_method="POST")
+    config.add_route('moderator_get_owners', 'moderator/owners',
+                     request_method="GET")
+    config.add_route('moderator_manage_owners', 'moderator/owners',
+                     request_method="POST")
     config.add_route('user_restaurants', 'user_restaurants',
                      request_method=["GET", "POST"])
     config.add_route('user_restaurant', 'user_restaurant/{id:[1-9]\d*}',

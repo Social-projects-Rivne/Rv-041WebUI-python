@@ -29,6 +29,7 @@ class Restaurant(Base):
     name = Column(Text)
     address_id = Column(Text)
     description = Column(Text)
+    description_markup = Column(Text)
     phone = Column(Text)
     owner_id = Column(Integer, ForeignKey('users.id'))
     status = Column(Integer, default=0)
