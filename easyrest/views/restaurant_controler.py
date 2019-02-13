@@ -214,18 +214,19 @@ def create_user_restaurant(request):
     rest.tag = tag_models
     user = request.token.user
     rest.user = request.token.user
+    request.dbsession.add(rest)
+    if user.status.name == 'Client':
+        user.status_id = 2
+    request.dbsession.flush()
+    rest_with_tags = asign_tags([rest])
+    request.response.status_code = 201
+    return wrap(rest_with_tags, message="Restaurant was successfully created")
 
-    try:
-        request.dbsession.add(rest)
-        if user.status.name == 'Client':
-            user.status_id = 2
-        request.dbsession.flush()
-        rest_with_tags = asign_tags([rest])
-        request.response.status_code = 201
-        return wrap(rest_with_tags, message="Restaurant was successfully created")
-    except Exception:
-        request.response.status_code = 500
-        return wrap([], success=False, error='Could not save your retaurant.')
+    # try:
+
+    # except Exception:
+    #     request.response.status_code = 500
+    #     return wrap([], success=False, error='Could not save your retaurant.')
 
 
 @view_config(

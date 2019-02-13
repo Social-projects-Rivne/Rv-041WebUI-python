@@ -34,34 +34,38 @@ class App extends React.Component {
 
   componentDidMount() {
     const token = localStorage.getItem("token");
-    fetch("http://localhost:3000/api/login", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "x-auth-token": token
-      }
-    })
-      .then(response =>
-        [404, 403, 400].includes(response.status)
-          ? response.json().then(Promise.reject())
-          : response.json()
-      )
-      .then(json => {
-        this.setState({
-          auth: true,
-          role: json.data.role,
-          userName: json.data.userName,
-          token: json.data.token
-        });
-        localStorage.setItem("role", json.data.role);
-        localStorage.setItem("userName", json.data.userName);
-        localStorage.setItem("token", json.data.token);
+    if (token) {
+      fetch("http://localhost:6543/api/login", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token
+        }
       })
-      .catch(error => {
-        localStorage.setItem("role", "");
-        localStorage.setItem("userName", "");
-        localStorage.setItem("token", "");
-      });
+        .then(response => {
+          if ([404, 403].includes(response.status)) {
+            Promise.reject();
+          } else {
+            return response.json();
+          }
+        })
+        .then(json => {
+          this.setState({
+            auth: true,
+            role: json.data.role,
+            userName: json.data.userName,
+            token: json.data.token
+          });
+          localStorage.setItem("role", json.data.role);
+          localStorage.setItem("userName", json.data.userName);
+          localStorage.setItem("token", json.data.token);
+        })
+        .catch(error => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          localStorage.removeItem("userName");
+        });
+    }
   }
 
   changeState = obj => {

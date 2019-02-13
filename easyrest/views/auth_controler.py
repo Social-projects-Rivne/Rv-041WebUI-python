@@ -3,7 +3,7 @@
 
 from pyramid.view import view_config
 from pyramid.authentication import AuthTicket
-from pyramid.httpexceptions import HTTPForbidden
+from pyramid.httpexceptions import HTTPForbidden, HTTPNotFound
 from passlib.hash import pbkdf2_sha256
 
 from ..scripts.json_helpers import wrap
@@ -46,6 +46,8 @@ def login_post(request):
 
 @view_config(route_name='login', renderer='json', request_method='GET')
 def check_token(request):
+    if request.token is None:
+        raise HTTPNotFound("No token for sync")
     data = {
         "token": request.token.token,
         "role": request.token.user.role.name,
