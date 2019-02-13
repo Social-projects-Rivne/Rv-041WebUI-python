@@ -7,7 +7,6 @@ import RestaurantPage from "./containers/RastaurantPage";
 import MenuPage from "./containers/MenuPage";
 import LogInPage from "./containers/LogInPage";
 import SignUpPage from "./containers/SignUpPage";
-import RestaurantsForApprovalPage from "./containers/RestaurantsForApprovalPage";
 import ModeratorPanel from "./containers/ModeratorPanel";
 import ProfilePage from "./containers/ProfilePage";
 import AppHeader from "./containers/AppHeader";

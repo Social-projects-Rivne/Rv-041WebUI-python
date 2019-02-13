@@ -5,6 +5,8 @@ import logging
 import jsonschema
 from jsonschema.validators import Draft4Validator
 
+from ..exceptions import ValidationError
+
 
 def validation(schema, data):
     """This function validates the data.
@@ -25,5 +27,5 @@ def validation(schema, data):
     if errors:
         for error in errors:
             log.error('%s', error.message)
-        raise Exception()
+        raise ValidationError(data)
     return True
