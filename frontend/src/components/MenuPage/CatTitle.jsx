@@ -10,7 +10,7 @@ class CatTitle extends React.Component {
   }
 
   render() {
-    const { cat, items } = this.props;
+    const { cat, items, inCartItems } = this.props;
     return (
       <React.Fragment>
         <Grid item>
@@ -22,7 +22,11 @@ class CatTitle extends React.Component {
           const key = cat + item.id;
           return (
             <Grid item key={key}>
-              <MenuItem item={item} />
+              <MenuItem
+                item={item}
+                addItemHook={this.props.addItemHook}
+                locked={inCartItems.includes(item.id)}
+              />
             </Grid>
           );
         })}

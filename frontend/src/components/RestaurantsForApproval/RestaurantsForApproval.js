@@ -23,7 +23,7 @@ function RestaurantsForApproval(props) {
       {unapprovedRestaurants.map(restaurantInfo => {
         if (restaurantStatus.indexOf(restaurantInfo.status) !== -1 ) {
           return (
-            <Grid item xs={3} key={restaurantInfo.id}>
+            <Grid item xs={12} md={6} lg={3} key={restaurantInfo.id}>
               <RestaurantForApproval
                 key={restaurantInfo.id}
                 restaurant={restaurantInfo}

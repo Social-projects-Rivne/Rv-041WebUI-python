@@ -56,8 +56,8 @@ class Login extends React.Component {
       headers: { "Content-Type": "application/json" }
     })
       .then(response => response.json())
-      .then(input => {
-        const { success, error, data } = input;
+      .then(json => {
+        const { success, error, data } = json;
         const { role, token, userName } = data;
 
         if (success && role && token && userName) {
@@ -70,14 +70,23 @@ class Login extends React.Component {
             role,
             userName
           });
-          if (role === "Moderator"){
-            this.props.history.push("/moderator");
-          } else{
-            this.props.history.push("/restaurants");
-          }
         } else {
-          throw error;
+          Promise.reject(error);
         }
+      })
+      .then(() => {
+        const rolesToRedirect = {
+          Admin: "/admin",
+          Moderator: "/moderator",
+          Owner: "/profile/restaurants",
+          Client: "/restaurants"
+        };
+
+        const { from } = this.props.location.state || {
+          from: { pathname: rolesToRedirect[localStorage.getItem("role")] }
+        };
+
+        this.props.history.push(from);
       })
       .catch(error => {
         this.setState({

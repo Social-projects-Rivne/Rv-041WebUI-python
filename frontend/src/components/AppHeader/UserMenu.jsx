@@ -113,6 +113,7 @@ class UserMenu extends React.Component {
             <Menu
               id="menu-appbar"
               getContentAnchorEl={null}
+              disableAutoFocusItem
               anchorEl={anchorEl}
               onClick={this.handleClose}
               anchorOrigin={{
@@ -126,11 +127,14 @@ class UserMenu extends React.Component {
               open={open}
               onClose={this.handleClose}
             >
-              <MenuItem component={Link} to={isModerator ? `/moderator` :`/profile/personal_info`}>
+              <MenuItem
+                component={Link}
+                to={isModerator ? `/moderator` : `/profile/personal_info`}
+              >
                 {isModerator ? "Moderator panel" : "My Profile"}
               </MenuItem>
               {isOwner && (
-                <MenuItem component={Link} to="/profile/my_restaurants">
+                <MenuItem component={Link} to="/profile/restaurants">
                   My restaurants
                 </MenuItem>
               )}

@@ -12,7 +12,5 @@ class ValidationError(BaseError):
         self.msg = msg
 
     def __str__(self):
-        base = "Validation Error"
-        base += ": %s " % self.msg
-        base += str(self.data)
+        base = "Validation Error: %s %s" % (self.msg, self.data)
         return base

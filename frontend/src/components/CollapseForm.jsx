@@ -137,6 +137,10 @@ class CollapseForm extends React.Component {
 }
 
 CollapseForm.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]).isRequired,
   classes: PropTypes.object,
   tooltipText: PropTypes.string,
   formTitle: PropTypes.string

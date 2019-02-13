@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { Route, Switch, Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 /*import Drawer from "@material-ui/core/Drawer";*/
@@ -7,12 +7,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import {
-  Restaurant,
-  AccountCircle,
-  Work,
-  Report,
-} from "@material-ui/icons";
+import { Restaurant, AccountCircle, Work, Report } from "@material-ui/icons";
 
 import Messages from "./MessagesFeedbacksPage";
 import GeneralError from "../components/ErrorPages/GeneralError";
@@ -24,7 +19,7 @@ import GenericTabs from "../Service/GenericTabs";
 
 const styles = theme => ({
   root: {
-    display: "flex",
+    display: "flex"
     /*zIndex: theme.zIndex.appBar - 1,*/
   },
   /*drawer: {
@@ -43,34 +38,30 @@ const styles = theme => ({
   }
 });
 
-function getSelectedItemName(pathname){
-
+function getSelectedItemName(pathname) {
   const findedIndex = pathname.lastIndexOf("moderator");
 
-  if(findedIndex===-1){
-    return("Restaurants");
+  if (findedIndex === -1) {
+    return "Restaurants";
   }
 
   let firstCharIndex = 0;
 
-  if(pathname.charAt(findedIndex + 9)==="/"){
-    firstCharIndex = findedIndex + 10;  
-  } else{
-    return("Restaurants");
+  if (pathname.charAt(findedIndex + 9) === "/") {
+    firstCharIndex = findedIndex + 10;
+  } else {
+    return "Restaurants";
   }
 
   const firstChar = pathname.charAt(firstCharIndex).toUpperCase();
-  const restWord  = pathname.substring(firstCharIndex + 1).toLowerCase();
+  const restWord = pathname.substring(firstCharIndex + 1).toLowerCase();
 
   const fullWord = firstChar + restWord;
-  return(fullWord ? fullWord : "Restaurants");
-
+  return fullWord ? fullWord : "Restaurants";
 }
 
 class ModeratorPanel extends React.Component {
   state = {
-    isLoading: true,
-    accessAllowed: false,
     error: "",
     token: localStorage.getItem("token"),
     selectedItemName: getSelectedItemName(this.props.location.pathname),
@@ -91,20 +82,15 @@ class ModeratorPanel extends React.Component {
   };
 
   tagsValues = {
-    Restaurants: {"All": [0, 1, 2],
-      "Unapproved": [0],
-      "Approved": [1],
-      "Archived": [2]
+    Restaurants: {
+      All: [0, 1, 2],
+      Unapproved: [0],
+      Approved: [1],
+      Archived: [2]
     },
-    Users: {"All": [false, true],
-      "Active": [true],
-      "Banned": [false]
-    },
-    Owners: {"All": [false, true],
-      "Active": [true],
-      "Banned": [false]
-    },
-  }
+    Users: { All: [false, true], Active: [true], Banned: [false] },
+    Owners: { All: [false, true], Active: [true], Banned: [false] }
+  };
 
   routes = () =>{
     return( 
@@ -163,28 +149,23 @@ class ModeratorPanel extends React.Component {
           },
           exact: true
         },
-        {
-          path: "/moderator/messages",
-          render: (props) => {
-            return (
-              <Messages/>
-            );
-          },
-          exact: true
+      {
+        path: "/moderator/messages",
+        render: props => {
+          return <Messages />;
         },
-        {
-          path: "",
-          render: (props) => {
-            return (
-              <GeneralError error="404 Not Found"/>
-            );
-          },
-          /*exact: true*/
-        }
-      ]
-    );
-  }; 
-  
+        exact: true
+      },
+      {
+        path: "",
+        render: props => {
+          return <GeneralError error="404 Not Found" />;
+        },
+        exact: true
+      }
+    ]);
+  };
+
   icons = {
     Restaurants: <Restaurant />,
     Users: <AccountCircle />,
@@ -202,7 +183,7 @@ class ModeratorPanel extends React.Component {
 
     const fetchInit = {
       method: "GET",
-      headers: headers,
+      headers: headers
     };
 
     fetch("http://localhost:6543/api/moderator", fetchInit)
@@ -224,9 +205,11 @@ class ModeratorPanel extends React.Component {
   }
 
   handleTabChange = (event, value) => {
-    this.setState((prevState) => {
+    this.setState(prevState => {
       const newSelectedStatus = prevState.selectedStatus;
-      newSelectedStatus[prevState.selectedItemName] = this.tags[prevState.selectedItemName][value];
+      newSelectedStatus[prevState.selectedItemName] = this.tags[
+        prevState.selectedItemName
+      ][value];
       return { selectedStatus: newSelectedStatus };
     }
   )}
@@ -239,15 +222,16 @@ class ModeratorPanel extends React.Component {
 
   render() {
 
-    const { isLoading, accessAllowed, error, selectedItemName, selectedStatus, currentStatusAdditionalValues } = this.state;
+    const { isLoading, 
+      accessAllowed, 
+      error, 
+      selectedItemName, 
+      selectedStatus, 
+      currentStatusAdditionalValues } = this.state;
     const { classes } = this.props;
 
     if (isLoading) {
       return null;
-    }
-
-    if (!accessAllowed) {
-      return <GeneralError error={error} />;
     }
 
     return (
@@ -288,14 +272,8 @@ class ModeratorPanel extends React.Component {
           </div>
           <Switch>
             {this.routes().map(({ path, render, exact }, index) => (
-              <Route
-                exact={exact}
-                key={index}
-                path={path}
-                render={render}
-              />
-              ))
-            }
+              <Route exact={exact} key={index} path={path} render={render} />
+            ))}
           </Switch>
         </main>
       </div>

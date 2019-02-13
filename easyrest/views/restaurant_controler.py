@@ -7,6 +7,8 @@ from pyramid.view import view_config
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.httpexceptions import HTTPForbidden
+from sqlalchemy.exc import SQLAlchemyError
+import psycopg2
 
 from ..scripts.json_helpers import wrap
 from ..models.restaurant import Restaurant
@@ -198,34 +200,38 @@ def create_user_restaurant(request):
     """
     rest_data = request.json_body
 
-    name, description, phone, address, tags, creation_date = rest_data["name"], rest_data[
-        "description"], rest_data["phone"], rest_data["address"], rest_data["tags"], int(time.time())
+    name, description, phone, address, tags, creation_date, markup = rest_data["name"], rest_data[
+        "description"], rest_data["phone"], rest_data["address"], rest_data["tags"], int(time.time()), rest_data['markup']
 
     if not name or not address:
         msg = "Fill all required fields"
-        request.response.status_code = 201
+        request.response.status_code = 400
         return wrap([], success=False, error=msg)
 
     tag_models = [request.dbsession.query(
         Tag).filter_by(name=tag).first() for tag in tags]
 
     rest = Restaurant(name=name, description=description,
-                      phone=phone, address_id=address, creation_date=creation_date)
+                      phone=phone, address_id=address, creation_date=creation_date, description_markup=markup)
     rest.tag = tag_models
     user = request.token.user
     rest.user = request.token.user
 
+    if user.role.name == 'Client':
+        user.role_id = 2
+
+    request.dbsession.add(rest)
+
     try:
-        request.dbsession.add(rest)
-        if user.status.name == 'Client':
-            user.status_id = 2
         request.dbsession.flush()
-        rest_with_tags = asign_tags([rest])
-        request.response.status_code = 201
-        return wrap(rest_with_tags, message="Restaurant was successfully created")
     except Exception:
         request.response.status_code = 500
         return wrap([], success=False, error='Could not save your retaurant.')
+
+    rest_with_tags = asign_tags([rest])
+
+    request.response.status_code = 201
+    return wrap(rest_with_tags, message="Restaurant was successfully created")
 
 
 @view_config(

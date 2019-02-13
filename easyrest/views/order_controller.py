@@ -11,6 +11,7 @@ from ..models.order import Order
 from ..models.order_assoc import OrderAssoc
 from ..models.menu_item import MenuItem
 from ..models.user import User
+from ..models.restaurant import Restaurant
 from ..auth import restrict_access
 from ..models.validator import validation
 from ..exceptions import ValidationError
@@ -44,15 +45,33 @@ def get_orders(request):
 @restrict_access(user_types=["Client"])
 def create_draft_order(request):
     """Controller for creating empty(in Draft) order
+    Expects:
+    {
+        rest_id: (int)
+    }
     Return:
     {
         order_id: (int) id of created order
     }
     """
-    order = Order(date_created=int(time.time()))
+    try:
+        rest_id = request.json_body["rest_id"]
+    except ValueError as e:
+        raise HTTPBadRequest("Not valid json")
+
+    rest = request.dbsession.query(Restaurant).get(rest_id)
+
+    if rest is None:
+        raise HTTPNotFound("No such rest")
+
+    order = Order(date_created=int(time.time()), status="Draft")
     user = request.token.user
     order.user = user
+    order.restaurant = rest
+    request.dbsession.add(order)
     request.dbsession.flush()
+    # if order.id is None:
+    #     raise HTTPBadRequest("Something went wrong")
     data = {
         "order_id": order.id
     }
@@ -66,11 +85,22 @@ def get_draft_order(request):
     Return:
         Order.as_dict()
     """
+    try:
+        rest_id = int(request.params["rest_id"])
+    except KeyError:
+        raise HTTPNotFound("No rest_id found in Get params")
+    except ValueError:
+        raise HTTPForbidden("rest_id should be iteger")
+
     order = request.dbsession.query(Order).filter(
-        Order.status == "Draft", Order.user_id == request.token.user.id).first()
+        Order.status == "Draft",
+        Order.user_id == request.token.user.id,
+        Order.rest_id == rest_id).first()
+
     if order is None:
         raise HTTPNotFound("No order in draft")
-    data = order.as_dict(exclude=["user_id", "rest_id"])
+
+    data = order.as_dict(exclude=["user_id"])
     data.update({
         "items": order.get_items(request.dbsession)
     })
@@ -81,10 +111,12 @@ def get_draft_order(request):
 @restrict_access(user_types=["Client"])
 def parse_localStorage(request):
     """Controller for get dictionary from list of items ids
+    DEPRECATED
     Expects:
-    [
-        id (int), ...
-    ]
+    {
+        rest_id: (int),
+        items: [id (int), ...]
+    }
     Return:
     [
         MenuItem.as_dict(), ...
@@ -92,26 +124,29 @@ def parse_localStorage(request):
     """
 
     try:
-        menu_item_ids = request.json_body
+        json = request.json_body
     except ValueError as e:
         raise HTTPBadRequest("Not valid json")
 
     schema = {
         "description": "Validate json inputs",
-        "type": "array",
-        "items": {
-            "type": "integer",
-            "minimum": 0
+        "type": "object",
+        "properties": {
+                "rest_id": {"type": "integer"},
+                "items": {"type": "array", "items": {
+                    "type": "integer",
+                    "minimum": 0
+                }}
         },
     }
 
     try:
-        validation(schema, menu_item_ids)
+        validation(schema, json)
     except ValidationError as e:
         raise HTTPForbidden("Wrong input data %s" % e)
 
     menu_items = request.dbsession.query(
-        MenuItem).filter(MenuItem.id.in_(menu_item_ids)).all()
+        MenuItem).filter(MenuItem.id.in_(json)).all()
 
     data = [item.as_dict(exclude=["category_id"]) for item in menu_items]
 
@@ -220,11 +255,10 @@ def set_quantity(request):
         "description": "Validate json inputs",
         "type": "object",
         "properties": {
-            "order_id": {"type": "integer"},
             "quantity": {"type": "integer"},
             "item_id": {"type": "integer"}
         },
-        "required": ["order_id", "quantity", "item_id"]
+        "required": ["quantity", "item_id"]
     }
 
     try:
@@ -232,8 +266,7 @@ def set_quantity(request):
     except ValidationError as e:
         raise HTTPForbidden("Wrong input data %s" % e)
 
-    order_id, quantity, item_id = int(json["order_id"]), int(
-        json["quantity"]), int(json["item_id"])
+    quantity, item_id = int(json["quantity"]), int(json["item_id"])
 
     order = get_order(request, order_id)
 
@@ -241,7 +274,7 @@ def set_quantity(request):
 
     data = item.as_dict()
 
-    return data
+    return wrap(data)
 
 
 @view_config(route_name='order_by_id', renderer='json', request_method='DELETE')
@@ -298,6 +331,7 @@ def change_status(request):
     Expects:
         {
             "action": (str) name of action
+            "book_date":
         }
     Return:
         {
@@ -362,7 +396,7 @@ def change_status(request):
     try:
         new_status = grahp[(status, role, action)]
     except KeyError as e:
-        # object sending not for prodaction
+        # object sending not for production
         raise HTTPForbidden("Forbidden action %s" % e)
 
     order.status = new_status

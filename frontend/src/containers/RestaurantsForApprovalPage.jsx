@@ -1,13 +1,11 @@
-import React, {Component} from "react";
-import {Snackbar, Typography, Button} from "@material-ui/core";
+import React, { Component } from "react";
+import { Snackbar, Typography, Button } from "@material-ui/core";
 import GeneralError from "../components/ErrorPages/GeneralError";
 import SnackbarContent from "../components/SnackbarContent";
 import RestaurantsForApproval from "../components/RestaurantsForApproval/RestaurantsForApproval";
-import {redirectToSignUp} from "../Service/NeedAuthorization";
-
+import { redirectToSignUp } from "../Service/NeedAuthorization";
 
 class RestaurantsForApprovalPage extends Component {
-
   state = {
     needRedirection: false,
     success: null,
@@ -21,10 +19,9 @@ class RestaurantsForApprovalPage extends Component {
   };
 
   componentDidMount() {
-
     const headers = new Headers({
-      'Content-Type': 'application/json',
-      'X-Auth-Token': this.state.token
+      "Content-Type": "application/json",
+      "X-Auth-Token": this.state.token
     });
 
     const fetchInit = {
@@ -32,34 +29,40 @@ class RestaurantsForApprovalPage extends Component {
       headers: headers
     };
 
-    fetch('http://localhost:6543/api/moderator/restaurants', fetchInit)
-      .then(response => (response.status === 403 ? this.setState({
-        needRedirection: true,
-        success: false
-      }) : response.json()))
-      .then(data => this.setState({
-        unapprovedRestaurants: data.data,
-        success: data.success, error: data.error
-      }))
+    fetch("http://localhost:6543/api/moderator/restaurants", fetchInit)
+      .then(response =>
+        response.status === 403
+          ? this.setState({ needRedirection: true, success: false })
+          : response.json()
+      )
+      .then(data =>
+        this.setState({
+          unapprovedRestaurants: data.data,
+          success: data.success,
+          error: data.error
+        })
+      )
       .then(() => {
         this.pushTabValues(this.state.unapprovedRestaurants);
       })
-      .catch(err => this.setState({ success: false, error: err.message }))
+      .catch(err => this.setState({ success: false, error: err.message }));
   }
 
-  handleRestaurantApprovement = (restaurant_id,
+  handleRestaurantApprovement = (
+    restaurant_id,
     request_method,
     restaurant_status,
-    prev_rest_status, snackbarOpen = true) => {
-
+    prev_rest_status,
+    snackbarOpen = true
+  ) => {
     const headers = new Headers({
-      'Content-Type': 'application/json',
-      'X-Auth-Token': this.state.token
+      "Content-Type": "application/json",
+      "X-Auth-Token": this.state.token
     });
     const fetchInit = {
       method: request_method,
       headers: headers,
-      body: JSON.stringify({ id: restaurant_id, status: restaurant_status }),
+      body: JSON.stringify({ id: restaurant_id, status: restaurant_status })
     };
 
     let operationName = "";
@@ -70,41 +73,49 @@ class RestaurantsForApprovalPage extends Component {
       operationName = "Disapproved";
     }
 
-    fetch('http://localhost:6543/api/moderator/restaurants', fetchInit)
-      .then(response => (!(response.status >= 200 && response.status < 300)
-        ? Promise.reject(response.status)
-        : response.json()))
-      .then(data => this.setState((prevState) => {
-        return {
-          success: data.success,
-          unapprovedRestaurants: prevState.unapprovedRestaurants.map(restaurantInfo => {
-            if (restaurantInfo.id === restaurant_id) {
-              restaurantInfo.status = restaurant_status;
-              return restaurantInfo;
-            } else {
-              return restaurantInfo;
-            }
-          }),
-          snackbarOpen: snackbarOpen,
-          snackbarMsg: operationName,
-          currentRestaurantId: restaurant_id,
-          previousRestaurantStatus: prev_rest_status
-        }
-      }))
+    fetch("http://localhost:6543/api/moderator/restaurants", fetchInit)
+      .then(response =>
+        !(response.status >= 200 && response.status < 300)
+          ? Promise.reject(response.status)
+          : response.json()
+      )
+      .then(data =>
+        this.setState(prevState => {
+          return {
+            success: data.success,
+            unapprovedRestaurants: prevState.unapprovedRestaurants.map(
+              restaurantInfo => {
+                if (restaurantInfo.id === restaurant_id) {
+                  restaurantInfo.status = restaurant_status;
+                  return restaurantInfo;
+                } else {
+                  return restaurantInfo;
+                }
+              }
+            ),
+            snackbarOpen: snackbarOpen,
+            snackbarMsg: operationName,
+            currentRestaurantId: restaurant_id,
+            previousRestaurantStatus: prev_rest_status
+          };
+        })
+      )
       .then(() => {
         this.pushTabValues(this.state.unapprovedRestaurants);
       })
-      .catch(err => this.setState({
-        success: false,
-        error: "" + err,
-        snackbarOpen: true,
-        snackbarMsg: "" + err,
-        currentRestaurantId: restaurant_id
-      }))
+      .catch(err =>
+        this.setState({
+          success: false,
+          error: "" + err,
+          snackbarOpen: true,
+          snackbarMsg: "" + err,
+          currentRestaurantId: restaurant_id
+        })
+      );
   };
 
   handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     this.setState({ snackbarOpen: false });
@@ -115,16 +126,17 @@ class RestaurantsForApprovalPage extends Component {
       color="secondary"
       size="small"
       onClick={() => {
-        this.handleRestaurantApprovement(this.state.currentRestaurantId,
+        this.handleRestaurantApprovement(
+          this.state.currentRestaurantId,
           this.state.previousRestaurantStatus === 2 ? "DELETE" : "POST",
           this.state.previousRestaurantStatus,
           null,
-          false);
-      }
-      }
+          false
+        );
+      }}
     >
       Undo
-      </Button>
+    </Button>
   );
 
   //push information about quantity to the Tab component
@@ -148,7 +160,14 @@ class RestaurantsForApprovalPage extends Component {
   }
 
   render() {
-    const { needRedirection, unapprovedRestaurants, success, error, snackbarOpen, snackbarMsg } = this.state;
+    const {
+      needRedirection,
+      unapprovedRestaurants,
+      success,
+      error,
+      snackbarOpen,
+      snackbarMsg
+    } = this.state;
     const { restaurantStatus } = this.props;
 
     //prevent for rendering without fetch completing (init value is "null")
@@ -159,8 +178,7 @@ class RestaurantsForApprovalPage extends Component {
     if (needRedirection === true) {
       const redirection = redirectToSignUp(error);
       return redirection;
-    }
-    else {
+    } else {
       if (success) {
         return (
           <React.Fragment>
@@ -191,13 +209,11 @@ class RestaurantsForApprovalPage extends Component {
             </Snackbar>
           </React.Fragment>
         );
-      }
-      else {
-        return (<GeneralError error={error} />);
+      } else {
+        return <GeneralError error={error} />;
       }
     }
   }
-
 }
 
 export default RestaurantsForApprovalPage;
