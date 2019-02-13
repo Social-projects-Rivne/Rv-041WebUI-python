@@ -134,7 +134,7 @@ class UserMenu extends React.Component {
                 {isModerator ? "Moderator panel" : "My Profile"}
               </MenuItem>
               {isOwner && (
-                <MenuItem component={Link} to="/profile/my_restaurants">
+                <MenuItem component={Link} to="/profile/restaurants">
                   My restaurants
                 </MenuItem>
               )}

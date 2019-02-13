@@ -62,8 +62,6 @@ function getSelectedItemName(pathname) {
 
 class ModeratorPanel extends React.Component {
   state = {
-    isLoading: true,
-    accessAllowed: false,
     error: "",
     token: localStorage.getItem("token"),
     selectedItemName: getSelectedItemName(this.props.location.pathname),

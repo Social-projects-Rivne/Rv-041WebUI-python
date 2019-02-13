@@ -1,6 +1,6 @@
 import React from "react";
-import { Person, Comment, AddBox, History, ListAlt } from "@material-ui/icons";
-import { Tab, withStyles, Divider } from "@material-ui/core";
+import { Person, Comment, Store, History, ListAlt } from "@material-ui/icons";
+import { Tab, withStyles } from "@material-ui/core";
 import { NavLink } from "react-router-dom";
 
 const styles = theme => ({
@@ -30,15 +30,15 @@ const ProfileTabs = props => {
         icon={<Person />}
         label="Personal Info"
       />
-      {/* <Tab icon={<ListAlt />} label="Current Orders" />
+      <Tab icon={<ListAlt />} label="Current Orders" />
       <Tab icon={<History />} label="Order History" />
-      <Tab icon={<Comment />} label="Comments" /> */}
+      <Tab icon={<Comment />} label="Comments" />
       <Tab
         disableRipple
         className={classes.tab}
         component={NavLink}
-        to="/profile/my_restaurants"
-        icon={<AddBox />}
+        to="/profile/restaurants"
+        icon={<Store />}
         label="My Restaurants"
       />
     </div>

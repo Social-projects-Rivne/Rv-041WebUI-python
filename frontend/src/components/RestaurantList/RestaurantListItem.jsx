@@ -9,11 +9,9 @@ import {
   CardContent,
   Divider,
   Chip,
-  Grid,
-  IconButton
+  Grid
 } from "@material-ui/core/";
 import { amber, green } from "@material-ui/core/colors/";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { Link } from "react-router-dom";
 import RestaurantListItemMenu from "./RestaurantListItemMenu";
 
@@ -140,7 +138,7 @@ function RestaurantListItem(props) {
               <Button
                 variant="contained"
                 component={Link}
-                to={"/profile/my_restaurant/" + restData.id}
+                to={"restaurants/" + restData.id}
                 color="primary"
               >
                 details

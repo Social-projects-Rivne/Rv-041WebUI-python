@@ -8,11 +8,13 @@ const LogInPage = props => {
     <PageContainer fullHeight width="small">
       <AppContext.Consumer>
         {state => {
-          if (state.auth) {
-            props.history.push("/restaurants");
-          } else {
-            return <Login history={props.history} state={state} />;
-          }
+          return (
+            <Login
+              location={props.location}
+              history={props.history}
+              state={state}
+            />
+          );
         }}
       </AppContext.Consumer>
     </PageContainer>
