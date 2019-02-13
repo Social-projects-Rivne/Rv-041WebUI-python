@@ -14,9 +14,6 @@ from ..models.category import Category
 from ..auth import restrict_access
 
 
-<< << << < HEAD
-
-
 def asign_items(menu):
     menu_dict = menu.as_dict()
     menu_items = [item.as_dict() for item in menu.menu_item]
@@ -38,10 +35,6 @@ def get_all_categories(request):
     body = wrap(categories_as_dict)
 
     return body
-
-
-== == == =
->>>>>> > develop
 
 
 @view_config(route_name='get_menus', renderer='json', request_method='GET')
