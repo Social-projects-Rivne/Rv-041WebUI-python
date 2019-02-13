@@ -104,19 +104,8 @@ def get_cats_controler(request):
         })
         return body
 
-    result = request.dbsession.query(MenuItem, Category).filter(
-        MenuItem.menu_id == menu.id).filter(
-        Category.id == MenuItem.category_id).order_by(Category.name).all()
-
-    data_dict = {}
-    cats_list = []
-    for item, cat in result:
-        category, item_dict = cat.name, item.as_dict()
-        if category in data_dict:
-            data_dict[category].append(item_dict)
-        else:
-            data_dict[category] = [item_dict]
-            cats_list.append(category)
+    cats_list, data_dict = menu.get_items_with_cat(
+        request.dbsession, exclude=["menu_id"])
 
     body = wrap({
         "Items": data_dict,
