@@ -1,17 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
 import RestaurantListItem from "./RestaurantListItem";
-import { Grid } from "@material-ui/core/";
+import { Grid, Grow } from "@material-ui/core/";
 
 const RestaurantList = props => {
   const { data } = props;
   return (
     <Grid container spacing={16}>
-      {data.map(rest => {
+      {data.map((rest, index) => {
         return (
-          <Grid key={rest.id} item xs={12}>
-            <RestaurantListItem showDetails restData={rest} />
-          </Grid>
+          <Grow
+            in={true}
+            key={rest.id}
+            {...(data ? { timeout: Math.atan(index + 1) * 1500 } : {})}
+          >
+            <Grid item xs={12}>
+              <RestaurantListItem showDetails restData={rest} />
+            </Grid>
+          </Grow>
         );
       })}
     </Grid>

@@ -6,6 +6,7 @@ from sqlalchemy import (
     Text,
     Date,
     ForeignKey,
+    Boolean
 )
 from sqlalchemy.orm import relationship
 from passlib.hash import pbkdf2_sha256
@@ -33,6 +34,7 @@ class User(Base):
     birth_date = Column(Date)
     password = Column(Text)
     role_id = Column(Integer, ForeignKey('user_roles.id'), default=1)
+    is_active = Column(Boolean, default=False)
 
     tokens = relationship('Token')
     role = relationship('UserRole')

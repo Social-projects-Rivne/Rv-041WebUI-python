@@ -1,51 +1,35 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Route, Switch, Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
+/*import Drawer from "@material-ui/core/Drawer";*/
 import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
-import {
-  Restaurant,
-  AccountCircle,
-  Work,
-  Feedback,
-  Report,
-  Archive
-} from "@material-ui/icons";
+import { Restaurant, AccountCircle, Work, Report } from "@material-ui/icons";
 
-import ArchivePage from "./ArchiveDataPage";
 import Messages from "./MessagesFeedbacksPage";
 import GeneralError from "../components/ErrorPages/GeneralError";
 import RestaurantsForApprovalPage from "./RestaurantsForApprovalPage";
-import Users from "./UsersPage";
-import ClassNames from "classnames";
+import ModeratorUsersPage from "./ModeratorUsersPage";
+import GenericTabs from "../Service/GenericTabs";
 
-const drawerWidth = 240;
+/*const drawerWidth = 240;*/
 
 const styles = theme => ({
   root: {
     display: "flex"
+    /*zIndex: theme.zIndex.appBar - 1,*/
   },
-  appBar: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth
-  },
-  drawer: {
+  /*drawer: {
+    zIndex: theme.zIndex.appBar - 2,
     width: drawerWidth,
     flexShrink: 0
   },
   drawerPaper: {
     width: drawerWidth
-  },
+  },*/
   toolbar: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
@@ -54,32 +38,141 @@ const styles = theme => ({
   }
 });
 
-class PermanentDrawerLeft extends React.Component {
+function getSelectedItemName(pathname) {
+  const findedIndex = pathname.lastIndexOf("moderator");
+
+  if (findedIndex === -1) {
+    return "Restaurants";
+  }
+
+  let firstCharIndex = 0;
+
+  if (pathname.charAt(findedIndex + 9) === "/") {
+    firstCharIndex = findedIndex + 10;
+  } else {
+    return "Restaurants";
+  }
+
+  const firstChar = pathname.charAt(firstCharIndex).toUpperCase();
+  const restWord = pathname.substring(firstCharIndex + 1).toLowerCase();
+
+  const fullWord = firstChar + restWord;
+  return fullWord ? fullWord : "Restaurants";
+}
+
+class ModeratorPanel extends React.Component {
   state = {
-    isLoading: true,
-    accessAllowed: false,
     error: "",
     token: localStorage.getItem("token"),
-    renderingComponent: <RestaurantsForApprovalPage />,
-    selectedItemName: "Restaurants"
+    selectedItemName: getSelectedItemName(this.props.location.pathname),
+    selectedStatus: {
+      Restaurants: "All",
+      Users: "All",
+      Owners: "All",
+      Messages: "All"
+    }
   };
 
-  components = {
-    Restaurants: <RestaurantsForApprovalPage />,
-    Users: <Users userStatus="Users" />,
-    Owners: <Users userStatus="Owners" />,
-    Feedbacks: <Messages messageStatus="Feedbacks" />,
-    Reports: <Messages messageStatus="Reports" />,
-    Archive: <ArchivePage archiveStatus="Archive" />
+  tags = {
+    Restaurants: ["All", "Unapproved", "Approved", "Archived"],
+    Users: ["All", "Active", "Banned"],
+    Owners: ["All", "Active", "Banned"],
+    Messages: ["All", "Feedbacks", "Reports"]
+  };
+
+  tagsValues = {
+    Restaurants: {
+      All: [0, 1, 2],
+      Unapproved: [0],
+      Approved: [1],
+      Archived: [2]
+    },
+    Users: { All: [false, true], Active: [true], Banned: [false] },
+    Owners: { All: [false, true], Active: [true], Banned: [false] }
+  };
+
+  routes = () => {
+    return [
+      {
+        path: "/moderator/",
+        render: props => {
+          return (
+            <RestaurantsForApprovalPage
+              restaurantStatus={
+                this.tagsValues.Restaurants[
+                  this.state.selectedStatus.Restaurants
+                ]
+              }
+            />
+          );
+        },
+        exact: true
+      },
+      {
+        path: "/moderator/restaurants",
+        render: props => {
+          return (
+            <RestaurantsForApprovalPage
+              restaurantStatus={
+                this.tagsValues.Restaurants[
+                  this.state.selectedStatus.Restaurants
+                ]
+              }
+            />
+          );
+        },
+        exact: true
+      },
+      {
+        path: "/moderator/users",
+        render: props => {
+          return (
+            <ModeratorUsersPage
+              userActivity={
+                this.tagsValues.Users[this.state.selectedStatus.Users]
+              }
+              userStatus={"users"}
+            />
+          );
+        },
+        exact: true
+      },
+      {
+        path: "/moderator/owners",
+        render: props => {
+          return (
+            <ModeratorUsersPage
+              userActivity={
+                this.tagsValues.Owners[this.state.selectedStatus.Owners]
+              }
+              userStatus={"owners"}
+            />
+          );
+        },
+        exact: true
+      },
+      {
+        path: "/moderator/messages",
+        render: props => {
+          return <Messages />;
+        },
+        exact: true
+      },
+      {
+        path: "",
+        render: props => {
+          return <GeneralError error="404 Not Found" />;
+        }
+        /*exact: true*/
+      }
+    ];
   };
 
   icons = {
     Restaurants: <Restaurant />,
     Users: <AccountCircle />,
     Owners: <Work />,
-    Feedbacks: <Feedback />,
-    Reports: <Report />,
-    Archive: <Archive />
+    Messages: <Report />
   };
 
   classes = this.props.classes;
@@ -113,76 +206,81 @@ class PermanentDrawerLeft extends React.Component {
       );
   }
 
+  handleTabChange = (event, value) => {
+    this.setState(prevState => {
+      const newSelectedStatus = prevState.selectedStatus;
+      newSelectedStatus[prevState.selectedItemName] = this.tags[
+        prevState.selectedItemName
+      ][value];
+      return { selectedStatus: newSelectedStatus };
+    });
+  };
+
   render() {
-    const { isLoading, accessAllowed, error } = this.state;
+    const {
+      isLoading,
+      accessAllowed,
+      error,
+      selectedItemName,
+      selectedStatus
+    } = this.state;
     const { classes } = this.props;
+
     if (isLoading) {
       return null;
     }
 
-    if (!accessAllowed) {
-      return <GeneralError error={error} />;
-    }
-
     return (
       <div className={classes.root}>
-        <Drawer
+        {/*<Drawer
           className={classes.drawer}
           variant="permanent"
           classes={{
             paper: classes.drawerPaper
           }}
-          anchor="left"
-        >
-          <div className={classes.toolbar} />
-          <List>
-            {["Restaurants", "Users", "Owners", "Feedbacks", "Reports"].map(
-              (text, index) => (
-                <ListItem
-                  button
-                  selected={this.state.selectedItemName === text}
-                  key={text}
-                  onClick={() => {
-                    this.setState({
-                      renderingComponent: this.components[text],
-                      selectedItemName: text
-                    });
-                  }}
-                >
-                  <ListItemIcon>{this.icons[text]}</ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
-              )
-            )}
-          </List>
-          <Divider />
-          <List>
-            {["Archive"].map((text, index) => (
-              <ListItem
-                button
-                selected={this.state.selectedItemName === text}
-                key={text}
-                onClick={() => {
-                  this.setState({
-                    renderingComponent: this.components[text],
-                    selectedItemName: text
-                  });
-                }}
-              >
-                <ListItemIcon>{this.icons[text]}</ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
+        >*/}
+        <div className={classes.toolbar} />
+        <List>
+          {["Restaurants", "Users", "Owners", "Messages"].map((text, index) => (
+            <ListItem
+              button
+              selected={this.state.selectedItemName === text}
+              key={text}
+              onClick={() => {
+                this.setState({ selectedItemName: text });
+              }}
+              component={Link}
+              to={"/moderator/" + text.toLowerCase()}
+            >
+              <ListItemIcon>{this.icons[text]}</ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
+          ))}
+        </List>
+        {/*</Drawer>*/}
+        <main className={classes.content}>
+          <div>
+            <GenericTabs
+              tags={this.tags[selectedItemName]}
+              selectedValue={this.tags[selectedItemName].indexOf(
+                selectedStatus[selectedItemName]
+              )}
+              handleTabChange={this.handleTabChange}
+            />
+          </div>
+          <Switch>
+            {this.routes().map(({ path, render, exact }, index) => (
+              <Route exact={exact} key={index} path={path} render={render} />
             ))}
-          </List>
-        </Drawer>
-        <main className={classes.content}>{this.state.renderingComponent}</main>
+          </Switch>
+        </main>
       </div>
     );
   }
 }
 
-PermanentDrawerLeft.propTypes = {
+ModeratorPanel.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(PermanentDrawerLeft);
+export default withStyles(styles)(ModeratorPanel);

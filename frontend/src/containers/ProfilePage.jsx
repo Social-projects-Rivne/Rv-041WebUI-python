@@ -17,15 +17,14 @@ const ProfilePage = props => {
             <Grid item xs={10}>
               <Switch>
                 <Route
-                  exact
                   path={`${match.url}/personal_info`}
                   component={UserInfoPage}
                 />
                 <Route
-                  exact
-                  path={`${match.url}/my_restaurants`}
+                  path={`${match.url}/restaurants`}
                   component={MyRestaurants}
                 />
+                <Route path={match.url} render={() => <MyRestaurants />} />
               </Switch>
             </Grid>
             <Grid item xs={2}>
