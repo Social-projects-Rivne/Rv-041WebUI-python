@@ -1,9 +1,10 @@
-import React, { Component } from "react";
-import { Snackbar, Typography, Button } from "@material-ui/core";
+import React, {Component} from "react";
+import {Snackbar, Typography, Button} from "@material-ui/core";
 import GeneralError from "../components/ErrorPages/GeneralError";
 import SnackbarContent from "../components/SnackbarContent";
 import RestaurantsForApproval from "../components/RestaurantsForApproval/RestaurantsForApproval";
-import { redirectToSignUp } from "../Service/NeedAuthorization";
+import {redirectToSignUp} from "../Service/NeedAuthorization";
+
 
 class RestaurantsForApprovalPage extends Component {
 
@@ -19,37 +20,17 @@ class RestaurantsForApprovalPage extends Component {
         previousRestaurantStatus: null
     };
 
-    fetch("http://localhost:6543/api/approval_restaurants", fetchInit)
-      .then(response =>
-        response.status === 403
-          ? this.setState({ needRedirection: true, success: false })
-          : response.json()
-      )
-      .then(data =>
-        this.setState({
-          unapprovedRestaurants: data.data,
-          success: data.success,
-          error: data.error
-        })
-      )
-      .catch(err => this.setState({ success: false, error: err.message }));
-  }
+    componentDidMount() {
 
-  handleRestaurantApprovement = (
-    restaurant_id,
-    request_method,
-    restaurant_status
-  ) => {
-    const headers = new Headers({
-      "Content-Type": "application/json",
-      "X-Auth-Token": this.state.token
-    });
+        const headers = new Headers({
+            'Content-Type': 'application/json',
+            'X-Auth-Token': this.state.token
+        });
 
-    const fetchInit = {
-      method: request_method,
-      headers: headers,
-      body: JSON.stringify({ id: restaurant_id, status: restaurant_status })
-    };
+        const fetchInit = {
+            method: "GET",
+            headers: headers
+        };
 
         fetch('http://localhost:6543/api/moderator/restaurants', fetchInit)
             .then(response => (response.status === 403 ? this.setState({needRedirection: true,
@@ -184,44 +165,6 @@ class RestaurantsForApprovalPage extends Component {
         }
     }
 
-    if (needRedirection === true) {
-      const redirection = redirectToSignUp(error);
-      return redirection;
-    } else {
-      if (success) {
-        return (
-          <React.Fragment>
-            <RestaurantsForApproval
-              unapprovedRestaurants={unapprovedRestaurants}
-              handleRestaurantApprovement={this.handleRestaurantApprovement}
-            />
-            <Snackbar
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right"
-              }}
-              open={snackbarOpen}
-              autoHideDuration={success ? 3000 : null}
-              onClose={this.handleSnackbarClose}
-            >
-              <SnackbarContent
-                onClose={this.handleSnackbarClose}
-                action={success ? this.snackbarAction : null}
-                variant={success ? "success" : "error"}
-                message={
-                  <Typography color="inherit" align="center">
-                    {snackbarMsg || success || "Something went wrong"}
-                  </Typography>
-                }
-              />
-            </Snackbar>
-          </React.Fragment>
-        );
-      } else {
-        return <GeneralError error={error} />;
-      }
-    }
-  }
 }
 
 export default RestaurantsForApprovalPage;
