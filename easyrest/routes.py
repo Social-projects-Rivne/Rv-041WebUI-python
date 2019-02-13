@@ -53,3 +53,4 @@ def includeme(config):
                      request_method=["POST", "GET", "PUT", "DELETE"])
     config.add_route('order_status', 'order/{order_id:\d+}/status',
                      request_method=["GET", "PUT"])
+    config.add_route('users_list', 'users/{role_id:\d+}', request_method="GET")
