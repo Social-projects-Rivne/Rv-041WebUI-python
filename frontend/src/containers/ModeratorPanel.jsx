@@ -230,10 +230,6 @@ class ModeratorPanel extends React.Component {
       return null;
     }
 
-    if (!accessAllowed) {
-      return <GeneralError error={error} />;
-    }
-
     return (
       <div className={classes.root}>
         {/*<Drawer

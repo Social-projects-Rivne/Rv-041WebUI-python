@@ -217,8 +217,8 @@ def create_user_restaurant(request):
     user = request.token.user
     rest.user = request.token.user
 
-    if user.status.name == 'Client':
-        user.status_id = 2
+    if user.role.name == 'Client':
+        user.role_id = 2
 
     request.dbsession.add(rest)
 
