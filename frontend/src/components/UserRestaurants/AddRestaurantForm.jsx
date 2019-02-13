@@ -8,6 +8,8 @@ import {
   InputLabel
 } from "@material-ui/core";
 import ListSelect from "../ListSelect";
+import MarkdownEditor from "../Markdown/MarkdownEditor";
+import { EditorState, RichUtils, convertToRaw } from "draft-js";
 
 export class AddRestaurantForm extends React.Component {
   state = {
@@ -18,6 +20,7 @@ export class AddRestaurantForm extends React.Component {
       description: "",
       tags: []
     },
+    editorState: EditorState.createEmpty(),
     allTags: []
   };
 
@@ -29,7 +32,9 @@ export class AddRestaurantForm extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    const { newRestaurant } = this.state;
+    const { newRestaurant, editorState } = this.state;
+    const contentState = convertToRaw(editorState.getCurrentContent());
+    newRestaurant.markup = JSON.stringify(contentState);
 
     fetch("http://localhost:6543/api/user_restaurants", {
       method: "POST",
@@ -79,7 +84,8 @@ export class AddRestaurantForm extends React.Component {
         phone: "",
         description: "",
         tags: []
-      }
+      },
+      editorState: EditorState.createEmpty()
     });
   };
 
@@ -92,8 +98,24 @@ export class AddRestaurantForm extends React.Component {
     }));
   };
 
+  onEditorChange = editorState => {
+    this.setState({ editorState });
+  };
+
+  toggleEditorBlockType = blockType => {
+    this.onEditorChange(
+      RichUtils.toggleBlockType(this.state.editorState, blockType)
+    );
+  };
+
+  toggleEditorInlineStyle = inlineStyle => {
+    this.onEditorChange(
+      RichUtils.toggleInlineStyle(this.state.editorState, inlineStyle)
+    );
+  };
+
   render() {
-    const { allTags, newRestaurant } = this.state;
+    const { allTags, newRestaurant, editorState } = this.state;
     const { handleCloseFormClick } = this.props;
 
     return (
@@ -138,10 +160,10 @@ export class AddRestaurantForm extends React.Component {
             <TextField
               value={newRestaurant.description}
               name="description"
-              label="Restaurant Description"
+              label="Restaurant Preview Text"
+              fullWidth
               multiline
               rows="4"
-              fullWidth
             />
           </Grid>
           <Grid item xs={12}>
@@ -154,6 +176,16 @@ export class AddRestaurantForm extends React.Component {
                 onListChange={this.handleTagsChange}
               />
             </FormControl>
+          </Grid>
+          <Grid item xs={12} />
+          <Grid item xs={12}>
+            <MarkdownEditor
+              ref="editor"
+              editorState={editorState}
+              toggleInlineStyle={this.toggleEditorInlineStyle}
+              toggleBlockType={this.toggleEditorBlockType}
+              onChange={this.onEditorChange}
+            />
           </Grid>
           <Grid item xs={3}>
             <Button
