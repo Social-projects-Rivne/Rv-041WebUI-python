@@ -2,8 +2,6 @@
 This module describes behavior of /sign_up route
 """
 
-import logging
-
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPNotFound
@@ -11,6 +9,7 @@ from sqlalchemy.exc import IntegrityError
 
 from ..scripts.json_helpers import wrap
 from ..models.validator import check_action_access
+from ..auth import restrict_access
 from ..models.user_role import UserRole
 from ..models.user import User
 
@@ -58,6 +57,7 @@ def sign_up(request):
 
 
 @view_config(route_name='users_list', renderer='json', request_method='GET')
+@restrict_access(['Administrator', 'Owner', 'Moderator', 'Admin'])
 def get_users_list(request):
     """This function is intended to display a list of users
        depending on the role id.
@@ -94,17 +94,11 @@ def get_users_list(request):
                     }
 
     """
-    log = logging.getLogger(__name__)
-    try:
-        current_user = request.token.user
-    except AttributeError as ae:
-        log.error(ae.message)
-        raise HTTPForbidden('Need token for access')
-
     derivable_role_id = int(request.matchdict['role_id'])
     role = request.dbsession.query(UserRole).get(derivable_role_id)
     if role is None:
         raise HTTPNotFound(request.path)
+    current_user = request.token.user
     check_action_access(current_user.role.name, foreign_role=role.name, action='read')
     users_list = [user.as_dict(exclude=['role_id', 'password']) for user in
                   request.dbsession.query(User).filter_by(role_id=derivable_role_id).order_by(User.name).all()]
