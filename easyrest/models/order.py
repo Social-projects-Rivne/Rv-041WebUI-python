@@ -102,3 +102,291 @@ class Order(Base):
             total += q * p_per_item
         self.total_price = total
         return self.total_price
+
+    def change_status(self, request, new_status, action):
+        """ NOT FOR MERGE
+        external usage
+            order = request.dbsession.query(Order).filter(
+                Order.id == order_id, Order.user_id == request.token.user.id).first()
+            order.change_status(request/role, new_status, action?)
+        """
+        status, role = self.status, request.token.user.role.name
+        grahp = {
+            ("Draft", "Client", "Submit"): "Waiting for confirm",
+            # Date +-, status
+            ("Draft", "Client", "Remove"): "Removed",
+            # status
+            ("Waiting for confirm", "Client", "Undo"): "Draft",
+            # status,  comment?
+            ("Waiting for confirm", "Administrator", "Reject"): "Declined",
+            # status, comment?
+            ("Waiting for confirm", "Administrator", "Accept"): "Accepted",
+            # status
+            ("Declined", "Client", "Remove"): "Removed",
+            # status
+            ("Declined", "Client", "Edit"): "Draft",
+            # status
+            ("Declined", "Client", "Ok"): "History",
+            # status
+            ("History", "Client", "Reorder"): "Draft",
+            # status
+            ("Accepted", "Administrator", "Cancel"): "Declined",
+            # status comment?
+            ("Accepted", "Administrator", "Asign waiter"): "Asigned waiter",
+            # status waiter_id
+            ("Accepted", "Waiter", "Asign waiter"): "Asigned waiter",
+            # status waiter_id
+            ("Accepted", "Client", "Edit"): "Draft",
+            # status
+            ("Asigned waiter", "Waiter", "Start order"): "In progress",
+            # status
+            ("In progress", "Administrator", "Client failed"): "Failed",
+            # status comment? evaluation?
+            ("In progress", "Client", "Rest failed"): "Failed",
+            # status comment? evaluation?
+            ("In progress", "Waiter", "Close order"): "Waiting for feedback",
+            # status comment?
+            ("Failed", "Moderator", "Reviewed"): "History",
+            # status comment?
+            ("Waiting for feedback", "Client", "Feedback"): "History",
+            # status comment?
+            ("Waiting for feedback", "Client", "Skip"): "History"
+            # status
+        }
+        # use example
+        new_status = graph[(status, role, action)]
+
+        graph_new_v1 = {
+            ("Draft", "Waiting for confirm"): {
+                "roles": ["Client"],
+                "set_date": True
+            },
+            ("Draft", "Removed"): {
+                "roles": ["Client"],
+            },
+            ("Waiting for confirm", "Draft"): {
+                "roles": ["Client"],
+            },
+            ("Waiting for confirm", "Declined"): {
+                "roles": ["Administrator"],
+            },
+            ("Waiting for confirm", "Accepted"): {
+                "roles": ["Administrator"],
+            },
+            ("Declined", "Removed"): {
+                "roles": ["Client"],
+            },
+            ("Declined", "Draft"): {
+                "roles": ["Client"],
+            },
+            ("Declined", "History"): {
+                "roles": ["Client"],
+            },
+            ("Accepted", "Declined"): {
+                "roles": ["Administrator"],
+            },
+            ("Accepted", "Asigned waiter"): {
+                "roles": ["Administrator", "Waiter"],
+                "set_waiter": True
+            },
+            ("Accepted", "Draft"): {
+                "roles": ["Client"],
+            },
+            ("History", "Draft"): {
+                "roles": ["Client"],
+            },
+            ("Asigned waiter", "In progress"): {
+                "roles": ["Waiter"],
+            },
+            ("In progress", "Failed"): {
+                "roles": ["Administrator"],
+            },
+            ("In progress", "Failed"): {
+                "roles": ["Client"],
+            },
+            ("In progress", "Waiting for feedback"): {
+                "roles": ["Waiter"],
+            },
+            ("Waiting for feedback", "History"): {
+                "roles": ["Client"],
+            },
+            ("Failed", "History"): {
+                "roles": ["Moderator"],
+            }
+        }
+        # use example
+        d = graph[(status, new_status)]
+        if role not in d["roles"]:
+            raise HTTPForbidden("Wrong role")
+        if d.get("set_waiter", False):
+            # set waiter id
+        oreder.status = new_status
+
+        graph_new_v2 = {
+            ("Draft"): {
+                "role": "Client",
+                "actions": ["Submit", "Remove"],
+                "new_status": ["Waiting for confirm", "Removed"]
+                "set_date": True
+            },
+            ("Waiting for confirm"): {
+                "role": "Client",
+                "actions": ["Undo"],
+                "new_status": ["Draft"]
+            },
+            ("Waiting for confirm"): {
+                "role": "Administrator",
+                "actions": ["Reject", "Accept"],
+                "new_status": ["Declined", "Accepted"]
+            },
+            ("Declined"): {
+                "role": "Client",
+                "actions": ["Remove", "Edit", "Ok"],
+                "new_status": ["Removed", "Draft", "History"]
+            },
+            ("History"): {
+                "role": "Client",
+                "actions": ["Reorder"],
+                "new_status": ["Draft"]
+            },
+            ("Accepted"): {
+                "role": "Administrator",
+                "actions": ["Cancel", "Asign waiter"],
+                "new_status": ["Declined", "Asigned waiter"]
+                "set_waiter": True
+            },
+            ("Accepted"): {
+                "role": "Waiter",
+                "actions": ["Asign waiter"],
+                "new_status": ["Asigned waiter"],
+                "set_waiter": True
+            },
+            ("Accepted"): {
+                "role": "Client",
+                "actions": ["Edit"],
+                "new_status": ["Draft"]
+            },
+            ("Asigned waiter"): {
+                "role": "Waiter",
+                "actions": ["Start order"],
+                "new_status": ["In progress"]
+            },
+            ("In progress"): {
+                "role": "Administrator",
+                "actions": ["Client failed"],
+                "new_status": ["Failed"]
+            },
+            ("In progress"): {
+                "role": "Client",
+                "actions": ["Rest failed"],
+                "new_status": ["Failed"]
+            },
+            ("In progress"): {
+                "role": "Waiter",
+                "actions": ["Close order"],
+                "new_status": ["Waiting for feedback"]
+            },
+            ("Failed"): {
+                "role": "Moderator",
+                "actions": ["Reviewed"],
+                "new_status": ["History"]
+            },
+            ("Waiting for feedback"): {
+                "role": "Client",
+                "actions": ["Feedback", "Skip"],
+                "new_status": ["History", "History"]
+            }
+        }
+        # use example
+        d = graph[(status)]
+        if role != d["role"]:
+            raise HTTPForbidden("Wrong role")
+        if action not in d["actions"]:
+            raise HTTPForbidden("Wrong action")
+        if d.get("set_waiter", False):
+            # set waiter id
+        new_status = d["new_status"][d["actions"].index(action)]
+
+        graph_new_v3 = {
+            "Draft": {
+                "Client": {
+                    "Waiting for confirm": {
+                        "set_date": True,
+                        "set_comment": True
+                    },
+                    "Removed": {},
+                }
+            },
+            "Waiting for confirm": {
+                "Client": {
+                    "Draft": {},
+                },
+                "Administrator": {
+                    "Declined": {
+                        "set_comment": True
+                    },
+                    "Accepted": {
+                        "set_comment": True
+                    },
+                }
+            },
+            "Declined": {
+                "Client": {
+                    "Draft": {},
+                    "Removed": {},
+                    "History": {},
+                }
+            },
+            "History": {
+                "Client": {
+                    "Draft": {},
+                }
+            },
+            "Accepted": {
+                "Administrator": {
+                    "Declined": {
+                        "set_comment": True
+                    },
+                    "Asigned waiter": {
+                        "set_waiter": True
+                    },
+                },
+                "Waiter": {
+                    "Asigned waiter": {
+                        "set_waiter": True
+                    }
+                },
+                "Client": {
+                    "Draft": {}
+                }
+            },
+            "In progress": {
+                "Administrator": {
+                    "Failed": {},
+                },
+                "Client": {
+                    "Failed": {},
+                },
+                "Waiter": {
+                    "Waiting for feedback": {},
+                }
+            },
+            "Waiting for feedback": {
+                "Client": {
+                    "History": {},
+                }
+            },
+            "Failed": {
+                "Moderator": {
+                    "History": {},
+                }
+            },
+        }
+        # use example
+        try:
+            d = graph[status][role][new_status]
+        except KeyError:
+            raise HTTPForbidden("Something wrong")
+        if d.get("set_waiter", False):
+            # set waiter id
+        order.status = new_status

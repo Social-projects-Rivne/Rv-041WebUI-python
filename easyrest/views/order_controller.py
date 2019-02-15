@@ -369,29 +369,6 @@ def change_status(request):
     # State transition graph
     # (status, role, action)
     # User->Submit = User press Submit
-    grahp = {
-        ("0", "Client", "bla"): "Draft",
-        ("Draft", "Client", "Submit"): "Waiting for confirm",
-        ("Draft", "Client", "Remove"): "Removed",
-        ("Waiting for confirm", "Client", "Undo"): "Draft",
-        ("Waiting for confirm", "Administrator", "Reject"): "Declined",
-        ("Waiting for confirm", "Administrator", "Accept"): "Accepted",
-        ("Declined", "Client", "Remove"): "Removed",
-        ("Declined", "Client", "Edit"): "Draft",
-        ("Declined", "Client", "Ok"): "History",
-        ("History", "Client", "Reorder"): "Draft",
-        ("Accepted", "Administrator", "Cancel"): "Declined",
-        ("Accepted", "Administrator", "Asign waiter"): "Asigned waiter",
-        ("Accepted", "Waiter", "Asign waiter"): "Asigned waiter",
-        ("Accepted", "Client", "Edit"): "Draft",
-        ("Asigned waiter", "Waiter", "Start order"): "In progress",
-        ("In progress", "Administrator", "Client failed"): "Failed",
-        ("In progress", "Client", "Rest failed"): "Failed",
-        ("In progress", "Waiter", "Close order"): "Waiting for feedback",
-        ("Failed", "Moderator", "Reviewed"): "History",
-        ("Waiting for feedback", "Client", "Feedback"): "History",
-        ("Waiting for feedback", "Client", "Skip"): "History"
-    }
 
     try:
         new_status = grahp[(status, role, action)]
