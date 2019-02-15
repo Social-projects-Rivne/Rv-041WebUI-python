@@ -70,7 +70,8 @@ class ModeratorPanel extends React.Component {
       Users: "All",
       Owners: "All",
       Messages: "All"
-    }
+    },
+    currentStatusAdditionalValues: {}
   };
 
   tags = {
@@ -103,6 +104,8 @@ class ModeratorPanel extends React.Component {
                   this.state.selectedStatus.Restaurants
                 ]
               }
+              tagsValues={this.tagsValues.Restaurants}
+              setAdditionalTabData={this.setAdditionalTabData}
             />
           );
         },
@@ -118,6 +121,8 @@ class ModeratorPanel extends React.Component {
                   this.state.selectedStatus.Restaurants
                 ]
               }
+              tagsValues={this.tagsValues.Restaurants}
+              setAdditionalTabData={this.setAdditionalTabData}
             />
           );
         },
@@ -132,6 +137,8 @@ class ModeratorPanel extends React.Component {
                 this.tagsValues.Users[this.state.selectedStatus.Users]
               }
               userStatus={"users"}
+              tagsValues={this.tagsValues.Users}
+              setAdditionalTabData={this.setAdditionalTabData}
             />
           );
         },
@@ -146,6 +153,8 @@ class ModeratorPanel extends React.Component {
                 this.tagsValues.Owners[this.state.selectedStatus.Owners]
               }
               userStatus={"owners"}
+              tagsValues={this.tagsValues.Owners}
+              setAdditionalTabData={this.setAdditionalTabData}
             />
           );
         },
@@ -162,8 +171,8 @@ class ModeratorPanel extends React.Component {
         path: "",
         render: props => {
           return <GeneralError error="404 Not Found" />;
-        }
-        /*exact: true*/
+        },
+        exact: true
       }
     ];
   };
@@ -216,22 +225,25 @@ class ModeratorPanel extends React.Component {
     });
   };
 
+  setAdditionalTabData = additionalTabData => {
+    this.setState(prevState => {
+      return { currentStatusAdditionalValues: additionalTabData };
+    });
+  };
+
   render() {
     const {
       isLoading,
       accessAllowed,
       error,
       selectedItemName,
-      selectedStatus
+      selectedStatus,
+      currentStatusAdditionalValues
     } = this.state;
     const { classes } = this.props;
 
     if (isLoading) {
       return null;
-    }
-
-    if (!accessAllowed) {
-      return <GeneralError error={error} />;
     }
 
     return (
@@ -245,7 +257,7 @@ class ModeratorPanel extends React.Component {
         >*/}
         <div className={classes.toolbar} />
         <List>
-          {["Restaurants", "Users", "Owners", "Messages"].map((text, index) => (
+          {["Restaurants", "Users", "Owners"].map((text, index) => (
             <ListItem
               button
               selected={this.state.selectedItemName === text}
@@ -266,6 +278,7 @@ class ModeratorPanel extends React.Component {
           <div>
             <GenericTabs
               tags={this.tags[selectedItemName]}
+              tagsAdditionalInformation={currentStatusAdditionalValues}
               selectedValue={this.tags[selectedItemName].indexOf(
                 selectedStatus[selectedItemName]
               )}
