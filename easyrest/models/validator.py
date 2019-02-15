@@ -4,7 +4,6 @@ import logging
 
 import jsonschema
 from jsonschema.validators import Draft4Validator
-from pyramid.httpexceptions import HTTPNotFound
 from pyramid.httpexceptions import HTTPForbidden
 
 from ..exceptions import ValidationError
@@ -47,9 +46,7 @@ def check_action_access(user_role, foreign_role, action):
     :param (str) user_role: User role that requests action
     :param (str) foreign_role: Requested role
     :param (str) action: Action name
-    :return: True if action is allowed
     :raise HTTPForbidden: If the action is prohibited
-    :raise HTTPNotFound: If the action is not found
     """
     log = logging.getLogger(__name__)
     user_access_list = {
@@ -102,27 +99,6 @@ def check_action_access(user_role, foreign_role, action):
             'Admin': []
         }
     }
-    try:
-        if action not in user_access_list[user_role][foreign_role]:
-            log.error('%s can\'t perform "%s" action', user_role, action)
-            raise HTTPForbidden('Action not allowed!')
-    except KeyError as ke:
-        log.error('Incorrect role "%s"', ke.message)
-        raise HTTPNotFound('Role not found')
-    return True
-
-
-def check_for_exist(database, column, value):
-    """This function checks for the existence of a value in a database table column.
-
-    :param database: Current database connection
-    :param column: Table column. For example: User.email
-    :param value: Checked value.
-    :return: True if value exist in column.
-    :raise HTTPNotFound: If the value is not found
-    """
-    log = logging.getLogger(__name__)
-    if not database.query(database.query(column).filter(column == value).exists()).scalar():
-        log.error('{} not found'.format(value))
-        raise HTTPNotFound('{} not found'.format(value))
-    return True
+    if action not in user_access_list[user_role][foreign_role]:
+        log.error('%s can\'t perform "%s" action', user_role, action)
+        raise HTTPForbidden('Action not allowed')
