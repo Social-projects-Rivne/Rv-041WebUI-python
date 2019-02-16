@@ -18,6 +18,7 @@ import OrderCartList from "../components/MenuPage/OrderCartList";
 import GeneralError from "../components/ErrorPages/GeneralError";
 import classnames from "classnames";
 import SnackbarContent from "../components/SnackbarContent";
+import OrderItemsList from "../components/MenuPage/OrderItemsList";
 
 const styles = theme => ({
   image: { height: "100%", backgroundSize: "contain" },
@@ -57,7 +58,8 @@ class MenuPage extends React.Component {
     SnackbarMsg: "",
     isSnackbarOpen: false,
     orderDate: null,
-    restaurantName: ""
+    restaurantName: "",
+    isDialogOpen: true
   };
 
   componentDidMount() {
@@ -245,9 +247,20 @@ class MenuPage extends React.Component {
 
   QuantityTimeOut = false;
 
-  handleQuantityChange = (event, quantity, itemId) => {
+  handleQuantityChange = (event, quantity, itemId, inList=false, inListIndex) => {
+    const quantity1 = parseInt(event.target.value);
+    if (inList) {
+      const newItems = this.state.cartItems.map((item, index) => {
+        if (index == inListIndex) {
+          item.quantity = quantity1;
+          return item
+        } else {
+          return item
+        }
+      });
+      this.setState({cartItems: newItems});
+    }
     const orderId = localStorage.getItem("OrderId");
-    const quantity1 = parseInt(quantity);
     this.sendQuantityChange(orderId, quantity1, itemId);
   };
 
@@ -325,6 +338,10 @@ class MenuPage extends React.Component {
       });
   };
 
+  handleDialogToggle = () => {
+    this.setState(state => ({ isDialogOpen: !this.state.isDialogOpen }));
+  };
+
   handleCatScroll = index => {
     if (this.state.activeCat !== index) {
       this.setState({ activeCat: index });
@@ -355,7 +372,7 @@ class MenuPage extends React.Component {
               />
             </Card>
           )}
-          {!this.state.isImgetCartItemIdsage && (
+          {!this.state.isImage && (
             <Grid container spacing={16}>
               <Grid item xs={12} md={2}>
                 <CategoriesList
@@ -399,27 +416,37 @@ class MenuPage extends React.Component {
                   </Slide>
                 )}
               </Grid>
-              <Snackbar
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "right"
-                }}
-                open={this.state.isSnackbarOpen}
-                autoHideDuration={4000}
-                onClose={this.handleSnackbarClose}
-              >
-                <SnackbarContent
-                  onClose={this.handleSnackbarClose}
-                  variant={this.state.SnackbarType}
-                  message={
-                    <Typography color="inherit" align="center">
-                      {this.state.SnackbarMsg || "Something went wrong..."}
-                    </Typography>
-                  }
-                />
-              </Snackbar>
             </Grid>
           )}
+          <Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right"
+            }}
+            open={this.state.isSnackbarOpen}
+            autoHideDuration={4000}
+            onClose={this.handleSnackbarClose}
+          >
+            <SnackbarContent
+              onClose={this.handleSnackbarClose}
+              variant={this.state.SnackbarType}
+              message={
+                <Typography color="inherit" align="center">
+                  {this.state.SnackbarMsg || "Something went wrong..."}
+                </Typography>
+              }
+            />
+          </Snackbar>
+          {this.state.isDialogOpen && (
+              <OrderItemsList 
+                cartItems={this.state.cartItems}
+                handleDialogToggle={this.handleDialogToggle}
+                handleRemoveItem={this.handleRemoveItem}
+                handleQuantityChange={this.handleQuantityChange}
+                
+              />
+            )
+          }
         </PageContainer>
       );
     }
