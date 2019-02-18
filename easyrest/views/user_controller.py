@@ -1,5 +1,6 @@
 """This module describe user controller
 This module describes behavior of /sign_up route
+This module describes behavior of /users/{role_id} route
 """
 
 from pyramid.view import view_config
@@ -60,39 +61,38 @@ def sign_up(request):
 @restrict_access(['Administrator', 'Owner', 'Moderator', 'Admin'])
 def get_users_list(request):
     """This function is intended to display a list of users
-       depending on the role id.
+    depending on the role id.
 
-       This function processes the route /users/{role_id}
-       and tries to create a list of users depending on the identifier
-       that is extracted from the parameter {role_id}.
+    This function processes the route /users/{role_id}
+    and tries to create a list of users depending on the identifier
+    that is extracted from the parameter {role_id}.
 
-        :param request: GET request
-        :raise HTTPForbidden: If the token is not found
-        :return: Users list, if the user is allowed to view users with the specified role:
-                    {
-                      "message": "Users with role 'role_name'",
-                        "data": [
-                          {
-                            "phone_number": "user_phone_number",
-                            "name": "user_name",
-                            "is_active": is_active_state,
-                            "id": user_id,
-                            "birth_date": "user_birth_date",
-                            "email": "user_email"
-                          }
-                        ],
-                      "success": true,
-                      "error": null
-                    }
+    :param request: GET request
+    :raise HTTPForbidden: If the token is not found
+    :return: Users list, if the user is allowed to view users with the specified role:
+             {
+               "message": "Users with role 'role_name'",
+               "data": [
+                 {
+                   "phone_number": "user_phone_number",
+                   "name": "user_name",
+                   "is_active": is_active_state,
+                   "id": user_id,
+                   "birth_date": "user_birth_date",
+                   "email": "user_email"
+                 }
+               ],
+               "success": true,
+               "error": null
+             }
 
-                 If the user is not allowed to view the list of users with the specified role:
-                    {
-                      "message": null,
-                      "data": [],
-                      "success": false,
-                      "error": "Action not allowed"
-                    }
-
+             If the user is not allowed to view the list of users with the specified role:
+               {
+                 "message": null,
+                 "data": [],
+                 "success": false,
+                 "error": "Action not allowed"
+               }
     """
     derivable_role_id = int(request.matchdict['role_id'])
     role = request.dbsession.query(UserRole).get(derivable_role_id)
@@ -103,4 +103,4 @@ def get_users_list(request):
     users_list = [user.as_dict(exclude=['role_id', 'password']) for user in
                   request.dbsession.query(User).filter_by(role_id=derivable_role_id).order_by(User.name).all()]
 
-    return wrap(users_list, success=True, message='Users with role \'{}\''.format(role.name))
+    return wrap(users_list, success=True, message="Users with role '{}'".format(role.name))
