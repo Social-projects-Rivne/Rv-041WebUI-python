@@ -45,3 +45,6 @@ class Menu(Base):
                 cats_list.append(category)
 
         return (cats_list, data_dict)
+
+    def get_menu(self, session, exclude=[], include=[]):
+        pass

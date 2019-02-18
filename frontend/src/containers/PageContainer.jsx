@@ -5,17 +5,17 @@ import { withStyles } from "@material-ui/core/styles";
 
 const styles = theme => ({
   root: {
-    paddingTop: theme.spacing.unit * 8,
+    paddingTop: theme.mixins.toolbar.minHeight + theme.spacing.unit * 4,
     paddingBottom: theme.spacing.unit * 8,
     paddingLeft: theme.spacing.unit * 2,
     paddingRight: theme.spacing.unit * 2,
     marginLeft: "auto",
     marginRight: "auto",
     [theme.breakpoints.up("sm")]: {
+      paddingTop: theme.mixins.toolbar.minHeight + theme.spacing.unit * 5,
+      paddingBottom: theme.spacing.unit * 4,
       paddingLeft: theme.spacing.unit * 3,
-      paddingRight: theme.spacing.unit * 3,
-      paddingTop: theme.spacing.unit * 4,
-      paddingBottom: theme.spacing.unit * 4
+      paddingRight: theme.spacing.unit * 3
     }
   },
   small: {

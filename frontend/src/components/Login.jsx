@@ -55,7 +55,11 @@ class Login extends React.Component {
       body: JSON.stringify(body),
       headers: { "Content-Type": "application/json" }
     })
-      .then(response => response.json())
+      .then(response => {
+        return response.status >= 200 && response.status < 300
+          ? response.json()
+          : response.json().then(Promise.reject.bind(Promise));
+      })
       .then(json => {
         const { success, error, data } = json;
         const { role, token, userName } = data;
@@ -70,8 +74,6 @@ class Login extends React.Component {
             role,
             userName
           });
-        } else {
-          Promise.reject(error);
         }
       })
       .then(() => {
@@ -88,10 +90,10 @@ class Login extends React.Component {
 
         this.props.history.push(from);
       })
-      .catch(error => {
+      .catch(json => {
         this.setState({
           error: true,
-          errorMes: error
+          errorMes: json.error
         });
       });
   };
@@ -159,7 +161,7 @@ class Login extends React.Component {
                   variant="error"
                   message={
                     <Typography color="inherit" align="center">
-                      {errorMes || "No connection to the server"}
+                      {errorMes || "Something went wrong!"}
                     </Typography>
                   }
                 />

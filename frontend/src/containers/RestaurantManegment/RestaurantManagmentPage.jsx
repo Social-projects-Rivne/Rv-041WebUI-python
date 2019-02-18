@@ -19,41 +19,65 @@ const styles = theme => ({
     zIndex: theme.zIndex.appBar - 1
   },
   drawerPaper: {
-    width: drawerWidth
+    width: drawerWidth,
+    zIndex: theme.zIndex.appBar - 1
   },
   toolbar: { ...theme.mixins.toolbar }
 });
 
 export class RestaurantManagmentPage extends React.Component {
-  state = {};
+  state = {
+    menusList: []
+  };
+
+  componentDidMount() {
+    const restId = this.props.match.params.id;
+    fetch(`http://localhost:6543/api/restaurant/${restId}/menu`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": localStorage.getItem("token")
+      }
+    })
+      .then(response => {
+        return response.status >= 200 && response.status < 300
+          ? response.json()
+          : response.json().then(Promise.reject.bind(Promise));
+      })
+      .then(response => {
+        this.setState({ menusList: response.data });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
 
   render() {
     const { classes, match } = this.props;
+    const { menusList } = this.state;
 
     return (
-      <PageContainer>
-        <div className={classes.root}>
-          <Drawer
-            className={classes.drawer}
-            variant="permanent"
-            classes={{
-              paper: classes.drawerPaper
-            }}
-          >
-            <div className={classes.toolbar} />
-            <DrawerMenu match={match} />
-          </Drawer>
-          <main className={classes.content}>
-            <Switch>
-              <Route path={`${match.url}/info`} component={ManageInfo} />
-              <Route
-                path={`${match.url}/menues`}
-                render={() => <ManageMenu match={match} />}
-              />
-            </Switch>
-          </main>
-        </div>
-      </PageContainer>
+      <div className={classes.root}>
+        <Drawer
+          className={classes.drawer}
+          variant="permanent"
+          classes={{
+            paper: classes.drawerPaper
+          }}
+        >
+          <div className={classes.toolbar} />
+          <DrawerMenu list={menusList} match={match} />
+        </Drawer>
+        <PageContainer>
+          <Switch>
+            <Route path={`${match.url}/info`} component={ManageInfo} />
+            <Route
+              path={`${match.url}/menues`}
+              render={() => <ManageMenu match={match} />}
+            />
+          </Switch>
+        </PageContainer>
+      </div>
     );
   }
 }

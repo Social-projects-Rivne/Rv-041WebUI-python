@@ -1,4 +1,13 @@
 import React from "react";
+import {
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody
+} from "@material-ui/core";
+import EnhancedTable from "./EnhancedTable";
 
 class ManageMenu extends React.Component {
   state = {
@@ -8,7 +17,6 @@ class ManageMenu extends React.Component {
 
   componentDidMount() {
     const restId = this.props.match.params.id;
-    console.log(this.props);
     const menuId = 1;
     fetch(`http://localhost:6543/api/restaurant/${restId}/menu/${menuId}`, {
       headers: {
@@ -33,37 +41,7 @@ class ManageMenu extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-        {/* <Paper className={classes.root}>
-          <Table className={classes.table}>
-            <TableHead>
-              <TableRow>
-                <TableCell />
-                <TableCell>Name</TableCell>
-                <TableCell align="right">Description</TableCell>
-                <TableCell align="right">Fat (g)</TableCell>
-                <TableCell align="right">Carbs (g)</TableCell>
-                <TableCell align="right">Protein (g)</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map(row => (
-                <TableRow key={row.id}>
-                  <TableCell component="th" scope="row">
-                    {row.name}
-                  </TableCell>
-                  <TableCell align="right">{row.calories}</TableCell>
-                  <TableCell align="right">{row.fat}</TableCell>
-                  <TableCell align="right">{row.carbs}</TableCell>
-                  <TableCell align="right">{row.protein}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Paper> */}
-      </div>
-    );
+    return <EnhancedTable />;
   }
 }
 

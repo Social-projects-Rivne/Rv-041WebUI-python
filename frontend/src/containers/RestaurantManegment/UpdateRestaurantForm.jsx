@@ -6,8 +6,10 @@ import {
   FormControl,
   InputLabel
 } from "@material-ui/core";
-import ListSelect from "../ListSelect";
+import ListSelect from "../../components/ListSelect";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
+import MarkdownEditor from "../../components/Markdown/MarkdownEditor";
+import { EditorState, RichUtils, convertToRaw } from "draft-js";
 
 export class UpdateRestaurantForm extends React.Component {
   state = {
@@ -16,23 +18,24 @@ export class UpdateRestaurantForm extends React.Component {
       address: "",
       phone: "",
       description: "",
-      tags: []
+      tags: [],
+      editorState: EditorState.createEmpty()
     },
     allTags: []
   };
 
   componentDidMount() {
-    const { restInfo } = this.props;
+    // const { restInfo } = this.props;
 
-    this.setState({
-      updatedRestaurant: {
-        name: restInfo.name,
-        phone: restInfo.phone,
-        address: restInfo.address_id,
-        description: restInfo.description,
-        tags: restInfo.tags ? restInfo.tags.map(tag => tag.name) : []
-      }
-    });
+    // this.setState({
+    //   updatedRestaurant: {
+    //     name: restInfo.name,
+    //     phone: restInfo.phone,
+    //     address: restInfo.address_id,
+    //     description: restInfo.description,
+    //     tags: restInfo.tags ? restInfo.tags.map(tag => tag.name) : []
+    //   }
+    // });
 
     fetch("http://localhost:6543/api/tag")
       .then(response => response.json())
@@ -91,8 +94,7 @@ export class UpdateRestaurantForm extends React.Component {
   };
 
   render() {
-    const { allTags, updatedRestaurant } = this.state;
-    const { handleCloseFormClick } = this.props;
+    const { allTags, updatedRestaurant, editorState } = this.state;
 
     return (
       <ValidatorForm
@@ -142,6 +144,16 @@ export class UpdateRestaurantForm extends React.Component {
               fullWidth
             />
           </Grid>
+          <Grid item xs={12} />
+          <Grid item xs={12}>
+            <MarkdownEditor
+              ref="editor"
+              editorState={editorState}
+              toggleInlineStyle={this.toggleEditorInlineStyle}
+              toggleBlockType={this.toggleEditorBlockType}
+              onChange={this.onEditorChange}
+            />
+          </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
               <InputLabel htmlFor="tags">Tags</InputLabel>
@@ -153,16 +165,7 @@ export class UpdateRestaurantForm extends React.Component {
               />
             </FormControl>
           </Grid>
-          <Grid item xs={3}>
-            <Button
-              onClick={handleCloseFormClick}
-              variant="contained"
-              color="secondary"
-              fullWidth
-            >
-              Cancel
-            </Button>
-          </Grid>
+          <Grid item xs={3} />
           <Grid item xs={3}>
             <Button
               type="submit"
