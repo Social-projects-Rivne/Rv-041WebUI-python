@@ -24,7 +24,7 @@ def includeme(config):
                      request_method="GET")
     config.add_route('get_user_info', 'profile',
                      request_method="GET")
-    config.add_route('get_orders_info', 'profile/orders',
+    config.add_route('get_orders_info', 'profile/orders/{status}',
                      request_method="GET")
     config.add_route('authorize_moderator', 'moderator',
                      request_method="GET")

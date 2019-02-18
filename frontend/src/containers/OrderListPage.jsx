@@ -23,8 +23,8 @@ const styles = theme => ({
     width: '100%',
   },
   image: {
-    height: 200,
-    width: 267,
+    height: 100,
+    width: 133.5,
     backgroundSize: "contain",
     /*paddingTop: "56.25%" // 16:9*/
   },
@@ -56,13 +56,13 @@ class OrderListPage extends React.Component {
       "Content-Type": "application/json",
       "X-Auth-Token": this.state.token
     });
-
+    const route = "http://localhost:6543/api/profile/orders/" + this.props.status;
     const fetchInit = {
       method: "GET",
       headers: headers
     };
 
-    fetch("http://localhost:6543/api/profile/orders", fetchInit)
+    fetch(route, fetchInit)
       .then(response =>
         !(response.status >= 200 && response.status < 300)
           ? Promise.reject(response.status)
@@ -120,10 +120,12 @@ class OrderListPage extends React.Component {
                       {String(date.toISOString().slice(0, 10))}
                     </Typography>
                   </Grid>
-                  <Grid key={3} item xs={6} sm={2}>
-                    {iconsArray.map((imgInfo, index) => {
+                  <Grid container alignItems="center">
+                    {iconsArray.map((imgInfo, image_index) => {
                       return(
+                        <Grid key={image_index} item>
                           <Avatar key={index} alt={imgInfo.name} src={imgInfo.img} className={classes.avatar} />
+                        </Grid>
                       );
                     })}
                   </Grid>
