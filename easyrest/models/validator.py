@@ -5,6 +5,7 @@ import logging
 import jsonschema
 from jsonschema.validators import Draft4Validator
 from pyramid.httpexceptions import HTTPForbidden
+from pyramid.httpexceptions import HTTPBadRequest
 
 from ..exceptions import ValidationError
 
@@ -102,3 +103,17 @@ def check_action_access(user_role, foreign_role, action):
     if action not in user_access_list[user_role][foreign_role]:
         log.error('%s can\'t perform "%s" action', user_role, action)
         raise HTTPForbidden('Action not allowed')
+
+
+def check_json_format(request):
+    """Method for checking json format from request.
+
+    :param request: Request with included json.
+    :raise HTTPBadRequest: If json has an incorrect format.
+    """
+    log = logging.getLogger(__name__)
+    try:
+        request.json_body
+    except ValueError as ve:
+        log.error(ve.message)
+        raise HTTPBadRequest('Incorrect json format')
