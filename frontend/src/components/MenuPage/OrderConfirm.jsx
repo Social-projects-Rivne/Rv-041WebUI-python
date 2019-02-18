@@ -13,19 +13,15 @@ import {
   TimePicker,
   DatePicker
 } from "material-ui-pickers";
+import OrderItemsList from "./OrderItemsList";
 
 function Transition(props) {
   return <Slide direction="right" {...props} />;
 }
 
-class AlertDialogSlide extends React.Component {
+class OrderConfirmDialog extends React.Component {
   state = {
-    open: false,
     selectedDate: new Date()
-  };
-
-  handleClickToggle = () => {
-    this.setState({ open: !this.state.open });
   };
 
   handleDateChange = date => {
@@ -38,23 +34,16 @@ class AlertDialogSlide extends React.Component {
 
     return (
       <div>
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={this.handleClickToggle}
-        >
-          Slide in alert dialog
-        </Button>
         <Dialog
-          open={this.state.open}
+          open={this.props.open}
           TransitionComponent={Transition}
           keepMounted
-          onClose={this.handleClickToggle}
+          onClose={this.props.handleClickToggle}
           aria-labelledby="alert-dialog-slide-title"
           aria-describedby="alert-dialog-slide-description"
         >
           <DialogTitle id="alert-dialog-slide-title">
-            {"Please chose date or skip"}
+            {"Order confirmation. Please chose date or skip"}
           </DialogTitle>
           <DialogContent>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -73,6 +62,13 @@ class AlertDialogSlide extends React.Component {
                 />
               </Grid>
             </MuiPickersUtilsProvider>
+            <OrderItemsList
+              cartItems={this.props.cartItems}
+              handleDialogToggle={this.props.handleDialogToggle}
+              handleRemoveItem={this.props.handleRemoveItem}
+              handleQuantityChange={this.props.handleQuantityChange}
+              controls
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClickToggle} color="primary">
@@ -91,4 +87,4 @@ class AlertDialogSlide extends React.Component {
   }
 }
 
-export default AlertDialogSlide;
+export default OrderConfirmDialog;

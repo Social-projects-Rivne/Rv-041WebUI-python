@@ -19,6 +19,7 @@ import GeneralError from "../components/ErrorPages/GeneralError";
 import classnames from "classnames";
 import SnackbarContent from "../components/SnackbarContent";
 import OrderItemsList from "../components/MenuPage/OrderItemsList";
+import OrderConfirmDialog from "../components/MenuPage/OrderConfirm";
 
 const styles = theme => ({
   image: { height: "100%", backgroundSize: "contain" },
@@ -247,18 +248,24 @@ class MenuPage extends React.Component {
 
   QuantityTimeOut = false;
 
-  handleQuantityChange = (event, quantity, itemId, inList=false, inListIndex) => {
+  handleQuantityChange = (
+    event,
+    quantity,
+    itemId,
+    inList = false,
+    inListIndex
+  ) => {
     const quantity1 = parseInt(event.target.value);
     if (inList) {
       const newItems = this.state.cartItems.map((item, index) => {
         if (index == inListIndex) {
           item.quantity = quantity1;
-          return item
+          return item;
         } else {
-          return item
+          return item;
         }
       });
-      this.setState({cartItems: newItems});
+      this.setState({ cartItems: newItems });
     }
     const orderId = localStorage.getItem("OrderId");
     this.sendQuantityChange(orderId, quantity1, itemId);
@@ -438,15 +445,15 @@ class MenuPage extends React.Component {
             />
           </Snackbar>
           {this.state.isDialogOpen && (
-              <OrderItemsList 
-                cartItems={this.state.cartItems}
-                handleDialogToggle={this.handleDialogToggle}
-                handleRemoveItem={this.handleRemoveItem}
-                handleQuantityChange={this.handleQuantityChange}
-                
-              />
-            )
-          }
+            <OrderConfirmDialog
+              open={this.state.isDialogOpen}
+              handleClickToggle={this.handleClickToggle}
+              cartItems={this.state.cartItems}
+              handleDialogToggle={this.handleDialogToggle}
+              handleRemoveItem={this.handleRemoveItem}
+              handleQuantityChange={this.handleQuantityChange}
+            />
+          )}
         </PageContainer>
       );
     }
