@@ -2,8 +2,7 @@ import React from "react";
 import { withStyles } from '@material-ui/core/styles';
 import {
   Avatar,
-  Card,
-  CardContent,
+  Button,
   CardMedia,
   ExpansionPanel,
   ExpansionPanelDetails,
@@ -16,11 +15,15 @@ import {
   TableFooter,
   Typography
 } from '@material-ui/core';
+import { Repeat } from "@material-ui/icons";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const styles = theme => ({
   root: {
     width: '100%',
+  },
+  button: {
+    margin: theme.spacing.unit,
   },
   image: {
     height: 100,
@@ -110,31 +113,33 @@ class OrderListPage extends React.Component {
             <ExpansionPanel key={index} expanded={expanded === index} onChange={this.handleChange(index)}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 <Grid container justify="space-between" alignItems="center" spacing={8}>
-                  <Grid key={1} item xs={6} sm={2}>
+                  <Grid item key={1} xs={6} sm={2}>
                     <Typography className={classes.heading}>
                       {orderInfo.restaurant}
                     </Typography>
                   </Grid>
-                  <Grid key={2} item xs={6} sm={2}>
+                  <Grid item key={2} xs={6} sm={2}>
                     <Typography className={classes.secondaryHeading}>
                       {String(date.toISOString().slice(0, 10))}
                     </Typography>
                   </Grid>
-                  <Grid container alignItems="center">
+                  <Grid item key={3} xs={6} sm={2}>
+                    <Grid container alignItems="center">
                     {iconsArray.map((imgInfo, image_index) => {
                       return(
-                        <Grid key={image_index} item>
-                          <Avatar key={index} alt={imgInfo.name} src={imgInfo.img} className={classes.avatar} />
+                        <Grid item key={image_index} xs={6} sm={2}>
+                          <Avatar  alt={imgInfo.name} src={imgInfo.img} className={classes.avatar} />
                         </Grid>
                       );
                     })}
+                    </Grid>
                   </Grid>
-                  <Grid key={4} item xs={6} sm={2}>
+                  <Grid item key={4} xs={6} sm={2}>
                     <Typography>
                       {orderItems.length} items for ${orderInfo.total_price}
                     </Typography>
                   </Grid>
-                  <Grid key={5} item xs={6} sm={2}>
+                  <Grid item key={5} xs={6} sm={2}>
                     <Typography>
                       {orderInfo.status}
                     </Typography>
@@ -179,7 +184,17 @@ class OrderListPage extends React.Component {
                     </TableBody>
                     <TableFooter>
                       <TableRow>
-                        <TableCell colSpan={4} align="right">
+
+                      <TableCell colSpan={2} align="right">
+                          <Button variant="contained" color="primary" className={classes.button}>
+                            Reorder
+                            <Repeat />
+                          </Button>
+                        </TableCell>
+
+
+
+                        <TableCell colSpan={2} align="right">
                           <Typography gutterBottom variant="h5" >
                             Order sum: {"$" + orderInfo.total_price}
                           </Typography>
