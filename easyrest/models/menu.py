@@ -46,5 +46,10 @@ class Menu(Base):
 
         return (cats_list, data_dict)
 
-    def get_menu(self, session, exclude=[], include=[]):
-        pass
+    def get_menu_items(self, session, rest_id, exclude=[], include=[]):
+        result = session.query(MenuItem, Category).join(Category).filter(
+            Menu.rest_id == rest_id, MenuItem.menu_id == self.id).all()
+        print result
+        # item_dict = [item.as_dict(exclude=exclude, include=include)
+        #              for item in result]
+        # return item_dict

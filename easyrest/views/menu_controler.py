@@ -90,8 +90,16 @@ def get_cats_controler(request):
     """
     menu_id = int(request.matchdict['menu_id'])
     rest_id = request.matchdict['rest_id']
+    only_items = False
+
+    try:
+        params = request.params["items"]
+        only_items = True if params == "true" else False
+    except KeyError:
+        pass
 
     rest = request.dbsession.query(Restaurant).get(rest_id)
+
     try:
         menu = rest.menu[menu_id - 1]
     except IndexError:
@@ -104,15 +112,19 @@ def get_cats_controler(request):
         })
         return body
 
-    cats_list, data_dict = menu.get_items_with_cat(
-        request.dbsession, exclude=["menu_id"])
+    if only_items:
+        items_list = menu.get_menu_items(request.dbsession, rest_id)
+        body = wrap(items_list)
+    else:
+        cats_list, data_dict = menu.get_items_with_cat(
+            request.dbsession, exclude=["menu_id"])
 
-    body = wrap({
-        "Items": data_dict,
-        "Categories": cats_list,
-        "restaurantName": rest.name,
-        "isImage": False
-    })
+        body = wrap({
+            "Items": data_dict,
+            "Categories": cats_list,
+            "restaurantName": rest.name,
+            "isImage": False
+        })
 
     return body
 
