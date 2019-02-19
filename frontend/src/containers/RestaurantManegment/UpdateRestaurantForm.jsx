@@ -8,8 +8,6 @@ import {
 } from "@material-ui/core";
 import ListSelect from "../../components/ListSelect";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
-import MarkdownEditor from "../../components/Markdown/MarkdownEditor";
-import { EditorState, RichUtils, convertToRaw } from "draft-js";
 
 export class UpdateRestaurantForm extends React.Component {
   state = {
@@ -97,88 +95,88 @@ export class UpdateRestaurantForm extends React.Component {
     const { allTags, updatedRestaurant, editorState } = this.state;
 
     return (
-      <ValidatorForm
-        onSubmit={this.handleSubmit}
-        onChange={this.handleFormChange}
-        noValidate
-        autoComplete="off"
-      >
-        <Grid container spacing={16} justify="space-between">
-          <Grid item xs={12}>
-            <TextValidator
-              value={updatedRestaurant.name}
-              name="name"
-              label="Restaurant Name"
-              required
-              fullWidth
-              validators={["required"]}
-              errorMessages={["Restaurant name cannot be empty"]}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextValidator
-              value={updatedRestaurant.address}
-              name="address"
-              label="Restaurant Address"
-              required
-              fullWidth
-              validators={["required"]}
-              errorMessages={["Restaurant address cannot be empty"]}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              value={updatedRestaurant.phone}
-              name="phone"
-              label="Restaurant Phone"
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              value={updatedRestaurant.description}
-              name="description"
-              label="Restaurant Description"
-              multiline
-              rows="4"
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12} />
-          <Grid item xs={12}>
-            <MarkdownEditor
-              ref="editor"
-              editorState={editorState}
-              toggleInlineStyle={this.toggleEditorInlineStyle}
-              toggleBlockType={this.toggleEditorBlockType}
-              onChange={this.onEditorChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <FormControl fullWidth>
-              <InputLabel htmlFor="tags">Tags</InputLabel>
-              <ListSelect
-                name="tags"
-                selectedItems={updatedRestaurant.tags}
-                list={allTags}
-                onListChange={this.handleTagsChange}
-              />
-            </FormControl>
-          </Grid>
-          <Grid item xs={3} />
-          <Grid item xs={3}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              onClick={this.handleFormSubmit}
-            >
-              Update
-            </Button>
-          </Grid>
-        </Grid>
-      </ValidatorForm>
+      // <ValidatorForm
+      //   onSubmit={this.handleSubmit}
+      //   onChange={this.handleFormChange}
+      //   noValidate
+      //   autoComplete="off"
+      // >
+      //   <Grid container spacing={16} justify="space-between">
+      //     <Grid item xs={12}>
+      //       <TextValidator
+      //         value={updatedRestaurant.name}
+      //         name="name"
+      //         label="Restaurant Name"
+      //         required
+      //         fullWidth
+      //         validators={["required"]}
+      //         errorMessages={["Restaurant name cannot be empty"]}
+      //       />
+      //     </Grid>
+      //     <Grid item xs={12}>
+      //       <TextValidator
+      //         value={updatedRestaurant.address}
+      //         name="address"
+      //         label="Restaurant Address"
+      //         required
+      //         fullWidth
+      //         validators={["required"]}
+      //         errorMessages={["Restaurant address cannot be empty"]}
+      //       />
+      //     </Grid>
+      //     <Grid item xs={12}>
+      //       <TextField
+      //         value={updatedRestaurant.phone}
+      //         name="phone"
+      //         label="Restaurant Phone"
+      //         fullWidth
+      //       />
+      //     </Grid>
+      //     <Grid item xs={12}>
+      //       <TextField
+      //         value={updatedRestaurant.description}
+      //         name="description"
+      //         label="Restaurant Description"
+      //         multiline
+      //         rows="4"
+      //         fullWidth
+      //       />
+      //     </Grid>
+      //     <Grid item xs={12} />
+      //     <Grid item xs={12}>
+      //       <MarkdownEditor
+      //         ref="editor"
+      //         editorState={editorState}
+      //         toggleInlineStyle={this.toggleEditorInlineStyle}
+      //         toggleBlockType={this.toggleEditorBlockType}
+      //         onChange={this.onEditorChange}
+      //       />
+      //     </Grid>
+      //     <Grid item xs={12}>
+      //       <FormControl fullWidth>
+      //         <InputLabel htmlFor="tags">Tags</InputLabel>
+      //         <ListSelect
+      //           name="tags"
+      //           selectedItems={updatedRestaurant.tags}
+      //           list={allTags}
+      //           onListChange={this.handleTagsChange}
+      //         />
+      //       </FormControl>
+      //     </Grid>
+      //     <Grid item xs={3} />
+      //     <Grid item xs={3}>
+      //       <Button
+      //         type="submit"
+      //         variant="contained"
+      //         color="primary"
+      //         fullWidth
+      //         onClick={this.handleFormSubmit}
+      //       >
+      //         Update
+      //       </Button>
+      //     </Grid>
+      //   </Grid>
+      // </ValidatorForm>
     );
   }
 }

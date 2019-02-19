@@ -90,29 +90,39 @@ def get_cats_controler(request):
     """
     menu_id = int(request.matchdict['menu_id'])
     rest_id = request.matchdict['rest_id']
+    only_items = False
 
-    rest = request.dbsession.query(Restaurant).get(rest_id)
     try:
-        menu = rest.menu[menu_id - 1]
-    except IndexError:
-        raise HTTPNotFound()
+        params = request.params["items"]
+        only_items = True if params == "true" else False
+    except KeyError:
+        pass
+
+    menu = request.dbsession.query(Menu).filter(
+        Menu.rest_id == rest_id, menu_id == Menu.id).first()
+
+    if menu is None:
+        raise HTTPNotFound("Cant' found menu!")
 
     if menu.image is not None:
         body = wrap({
             "isImage": True,
             "imageUrl": menu.image
         })
-        return body
+    else:
+        if only_items:
+            items_list = menu.get_menu_items(request.dbsession, rest_id)
+            body = wrap(items_list)
+        else:
+            cats_list, data_dict = menu.get_items_with_cat(
+                request.dbsession, exclude=["menu_id"])
 
-    cats_list, data_dict = menu.get_items_with_cat(
-        request.dbsession, exclude=["menu_id"])
-
-    body = wrap({
-        "Items": data_dict,
-        "Categories": cats_list,
-        "restaurantName": rest.name,
-        "isImage": False
-    })
+            body = wrap({
+                "Items": data_dict,
+                "Categories": cats_list,
+                "restaurantName": menu.rest.name,
+                "isImage": False
+            })
 
     return body
 
@@ -166,7 +176,6 @@ def get_by_cat_controler(request):
     cat_id = request.matchdict['cat_id']
     menu_models = request.dbsession.query(MenuItem).filter_by(
         menu_id=menu_id, category_id=cat_id).all()
-
     menu_items = [item.as_dict() for item in menu_models]
     body = wrap(menu_items)
     return body

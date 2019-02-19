@@ -5,7 +5,7 @@ import ManageMenu from "./ManageMenu";
 import ManageInfo from "./ManageInfo";
 import DrawerMenu from "../../components/RestaurantManagment/DrawerMenu";
 import { withStyles, Drawer } from "@material-ui/core";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, BrowserRouter } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -53,9 +53,8 @@ export class RestaurantManagmentPage extends React.Component {
   }
 
   render() {
-    const { classes, match } = this.props;
+    const { classes, match, location } = this.props;
     const { menusList } = this.state;
-
     return (
       <div className={classes.root}>
         <Drawer
@@ -69,17 +68,21 @@ export class RestaurantManagmentPage extends React.Component {
           <DrawerMenu list={menusList} match={match} />
         </Drawer>
         <PageContainer>
-          <Switch>
-            <Route path={`${match.url}/info`} component={ManageInfo} />
-            <Route
-              path={`${match.url}/menues`}
-              render={() => <ManageMenu match={match} />}
-            />
-          </Switch>
+          <BrowserRouter>
+            <Switch>
+              <Route path={`${match.url}/info`} component={ManageInfo} />
+              <Route
+                exact
+                path={`${match.url}/menues/:id`}
+                key={location.pathname}
+                render={() => <ManageMenu location={location} match={match} />}
+              />
+            </Switch>
+          </BrowserRouter>
         </PageContainer>
       </div>
     );
   }
 }
 
-export default withStyles(styles, { withTheme: true })(RestaurantManagmentPage);
+export default withStyles(styles)(RestaurantManagmentPage);
