@@ -81,6 +81,15 @@ alias envoff=`deactivate`
 alias envon=`source ~/venv/<Your venv name>/bin/activate`
 ```
 
+# Alias to run pyramid and node serve in single comand
+
+To run this you also need to specify your venv path in scripts/pyramidrun.sh and
+node version to use in scripts/noderun.sh (if you don't use nvm delete this line)
+
+```
+alias reston='gnome-terminal --tab -e "$(pwd)/scripts/pyramidrun.sh" --tab -e "$(pwd)/scripts/noderun.sh"'
+```
+
 ### Deploying via Docker
 
 1. Install Docker and Docker Compose

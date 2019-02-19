@@ -21,15 +21,11 @@ function Transition(props) {
 class AlertDialogSlide extends React.Component {
   state = {
     open: false,
-    selectedDate: new Date("2014-08-18T21:11:54")
+    selectedDate: new Date()
   };
 
-  handleClickOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleClose = () => {
-    this.setState({ open: false });
+  handleClickToggle = () => {
+    this.setState({ open: !this.state.open });
   };
 
   handleDateChange = date => {
@@ -45,7 +41,7 @@ class AlertDialogSlide extends React.Component {
         <Button
           variant="outlined"
           color="primary"
-          onClick={this.handleClickOpen}
+          onClick={this.handleClickToggle}
         >
           Slide in alert dialog
         </Button>
@@ -53,7 +49,7 @@ class AlertDialogSlide extends React.Component {
           open={this.state.open}
           TransitionComponent={Transition}
           keepMounted
-          onClose={this.handleClose}
+          onClose={this.handleClickToggle}
           aria-labelledby="alert-dialog-slide-title"
           aria-describedby="alert-dialog-slide-description"
         >
@@ -79,7 +75,7 @@ class AlertDialogSlide extends React.Component {
             </MuiPickersUtilsProvider>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
+            <Button onClick={this.handleClickToggle} color="primary">
               Cancel
             </Button>
             <Button onClick={this.props.sendSubmitOrder} color="primary">
