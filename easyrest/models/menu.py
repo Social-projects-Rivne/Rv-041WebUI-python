@@ -27,7 +27,7 @@ class Menu(Base):
     name = Column(Text)
     image = Column(Text)
     rest_id = Column(Integer, ForeignKey('restaurants.id'))
-
+    rest = relationship("Restaurant")
     menu_items = relationship("MenuItem")
 
     def get_items_with_cat(self, session, exclude=[], include=[]):
@@ -47,9 +47,14 @@ class Menu(Base):
         return (cats_list, data_dict)
 
     def get_menu_items(self, session, rest_id, exclude=[], include=[]):
-        result = session.query(MenuItem, Category).join(Category).filter(
+        result = session.query(MenuItem).join(Category).filter(
             Menu.rest_id == rest_id, MenuItem.menu_id == self.id).all()
-        print result
-        # item_dict = [item.as_dict(exclude=exclude, include=include)
-        #              for item in result]
-        # return item_dict
+
+        item_dict = []
+        for i in result:
+            item = i.as_dict()
+            item.update(
+                {"category": i.category.name})
+            item_dict.append(item)
+
+        return item_dict

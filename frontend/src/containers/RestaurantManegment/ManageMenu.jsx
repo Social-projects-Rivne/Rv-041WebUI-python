@@ -16,7 +16,8 @@ class ManageMenu extends React.Component {
 
   componentDidMount() {
     const restId = this.props.match.params.id;
-    const menuId = 1;
+    const menuId = this.props.location.pathname.split("/").slice(-1)[0];
+
     fetch(
       `http://localhost:6543/api/restaurant/${restId}/menu/${menuId}?items=true`,
       {
