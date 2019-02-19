@@ -8,14 +8,15 @@ from sqlalchemy import (
     Text,
     ForeignKey,
     Float,
-    Numeric
+    Numeric,
 )
-from sqlalchemy.orm import relationship
-from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
+from sqlalchemy.orm import relationship, backref
+from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest, HTTPForbidden
 
 from .meta import Base
 from .order_assoc import OrderAssoc
 from .menu_item import MenuItem
+from .user import User
 
 
 class Order(Base):
@@ -28,16 +29,20 @@ class Order(Base):
     """
     __tablename__ = 'orders'
     id = Column(Integer, primary_key=True)
-    date_created = Column(Integer)
-    date_booked = Column(Integer)
+    creation_time = Column(Integer)
+    booked_time = Column(Integer)
     status = Column(Text, default="Draft")
     table = Column(Integer, default=0)
     total_price = Column(Numeric(precision=10, scale=2), default=0)
     user_id = Column(Integer, ForeignKey('users.id'))
+    waiter_id = Column(Integer, ForeignKey('users.id'))
     rest_id = Column(Integer, ForeignKey('restaurants.id'))
 
     items = relationship("OrderAssoc")
-    user = relationship("User")
+    user = relationship(
+        "User", foreign_keys="[Order.user_id]")
+    waiter = relationship(
+        "User", foreign_keys="[Order.waiter_id]")
     restaurant = relationship("Restaurant")
 
     # Designed to be called from instance of order
@@ -98,7 +103,85 @@ class Order(Base):
         total = 0
         for item in self.items:
             q = item.quantity
-            p_per_item = item.food.price if item.food.price is not None else 3.50
+            p_per_item = item.food.price if item.food.price is not None else 0
             total += q * p_per_item
         self.total_price = total
         return self.total_price
+
+    _graph = {
+        ("Draft", "Waiting for confirm"): {
+            "roles": ["Client"],
+            "set_date": True
+        },
+        ("Draft", "Removed"): {
+            "roles": ["Client"],
+        },
+        ("Waiting for confirm", "Draft"): {
+            "roles": ["Client"],
+        },
+        ("Waiting for confirm", "Declined"): {
+            "roles": ["Administrator"],
+        },
+        ("Waiting for confirm", "Accepted"): {
+            "roles": ["Administrator"],
+        },
+        ("Declined", "Removed"): {
+            "roles": ["Client"],
+        },
+        ("Declined", "Draft"): {
+            "roles": ["Client"],
+        },
+        ("Declined", "History"): {
+            "roles": ["Client"],
+        },
+        ("Accepted", "Declined"): {
+            "roles": ["Administrator"],
+        },
+        ("Accepted", "Asigned waiter"): {
+            "roles": ["Administrator", "Waiter"],
+            "set_waiter": True
+        },
+        ("Accepted", "Draft"): {
+            "roles": ["Client"],
+        },
+        ("History", "Draft"): {
+            "roles": ["Client"],
+        },
+        ("Asigned waiter", "In progress"): {
+            "roles": ["Waiter"],
+        },
+        ("In progress", "Failed"): {
+            "roles": ["Administrator"],
+        },
+        ("In progress", "Failed"): {
+            "roles": ["Client"],
+        },
+        ("In progress", "Waiting for feedback"): {
+            "roles": ["Waiter"],
+        },
+        ("Waiting for feedback", "History"): {
+            "roles": ["Client"],
+        },
+        ("Failed", "History"): {
+            "roles": ["Moderator"],
+        }
+    }
+
+    def change_status(self, new_status, role, waiter_id=None, date=None):
+        try:
+            options = self.graph[(self.status, new_status)]
+        except KeyError as e:
+            raise HTTPForbidden("Forbidden action % s" % e)
+
+        if role not in options["roles"]:
+            raise HTTPForbidden("Wrong role")
+
+        if options.get("set_date", False):
+            self.date_booked = date
+
+        if options.get("set_waiter", False):
+            self.waiter_id = waiter_id
+
+        self.total_price = self.count_total()
+
+        self.status = new_status

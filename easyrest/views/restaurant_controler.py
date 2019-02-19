@@ -139,8 +139,9 @@ def get_restaurant_controler(request):
         if request.token is not None and request.token.user.id == rest.user.id:
             is_owner = True
 
-        rest_with_tags = asign_tags([rest])
-        body = wrap(rest_with_tags)
+        rest_with_tags = rest.as_dict(
+            with_relations=["tag"])  # asign_tags([rest])
+        body = wrap([rest_with_tags])
         body['is_owner'] = is_owner
 
     return body
