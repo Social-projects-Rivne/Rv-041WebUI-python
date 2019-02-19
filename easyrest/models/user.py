@@ -39,7 +39,10 @@ class User(Base):
     tokens = relationship('Token')
     role = relationship('UserRole')
     restaurants = relationship('Restaurant')
-    orders = relationship('Order')
+    orders = relationship(
+        'Order', foreign_keys="[Order.user_id]")
+    w_orders = relationship(
+        'Order', foreign_keys="[Order.waiter_id]")
 
     @staticmethod
     def add(database, form_data):
