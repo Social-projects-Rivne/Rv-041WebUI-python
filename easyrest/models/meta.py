@@ -50,17 +50,8 @@ class Base(object):
         print s
         return ""
 
-    def as_dict(self, exclude=[], include=[], with_relations=[], _isNested=True):
+    def as_dict(self, exclude=[], include=[]):
         """Converts model into python dictionary.
-        Also support relation unpack to one depth
-        To unpack relationship specify its name in with_relations
-        Example: model.as_dict(with_relations=["<relation1>", "<relation2>"])
-        Pls don`t reasing _isNested it uses to limit recursive depth
-        Args:
-            exclude: (list) (str) list of fields to be excluded more priority then include
-            include: (list) (str) list of fields to be included
-            with_relations: (list) (str) list of relationships to include
-            _isNested: (bool) system variable to limit recursion depth
         Returns:
             dictionary
             {
@@ -69,25 +60,6 @@ class Base(object):
             if it finds datetime object converts it to isoformat.
 
         """
-        data = {}
-        rel_data = {}
-        relationships = self.__mapper__.relationships.keys()
-        for name in relationships:
-            if name not in with_relations:
-                print(name)
-                continue
-            if not _isNested:
-                continue
-            value = getattr(self, name)
-
-            per_name_items = []
-            if isinstance(value, InstrumentedList):
-                for item in value:
-                    per_name_items.append(item.as_dict(_isNested=False))
-                rel_data[name] = per_name_items
-            else:
-                if _isNested:
-                    rel_data[name] = value.as_dict(_isNested=False)
 
         for c in self.__table__.columns:
             if c.name in exclude:
@@ -103,6 +75,4 @@ class Base(object):
                 value = float(value)
             data[c.name] = value
 
-        data.update(rel_data)
-        # print("as_dict:\n", data)
         return data
