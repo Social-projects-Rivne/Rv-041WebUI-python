@@ -13,7 +13,7 @@ from decimal import *
 
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.schema import MetaData
-from sqlalchemy.orm import InstrumentedList
+from sqlalchemy.orm.collections import InstrumentedList
 
 # Recommended naming convention used by Alembic, as various different database
 # providers will autogenerate vastly different names making migrations more
@@ -73,11 +73,9 @@ class Base(object):
         rel_data = {}
         relationships = self.__mapper__.relationships.keys()
         for name in relationships:
-            if name not in with_relations:
-                print(name)
+            if not _isNested or name not in with_relations:
                 continue
-            if not _isNested:
-                continue
+
             value = getattr(self, name)
 
             per_name_items = []
