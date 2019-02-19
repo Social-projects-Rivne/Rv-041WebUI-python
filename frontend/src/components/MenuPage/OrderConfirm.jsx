@@ -1,12 +1,16 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Slide from "@material-ui/core/Slide";
 import "date-fns";
-import Grid from "@material-ui/core/Grid";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  withStyles,
+  Slide,
+  Grid,
+  Typography
+} from "@material-ui/core";
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
@@ -15,8 +19,15 @@ import {
 } from "material-ui-pickers";
 import OrderItemsList from "./OrderItemsList";
 
+const styles = theme => ({
+  dialog: {
+    width: "900px",
+    margin: "auto"
+  }
+});
+
 function Transition(props) {
-  return <Slide direction="right" {...props} />;
+  return <Slide direction="left" {...props} />;
 }
 
 class OrderConfirmDialog extends React.Component {
@@ -38,14 +49,17 @@ class OrderConfirmDialog extends React.Component {
           open={this.props.open}
           TransitionComponent={Transition}
           keepMounted
+          maxWidth={false}
+          className={classes.dialog}
           onClose={this.props.handleClickToggle}
           aria-labelledby="alert-dialog-slide-title"
           aria-describedby="alert-dialog-slide-description"
         >
           <DialogTitle id="alert-dialog-slide-title">
-            {"Order confirmation. Please chose date or skip"}
+            {"Order confirmation"}
           </DialogTitle>
           <DialogContent>
+            <Typography variant="h6">{"Please chose date"}</Typography>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <Grid container className={classes.grid} justify="space-around">
                 <DatePicker
@@ -70,15 +84,18 @@ class OrderConfirmDialog extends React.Component {
               controls
             />
           </DialogContent>
+
           <DialogActions>
-            <Button onClick={this.handleClickToggle} color="primary">
+            <Button onClick={this.props.handleDialogToggle} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.props.sendSubmitOrder} color="primary">
-              Skip
-            </Button>
-            <Button onClick={this.props.sendSubmitOrder} color="primary">
-              Skip
+            <Button
+              onClick={() =>
+                this.props.sendSubmitOrder(this.state.selectedDate)
+              }
+              color="primary"
+            >
+              Submit
             </Button>
           </DialogActions>
         </Dialog>
@@ -87,4 +104,4 @@ class OrderConfirmDialog extends React.Component {
   }
 }
 
-export default OrderConfirmDialog;
+export default withStyles(styles)(OrderConfirmDialog);

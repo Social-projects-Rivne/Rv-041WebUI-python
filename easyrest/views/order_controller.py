@@ -42,7 +42,7 @@ def get_orders(request):
 
 
 @view_config(route_name='order', renderer='json', request_method='POST')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Client", "Owner"])
 def create_draft_order(request):
     """Controller for creating empty(in Draft) order
     Expects:
@@ -79,7 +79,7 @@ def create_draft_order(request):
 
 
 @view_config(route_name='order', renderer='json', request_method='GET')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Client", "Owner"])
 def get_draft_order(request):
     """Controller for get order in draft by token
     Return:
@@ -154,7 +154,7 @@ def parse_localStorage(request):
 
 
 @view_config(route_name='order_by_id', renderer='json', request_method='POST')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Client", "Owner"])
 def add_item(request):
     """Controller for add item with some quantity to order
     Expects:
@@ -204,7 +204,7 @@ def add_item(request):
 
 
 @view_config(route_name='order_by_id', renderer='json', request_method='GET')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Client", "Owner"])
 def get_order_items(request):
     """Controller for get order by id with items
 
@@ -234,7 +234,7 @@ def get_order_items(request):
 
 
 @view_config(route_name='order_by_id', renderer='json', request_method='PUT')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Client", "Owner"])
 def set_quantity(request):
     """Controller for seting (changing) quantity of order item
     Expects:
@@ -278,7 +278,7 @@ def set_quantity(request):
 
 
 @view_config(route_name='order_by_id', renderer='json', request_method='DELETE')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Client", "Owner"])
 def remove_item(request):
     """Controller for removing item from order
     Expects:
@@ -324,7 +324,7 @@ def remove_item(request):
 
 
 @view_config(route_name='order_status', renderer='json', request_method='PUT')
-@restrict_access(user_types=["Client", "Administrator", "Waiter"])
+@restrict_access(user_types=["Client", "Owner", "Administrator", "Waiter"])
 def change_status(request):
     """Controller for changing order status shared between:
         "Client", "Administrator", "Waiter"
@@ -348,13 +348,16 @@ def change_status(request):
     except ValueError as e:
         raise HTTPBadRequest("Not valid json")
 
+    print(json)
+
     schema = {
         "description": "Validate json inputs",
         "type": "object",
         "properties": {
-            "action": {"type": "string"}
+            "action": {"type": "string"},
+            "date": {"type": "integer"}
         },
-        "required": ["action"]
+        "required": ["action", "date"]
     }
 
     try:
@@ -394,6 +397,7 @@ def change_status(request):
     }
 
     try:
+        role = "Client" if role == "Owner" else "Client"
         new_status = grahp[(status, role, action)]
     except KeyError as e:
         # object sending not for production
@@ -405,7 +409,7 @@ def change_status(request):
 
 
 @view_config(route_name='order_status', renderer='json', request_method='GET')
-@restrict_access(user_types=["Client", "Administrator", "Waiter"])
+@restrict_access(user_types=["Client", "Owner", "Administrator", "Waiter"])
 def get_status(request):
     order_id = request.matchdict["order_id"]
 
