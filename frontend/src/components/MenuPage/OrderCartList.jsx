@@ -36,7 +36,7 @@ class OrderCartList extends React.Component {
               variant="contained"
               color="primary"
               className={classes.submitButton}
-              onClick={this.props.sendSubmitOrder}
+              onClick={this.props.handleDialogToggle}
             >
               {"Submit order"}
             </Button>

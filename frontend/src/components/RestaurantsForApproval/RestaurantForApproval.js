@@ -5,6 +5,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
+import Chip from '@material-ui/core/Chip';
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 
@@ -30,7 +31,10 @@ const styles = theme => ({
   },
   avatar: {
     backgroundColor: red[500]
-  }
+  },
+  chip: {
+    margin: theme.spacing.unit,
+  },
 });
 
 function RestaurantForApproval(props) {
@@ -120,9 +124,7 @@ function RestaurantForApproval(props) {
             title={name}
           />
 
-          <Typography component="p" color={statusColor}>
-            {statusMessage}
-          </Typography>
+          <Chip label={statusMessage} color={statusColor} className={classes.chip} />
 
           <Typography component="p">
             Owner: {owner_name}

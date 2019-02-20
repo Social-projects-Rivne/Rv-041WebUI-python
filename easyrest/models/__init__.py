@@ -18,9 +18,9 @@ from .restaurant import Restaurant
 from .tag import Tag
 from .tag_association import TagAssociation
 from .token import Token
+from .order import Order
 from .user import User
 from .user_role import UserRole
-from .order import Order
 from .order_assoc import OrderAssoc
 
 # run configure_mappers after defining all of the models to ensure

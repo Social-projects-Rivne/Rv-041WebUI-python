@@ -13,6 +13,7 @@ from decimal import *
 
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.schema import MetaData
+from sqlalchemy.orm.collections import InstrumentedList
 
 # Recommended naming convention used by Alembic, as various different database
 # providers will autogenerate vastly different names making migrations more
@@ -50,11 +51,11 @@ class Base(object):
         return ""
 
     def as_dict(self, exclude=[], include=[]):
-        """Converts model into python dictionary
+        """Converts model into python dictionary.
         Returns:
             dictionary
             {
-                [prop.name = prop.value, ]
+                [prop.name = prop.value, ... ]
             }
             if it finds datetime object converts it to isoformat.
 
@@ -63,7 +64,7 @@ class Base(object):
         for c in self.__table__.columns:
             if c.name in exclude:
                 continue
-            if len(include) != 0:
+            if include:
                 if c.name not in include:
                     continue
             value = getattr(self, c.name)
@@ -73,4 +74,5 @@ class Base(object):
             if isinstance(value, Decimal):
                 value = float(value)
             data[c.name] = value
+
         return data

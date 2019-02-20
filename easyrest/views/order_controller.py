@@ -17,9 +17,24 @@ from ..models.validator import validation
 from ..exceptions import ValidationError
 
 
-def get_order(request, order_id):
-    order = request.dbsession.query(Order).filter(
-        Order.id == order_id, Order.user_id == request.token.user.id).first()
+def get_order(request, order_id, field=False):
+    """'Smart' get order. If you want to specify some constrains 
+    on get order pass field.
+    Example:
+        {
+            "field_name": value
+            ...
+        }
+    """
+    if field:
+        order = request.dbsession.query(Order)\
+            .filter(Order.id == order_id)\
+            .filter_by(**field)\
+            .first()
+    else:
+        user_id = request.token.user.id
+        order = request.dbsession.query(Order).filter(
+            Order.id == order_id, Order.user_id == user_id).first()
 
     if order is None:
         raise HTTPNotFound("Order not found")
@@ -42,7 +57,7 @@ def get_orders(request):
 
 
 @view_config(route_name='order', renderer='json', request_method='POST')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Client", "Owner"])
 def create_draft_order(request):
     """Controller for creating empty(in Draft) order
     Expects:
@@ -64,7 +79,7 @@ def create_draft_order(request):
     if rest is None:
         raise HTTPNotFound("No such rest")
 
-    order = Order(date_created=int(time.time()), status="Draft")
+    order = Order(creation_time=int(time.time()), status="Draft")
     user = request.token.user
     order.user = user
     order.restaurant = rest
@@ -79,7 +94,7 @@ def create_draft_order(request):
 
 
 @view_config(route_name='order', renderer='json', request_method='GET')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Client", "Owner"])
 def get_draft_order(request):
     """Controller for get order in draft by token
     Return:
@@ -154,7 +169,7 @@ def parse_localStorage(request):
 
 
 @view_config(route_name='order_by_id', renderer='json', request_method='POST')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Client", "Owner"])
 def add_item(request):
     """Controller for add item with some quantity to order
     Expects:
@@ -204,7 +219,7 @@ def add_item(request):
 
 
 @view_config(route_name='order_by_id', renderer='json', request_method='GET')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Client", "Owner"])
 def get_order_items(request):
     """Controller for get order by id with items
 
@@ -234,7 +249,7 @@ def get_order_items(request):
 
 
 @view_config(route_name='order_by_id', renderer='json', request_method='PUT')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Client", "Owner"])
 def set_quantity(request):
     """Controller for seting (changing) quantity of order item
     Expects:
@@ -278,7 +293,7 @@ def set_quantity(request):
 
 
 @view_config(route_name='order_by_id', renderer='json', request_method='DELETE')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Client", "Owner"])
 def remove_item(request):
     """Controller for removing item from order
     Expects:
@@ -324,14 +339,15 @@ def remove_item(request):
 
 
 @view_config(route_name='order_status', renderer='json', request_method='PUT')
-@restrict_access(user_types=["Client", "Administrator", "Waiter"])
+@restrict_access(user_types=["Client", "Owner", "Administrator", "Waiter"])
 def change_status(request):
     """Controller for changing order status shared between:
         "Client", "Administrator", "Waiter"
     Expects:
         {
-            "action": (str) name of action
-            "book_date":
+            "new_status": (str) name of new status
+            "set_waiter_id": (int) waiter id
+            "booked_time": (int) UNIX time
         }
     Return:
         {
@@ -345,16 +361,20 @@ def change_status(request):
 
     try:
         json = request.json_body
-    except ValueError as e:
+    except ValueError:
         raise HTTPBadRequest("Not valid json")
+
+    print(json)
 
     schema = {
         "description": "Validate json inputs",
         "type": "object",
         "properties": {
-            "action": {"type": "string"}
+            "set_waiter_id": {"type": ["integer", "None"]},
+            "booked_time": {"type": ["integer", "None"]},
+            "new_status": {"type": "string"}
         },
-        "required": ["action"]
+        "required": ["new_status"]
     }
 
     try:
@@ -362,50 +382,41 @@ def change_status(request):
     except ValidationError as e:
         raise HTTPForbidden("Wrong input data %s" % e)
 
-    order = get_order(request, order_id)
+    query_constrains = {}
 
-    status, role, action = order.status, request.token.user.role.name, json["action"]
+    if request.token.user.role.name == "Waiter":
+        query_constrains.update({
+            "waiter_id": request.token.user.id
+        })
+    elif request.token.user.role.name == "Administrator":
+        # TODO add Administrator specific order constrain
+        query_constrains.update({
+            "waiter_id": request.token.user.id
+        })
+        pass
 
-    # State transition graph
-    # (status, role, action)
-    # User->Submit = User press Submit
-    grahp = {
-        ("0", "Client", "bla"): "Draft",
-        ("Draft", "Client", "Submit"): "Waiting for confirm",
-        ("Draft", "Client", "Remove"): "Removed",
-        ("Waiting for confirm", "Client", "Undo"): "Draft",
-        ("Waiting for confirm", "Administrator", "Reject"): "Declined",
-        ("Waiting for confirm", "Administrator", "Accept"): "Accepted",
-        ("Declined", "Client", "Remove"): "Removed",
-        ("Declined", "Client", "Edit"): "Draft",
-        ("Declined", "Client", "Ok"): "History",
-        ("History", "Client", "Reorder"): "Draft",
-        ("Accepted", "Administrator", "Cancel"): "Declined",
-        ("Accepted", "Administrator", "Asign waiter"): "Asigned waiter",
-        ("Accepted", "Waiter", "Asign waiter"): "Asigned waiter",
-        ("Accepted", "Client", "Edit"): "Draft",
-        ("Asigned waiter", "Waiter", "Start order"): "In progress",
-        ("In progress", "Administrator", "Client failed"): "Failed",
-        ("In progress", "Client", "Rest failed"): "Failed",
-        ("In progress", "Waiter", "Close order"): "Waiting for feedback",
-        ("Failed", "Moderator", "Reviewed"): "History",
-        ("Waiting for feedback", "Client", "Feedback"): "History",
-        ("Waiting for feedback", "Client", "Skip"): "History"
-    }
+    order = get_order(request, order_id, query_constrains)
 
-    try:
-        new_status = grahp[(status, role, action)]
-    except KeyError as e:
-        # object sending not for production
-        raise HTTPForbidden("Forbidden action %s" % e)
+    waiter_id = json.get("set_waiter_id", False)
+    if waiter_id:
+        waiter = request.dbsession.query(User).filter_by(id=waiter_id).first()
+    else:
+        waiter = None
 
-    order.status = new_status
+    time = json.get("booked_time", None)
 
-    return wrap(order.status)
+    new_status = json["new_status"]
+
+    role = request.token.user.role.name
+
+    new_order = order.change_status(
+        new_status, role, waiter, time).as_dict(exclude=["table"])
+
+    return wrap(new_order)
 
 
 @view_config(route_name='order_status', renderer='json', request_method='GET')
-@restrict_access(user_types=["Client", "Administrator", "Waiter"])
+@restrict_access(user_types=["Client", "Owner", "Administrator", "Waiter"])
 def get_status(request):
     order_id = request.matchdict["order_id"]
 

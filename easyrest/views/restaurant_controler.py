@@ -140,7 +140,7 @@ def get_restaurant_controler(request):
             is_owner = True
 
         rest_with_tags = asign_tags([rest])
-        body = wrap(rest_with_tags)
+        body = wrap([rest_with_tags])
         body['is_owner'] = is_owner
 
     return body

@@ -34,12 +34,24 @@ class User(Base):
     birth_date = Column(Date)
     password = Column(Text)
     role_id = Column(Integer, ForeignKey('user_roles.id'), default=1)
+    administrator_id = Column(Integer, ForeignKey('users.id'))
+    rest_id = Column(Integer, ForeignKey('restaurants.id'))
+    # waiter_id = Column(Integer, ForeignKey('users.id'))
     is_active = Column(Boolean, default=False)
 
     tokens = relationship('Token')
     role = relationship('UserRole')
-    restaurants = relationship('Restaurant')
-    orders = relationship('Order')
+    restaurants = relationship(
+        'Restaurant', foreign_keys="[Restaurant.owner_id]")
+    restaurant = relationship(
+        'Restaurant', foreign_keys="[User.rest_id]")
+    orders = relationship(
+        'Order', foreign_keys="[Order.user_id]")
+    w_orders = relationship(
+        'Order', foreign_keys="[Order.waiter_id]")
+    # waiters = relationship('User', remote_side=[
+    #                        id], foreign_keys="[User.administrator_id]")
+    # administrator = relationship('User', remote_side=administrator_id)
 
     @staticmethod
     def add(database, form_data):
