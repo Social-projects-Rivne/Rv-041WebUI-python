@@ -32,11 +32,14 @@ class Restaurant(Base):
     description_markup = Column(Text)
     phone = Column(Text)
     owner_id = Column(Integer, ForeignKey('users.id'))
+    # administrator_id = Column(Integer, ForeignKey('users.id'))
     status = Column(Integer, default=0)
     creation_date = Column(Integer)
 
     menu = relationship("Menu")
-    user = relationship("User")
+    owner = relationship("User", foreign_keys="[Restaurant.owner_id]")
+    administrator = relationship(
+        "User", foreign_keys="[User.rest_id]")
     tag = relationship(
         "Tag",
         secondary="tag_associations")

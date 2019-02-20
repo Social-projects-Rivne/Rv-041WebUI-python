@@ -60,7 +60,7 @@ class Base(object):
             if it finds datetime object converts it to isoformat.
 
         """
-
+        data = {}
         for c in self.__table__.columns:
             if c.name in exclude:
                 continue

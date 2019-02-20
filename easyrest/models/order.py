@@ -110,14 +110,14 @@ class Order(Base):
 
     _graph = {
         ("Draft", "Waiting for confirm"): {
-            "roles": ["Client"],
+            "roles": ["Client", "Owner"],
             "set_date": True
         },
         ("Draft", "Removed"): {
-            "roles": ["Client"],
+            "roles": ["Client", "Owner"],
         },
         ("Waiting for confirm", "Draft"): {
-            "roles": ["Client"],
+            "roles": ["Client", "Owner"],
         },
         ("Waiting for confirm", "Declined"): {
             "roles": ["Administrator"],
@@ -126,13 +126,13 @@ class Order(Base):
             "roles": ["Administrator"],
         },
         ("Declined", "Removed"): {
-            "roles": ["Client"],
+            "roles": ["Client", "Owner"],
         },
         ("Declined", "Draft"): {
-            "roles": ["Client"],
+            "roles": ["Client", "Owner"],
         },
         ("Declined", "History"): {
-            "roles": ["Client"],
+            "roles": ["Client", "Owner"],
         },
         ("Accepted", "Declined"): {
             "roles": ["Administrator"],
@@ -142,10 +142,10 @@ class Order(Base):
             "set_waiter": True
         },
         ("Accepted", "Draft"): {
-            "roles": ["Client"],
+            "roles": ["Client", "Owner"],
         },
         ("History", "Draft"): {
-            "roles": ["Client"],
+            "roles": ["Client", "Owner"],
         },
         ("Asigned waiter", "In progress"): {
             "roles": ["Waiter"],
@@ -154,34 +154,36 @@ class Order(Base):
             "roles": ["Administrator"],
         },
         ("In progress", "Failed"): {
-            "roles": ["Client"],
+            "roles": ["Client", "Owner"],
         },
         ("In progress", "Waiting for feedback"): {
             "roles": ["Waiter"],
         },
         ("Waiting for feedback", "History"): {
-            "roles": ["Client"],
+            "roles": ["Client", "Owner"],
         },
         ("Failed", "History"): {
             "roles": ["Moderator"],
         }
     }
 
-    def change_status(self, new_status, role, waiter_id=None, date=None):
+    def change_status(self, new_status, role, waiter=None, time=None):
         try:
-            options = self.graph[(self.status, new_status)]
+            options = self._graph[(self.status, new_status)]
         except KeyError as e:
             raise HTTPForbidden("Forbidden action % s" % e)
 
         if role not in options["roles"]:
-            raise HTTPForbidden("Wrong role")
+            raise HTTPForbidden("Wrong role: %s" % role)
 
         if options.get("set_date", False):
-            self.date_booked = date
+            self.booked_time = time
 
         if options.get("set_waiter", False):
-            self.waiter_id = waiter_id
+            self.waiter = waiter
 
-        self.total_price = self.count_total()
+        self.count_total()
 
         self.status = new_status
+
+        return self
