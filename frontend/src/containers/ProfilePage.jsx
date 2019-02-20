@@ -24,12 +24,18 @@ const ProfilePage = props => {
                 <Route
                   path={`${match.url}/current_orders`}
                   key="current"
-                  render={() => <OrderListPage status="current"/>}
+                  render={() => <OrderListPage 
+                    status="current"
+                    myRoute={`${match.url}/current_orders`}
+                  />}
                 />
                 <Route
                   path={`${match.url}/order_history`}
                   key="history"
-                  render={() => <OrderListPage status="history"/>}
+                  render={() => <OrderListPage
+                    status="history"
+                    myRoute={`${match.url}/order_history`}
+                  />}
                 />
                 <Route
                   path={`${match.url}/restaurants`}

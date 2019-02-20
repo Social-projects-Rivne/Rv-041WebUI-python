@@ -45,9 +45,9 @@ const styles = theme => ({
   }
 });
 
-function UserOrder(props) {
+function UserOrders(props) {
 
-    const { classes, orders, expanded, handleChange } = props;
+    const { classes, orders } = props;
 
     return (
         <div className={classes.root}>
@@ -63,7 +63,7 @@ function UserOrder(props) {
               });  
             });
             return(
-              <ExpansionPanel key={index} expanded={expanded === index} onChange={() => handleChange(index)}>
+              <ExpansionPanel key={index} >
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                   <Grid container justify="space-between" alignItems="center" spacing={8}>
                     <Grid item key={1} xs={6} sm={2}>
@@ -165,4 +165,4 @@ function UserOrder(props) {
   }
 
 
-  export default withStyles(styles)(UserOrder);
+  export default withStyles(styles)(UserOrders);

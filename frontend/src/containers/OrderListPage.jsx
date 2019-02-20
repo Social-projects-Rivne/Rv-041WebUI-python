@@ -1,7 +1,9 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { Route, Switch } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 import GenericTabs from "../Service/GenericTabs";
-import UserOrders from "../components/UserOrders/UserOrders" 
+import UserOrders from "../components/UserOrders/UserOrders"; 
 
 
 const styles = theme => ({
@@ -37,7 +39,6 @@ class OrderListPage extends React.Component {
     isLoading: true,
     statuses: [],
     orders: [],
-    expanded: null,
   };
 
   componentDidMount() {
@@ -70,16 +71,31 @@ class OrderListPage extends React.Component {
       .catch(err => this.setState({ success: false, error: err.message, isLoading: false }));
   }
 
-  handleChange = panel => (event, expanded) => {
-    console.log(expanded);
-    this.setState({
-      expanded: expanded ? panel : false,
-    });
-  };
-
   render() {
-    const { classes } = this.props;
-    const { expanded, isLoading, statuses, orders } = this.state;
+    const { classes, myRoute } = this.props;
+    const { isLoading, statuses, orders } = this.state;
+    //add default "All" status Tab to tab statuses array (to the beginning)
+    if (statuses.indexOf("All") === -1){
+      statuses.unshift("All");
+    }
+
+    //create object with arrays for each status orders data
+    let statusesObject = {};
+    let statusesLenthObject = {};
+
+    for (let i = 0; i < statuses.length; i++) {
+      const status = statuses[i];
+      statusesObject[status] = orders.filter(order => {
+        if (status === "All") {
+          return true;
+        }
+        else {
+          return (order.status === status);
+        }
+      });
+      //also count array length for each status
+      statusesLenthObject[status] = statusesObject[status].length;
+    }
 
     if (isLoading) {
       return null;
@@ -89,15 +105,23 @@ class OrderListPage extends React.Component {
       <div className={classes.root}>
         <GenericTabs
           tags={statuses}
-          tagsAdditionalInformation={{}}
+          tagsAdditionalInformation={statusesLenthObject}
           selectedValue={1}
           /*handleTabChange={this.handleTabChange}*/
         />
-        <UserOrders
-          orders={orders} 
-          expanded={expanded} 
-          handleChange={this.handleChange}
-        />
+        <Switch>
+          {statuses.map((status, index) => {
+            return(
+              <Route
+                path={`${myRoute}/${status}`}
+                key={index}
+                render={() => <UserOrders orders={
+                  statusesObject[status]  
+                }/>}
+              />
+            );
+          })}
+        </Switch>
       </div>
     );
   }
