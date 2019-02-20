@@ -19,10 +19,23 @@ class Restaurant(Base):
     Defines data structure of "restaurants" table
     Has many to many relationship with tags, using
     association table tag_associations
-    "status" attribute is Integer, where 0-waiting for confirmation, 1-active (confirmed), 2-archived
-    Relationship:
-        restaurants -> menus (One to Many)
-        restaurants -> tags (Many to Many)
+    "status" attribute is Integer, where:
+        0-waiting for confirmation,
+        1-active (confirmed),
+        2-archived
+    Relationships:
+        waiters: waiters in this restaurant
+            Restaurant->User: one to many
+        administrator: administrator in this restaurant
+            Restaurant->User: many to one (by design but
+                suppose to work like one to one)
+        owner: owner in this restaurant
+            Restaurant->User: many to one (by design but
+                suppose to work like one to one)
+        tag: tags of this restaurant
+            Restaurant -> Tag (Many to Many)
+        menu: menus of this restaurant
+             Restaurant -> Menu (One to Many)
     """
     __tablename__ = 'restaurants'
     id = Column(Integer, primary_key=True)
@@ -32,11 +45,16 @@ class Restaurant(Base):
     description_markup = Column(Text)
     phone = Column(Text)
     owner_id = Column(Integer, ForeignKey('users.id'))
+    administrator_id = Column(Integer, ForeignKey('users.id'))
     status = Column(Integer, default=0)
     creation_date = Column(Integer)
 
     menu = relationship("Menu")
-    user = relationship("User")
-    tag = relationship(
+    owner = relationship("User", foreign_keys="[Restaurant.owner_id]")
+    administrator = relationship(
+        "User", foreign_keys="[Restaurant.administrator_id]")
+    waiters = relationship(
+        "User", foreign_keys="[User.restaurant_id]")
+    tags = relationship(
         "Tag",
         secondary="tag_associations")
