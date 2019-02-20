@@ -39,6 +39,7 @@ class OrderListPage extends React.Component {
     isLoading: true,
     statuses: [],
     orders: [],
+    selectedTab: 0
   };
 
   componentDidMount() {
@@ -71,9 +72,13 @@ class OrderListPage extends React.Component {
       .catch(err => this.setState({ success: false, error: err.message, isLoading: false }));
   }
 
+  handleTabChange = (event, value) => {
+    this.setState({ selectedTab: value })
+  };
+
   render() {
     const { classes, myRoute } = this.props;
-    const { isLoading, statuses, orders } = this.state;
+    const { isLoading, statuses, orders, selectedTab } = this.state;
     //add default "All" status Tab to tab statuses array (to the beginning)
     if (statuses.indexOf("All") === -1){
       statuses.unshift("All");
@@ -106,8 +111,10 @@ class OrderListPage extends React.Component {
         <GenericTabs
           tags={statuses}
           tagsAdditionalInformation={statusesLenthObject}
-          selectedValue={1}
-          /*handleTabChange={this.handleTabChange}*/
+          selectedValue={selectedTab}
+          useRouter={true}
+          fixedPath={myRoute}
+          handleTabChange={this.handleTabChange}
         />
         <Switch>
           {statuses.map((status, index) => {
