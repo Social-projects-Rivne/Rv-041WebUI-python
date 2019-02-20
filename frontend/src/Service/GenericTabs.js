@@ -22,7 +22,7 @@ function GenericTabs(props) {
     return(
 
       <AppBar position="static">
-        <Tabs value={selectedValue} onChange={handleTabChange}>
+        <Tabs value={selectedValue} variant="scrollable" scrollButtons="on" onChange={handleTabChange}>
           {tags.map(tag => {
             const additionalInformation = tagsAdditionalInformation[tag];
             return(

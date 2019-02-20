@@ -1,22 +1,8 @@
 import React from "react";
 import { withStyles } from '@material-ui/core/styles';
-import {
-  Avatar,
-  Button,
-  CardMedia,
-  ExpansionPanel,
-  ExpansionPanelDetails,
-  ExpansionPanelSummary,
-  Grid,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  TableFooter,
-  Typography
-} from '@material-ui/core';
-import { Repeat } from "@material-ui/icons";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import GenericTabs from "../Service/GenericTabs";
+import UserOrders from "../components/UserOrders/UserOrders" 
+
 
 const styles = theme => ({
   root: {
@@ -49,6 +35,7 @@ class OrderListPage extends React.Component {
   state = {
     token: localStorage.getItem("token"),
     isLoading: true,
+    statuses: [],
     orders: [],
     expanded: null,
   };
@@ -74,7 +61,8 @@ class OrderListPage extends React.Component {
       .then(data =>
         this.setState({
           isLoading: false,
-          orders: data.data,
+          statuses: data.data.statuses,
+          orders: data.data.orders_data,
           success: data.success,
           error: data.error
         })
@@ -83,6 +71,7 @@ class OrderListPage extends React.Component {
   }
 
   handleChange = panel => (event, expanded) => {
+    console.log(expanded);
     this.setState({
       expanded: expanded ? panel : false,
     });
@@ -90,7 +79,7 @@ class OrderListPage extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { expanded, isLoading, orders } = this.state;
+    const { expanded, isLoading, statuses, orders } = this.state;
 
     if (isLoading) {
       return null;
@@ -98,115 +87,17 @@ class OrderListPage extends React.Component {
 
     return (
       <div className={classes.root}>
-        {orders.map((orderInfo, index) => {
-          const date = new Date(orderInfo.date_created * 1000);
-          const orderItems = orderInfo.items;
-          //extract photo to make icons
-          let iconsArray = [];
-          orderItems.forEach(orderItem => {
-            iconsArray.push({
-              "name": orderItem.name,
-              "img": orderItem.img
-            });  
-          });
-          return(
-            <ExpansionPanel key={index} expanded={expanded === index} onChange={this.handleChange(index)}>
-              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Grid container justify="space-between" alignItems="center" spacing={8}>
-                  <Grid item key={1} xs={6} sm={2}>
-                    <Typography className={classes.heading}>
-                      {orderInfo.restaurant}
-                    </Typography>
-                  </Grid>
-                  <Grid item key={2} xs={6} sm={2}>
-                    <Typography className={classes.secondaryHeading}>
-                      {String(date.toISOString().slice(0, 10))}
-                    </Typography>
-                  </Grid>
-                  <Grid item key={3} xs={6} sm={2}>
-                    <Grid container alignItems="center">
-                    {iconsArray.map((imgInfo, image_index) => {
-                      return(
-                        <Grid item key={image_index} xs={6} sm={2}>
-                          <Avatar  alt={imgInfo.name} src={imgInfo.img} className={classes.avatar} />
-                        </Grid>
-                      );
-                    })}
-                    </Grid>
-                  </Grid>
-                  <Grid item key={4} xs={6} sm={2}>
-                    <Typography>
-                      {orderItems.length} items for ${orderInfo.total_price}
-                    </Typography>
-                  </Grid>
-                  <Grid item key={5} xs={6} sm={2}>
-                    <Typography>
-                      {orderInfo.status}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                <Grid container spacing={8}>
-                  <Table className={classes.table}>
-                    <TableBody>
-                      {orderItems.map((orderItem, index) => {
-                        return (
-                          <TableRow key={index}>
-                            <TableCell component="th" scope="row">
-                              <CardMedia
-                                className={classes.image}
-                                image={orderItem.img}
-                                title={orderItem.name}
-                              />
-                            </TableCell>
-                            <TableCell component="th">
-                              <Typography className={classes.heading}>
-                                {orderItem.name}
-                              </Typography>
-                              <Typography className={classes.secondaryHeading}>
-                                price: ${orderItem.price}
-                              </Typography>
-                            </TableCell>
-                            <TableCell component="th">
-                              <Typography>
-                                {orderItem.quantity} serv.
-                              </Typography>
-                            </TableCell>
-                            <TableCell component="th">
-                              <Typography gutterBottom variant="h6">
-                                {"$"+(orderItem.quantity*orderItem.price).toFixed(2)}
-                              </Typography>
-                            </TableCell>
-                          </TableRow>
-                        )
-                      })}
-                    </TableBody>
-                    <TableFooter>
-                      <TableRow>
-
-                      <TableCell colSpan={2} align="right">
-                          <Button variant="contained" color="primary" className={classes.button}>
-                            Reorder
-                            <Repeat />
-                          </Button>
-                        </TableCell>
-
-
-
-                        <TableCell colSpan={2} align="right">
-                          <Typography gutterBottom variant="h5" >
-                            Order sum: {"$" + orderInfo.total_price}
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    </TableFooter>
-                  </Table>
-                </Grid>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-          );
-        })}
+        <GenericTabs
+          tags={statuses}
+          tagsAdditionalInformation={{}}
+          selectedValue={1}
+          /*handleTabChange={this.handleTabChange}*/
+        />
+        <UserOrders
+          orders={orders} 
+          expanded={expanded} 
+          handleChange={this.handleChange}
+        />
       </div>
     );
   }

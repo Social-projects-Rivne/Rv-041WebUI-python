@@ -447,12 +447,15 @@ def get_user_order_list(request):
     # TODO: need find out about function chains from Max, and after that - refactor this code
     orders = request.dbsession.query(Order).filter(
         Order.user_id == request.token.user.id, Order.status.in_(statuses)).all()
-    data = []
+    data = {}
+    data["statuses"] = statuses
     order_keys = ("id", "date_created", "date_booked", "total_price", "status")
+    orders_data = []
     for order in orders:
         order_data = form_dict(order, order_keys, True, True)
         order_data["restaurant"] = order.restaurant.name
         order_items = order.get_items(request.dbsession)
         order_data["items"] = order_items 
-        data.append(order_data)
+        orders_data.append(order_data)
+    data["orders_data"] = orders_data
     return wrap(data)
