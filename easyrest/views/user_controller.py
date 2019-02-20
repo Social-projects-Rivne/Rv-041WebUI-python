@@ -1,5 +1,6 @@
 """This module describe user controller
 This module describes behavior of /sign_up route
+This module describes behavior of /user/{role_id:\d+} route
 """
 
 import logging
@@ -117,32 +118,12 @@ def get_users_list(request):
 def create_user(request):
     """This function is intended to create a user with a specific role.
 
-       This function processes the route /user/{role_id:\d+}
-       and tries to create a user depending on the identifier
-       that is extracted from the parameter {role_id}.
+    This function processes the route /user/{role_id:\d+}
+    and tries to create a user depending on the identifier
+    that is extracted from the parameter {role_id}.
 
     :param request: POST request
-    :return: If incorrect json:
-                {
-                  "message": null,
-                  "data": [],
-                  "success": false,
-                  "error": "Incorrect json format"
-                }
-             If validation errors:
-                {
-                  "message": null,
-                  "data": [],
-                  "success": false,
-                  "error": "validation_errors"
-                }
-             If user created successfully:
-                {
-                  "message": "User successfully added",
-                  "data": [],
-                  "success": true,
-                  "error": null
-                }
+    :return: The result of an attempt to create.
     :raise HTTPNotFound: If user role id not found.
     :raise HTTPForbidden: If if an authorization is needed to perform an action.
     """
@@ -173,6 +154,28 @@ def create_user(request):
 
 
 def attempt_add_user(database, form_data, role=User.CLIENT):
+    """This function attempts to create the user in the database.
+
+    The function invokes the model method `add` which creates the user in the database.
+
+    :param database: Database session.
+    :param (dict) form_data: JSON-decoded variant of the form inputs.
+    :param (int) role: The id of the role of the user being created. Default ID of the role 'Client'
+    :return: If validation errors:
+                {
+                  "message": null,
+                  "data": [],
+                  "success": false,
+                  "error": "validation_errors"
+                }
+             If user created successfully:
+                {
+                  "message": "User successfully added",
+                  "data": [],
+                  "success": true,
+                  "error": null
+                }
+    """
     try:
         User.add(database, form_data, role=role)
     except ValidationError as ve:
