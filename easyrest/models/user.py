@@ -70,3 +70,12 @@ class User(Base):
         password_hash = pbkdf2_sha256.hash(password)
 
         database.add(User(name=name, email=email, password=password_hash))
+
+    @staticmethod
+    def delete(database, user):
+        """This function removes the user and his data from the database.
+
+        :param database: Database session.
+        :param user: Instance of deletable user.
+        """
+        database.delete(user)

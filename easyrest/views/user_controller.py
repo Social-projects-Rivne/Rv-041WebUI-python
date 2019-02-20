@@ -1,7 +1,10 @@
 """This module describe user controller
 This module describes behavior of /sign_up route
 This module describes behavior of /users/{role_id} route
+This module describes behavior of /user/{user_id:\d+} route
 """
+
+import logging
 
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPForbidden
@@ -104,3 +107,52 @@ def get_users_list(request):
                   request.dbsession.query(User).filter_by(role_id=derivable_role_id).order_by(User.name).all()]
 
     return wrap(users_list, success=True, message="Users with role '{}'".format(role.name))
+
+
+@view_config(route_name='user_delete', renderer='json', request_method='DELETE')
+@restrict_access(['Client', 'Waiter', 'Administrator', 'Owner', 'Moderator', 'Admin'])
+def delete_user(request):
+    """This function is intended to delete a user with a specific id.
+
+    This function processes the route /user/{user_id:\d+}
+    and tries to delete a user depending on the identifier
+    that is extracted from the parameter {user_id}.
+
+    :param request: DELETE request
+    :return: The result of the removal attempt.
+    :raise HTTPNotFound: If user id not found.
+    """
+    log = logging.getLogger(__name__)
+
+    database = request.dbsession
+    requested_user_id = int(request.matchdict['user_id'])
+    deletable_user = database.query(User).get(requested_user_id)
+    if deletable_user is None:
+        log.error('User id {} not found'.format(requested_user_id))
+        raise HTTPNotFound(request.path)
+
+    current_user = request.token.user
+    if current_user.id == requested_user_id:
+        return attempt_delete_user(database, deletable_user)
+    check_action_access(current_user.role.name, foreign_role=deletable_user.role.name, action='delete')
+
+    return attempt_delete_user(database, deletable_user)
+
+
+def attempt_delete_user(database, user):
+    """This function attempts to delete the user from the database.
+
+    The function invokes the model method `delete` which delete the user data from the database.
+
+    :param database: Database session.
+    :param user: Instance of deletable user.
+    :return: If user deleted successfully:
+                {
+                  "message": "User successfully deleted",
+                  "data": [],
+                  "success": true,
+                  "error": null
+                }
+    """
+    User.delete(database, user)
+    return wrap([], success=True, message='User successfully deleted')
