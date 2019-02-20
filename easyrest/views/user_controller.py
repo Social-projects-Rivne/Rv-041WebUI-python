@@ -148,11 +148,7 @@ def create_user(request):
     """
     log = logging.getLogger(__name__)
 
-    try:
-        form_data = request.json_body
-    except ValueError as ve:
-        log.error(ve.message)
-        return wrap([], success=False, error='Incorrect json format')
+    check_json_format(request)
 
     database = request.dbsession
     new_user_role = int(request.matchdict['role_id'])
@@ -161,13 +157,9 @@ def create_user(request):
         log.error('Role id {} not found'.format(new_user_role))
         raise HTTPNotFound(request.path)
 
+    form_data = request.json_body
     if new_user_role == User.CLIENT:
-        try:
-            User.add(database, form_data)
-        except ValidationError as ve:
-            return wrap([], success=False, error=str(ve))
-        else:
-            return wrap([], success=True, message='User successfully added')
+        return attempt_add_user(database, form_data)
 
     try:
         current_user = request.token.user
@@ -177,8 +169,12 @@ def create_user(request):
 
     new_user_role_name = role.name
     check_action_access(current_user.role.name, foreign_role=new_user_role_name, action='create')
+    return attempt_add_user(database, form_data, new_user_role)
+
+
+def attempt_add_user(database, form_data, role=User.CLIENT):
     try:
-        User.add(database, form_data, role=new_user_role)
+        User.add(database, form_data, role=role)
     except ValidationError as ve:
         return wrap([], success=False, error=str(ve))
     else:
