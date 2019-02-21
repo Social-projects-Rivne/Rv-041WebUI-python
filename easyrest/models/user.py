@@ -20,6 +20,15 @@ class User(Base):
 
     Defines data structure of "users" table and methods of
     working with the model.
+    Role specific relations:
+        Client, Owner:
+            orders: orders with this users
+                User->Order: one to many
+        Waiter:
+            restaurant: restaurant with this waiter
+                User->Restaurant: many to one
+            w_orders: orders assigned to this waiter
+                User->Order: one to many
 
     Relationships:
         User->Restaurant: one to many
@@ -34,11 +43,15 @@ class User(Base):
     birth_date = Column(Date)
     password = Column(Text)
     role_id = Column(Integer, ForeignKey('user_roles.id'), default=1)
+    restaurant_id = Column(Integer, ForeignKey('restaurants.id'))
     is_active = Column(Boolean, default=False)
 
     tokens = relationship('Token')
     role = relationship('UserRole')
-    restaurants = relationship('Restaurant')
+    restaurants = relationship(
+        'Restaurant', foreign_keys="[Restaurant.owner_id]")
+    restaurant = relationship(
+        'Restaurant', foreign_keys="[User.restaurant_id]")
     orders = relationship('Order')
 
     @staticmethod
