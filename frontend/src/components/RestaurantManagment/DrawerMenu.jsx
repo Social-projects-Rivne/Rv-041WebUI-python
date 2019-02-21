@@ -13,7 +13,9 @@ import {
   People,
   ArtTrack,
   ExpandMore,
-  StarBorder
+  StarBorder,
+  AddToPhotos,
+  Star
 } from "@material-ui/icons";
 
 const styles = theme => ({
@@ -82,15 +84,33 @@ class DrawerMenu extends React.Component {
                   className={classes.nested}
                 >
                   <ListItemIcon>
-                    <StarBorder />
+                    {listItem.is_active ? <Star /> : <StarBorder />}
                   </ListItemIcon>
                   <ListItemText inset primary={listItem.name} />
                 </ListItem>
               ))}
+              <ListItem
+                component={NavLink}
+                button
+                to={`${match.url}/menues/create`}
+                className={classes.nested}
+              >
+                <ListItemIcon>
+                  <AddToPhotos />
+                </ListItemIcon>
+                <ListItemText inset primary="Create menu" />
+              </ListItem>
             </List>
           </Collapse>
         )}
-        <ListItem className={classes.navLink} button disableRipple>
+        <ListItem
+          component={NavLink}
+          button
+          to={`${match.url}/waiters`}
+          className={classes.navLink}
+          button
+          disableRipple
+        >
           <ListItemIcon>
             <People />
           </ListItemIcon>

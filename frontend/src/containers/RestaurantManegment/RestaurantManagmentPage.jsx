@@ -1,9 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import PageContainer from "../PageContainer";
-import ManageMenu from "./ManageMenu";
+import Menus from "./Menus";
 import ManageInfo from "./ManageInfo";
+import ManageWaiters from "./ManageWaiters";
 import DrawerMenu from "../../components/RestaurantManagment/DrawerMenu";
+import CreateMenu from "../../components/RestaurantManagment/CreateMenu";
 import { withStyles, Drawer } from "@material-ui/core";
 import { Switch, Route } from "react-router-dom";
 
@@ -70,12 +72,20 @@ export class RestaurantManagmentPage extends React.Component {
         <PageContainer>
           <Switch>
             <Route path={`${match.url}/info`} component={ManageInfo} />
+            {/* <Route path={`${match.url}/menues`} /> */}
             <Route
+              key={match.params.id}
               path={`${match.url}/menues/:id`}
-              render={props => (
-                <ManageMenu restId={match.params.id} {...props} />
-              )}
+              render={props => <Menus restId={match.params.id} {...props} />}
             />
+            {/* <Route
+                path={`${match.url}/menues/create`}
+                render={props => (
+                  <CreateMenu restId={this.props.match.params.id} {...props} />
+                )}
+              /> */}
+            {/* </Route> */}
+            <Route path={`${match.url}/waiters`} component={ManageWaiters} />
           </Switch>
         </PageContainer>
       </div>

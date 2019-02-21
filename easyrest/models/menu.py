@@ -7,6 +7,7 @@ from sqlalchemy import (
     Integer,
     Text,
     ForeignKey,
+    Boolean
 )
 from sqlalchemy.orm import relationship
 
@@ -26,6 +27,7 @@ class Menu(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Text)
     image = Column(Text)
+    is_active = Column(Boolean, default=False)
     rest_id = Column(Integer, ForeignKey('restaurants.id'))
     rest = relationship("Restaurant")
     menu_items = relationship("MenuItem")
@@ -58,3 +60,6 @@ class Menu(Base):
             item_dict.append(item)
 
         return item_dict
+
+    def create_menu(self, session):
+        pass

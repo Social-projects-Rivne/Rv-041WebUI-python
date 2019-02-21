@@ -6,7 +6,7 @@ class ManageInfo extends React.Component {
   componentDidMount() {}
 
   render() {
-    return <div />;
+    return <div>Info</div>;
   }
 }
 
