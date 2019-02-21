@@ -124,6 +124,7 @@ class Order(Base):
         },
         ("Waiting for confirm", "Accepted"): {
             "roles": ["Administrator"],
+            "set_date": True
         },
         ("Declined", "Removed"): {
             "roles": ["Client", "Owner"],
@@ -177,9 +178,12 @@ class Order(Base):
             raise HTTPForbidden("Wrong role: %s" % role)
 
         if options.get("set_date", False):
-            self.booked_time = time
+            if time is not None:
+                self.booked_time = time
 
         if options.get("set_waiter", False):
+            if waiter is None:
+                raise HTTPBadRequest("Waiter not found")
             self.waiter = waiter
 
         self.count_total()

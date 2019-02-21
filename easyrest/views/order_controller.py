@@ -5,6 +5,7 @@ import time
 
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPNotFound, HTTPForbidden, HTTPBadRequest
+from sqlalchemy.sql.expression import text
 
 from ..scripts.json_helpers import wrap
 from ..models.order import Order
@@ -389,17 +390,31 @@ def change_status(request):
             "waiter_id": request.token.user.id
         })
     elif request.token.user.role.name == "Administrator":
-        # TODO add Administrator specific order constrain
+        # TODO decide better way to find restaunrant id
+        # problem administrator.a_restaurant return InstrumentedList
+        # so to find needed rest_id you need to iterate on list
+        # rest_id = request.dbsession.query(Restaurant.id)\
+        #     .filter(Restaurant.administrator_id == request.token.user.id)\
+        #     .filter(Order.id == order_id)\
+        #     .filter(Restaurant.id == Order.rest_id).first()
+        rest_id = text("""(SELECT restaurants.id 
+            FROM restaurants, orders 
+            WHERE 
+            restaurants.administrator_id=%s AND 
+            restaurants.id=orders.rest_id AND 
+            orders.id=%s)""" % (request.token.user.id, order_id))
         query_constrains.update({
-            "waiter_id": request.token.user.id
+            "rest_id": rest_id
         })
-        pass
 
     order = get_order(request, order_id, query_constrains)
 
     waiter_id = json.get("set_waiter_id", False)
     if waiter_id:
-        waiter = request.dbsession.query(User).filter_by(id=waiter_id).first()
+        waiter = request.dbsession.query(User)\
+            .filter(User.restaurant_id == order.rest_id)\
+            .filter(User.id == waiter_id)\
+            .first()
     else:
         waiter = None
 
@@ -420,11 +435,40 @@ def change_status(request):
 def get_status(request):
     order_id = request.matchdict["order_id"]
 
-    order = get_order(request, order_id)
+    query_constrains = {}
+    if request.token.user.role.name == "Waiter":
+        query_constrains.update({
+            "waiter_id": request.token.user.id
+        })
+    elif request.token.user.role.name == "Administrator":
+        # TODO decide better way to find restaunrant id
+        # problem administrator.a_restaurant return InstrumentedList
+        # so to find needed rest_id you need to iterate on list
+        # rest_id = request.dbsession.query(Restaurant.id)\
+        #     .filter(Restaurant.administrator_id == request.token.user.id)\
+        #     .filter(Order.id == order_id)\
+        #     .filter(Restaurant.id == Order.rest_id).first()
+        rest_id = text("""(SELECT restaurants.id 
+            FROM restaurants, orders 
+            WHERE 
+            restaurants.administrator_id=%s AND 
+            restaurants.id=orders.rest_id AND 
+            orders.id=%s)""" % (request.token.user.id, order_id))
+        query_constrains.update({
+            "rest_id": rest_id
+        })
 
-    data = {
-        "status": order.status,
-        "total price": order.count_total()
-    }
+    order = get_order(request, order_id, query_constrains)
+
+    data = order.as_dict(
+        exclude=[
+            "waiter_id",
+            "id",
+            "rest_id",
+            "administrator_id",
+            "restaurant_id",
+            "password",
+        ],
+        with_relations=["waiter"])
 
     return wrap(data)
