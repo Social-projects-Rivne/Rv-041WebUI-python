@@ -33,6 +33,20 @@ const styles = theme => ({
   }
 });
 
+function GetCurrentRouteLocation(CurrentPath, ParentPath){
+  let currentRouteLocation = CurrentPath.replace(ParentPath, "");
+  currentRouteLocation = currentRouteLocation.replace("/", "");
+  return(currentRouteLocation.trim());
+};
+
+function AddAllCategory(statuses){
+    //add default "All" status Tab to tab statuses array (to the beginning)
+    if (!statuses.includes("All")){
+      statuses.unshift("All");
+    };
+    return statuses;
+};
+
 class OrderListPage extends React.Component {
   state = {
     token: localStorage.getItem("token"),
@@ -43,7 +57,8 @@ class OrderListPage extends React.Component {
   };
 
   componentDidMount() {
-    console.log(this.props);
+
+    const currentRouteLocation = GetCurrentRouteLocation(this.props.location.pathname, this.props.match.url);
 
     const headers = new Headers({
       "Content-Type": "application/json",
@@ -64,7 +79,8 @@ class OrderListPage extends React.Component {
       .then(data =>
         this.setState({
           isLoading: false,
-          statuses: data.data.statuses,
+          statuses: AddAllCategory(data.data.statuses),
+          selectedTab: AddAllCategory(data.data.statuses).indexOf(currentRouteLocation),
           orders: data.data.orders_data,
           success: data.success,
           error: data.error
@@ -78,11 +94,11 @@ class OrderListPage extends React.Component {
   };
 
   render() {
-    const { classes, myRoute } = this.props;
+    const { classes, match } = this.props;
     const { isLoading, statuses, orders, selectedTab } = this.state;
-    //add default "All" status Tab to tab statuses array (to the beginning)
-    if (!statuses.includes("All")){
-      statuses.unshift("All");
+
+    if (isLoading) {
+      return null;
     }
 
     //create object with arrays for each status orders data
@@ -103,10 +119,6 @@ class OrderListPage extends React.Component {
       statusesLenthObject[status] = statusesObject[status].length;
     }
 
-    if (isLoading) {
-      return null;
-    }
-
     return (
       <div className={classes.root}>
         <GenericTabs
@@ -114,14 +126,14 @@ class OrderListPage extends React.Component {
           tagsAdditionalInformation={statusesLenthObject}
           selectedValue={selectedTab}
           useRouter={true}
-          fixedPath={myRoute}
+          fixedPath={match.url}
           handleTabChange={this.handleTabChange}
         />
         <Switch>
           {statuses.map((status, index) => {
             return(
               <Route
-                path={`${myRoute}/${status}`}
+                path={`${match.url}/${status}`}
                 key={index}
                 render={() => <UserOrders orders={
                   statusesObject[status]  
