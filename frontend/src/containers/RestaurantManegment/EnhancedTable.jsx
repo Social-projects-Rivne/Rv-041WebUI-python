@@ -18,6 +18,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { lighten } from "@material-ui/core/styles/colorManipulator";
+import CardMedia from "@material-ui/core/CardMedia";
 
 let counter = 0;
 function createData(name, calories, fat, carbs, protein) {
@@ -53,15 +54,32 @@ function getSorting(order, orderBy) {
 
 const rows = [
   {
-    id: "name",
+    id: "img",
     numeric: false,
-    disablePadding: true,
-    label: "Dessert (100g serving)"
+    disablePadding: false,
+    label: "Image"
   },
-  { id: "calories", numeric: true, disablePadding: false, label: "Calories" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Fat (g)" },
-  { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
-  { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" }
+  { id: "name", numeric: false, disablePadding: false, label: "Name" },
+  {
+    id: "description",
+    numeric: false,
+    disablePadding: false,
+    label: "Description"
+  },
+  {
+    id: "ingredients",
+    numeric: false,
+    disablePadding: false,
+    label: "Ingredients"
+  },
+  { id: "value", numeric: true, disablePadding: true, label: "Value" },
+  { id: "price", numeric: true, disablePadding: true, label: "Price($)" },
+  {
+    id: "category",
+    numeric: true,
+    disablePadding: false,
+    label: "Category"
+  }
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -81,8 +99,9 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
+          <TableCell style={{ paddingRight: 8, paddingLeft: 8 }}>
             <Checkbox
+              style={{ width: 24, height: 24 }}
               indeterminate={numSelected > 0 && numSelected < rowCount}
               checked={numSelected === rowCount}
               onChange={onSelectAllClick}
@@ -91,9 +110,9 @@ class EnhancedTableHead extends React.Component {
           {rows.map(
             row => (
               <TableCell
+                style={{ paddingRight: 8, paddingLeft: 8 }}
                 key={row.id}
                 align={row.numeric ? "right" : "left"}
-                padding={row.disablePadding ? "none" : "default"}
                 sortDirection={orderBy === row.id ? order : false}
               >
                 <Tooltip
@@ -202,14 +221,30 @@ EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
 
 const styles = theme => ({
   root: {
-    width: "100%",
-    marginTop: theme.spacing.unit * 3
+    width: "100%"
   },
   table: {
-    // minWidth: 1020
+    minWidth: 1232,
+    tableLayout: "fixed"
+  },
+  media: {
+    width: theme.spacing.unit * 6,
+    height: theme.spacing.unit * 6,
+    margin: "auto",
+    marginLeft: 0,
+    borderRadius: theme.spacing.unit / 2
   },
   tableWrapper: {
     overflowX: "auto"
+  },
+  tableRow: {
+    "& > *": {
+      paddingRight: 8,
+      paddingLeft: 8
+    },
+    "& > *:first-child": {
+      paddingLeft: 24
+    }
   }
 });
 
@@ -218,21 +253,6 @@ class EnhancedTable extends React.Component {
     order: "asc",
     orderBy: "calories",
     selected: [],
-    data: [
-      createData("Cupcake", 305, 3.7, 67, 4.3),
-      createData("Donut", 452, 25.0, 51, 4.9),
-      createData("Eclair", 262, 16.0, 24, 6.0),
-      createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-      createData("Gingerbread", 356, 16.0, 49, 3.9),
-      createData("Honeycomb", 408, 3.2, 87, 6.5),
-      createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-      createData("Jelly Bean", 375, 0.0, 94, 0.0),
-      createData("KitKat", 518, 26.0, 65, 7.0),
-      createData("Lollipop", 392, 0.2, 98, 0.0),
-      createData("Marshmallow", 318, 0, 81, 2.0),
-      createData("Nougat", 360, 19.0, 9, 37.0),
-      createData("Oreo", 437, 18.0, 63, 4.0)
-    ],
     page: 0,
     rowsPerPage: 10
   };
@@ -288,49 +308,88 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { classes } = this.props;
-    const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
+    const { classes, menuItems } = this.props;
+    const { order, orderBy, selected, rowsPerPage, page } = this.state;
     const emptyRows =
-      rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-
+      rowsPerPage -
+      Math.min(rowsPerPage, menuItems.length - page * rowsPerPage);
     return (
       <Paper className={classes.root}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
+            <colgroup>
+              <col style={{ width: "56px" }} />
+              <col style={{ width: "64px" }} />
+              <col style={{ width: "200px" }} />
+              <col style={{ width: "324px" }} />
+              <col style={{ width: "324px" }} />
+              <col style={{ width: "80px" }} />
+              <col style={{ width: "80px" }} />
+              <col style={{ width: "96px" }} />
+            </colgroup>
             <EnhancedTableHead
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
               onSelectAllClick={this.handleSelectAllClick}
               onRequestSort={this.handleRequestSort}
-              rowCount={data.length}
+              rowCount={menuItems.length}
             />
+
             <TableBody>
-              {stableSort(data, getSorting(order, orderBy))
+              {stableSort(menuItems, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(n => {
-                  const isSelected = this.isSelected(n.id);
+                .map(item => {
+                  const isSelected = this.isSelected(item.id);
                   return (
                     <TableRow
                       hover
-                      onClick={event => this.handleClick(event, n.id)}
+                      onClick={event => this.handleClick(event, item.id)}
                       role="checkbox"
                       aria-checked={isSelected}
                       tabIndex={-1}
-                      key={n.id}
+                      key={item.id}
                       selected={isSelected}
+                      className={classes.tableRow}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox checked={isSelected} />
+                      <TableCell>
+                        <Checkbox
+                          style={{ width: 24, height: 24 }}
+                          checked={isSelected}
+                        />
                       </TableCell>
-                      <TableCell component="th" scope="row" padding="none">
-                        {n.name}
+                      <TableCell align="center">
+                        <CardMedia
+                          className={classes.media}
+                          image={item.img}
+                          title={item.name}
+                        />
                       </TableCell>
-                      <TableCell align="right">{n.calories}</TableCell>
-                      <TableCell align="right">{n.fat}</TableCell>
-                      <TableCell align="right">{n.carbs}</TableCell>
-                      <TableCell align="right">{n.protein}</TableCell>
+                      <Typography
+                        variant="inherit"
+                        noWrap
+                        component={TableCell}
+                      >
+                        {item.name}
+                      </Typography>
+                      <Typography
+                        variant="inherit"
+                        noWrap
+                        component={TableCell}
+                      >
+                        {item.description}
+                      </Typography>
+                      <Typography
+                        variant="inherit"
+                        noWrap
+                        component={TableCell}
+                      >
+                        {item.ingredients}
+                      </Typography>
+                      <TableCell align="right">{item.amount}</TableCell>
+                      <TableCell align="right">{item.price / 100}</TableCell>
+                      <TableCell align="right">{item.category}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -345,7 +404,7 @@ class EnhancedTable extends React.Component {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={data.length}
+          count={menuItems.length}
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{

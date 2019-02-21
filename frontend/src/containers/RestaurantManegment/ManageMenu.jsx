@@ -11,12 +11,12 @@ import EnhancedTable from "./EnhancedTable";
 
 class ManageMenu extends React.Component {
   state = {
-    menuItems: {}
+    menuItems: []
   };
 
   componentDidMount() {
-    const restId = this.props.match.params.id;
-    const menuId = this.props.location.pathname.split("/").slice(-1)[0];
+    const restId = this.props.restId;
+    const menuId = this.props.match.params.id;
 
     fetch(
       `http://localhost:6543/api/restaurant/${restId}/menu/${menuId}?items=true`,
@@ -33,9 +33,8 @@ class ManageMenu extends React.Component {
           : response.json().then(Promise.reject.bind(Promise));
       })
       .then(json => {
-        console.log(json);
         this.setState({
-          menuItems: json.data.Items
+          menuItems: json.data
         });
       })
       .catch(err => {
@@ -44,7 +43,8 @@ class ManageMenu extends React.Component {
   }
 
   render() {
-    return <EnhancedTable />;
+    const { menuItems } = this.state;
+    return <EnhancedTable menuItems={menuItems} />;
   }
 }
 

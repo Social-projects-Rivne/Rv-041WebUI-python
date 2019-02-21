@@ -5,7 +5,6 @@ import { Grid, Grow } from "@material-ui/core/";
 
 const RestaurantList = props => {
   const { data } = props;
-  console.log(data);
   return (
     <Grid container spacing={16}>
       {data.map((rest, index) => {
