@@ -32,7 +32,7 @@ class ModeratorUsersPage extends Component {
 
     fetch(fetchURL, fetchInit)
       .then(response => (!(response.status >= 200 && response.status < 300)
-        ? Promise.reject(response.status)
+        ? Promise.reject.bind(Promise)
         : response.json()))
       .then(data => this.setState({
         users: data.data,
@@ -59,7 +59,7 @@ class ModeratorUsersPage extends Component {
 
     fetch(fetchURL, fetchInit)
       .then(response => (!(response.status >= 200 && response.status < 300)
-        ? Promise.reject(response.status)
+        ? Promise.reject.bind(Promise)
         : response.json()))
       .then(data => this.setState((prevState) => {
         return {
@@ -122,7 +122,7 @@ class ModeratorUsersPage extends Component {
       const tagValue = tagsValues[tagName];
       for (let i = 0; i < data.length; i++) { 
         const info = data[i];
-        if (tagValue.indexOf(info.is_active) != -1){
+        if (tagValue.includes(info.is_active)){
           quantity = quantity + 1;
         }
       }

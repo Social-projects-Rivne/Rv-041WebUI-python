@@ -43,6 +43,7 @@ class OrderListPage extends React.Component {
   };
 
   componentDidMount() {
+    console.log(this.props);
 
     const headers = new Headers({
       "Content-Type": "application/json",
@@ -57,7 +58,7 @@ class OrderListPage extends React.Component {
     fetch(route, fetchInit)
       .then(response =>
         !(response.status >= 200 && response.status < 300)
-          ? Promise.reject(response.status)
+          ? Promise.reject.bind(Promise)
           : response.json()
       )
       .then(data =>
@@ -80,7 +81,7 @@ class OrderListPage extends React.Component {
     const { classes, myRoute } = this.props;
     const { isLoading, statuses, orders, selectedTab } = this.state;
     //add default "All" status Tab to tab statuses array (to the beginning)
-    if (statuses.indexOf("All") === -1){
+    if (!statuses.includes("All")){
       statuses.unshift("All");
     }
 
