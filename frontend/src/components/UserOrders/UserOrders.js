@@ -22,9 +22,6 @@ const styles = theme => ({
   root: {
     width: '100%',
   },
-  button: {
-    margin: theme.spacing.unit,
-  },
   image: {
     height: 100,
     width: 133.5,
@@ -127,7 +124,7 @@ function UserOrders(props) {
                                 </Typography>
                               </TableCell>
                               <TableCell component="th">
-                                <Typography gutterBottom variant="h6">
+                                <Typography gutterBottom variant="subtitle1">
                                   {"$"+(orderItem.quantity*orderItem.price).toFixed(2)}
                                 </Typography>
                               </TableCell>
@@ -138,17 +135,17 @@ function UserOrders(props) {
                       <TableFooter>
                         <TableRow>
                           <TableCell colSpan={4} align="right">
-                            <Grid container  justify="flex-end" alignItems="center">
+                            <Grid container  justify="flex-end" alignItems="flex-end" direction="column">
                               <Grid>
-                                <Button variant="contained" color="primary" className={classes.button}>
+                                <Typography gutterBottom variant="subtitle1" >
+                                  Order sum: {"$" + orderInfo.total_price}
+                                </Typography>
+                              </Grid>
+                              <Grid>
+                                <Button variant="contained" color="primary">
                                   Reorder
                                   <Repeat />
                                 </Button>
-                              </Grid>
-                              <Grid>
-                                <Typography gutterBottom variant="h5" >
-                                  Order sum: {"$" + orderInfo.total_price}
-                                </Typography>
                               </Grid>
                             </Grid>
                           </TableCell>

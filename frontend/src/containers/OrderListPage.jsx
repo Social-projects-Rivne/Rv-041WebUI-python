@@ -42,7 +42,7 @@ function GetCurrentRouteLocation(CurrentPath, ParentPath){
 function AddAllCategory(statuses){
     //add default "All" status Tab to tab statuses array (to the beginning)
     if (!statuses.includes("All")){
-      statuses.unshift("All");
+      statuses = ["All"].concat(statuses);
     };
     return statuses;
 };
