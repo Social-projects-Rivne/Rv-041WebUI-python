@@ -2,11 +2,16 @@
 This module describes behavior of /sign_up route
 """
 
+import logging
+
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPForbidden
+from pyramid.httpexceptions import HTTPNotFound
 from sqlalchemy.exc import IntegrityError
 
 from ..scripts.json_helpers import wrap
+from ..models.validator import check_action_access
+from ..auth import restrict_access
 from ..models.user import User
 
 
@@ -50,3 +55,38 @@ def sign_up(request):
     except IntegrityError:
         database.rollback()
         raise HTTPForbidden("User already exists!")
+
+
+@view_config(route_name='toggle_activity', renderer='json', request_method='GET')
+@restrict_access(['Administrator', 'Owner', 'Moderator', 'Admin'])
+def toggle_activity(request):
+    """This function is intended to toggle the activity status of a user with a specific id.
+
+    This function processes the route user/toggle_activity/{user_id:\d+}
+    and toggle the activity status of a user depending on the identifier
+    that is extracted from the parameter {user_id}.
+
+    :param request: GET request.
+    :return: If user activity changed successfully:
+                {
+                  "message": "Activity status successfully changed",
+                  "data": [],
+                  "success": true,
+                  "error": null
+                }
+    :raise HTTPNotFound: If user id not found.
+    """
+    log = logging.getLogger(__name__)
+
+    requested_user_id = int(request.matchdict['user_id'])
+    database = request.dbsession
+    requested_user = database.query(User).get(requested_user_id)
+    if requested_user is None:
+        log.error('User id {} not found'.format(requested_user_id))
+        raise HTTPNotFound(request.path)
+
+    current_user = request.token.user
+    check_action_access(current_user.role.name, foreign_role=requested_user.role.name, action='toggle_activity')
+
+    User.toggle_activity(database, requested_user)
+    return wrap([], success=True, message='Activity status successfully changed')

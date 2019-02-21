@@ -70,3 +70,37 @@ class User(Base):
         password_hash = pbkdf2_sha256.hash(password)
 
         database.add(User(name=name, email=email, password=password_hash))
+
+    @classmethod
+    def toggle_activity(cls, database, user):
+        """Method to switch field state `is_active`.
+
+        The method works as a trigger. The method makes the user active or inactive,
+        depending on his current state of activity.
+
+        :param database: Database session.
+        :param user: An instance of the user.
+        :return: If the user is active, a method is called which makes him inactive.
+                 If the user is inactive, a method is called which makes him active.
+        """
+        if user.is_active is False:
+            return cls.set_active(database, user.id)
+        return cls.set_inactive(database, user.id)
+
+    @classmethod
+    def set_active(cls, database, user_id):
+        """The method that makes the user active.
+
+        :param database: Database session.
+        :param user_id: An ID of the user whose status need to change to active.
+        """
+        database.query(User).filter_by(id=user_id).update({"is_active": True})
+
+    @classmethod
+    def set_inactive(cls, database, user_id):
+        """The method that makes the user inactive.
+
+        :param database: Database session.
+        :param user_id: An ID of the user whose status need to change to inactive.
+        """
+        database.query(User).filter_by(id=user_id).update({"is_active": False})
