@@ -61,7 +61,7 @@ def get_restaurants_controller(request):
         data = []
         for restaurant in unapproved_restaurants:
             restaurant_data = form_dict(restaurant, keys)
-            restaurant_data["owner_name"] = restaurant.user.name
+            restaurant_data["owner_name"] = restaurant.owner.name
             data.append(restaurant_data)
         wrap_data = wrap(data)
     else:
