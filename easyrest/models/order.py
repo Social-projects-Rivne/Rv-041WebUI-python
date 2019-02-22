@@ -28,7 +28,7 @@ class Order(Base):
     """
     __tablename__ = 'orders'
     id = Column(Integer, primary_key=True)
-    date_created = Column(Integer)
+    creation_time = Column(Integer)
     date_booked = Column(Integer)
     status = Column(Text, default="Draft")
     table = Column(Integer, default=0)
