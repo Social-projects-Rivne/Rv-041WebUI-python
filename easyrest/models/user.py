@@ -113,9 +113,8 @@ class User(Base):
         }
         validation(schema, form_data)
         current_email, new_email = user.email, form_data['email']
-        if current_email is not new_email:
+        if current_email != new_email:
             email_in_database = database.query(User.email)\
-                .filter(User.id != user.id)\
                 .filter(User.email == new_email).scalar()
             if email_in_database is not None:
                 raise ValidationError('already exist', new_email)
