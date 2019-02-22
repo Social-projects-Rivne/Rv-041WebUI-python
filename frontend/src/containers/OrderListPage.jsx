@@ -59,9 +59,6 @@ class OrderListPage extends React.Component {
   componentDidMount() {
 
     let currentRouteLocation = GetCurrentRouteLocation(this.props.location.pathname, this.props.match.url);
-    /*if (!currentRouteLocation || currentRouteLocation === "" ) {
-      currentRouteLocation = "";  
-    }*/
 
     const headers = new Headers({
       "Content-Type": "application/json",
