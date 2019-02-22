@@ -55,3 +55,4 @@ def includeme(config):
                      request_method=["GET", "PUT"])
     config.add_route('users_list', 'users/{role_id:\d+}', request_method="GET")
     config.add_route('user_create', 'user/{role_id:\d+}', request_method="POST")
+    config.add_route('user_update', 'user/{user_id:\d+}', request_method="PUT")
