@@ -38,8 +38,9 @@ function GenericTabs(props) {
                 <Tab
                   key={tag}
                   component={Link}
-                  to={`${fixedPath}/${tag}`}
-                  label={tag + (additionalInformation ? " (" + additionalInformation + ")" : " (0)") }
+                  to={((fixedPath.trim()).substr(-1) === "/" ? fixedPath : fixedPath + "/") + tag }
+                  label={(tag === "" ? "All" : tag) + 
+                    (additionalInformation ? " (" + additionalInformation + ")" : " (0)") }
                 />
               );
             })}

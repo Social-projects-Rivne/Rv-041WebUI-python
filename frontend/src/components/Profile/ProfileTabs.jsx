@@ -33,14 +33,14 @@ const ProfileTabs = props => {
       <Tab
         className={classes.tab}
         component={NavLink}
-        to="/profile/current_orders/All"
+        to="/profile/current_orders/"
         icon={<ListAlt />}
         label="Current Orders"
       />
       <Tab
         className={classes.tab}
         component={NavLink}
-        to="/profile/order_history/All"
+        to="/profile/order_history/"
         icon={<History />}
         label="Order History"
       />

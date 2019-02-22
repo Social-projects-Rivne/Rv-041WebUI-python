@@ -41,8 +41,8 @@ function GetCurrentRouteLocation(CurrentPath, ParentPath){
 
 function AddAllCategory(statuses){
     //add default "All" status Tab to tab statuses array (to the beginning)
-    if (!statuses.includes("All")){
-      statuses = ["All"].concat(statuses);
+    if (!statuses.includes("")){
+      statuses = [""].concat(statuses);
     };
     return statuses;
 };
@@ -58,7 +58,10 @@ class OrderListPage extends React.Component {
 
   componentDidMount() {
 
-    const currentRouteLocation = GetCurrentRouteLocation(this.props.location.pathname, this.props.match.url);
+    let currentRouteLocation = GetCurrentRouteLocation(this.props.location.pathname, this.props.match.url);
+    /*if (!currentRouteLocation || currentRouteLocation === "" ) {
+      currentRouteLocation = "";  
+    }*/
 
     const headers = new Headers({
       "Content-Type": "application/json",
@@ -108,7 +111,7 @@ class OrderListPage extends React.Component {
     for (let i = 0; i < statuses.length; i++) {
       const status = statuses[i];
       statusesObject[status] = orders.filter(order => {
-        if (status === "All") {
+        if (status === "") {
           return true;
         }
         else {
@@ -133,11 +136,12 @@ class OrderListPage extends React.Component {
           {statuses.map((status, index) => {
             return(
               <Route
-                path={`${match.url}/${status}`}
+                path={((match.url.trim()).substr(-1) === "/" ? match.url : match.url + "/") + status}
                 key={index}
-                render={() => <UserOrders orders={
-                  statusesObject[status]  
-                }/>}
+                exact={true}
+                render={() => <UserOrders
+                  orders={statusesObject[status]}
+                />}
               />
             );
           })}
