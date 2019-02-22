@@ -35,13 +35,13 @@ def validation(schema, data):
 def check_action_access(user_role, foreign_role, action):
     """This function checks the possibility of the specified action by the user.
 
-       The function checks the rights of the current user's role for other roles.
-       access_list = {
-        'current_user_role': {
-            'other_user_role1': ['action1', 'action2'],
-            'other_user_role2': [],
-            'other_user_role3': [],
-            ...
+    The function checks the rights of the current user's role for other roles.
+    access_list = {
+      'current_user_role': {
+        'other_user_role1': ['action1', 'action2'],
+        'other_user_role2': [],
+        'other_user_role3': [],
+        ...
 
     :param (str) user_role: User role that requests action
     :param (str) foreign_role: Requested role

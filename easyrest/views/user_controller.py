@@ -1,9 +1,8 @@
 """This module describe user controller
 This module describes behavior of /sign_up route
+This module describes behavior of /users/{role_id} route
 This module describes behavior of /user/{role_id:\d+} route
 """
-
-import logging
 
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPForbidden
@@ -13,6 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from ..scripts.json_helpers import wrap
 from ..models.validator import check_action_access
 from ..exceptions import ValidationError
+from ..auth import restrict_access
 from ..models.user_role import UserRole
 from ..models.user import User
 
@@ -60,58 +60,52 @@ def sign_up(request):
 
 
 @view_config(route_name='users_list', renderer='json', request_method='GET')
+@restrict_access(['Administrator', 'Owner', 'Moderator', 'Admin'])
 def get_users_list(request):
     """This function is intended to display a list of users
-       depending on the role id.
+    depending on the role id.
 
-       This function processes the route /users/{role_id}
-       and tries to create a list of users depending on the identifier
-       that is extracted from the parameter {role_id}.
+    This function processes the route /users/{role_id}
+    and tries to create a list of users depending on the identifier
+    that is extracted from the parameter {role_id}.
 
-        :param request: GET request
-        :raise HTTPForbidden: If the token is not found
-        :return: Users list, if the user is allowed to view users with the specified role:
-                    {
-                      "message": "Users with role 'role_name'",
-                        "data": [
-                          {
-                            "phone_number": "user_phone_number",
-                            "name": "user_name",
-                            "is_active": is_active_state,
-                            "id": user_id,
-                            "birth_date": "user_birth_date",
-                            "email": "user_email"
-                          }
-                        ],
-                      "success": true,
-                      "error": null
-                    }
+    :param request: GET request
+    :raise HTTPForbidden: If the token is not found
+    :return: Users list, if the user is allowed to view users with the specified role:
+             {
+               "message": "Users with role 'role_name'",
+               "data": [
+                 {
+                   "phone_number": "user_phone_number",
+                   "name": "user_name",
+                   "is_active": is_active_state,
+                   "id": user_id,
+                   "birth_date": "user_birth_date",
+                   "email": "user_email"
+                 }
+               ],
+               "success": true,
+               "error": null
+             }
 
-                 If the user is not allowed to view the list of users with the specified role:
-                    {
-                      "message": null,
-                      "data": [],
-                      "success": false,
-                      "error": "Action not allowed"
-                    }
-
+             If the user is not allowed to view the list of users with the specified role:
+               {
+                 "message": null,
+                 "data": [],
+                 "success": false,
+                 "error": "Action not allowed"
+               }
     """
-    log = logging.getLogger(__name__)
-    try:
-        current_user = request.token.user
-    except AttributeError as ae:
-        log.error(ae.message)
-        raise HTTPForbidden('Need token for access')
-
     derivable_role_id = int(request.matchdict['role_id'])
     role = request.dbsession.query(UserRole).get(derivable_role_id)
     if role is None:
         raise HTTPNotFound(request.path)
+    current_user = request.token.user
     check_action_access(current_user.role.name, foreign_role=role.name, action='read')
     users_list = [user.as_dict(exclude=['role_id', 'password']) for user in
                   request.dbsession.query(User).filter_by(role_id=derivable_role_id).order_by(User.name).all()]
 
-    return wrap(users_list, success=True, message='Users with role \'{}\''.format(role.name))
+    return wrap(users_list, success=True, message="Users with role '{}'".format(role.name))
 
 
 @view_config(route_name='user_create', renderer='json', request_method='POST')
