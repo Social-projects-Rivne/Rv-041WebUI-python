@@ -34,7 +34,7 @@ const rows = [
   { id: "price", numeric: true, disablePadding: true, label: "Price($)" },
   {
     id: "category",
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: "Category"
   }

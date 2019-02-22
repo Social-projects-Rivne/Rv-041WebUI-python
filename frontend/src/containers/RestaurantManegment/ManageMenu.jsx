@@ -7,6 +7,7 @@ import MenuImage from "../../components/RestaurantManagment/MenuImage";
 class ManageMenu extends React.Component {
   state = {
     menu: [],
+    menuName: "",
     isImageMenu: false
   };
 
@@ -32,10 +33,12 @@ class ManageMenu extends React.Component {
         "isImage" in json.data
           ? this.setState({
               menu: json.data.imageUrl,
-              isImageMenu: json.data.isImage
+              isImageMenu: json.data.isImage,
+              menuName: json.data.menuName
             })
           : this.setState({
-              menu: json.data
+              menu: json.data,
+              menuName: json.data[0].menu.name
             });
       })
       .catch(err => {
@@ -44,8 +47,12 @@ class ManageMenu extends React.Component {
   }
 
   render() {
-    const { menu, isImageMenu } = this.state;
-    return isImageMenu ? <MenuImage menu={menu} /> : <MenuTable menu={menu} />;
+    const { menu, isImageMenu, menuName } = this.state;
+    return isImageMenu ? (
+      <MenuImage menuName={menuName} menu={menu} />
+    ) : (
+      <MenuTable menuName={menuName} menu={menu} />
+    );
   }
 }
 

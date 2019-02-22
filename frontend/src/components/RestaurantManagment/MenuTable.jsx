@@ -50,6 +50,12 @@ function getSorting(order, orderBy) {
     : (a, b) => -desc(a, b, orderBy);
 }
 
+function formatPrice(value) {
+  return Number(value / 100)
+    .toFixed(2)
+    .replace(/\d(?=(\d{3})+\.)/g, "$&,");
+}
+
 const styles = theme => ({
   root: {
     width: "100%"
@@ -139,13 +145,13 @@ class MenuTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { classes, menu } = this.props;
+    const { classes, menu, menuName } = this.props;
     const { order, orderBy, selected, rowsPerPage, page } = this.state;
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, menu.length - page * rowsPerPage);
     return (
       <Paper className={classes.root}>
-        <MenuToolbar numSelected={selected.length} />
+        <MenuToolbar menuName={menuName} numSelected={selected.length} />
         <Divider />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
@@ -218,14 +224,16 @@ class MenuTable extends React.Component {
                         {item.ingredients}
                       </Typography>
                       <TableCell align="right">{item.amount}</TableCell>
-                      <TableCell align="right">{item.price / 100}</TableCell>
-                      <TableCell align="right">{item.category}</TableCell>
+                      <TableCell align="right">
+                        {formatPrice(item.price)}
+                      </TableCell>
+                      <TableCell align="right">{item.category.name}</TableCell>
                     </TableRow>
                   );
                 })}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={6} />
+                  <TableCell colSpan={8} />
                 </TableRow>
               )}
             </TableBody>
@@ -252,7 +260,9 @@ class MenuTable extends React.Component {
 }
 
 MenuTable.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  menu: PropTypes.array.isRequired,
+  menuName: PropTypes.string.isRequired
 };
 
 export default withStyles(styles)(MenuTable);

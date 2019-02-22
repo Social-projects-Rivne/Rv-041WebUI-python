@@ -106,6 +106,7 @@ def get_cats_controler(request):
 
     if menu.image is not None:
         body = wrap({
+            "menuName": menu.name,
             "isImage": True,
             "imageUrl": menu.image
         })

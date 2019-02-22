@@ -14,16 +14,16 @@ const styles = theme => ({
 
 class MenuImage extends React.Component {
   render() {
-    const { menu, classes } = this.props;
+    const { menu, classes, menuName } = this.props;
     return (
       <Paper>
-        <MenuToolbar />
+        <MenuToolbar menuName={menuName} />
         <Divider />
         <CardMedia
           className={classes.media}
           component="img"
           src={menu}
-          // title="Paella dish"
+          title={menuName}
         />
       </Paper>
     );
@@ -32,7 +32,8 @@ class MenuImage extends React.Component {
 
 MenuImage.propTypes = {
   classes: PropTypes.object.isRequired,
-  menu: PropTypes.string.isRequired
+  menu: PropTypes.string.isRequired,
+  menuName: PropTypes.string.isRequired
 };
 
 export default withStyles(styles)(MenuImage);
