@@ -18,20 +18,20 @@ from ..models.validator import validation
 from ..exceptions import ValidationError
 
 
-def get_order(request, order_id, field=False):
+def get_order(request, order_id, filterList=False):
     """'Smart' get order. If you want to specify some constrains 
-    on get order pass field.
+    on get order pass filterList.
     Example:
         {
             "field_name": value
             ...
         }
     """
-    if field:
-        order = request.dbsession.query(Order)\
-            .filter(Order.id == order_id)\
-            .filter_by(**field)\
-            .first()
+    if filterList:
+        order = request.dbsession.query(Order).filter(Order.id == order_id)
+        for constrain in filterList:
+            order = order.filter(constrain)
+        order = order.first()
     else:
         user_id = request.token.user.id
         order = request.dbsession.query(Order).filter(
@@ -383,29 +383,16 @@ def change_status(request):
     except ValidationError as e:
         raise HTTPForbidden("Wrong input data %s" % e)
 
-    query_constrains = {}
-
+    query_constrains = []
     if request.token.user.role.name == "Waiter":
-        query_constrains.update({
-            "waiter_id": request.token.user.id
-        })
+        query_constrains.append([
+            Order.waiter_id == request.token.user.id
+        ])
     elif request.token.user.role.name == "Administrator":
-        # TODO decide better way to find restaunrant id
-        # problem administrator.a_restaurant return InstrumentedList
-        # so to find needed rest_id you need to iterate on list
-        # rest_id = request.dbsession.query(Restaurant.id)\
-        #     .filter(Restaurant.administrator_id == request.token.user.id)\
-        #     .filter(Order.id == order_id)\
-        #     .filter(Restaurant.id == Order.rest_id).first()
-        rest_id = text("""(SELECT restaurants.id 
-            FROM restaurants, orders 
-            WHERE 
-            restaurants.administrator_id=%s AND 
-            restaurants.id=orders.rest_id AND 
-            orders.id=%s)""" % (request.token.user.id, order_id))
-        query_constrains.update({
-            "rest_id": rest_id
-        })
+        query_constrains.extend([
+            Order.rest_id == Restaurant.id,
+            Restaurant.administrator_id == request.token.user.id
+        ])
 
     order = get_order(request, order_id, query_constrains)
 
@@ -435,28 +422,16 @@ def change_status(request):
 def get_status(request):
     order_id = request.matchdict["order_id"]
 
-    query_constrains = {}
+    query_constrains = []
     if request.token.user.role.name == "Waiter":
-        query_constrains.update({
-            "waiter_id": request.token.user.id
-        })
+        query_constrains.append([
+            Order.waiter_id == request.token.user.id
+        ])
     elif request.token.user.role.name == "Administrator":
-        # TODO decide better way to find restaunrant id
-        # problem administrator.a_restaurant return InstrumentedList
-        # so to find needed rest_id you need to iterate on list
-        # rest_id = request.dbsession.query(Restaurant.id)\
-        #     .filter(Restaurant.administrator_id == request.token.user.id)\
-        #     .filter(Order.id == order_id)\
-        #     .filter(Restaurant.id == Order.rest_id).first()
-        rest_id = text("""(SELECT restaurants.id 
-            FROM restaurants, orders 
-            WHERE 
-            restaurants.administrator_id=%s AND 
-            restaurants.id=orders.rest_id AND 
-            orders.id=%s)""" % (request.token.user.id, order_id))
-        query_constrains.update({
-            "rest_id": rest_id
-        })
+        query_constrains.extend([
+            Order.rest_id == Restaurant.id,
+            Restaurant.administrator_id == request.token.user.id
+        ])
 
     order = get_order(request, order_id, query_constrains)
 
