@@ -94,8 +94,10 @@ class MenuPage extends React.Component {
       })
       .then(() => {
         const cart = localStorage.getItem("Cart");
+        const orderId = localStorage.getItem("OrderId");
+        const token = localStorage.getItem("token");
 
-        if (cart) {
+        if (cart && orderId == "Local") {
           this.setState({
             cartItems: JSON.parse(cart),
             SnackbarMsg: "Cart synchronized",
@@ -103,6 +105,11 @@ class MenuPage extends React.Component {
             SnackbarType: "info"
           });
           localStorage.removeItem("Cart");
+          if (token) {
+            this.state.cartItems.forEach(item => {
+              this.sendCreateOrder(item);
+            });
+          }
         } else {
           fetch("http://localhost:6543/api/order?rest_id=" + restId, {
             headers: {
@@ -111,11 +118,12 @@ class MenuPage extends React.Component {
             }
           })
             .then(response => {
-              [404, 400].includes(response.status)
+              return [404, 403, 400].includes(response.status)
                 ? response.json().then(Promise.reject.bind(Promise))
                 : response.json();
             })
             .then(json => {
+              console.log(json);
               if (json.data.items.length > 0) {
                 this.setState({
                   cartItems: json.data.items,
@@ -127,13 +135,14 @@ class MenuPage extends React.Component {
               localStorage.setItem("OrderId", json.data.id);
             })
             .catch(error => {
-              localStorage.removeItem("OrderId");
+              localStorage.setItem("OrderId", "Local");
             });
         }
       });
   }
   sendAddItem = (item, orderId) => {
-    if (!orderId) {
+    if (orderId == "Local") {
+      console.log("12314");
       this.setState({
         cartItems: [...this.state.cartItems, item],
         SnackbarMsg: "Item was added",
@@ -142,6 +151,7 @@ class MenuPage extends React.Component {
       });
       return null;
     }
+    console.log("djskajdlkas", orderId);
     fetch("http://localhost:6543/api/order/" + orderId, {
       method: "POST",
       headers: {
@@ -177,7 +187,7 @@ class MenuPage extends React.Component {
 
   sendCreateOrder = item => {
     const orderId = localStorage.getItem("OrderId");
-    if (!orderId) {
+    if (orderId == "Local") {
       fetch("http://localhost:6543/api/order", {
         method: "POST",
         headers: {
@@ -188,17 +198,18 @@ class MenuPage extends React.Component {
           rest_id: this.props.match.params.restId
         })
       })
-        .then(response =>
-          [404, 400].includes(response.status)
+        .then(response => {
+          return [404, 400].includes(response.status)
             ? response.json().then(Promise.reject.bind(Promise))
-            : response.json()
-        )
+            : response.json();
+        })
         .then(json => {
+          console.log(json);
           if (json.data.orderId) {
             localStorage.setItem("OrderId", json.data.order_id);
             this.sendAddItem(item, json.data.order_id);
           } else {
-            this.sendAddItem(item, null);
+            this.sendAddItem(item, orderId);
           }
         })
         .catch(error =>
@@ -238,7 +249,7 @@ class MenuPage extends React.Component {
   handleRemoveItem = itemId => {
     const orderId = localStorage.getItem("OrderId");
 
-    if (!orderId) {
+    if (orderId == "Local") {
       const nextCart = this.state.cartItems.filter(item => {
         return item.id != itemId;
       });
@@ -320,7 +331,7 @@ class MenuPage extends React.Component {
   };
 
   sendQuantityChange = (orderId, quantity, itemId) => {
-    if (!orderId) {
+    if (orderId == "Local") {
       this.setState({
         SnackbarMsg: "Quantity changed to " + quantity,
         isSnackbarOpen: true,
