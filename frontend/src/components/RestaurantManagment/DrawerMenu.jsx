@@ -92,7 +92,7 @@ class DrawerMenu extends React.Component {
               <ListItem
                 component={NavLink}
                 button
-                to={`${match.url}/menues/create`}
+                to={`${match.url}/create_menu`}
                 className={classes.nested}
               >
                 <ListItemIcon>
@@ -108,7 +108,6 @@ class DrawerMenu extends React.Component {
           button
           to={`${match.url}/waiters`}
           className={classes.navLink}
-          button
           disableRipple
         >
           <ListItemIcon>

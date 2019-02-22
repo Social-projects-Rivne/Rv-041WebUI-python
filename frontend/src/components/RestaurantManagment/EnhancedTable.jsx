@@ -19,6 +19,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 import CardMedia from "@material-ui/core/CardMedia";
+import { MoreVert } from "@material-ui/icons";
 
 let counter = 0;
 function createData(name, calories, fat, carbs, protein) {
@@ -99,7 +100,7 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          <TableCell style={{ paddingRight: 8, paddingLeft: 8 }}>
+          <TableCell>
             <Checkbox
               style={{ width: 24, height: 24 }}
               indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -110,7 +111,6 @@ class EnhancedTableHead extends React.Component {
           {rows.map(
             row => (
               <TableCell
-                style={{ paddingRight: 8, paddingLeft: 8 }}
                 key={row.id}
                 align={row.numeric ? "right" : "left"}
                 sortDirection={orderBy === row.id ? order : false}
@@ -165,7 +165,8 @@ const toolbarStyles = theme => ({
     flex: "1 1 100%"
   },
   actions: {
-    color: theme.palette.text.secondary
+    color: theme.palette.text.secondary,
+    display: "flex"
   },
   title: {
     flex: "0 0 auto"
@@ -207,6 +208,11 @@ let EnhancedTableToolbar = props => {
             </IconButton>
           </Tooltip>
         )}
+        <Tooltip title="Action">
+          <IconButton aria-label="Action">
+            <MoreVert />
+          </IconButton>
+        </Tooltip>
       </div>
     </Toolbar>
   );

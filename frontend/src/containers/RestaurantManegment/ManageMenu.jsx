@@ -1,20 +1,43 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
-import Menus from "./Menus";
-import CreateMenu from "../../components/RestaurantManagment/CreateMenu";
+import EnhancedTable from "../../components/RestaurantManagment/EnhancedTable";
 
-const ManageMenu = props => {
-  return (
-    <Switch>
-      <Route
-        path={`${props.match.url}/:id`}
-        render={currentProps => (
-          <Menus restId={props.restId} {...currentProps} />
-        )}
-      />
-      <Route path={`${props.match.url}/create`} component={CreateMenu} />
-    </Switch>
-  );
-};
+class ManageMenu extends React.Component {
+  state = {
+    menuItems: []
+  };
+
+  componentDidMount() {
+    const restId = this.props.restId;
+    const menuId = this.props.match.params.id;
+
+    fetch(
+      `http://localhost:6543/api/restaurant/${restId}/menu/${menuId}?items=true`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": localStorage.getItem("token")
+        }
+      }
+    )
+      .then(response => {
+        return response.status >= 200 && response.status < 300
+          ? response.json()
+          : response.json().then(Promise.reject.bind(Promise));
+      })
+      .then(json => {
+        this.setState({
+          menuItems: json.data
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  render() {
+    const { menuItems } = this.state;
+    return <EnhancedTable menuItems={menuItems} />;
+  }
+}
 
 export default ManageMenu;
