@@ -140,9 +140,7 @@ def delete_user(request):
 
 
 def attempt_delete_user(database, user):
-    """This function attempts to delete the user from the database.
-
-    The function invokes the model method `delete` which delete the user data from the database.
+    """This function attempts to delete the user data from the database.
 
     :param database: Database session.
     :param user: Instance of deletable user.
@@ -154,5 +152,6 @@ def attempt_delete_user(database, user):
                   "error": null
                 }
     """
-    User.delete(database, user)
+    database.delete(user)
+    # TODO: Add soft delete and token delete for user.
     return wrap([], success=True, message='User successfully deleted')
