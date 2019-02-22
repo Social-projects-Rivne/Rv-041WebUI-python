@@ -1,9 +1,13 @@
 import React from "react";
-import EnhancedTable from "../../components/RestaurantManagment/EnhancedTable";
+import PropTypes from "prop-types";
+
+import MenuTable from "../../components/RestaurantManagment/MenuTable";
+import MenuImage from "../../components/RestaurantManagment/MenuImage";
 
 class ManageMenu extends React.Component {
   state = {
-    menuItems: []
+    menu: [],
+    isImageMenu: false
   };
 
   componentDidMount() {
@@ -25,9 +29,14 @@ class ManageMenu extends React.Component {
           : response.json().then(Promise.reject.bind(Promise));
       })
       .then(json => {
-        this.setState({
-          menuItems: json.data
-        });
+        "isImage" in json.data
+          ? this.setState({
+              menu: json.data.imageUrl,
+              isImageMenu: json.data.isImage
+            })
+          : this.setState({
+              menu: json.data
+            });
       })
       .catch(err => {
         console.log(err);
@@ -35,9 +44,14 @@ class ManageMenu extends React.Component {
   }
 
   render() {
-    const { menuItems } = this.state;
-    return <EnhancedTable menuItems={menuItems} />;
+    const { menu, isImageMenu } = this.state;
+    return isImageMenu ? <MenuImage menu={menu} /> : <MenuTable menu={menu} />;
   }
 }
+
+ManageMenu.propTypes = {
+  restId: PropTypes.string.isRequired,
+  match: PropTypes.object.isRequired
+};
 
 export default ManageMenu;

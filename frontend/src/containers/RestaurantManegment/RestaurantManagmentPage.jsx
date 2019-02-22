@@ -1,13 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Switch, Route } from "react-router-dom";
+
+import { withStyles, Drawer } from "@material-ui/core";
+
 import PageContainer from "../PageContainer";
 import ManageMenu from "./ManageMenu";
 import ManageInfo from "./ManageInfo";
 import ManageWaiters from "./ManageWaiters";
 import DrawerMenu from "../../components/RestaurantManagment/DrawerMenu";
 import CreateMenu from "../../components/RestaurantManagment/CreateMenu";
-import { withStyles, Drawer } from "@material-ui/core";
-import { Switch, Route } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -95,5 +97,10 @@ export class RestaurantManagmentPage extends React.Component {
     );
   }
 }
+
+RestaurantManagmentPage.propTypes = {
+  classes: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired
+};
 
 export default withStyles(styles)(RestaurantManagmentPage);
