@@ -113,7 +113,7 @@ def fill_db(session):
 
         # using model relationship defined in models.restaurant
         # asign one of 5 users to restaurant
-        rest_model.user = Users[randint(0, 4)]
+        rest_model.owner = Users[randint(0, 4)]
 
         # define random number of tags for each restaurant
         tag_number = randint(0, len(Tags) - 1)
@@ -129,7 +129,7 @@ def fill_db(session):
 
         # using model relationship defined in models.restaurant
         # asign tag to restaurant
-        rest_model.tag = related_tags
+        rest_model.tags = related_tags
 
         Rest_models.append(rest_model)
 
@@ -145,7 +145,7 @@ def fill_db(session):
                             birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
         user_model.append(current_user)
 
-    # add Moderator and Admin
+    # add Moderator, Admin, Administrator, 3 Waiters
     user_name = fake.name()
     moderator = User(name="Peter Moderator",
                      email='petermoderator'+'@test.com',
@@ -188,8 +188,9 @@ def fill_db(session):
                    birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
     user_model.append(waiter2)
 
-    # administrator.waiters.expand([waiter1, waiter2])
-    Rest_models[-1].administrator = administrator
+    Rest_models[-1].waiters.extend([waiter1, waiter2])
+    for rest_model in Rest_models:
+        rest_model.administrator = administrator
 
     user_name = fake.name()
     waiter = User(name="Stepan the Waiter",

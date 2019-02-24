@@ -50,8 +50,17 @@ class Base(object):
         print s
         return ""
 
-    def as_dict(self, exclude=[], include=[]):
+    def as_dict(self, exclude=[], include=[], with_relations=[], depth=0):
         """Converts model into python dictionary.
+        Also support relation unpack to one depth
+        To unpack relationship specify its name in with_relations
+        Example: model.as_dict(with_relations=["<relation1>", "<relation2>"])
+        Pls don`t reassing depth it uses to limit recursive depth
+        Args:
+            exclude: (list) (str) list of fields to be excluded more priority then include
+            include: (list) (str) list of fields to be included
+            with_relations: (list) (str) list of relationships to include
+            depth: (int) system variable to indicate recursion depth
         Returns:
             dictionary
             {
@@ -61,6 +70,26 @@ class Base(object):
 
         """
         data = {}
+
+        if not depth:
+            rel_data = {}
+            for key in with_relations:
+                if key not in self.__mapper__.relationships.keys():
+                    continue
+
+                value = getattr(self, key, None)
+                if value is not None:
+                    if isinstance(value, InstrumentedList):
+                        per_key_items = [item.as_dict(exclude=exclude,
+                                                      include=include,
+                                                      depth=depth + 1) for item in value]
+                    else:
+                        per_key_items = value.as_dict(exclude=exclude,
+                                                      include=include,
+                                                      depth=depth + 1)
+                    rel_data[key] = per_key_items
+            data.update(rel_data)
+
         for c in self.__table__.columns:
             if c.name in exclude:
                 continue

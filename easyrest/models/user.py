@@ -6,13 +6,15 @@ from sqlalchemy import (
     Text,
     Date,
     ForeignKey,
-    Boolean
+    Boolean,
+    inspect
 )
 from sqlalchemy.orm import relationship
 from passlib.hash import pbkdf2_sha256
 
 from .meta import Base
 from validator import validation
+from .user_role import UserRole
 
 
 class User(Base):
@@ -20,6 +22,15 @@ class User(Base):
 
     Defines data structure of "users" table and methods of
     working with the model.
+    Role specific relations:
+        Client, Owner:
+            orders: orders with this users
+                User->Order: one to many
+        Waiter:
+            restaurant: restaurant with this waiter
+                User->Restaurant: many to one
+            w_orders: orders assigned to this waiter
+                User->Order: one to many
 
     Relationships:
         User->Restaurant: one to many
@@ -34,9 +45,7 @@ class User(Base):
     birth_date = Column(Date)
     password = Column(Text)
     role_id = Column(Integer, ForeignKey('user_roles.id'), default=1)
-    administrator_id = Column(Integer, ForeignKey('users.id'))
-    rest_id = Column(Integer, ForeignKey('restaurants.id'))
-    # waiter_id = Column(Integer, ForeignKey('users.id'))
+    restaurant_id = Column(Integer, ForeignKey('restaurants.id'))
     is_active = Column(Boolean, default=False)
 
     tokens = relationship('Token')
@@ -44,14 +53,11 @@ class User(Base):
     restaurants = relationship(
         'Restaurant', foreign_keys="[Restaurant.owner_id]")
     restaurant = relationship(
-        'Restaurant', foreign_keys="[User.rest_id]")
-    orders = relationship(
-        'Order', foreign_keys="[Order.user_id]")
-    w_orders = relationship(
-        'Order', foreign_keys="[Order.waiter_id]")
-    # waiters = relationship('User', remote_side=[
-    #                        id], foreign_keys="[User.administrator_id]")
-    # administrator = relationship('User', remote_side=administrator_id)
+        'Restaurant', foreign_keys="[User.restaurant_id]")
+    a_restaurant = relationship(
+        'Restaurant', foreign_keys="[Restaurant.administrator_id]")
+    orders = relationship('Order', foreign_keys="[Order.user_id]")
+    w_orders = relationship('Order', foreign_keys="[Order.waiter_id]")
 
     @staticmethod
     def add(database, form_data):

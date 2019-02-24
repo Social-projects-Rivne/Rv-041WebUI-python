@@ -5,6 +5,7 @@ import time
 
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPNotFound, HTTPForbidden, HTTPBadRequest
+from sqlalchemy.sql.expression import text
 
 from ..scripts.json_helpers import wrap
 from ..models.order import Order
@@ -17,20 +18,20 @@ from ..models.validator import validation
 from ..exceptions import ValidationError
 
 
-def get_order(request, order_id, field=False):
+def get_order(request, order_id, filterList=False):
     """'Smart' get order. If you want to specify some constrains 
-    on get order pass field.
+    on get order pass filterList.
     Example:
         {
             "field_name": value
             ...
         }
     """
-    if field:
-        order = request.dbsession.query(Order)\
-            .filter(Order.id == order_id)\
-            .filter_by(**field)\
-            .first()
+    if filterList:
+        order = request.dbsession.query(Order).filter(Order.id == order_id)
+        for constrain in filterList:
+            order = order.filter(constrain)
+        order = order.first()
     else:
         user_id = request.token.user.id
         order = request.dbsession.query(Order).filter(
@@ -382,24 +383,25 @@ def change_status(request):
     except ValidationError as e:
         raise HTTPForbidden("Wrong input data %s" % e)
 
-    query_constrains = {}
-
+    query_constrains = []
     if request.token.user.role.name == "Waiter":
-        query_constrains.update({
-            "waiter_id": request.token.user.id
-        })
+        query_constrains.append([
+            Order.waiter_id == request.token.user.id
+        ])
     elif request.token.user.role.name == "Administrator":
-        # TODO add Administrator specific order constrain
-        query_constrains.update({
-            "waiter_id": request.token.user.id
-        })
-        pass
+        query_constrains.extend([
+            Order.rest_id == Restaurant.id,
+            Restaurant.administrator_id == request.token.user.id
+        ])
 
     order = get_order(request, order_id, query_constrains)
 
     waiter_id = json.get("set_waiter_id", False)
     if waiter_id:
-        waiter = request.dbsession.query(User).filter_by(id=waiter_id).first()
+        waiter = request.dbsession.query(User)\
+            .filter(User.restaurant_id == order.rest_id)\
+            .filter(User.id == waiter_id)\
+            .first()
     else:
         waiter = None
 
@@ -420,11 +422,28 @@ def change_status(request):
 def get_status(request):
     order_id = request.matchdict["order_id"]
 
-    order = get_order(request, order_id)
+    query_constrains = []
+    if request.token.user.role.name == "Waiter":
+        query_constrains.append([
+            Order.waiter_id == request.token.user.id
+        ])
+    elif request.token.user.role.name == "Administrator":
+        query_constrains.extend([
+            Order.rest_id == Restaurant.id,
+            Restaurant.administrator_id == request.token.user.id
+        ])
 
-    data = {
-        "status": order.status,
-        "total price": order.count_total()
-    }
+    order = get_order(request, order_id, query_constrains)
+
+    data = order.as_dict(
+        exclude=[
+            "waiter_id",
+            "id",
+            "rest_id",
+            "administrator_id",
+            "restaurant_id",
+            "password",
+        ],
+        with_relations=["waiter"])
 
     return wrap(data)
