@@ -429,8 +429,8 @@ def get_user_order_list(request):
             Order.as_dict(), ...
         ]
     """
-    restaurant_status = request.matchdict['status']
-    if restaurant_status == "current":
+    order_status = request.matchdict['status']
+    if order_status == "current":
         statuses = [
             "Draft",
             "Waiting for confirm",
@@ -440,11 +440,10 @@ def get_user_order_list(request):
             "In progress",
             "Failed",
             "Waiting for feedback"]
-    elif restaurant_status == "history":
+    elif order_status == "history":
         statuses = ["History", "Removed"]
     else:
         raise HTTPNotFound()
-    # TODO: need find out about function chains from Max, and after that - refactor this code
     orders = request.dbsession.query(Order).filter(
         Order.user_id == request.token.user.id, Order.status.in_(statuses)).all()
     data = {}
