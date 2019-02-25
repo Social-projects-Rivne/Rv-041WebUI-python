@@ -77,7 +77,7 @@ function OrderCartItem(props) {
           </Grid>
           <Grid item container justify="center" xs={12} spacing={16}>
             <Grid item xs={4}>
-              <Typography color="inherit">{price / 100 + "$"}</Typography>
+              <Typography color="inherit">{price + "$"}</Typography>
             </Grid>
             <Grid item xs={4}>
               <TextField
@@ -97,7 +97,7 @@ function OrderCartItem(props) {
             </Grid>
             <Grid item xs={4}>
               <Typography color="inherit">
-                {(price / 100) * item.quantity + "$"}
+                {price * item.quantity + "$"}
               </Typography>
             </Grid>
           </Grid>

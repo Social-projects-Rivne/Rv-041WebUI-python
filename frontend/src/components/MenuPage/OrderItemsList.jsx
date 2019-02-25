@@ -23,12 +23,12 @@ const styles = theme => ({
 });
 
 function priceRow(qty, unit) {
-  return ((unit / 100) * qty).toFixed(2);
+  return (unit * qty).toFixed(2);
 }
 
 function priceTotal(items) {
   return items
-    .map(({ price, quantity }) => (price / 100) * quantity)
+    .map(({ price, quantity }) => price * quantity)
     .reduce((sum, i) => sum + i, 0)
     .toFixed(2);
 }
@@ -64,7 +64,7 @@ function OrderItemsList(props) {
                 )}
                 <TableCell>{row.name}</TableCell>
                 <TableCell align="right">{row.amount}</TableCell>
-                <TableCell align="right">{row.price / 100}</TableCell>
+                <TableCell align="right">{row.price}</TableCell>
                 {controls && (
                   <TableCell>
                     <TextField
