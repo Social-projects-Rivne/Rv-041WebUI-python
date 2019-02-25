@@ -75,6 +75,7 @@ const styles = theme => ({
     overflowX: "auto"
   },
   tableRow: {
+    cursor: "pointer",
     "& > *": {
       paddingRight: theme.spacing.unit,
       paddingLeft: theme.spacing.unit
@@ -88,7 +89,7 @@ const styles = theme => ({
 class MenuTable extends React.Component {
   state = {
     order: "asc",
-    orderBy: "calories",
+    orderBy: "name",
     selected: [],
     page: 0,
     rowsPerPage: 10
@@ -107,7 +108,9 @@ class MenuTable extends React.Component {
 
   handleSelectAllClick = event => {
     if (event.target.checked) {
-      this.setState(state => ({ selected: state.data.map(n => n.id) }));
+      this.setState(state => ({
+        selected: this.props.menu.map(item => item.id)
+      }));
       return;
     }
     this.setState({ selected: [] });
@@ -145,10 +148,11 @@ class MenuTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { classes, menu, menuName } = this.props;
+    const { classes, menuItems, menuName } = this.props;
     const { order, orderBy, selected, rowsPerPage, page } = this.state;
     const emptyRows =
-      rowsPerPage - Math.min(rowsPerPage, menu.length - page * rowsPerPage);
+      rowsPerPage -
+      Math.min(rowsPerPage, menuItems.length - page * rowsPerPage);
     return (
       <Paper className={classes.root}>
         <MenuToolbar menuName={menuName} numSelected={selected.length} />
@@ -171,10 +175,10 @@ class MenuTable extends React.Component {
               orderBy={orderBy}
               onSelectAllClick={this.handleSelectAllClick}
               onRequestSort={this.handleRequestSort}
-              rowCount={menu.length}
+              rowCount={menuItems.length}
             />
             <TableBody>
-              {stableSort(menu, getSorting(order, orderBy))
+              {stableSort(menuItems, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(item => {
                   const isSelected = this.isSelected(item.id);
@@ -242,7 +246,7 @@ class MenuTable extends React.Component {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={menu.length}
+          count={menuItems.length}
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{
@@ -261,7 +265,6 @@ class MenuTable extends React.Component {
 
 MenuTable.propTypes = {
   classes: PropTypes.object.isRequired,
-  menu: PropTypes.array.isRequired,
   menuName: PropTypes.string.isRequired
 };
 

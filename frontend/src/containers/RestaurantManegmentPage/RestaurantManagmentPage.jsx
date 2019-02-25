@@ -8,8 +8,8 @@ import PageContainer from "../PageContainer";
 import ManageMenu from "./ManageMenu";
 import ManageInfo from "./ManageInfo";
 import ManageWaiters from "./ManageWaiters";
-import DrawerMenu from "../../components/RestaurantManagment/DrawerMenu";
-import CreateMenu from "../../components/RestaurantManagment/CreateMenu";
+import DrawerMenu from "../../components/RestaurantManagment/Menu/DrawerMenu";
+import CreateMenu from "../../components/RestaurantManagment/Menu/CreateMenu";
 
 const drawerWidth = 240;
 
@@ -28,6 +28,8 @@ const styles = theme => ({
   },
   toolbar: { ...theme.mixins.toolbar }
 });
+
+export const MenuContext = React.createContext();
 
 export class RestaurantManagmentPage extends React.Component {
   state = {
@@ -61,38 +63,41 @@ export class RestaurantManagmentPage extends React.Component {
     const { menusList } = this.state;
     return (
       <div className={classes.root}>
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{
-            paper: classes.drawerPaper
-          }}
-        >
-          <div className={classes.toolbar} />
-          <DrawerMenu list={menusList} match={match} />
-        </Drawer>
-        <PageContainer>
-          <Switch>
-            <Route path={`${match.url}/info`} component={ManageInfo} />
-            <Route
-              path={`${match.url}/menues/:id`}
-              render={props => (
-                <ManageMenu
-                  key={props.match.params.id}
-                  restId={match.params.id}
-                  {...props}
-                />
-              )}
-            />
-            <Route
-              path={`${match.url}/create_menu`}
-              render={props => (
-                <CreateMenu restId={match.params.id} {...props} />
-              )}
-            />
-            <Route path={`${match.url}/waiters`} component={ManageWaiters} />
-          </Switch>
-        </PageContainer>
+        <MenuContext.Provider value={{ menusList }}>
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{
+              paper: classes.drawerPaper
+            }}
+          >
+            <div className={classes.toolbar} />
+            <DrawerMenu match={match} />
+          </Drawer>
+          <PageContainer>
+            <Switch>
+              <Route path={`${match.url}/info`} component={ManageInfo} />
+              <Route
+                path={`${match.url}/menues/:id`}
+                render={props => (
+                  <ManageMenu
+                    menusList={menusList}
+                    key={props.match.params.id}
+                    restId={match.params.id}
+                    {...props}
+                  />
+                )}
+              />
+              <Route
+                path={`${match.url}/create_menu`}
+                render={props => (
+                  <CreateMenu restId={match.params.id} {...props} />
+                )}
+              />
+              <Route path={`${match.url}/waiters`} component={ManageWaiters} />
+            </Switch>
+          </PageContainer>
+        </MenuContext.Provider>
       </div>
     );
   }

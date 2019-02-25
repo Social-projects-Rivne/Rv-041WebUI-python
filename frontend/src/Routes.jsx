@@ -10,7 +10,7 @@ import SignUpPage from "./containers/SignUpPage";
 import ModeratorPanel from "./containers/ModeratorPanel";
 import ProfilePage from "./containers/ProfilePage";
 import AppHeader from "./containers/AppHeader";
-import RestaurantManagmentPage from "./containers/RestaurantManegment/RestaurantManagmentPage";
+import RestaurantManagmentPage from "./containers/RestaurantManegmentPage/RestaurantManagmentPage";
 import PrivateRoute from "./Service/PrivatRoute";
 
 const routes = [

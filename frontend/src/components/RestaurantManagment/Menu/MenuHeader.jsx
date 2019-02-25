@@ -14,28 +14,24 @@ const rows = [
   {
     id: "img",
     numeric: false,
-    disablePadding: false,
     label: "Image"
   },
-  { id: "name", numeric: false, disablePadding: false, label: "Name" },
+  { id: "name", numeric: false, label: "Name" },
   {
     id: "description",
     numeric: false,
-    disablePadding: false,
     label: "Description"
   },
   {
     id: "ingredients",
     numeric: false,
-    disablePadding: false,
     label: "Ingredients"
   },
-  { id: "value", numeric: true, disablePadding: true, label: "Value" },
-  { id: "price", numeric: true, disablePadding: true, label: "Price($)" },
+  { id: "amount", numeric: true, label: "Value" },
+  { id: "price", numeric: true, label: "Price($)" },
   {
-    id: "category",
-    numeric: false,
-    disablePadding: false,
+    id: "category_id",
+    numeric: true,
     label: "Category"
   }
 ];

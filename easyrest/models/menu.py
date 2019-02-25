@@ -57,11 +57,19 @@ class Menu(Base):
 
         item_dict = []
         for i in result:
-            item = i.as_dict(with_relations=["category", "menu"])
+            item = i.as_dict(with_relations=["category"])
 
             item_dict.append(item)
 
         return item_dict
 
-    def create_menu(self, session):
-        pass
+    @staticmethod
+    def create_menu(session, form_data):
+        name = form_data["name"]
+        image = form_data["image"]
+        is_active = form_data["is_active"]
+
+        name = "New Menu"
+        is_active = True
+
+        session.add(Menu(name=name, image=image, is_active=is_active))

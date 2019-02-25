@@ -5,6 +5,8 @@ This module describes behavior of /restaurant/{id}/menu route
 from pyramid.view import view_config
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPNotFound
+from sqlalchemy.exc import IntegrityError
+from pyramid.httpexceptions import HTTPForbidden
 
 from ..scripts.json_helpers import wrap
 from ..models.restaurant import Restaurant
@@ -37,7 +39,7 @@ def get_all_categories(request):
     return body
 
 
-@view_config(route_name='get_menus', renderer='json', request_method='GET')
+@view_config(route_name='menus', renderer='json', request_method='GET')
 def get_menu_controler(request):
     """GET request controler to return menu and
     its items for restaurant specified by id
@@ -66,6 +68,18 @@ def get_menu_controler(request):
     menus = [menu.as_dict() for menu in rest.menu]
     body = wrap(menus)
     return body
+
+
+@view_config(route_name='menus', renderer='json', request_method='POST')
+def add_menu_controler(request):
+    from_data = request.json_body
+    try:
+        Menu.create_menu(request.dbsession, from_data)
+        request.dbsession.flush()
+        return wrap([], success=True)
+    except IntegrityError:
+        request.dbsession.rollback()
+        raise HTTPForbidden("asdsad")
 
 
 @view_config(route_name='menu_items', renderer='json', request_method='GET')
@@ -106,7 +120,6 @@ def get_cats_controler(request):
 
     if menu.image is not None:
         body = wrap({
-            "menuName": menu.name,
             "isImage": True,
             "imageUrl": menu.image
         })

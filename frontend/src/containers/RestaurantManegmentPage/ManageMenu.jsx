@@ -1,13 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import MenuTable from "../../components/RestaurantManagment/MenuTable";
-import MenuImage from "../../components/RestaurantManagment/MenuImage";
+import MenuTable from "../../components/RestaurantManagment/Menu/MenuTable";
+import MenuImage from "../../components/RestaurantManagment/Menu/MenuImage";
+
+import { MenuContext } from "./RestaurantManagmentPage";
 
 class ManageMenu extends React.Component {
   state = {
-    menu: [],
-    menuName: "",
+    menuItems: [],
     isImageMenu: false
   };
 
@@ -32,13 +33,11 @@ class ManageMenu extends React.Component {
       .then(json => {
         "isImage" in json.data
           ? this.setState({
-              menu: json.data.imageUrl,
-              isImageMenu: json.data.isImage,
-              menuName: json.data.menuName
+              menuItems: json.data.imageUrl,
+              isImageMenu: json.data.isImage
             })
           : this.setState({
-              menu: json.data,
-              menuName: json.data[0].menu.name
+              menuItems: json.data
             });
       })
       .catch(err => {
@@ -47,11 +46,29 @@ class ManageMenu extends React.Component {
   }
 
   render() {
-    const { menu, isImageMenu, menuName } = this.state;
-    return isImageMenu ? (
-      <MenuImage menuName={menuName} menu={menu} />
-    ) : (
-      <MenuTable menuName={menuName} menu={menu} />
+    const { menuItems, isImageMenu } = this.state;
+    return (
+      <MenuContext.Consumer>
+        {ctx => {
+          const menuName = ctx.menusList
+            .filter(item => item.id === Number(this.props.match.params.id))
+            .map(item => item.name)
+            .toString();
+          return isImageMenu ? (
+            <MenuImage
+              {...this.props}
+              menuName={menuName}
+              menuItems={menuItems}
+            />
+          ) : (
+            <MenuTable
+              {...this.props}
+              menuName={menuName}
+              menuItems={menuItems}
+            />
+          );
+        }}
+      </MenuContext.Consumer>
     );
   }
 }
