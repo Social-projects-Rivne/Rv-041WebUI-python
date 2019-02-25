@@ -33,6 +33,8 @@ def login_post(request):
 
     if user is None or not pbkdf2_sha256.verify(password, user.password):
         raise HTTPForbidden("Email or password is invalid")
+    elif not user.is_active:
+        raise HTTPForbidden("Sorry, you have been blocked")
 
     token = remember(request, user)
     body = {
@@ -57,7 +59,6 @@ def check_token(request):
 
 
 @view_config(route_name='login', renderer='json', request_method='DELETE')
-@restrict_access(user_types=['Client', 'Owner', 'Moderator', 'Admin'])
 def login_del(request):
     """Controler for logout. Check header for token, find token in db,
     delete token, return empty list with cleare header.

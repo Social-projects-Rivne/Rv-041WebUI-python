@@ -71,7 +71,7 @@ class Login extends React.Component {
             userName
           });
         } else {
-          Promise.reject(error);
+          throw error;
         }
       })
       .then(() => {
