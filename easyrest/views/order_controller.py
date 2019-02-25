@@ -15,7 +15,7 @@ from ..models.menu_item import MenuItem
 from ..models.user import User
 from ..models.restaurant import Restaurant
 from ..auth import restrict_access
-from ..models.validator import validation
+from ..models.validator import validation, check_json_format
 from ..exceptions import ValidationError
 
 
@@ -73,6 +73,8 @@ def create_draft_order(request):
     """
     try:
         rest_id = request.json_body["rest_id"]
+    except KeyError:
+        raise HTTPNotFound("No rest_id found in Get params")
     except ValueError as e:
         raise HTTPBadRequest("Not valid json")
 
@@ -140,10 +142,8 @@ def parse_localStorage(request):
     ]
     """
 
-    try:
-        json = request.json_body
-    except ValueError as e:
-        raise HTTPBadRequest("Not valid json")
+    check_json_format(request)
+    json = request.json_body
 
     schema = {
         "description": "Validate json inputs",
@@ -189,10 +189,8 @@ def add_item(request):
     """
     order_id = request.matchdict["order_id"]
 
-    try:
-        json = request.json_body
-    except ValueError as e:
-        raise HTTPBadRequest("Not valid json")
+    check_json_format(request)
+    json = request.json_body
 
     schema = {
         "description": "Validate json inputs",
@@ -263,10 +261,8 @@ def set_quantity(request):
     """
     order_id = request.matchdict["order_id"]
 
-    try:
-        json = request.json_body
-    except ValueError as e:
-        raise HTTPBadRequest("Not valid json")
+    check_json_format(request)
+    json = request.json_body
 
     schema = {
         "description": "Validate json inputs",
@@ -312,10 +308,8 @@ def remove_item(request):
     """
     order_id = request.matchdict["order_id"]
 
-    try:
-        json = request.json_body
-    except ValueError as e:
-        raise HTTPBadRequest("Not valid json")
+    check_json_format(request)
+    json = request.json_body
 
     schema = {
         "description": "Validate json inputs",
@@ -361,10 +355,8 @@ def change_status(request):
     """
     order_id = request.matchdict["order_id"]
 
-    try:
-        json = request.json_body
-    except ValueError:
-        raise HTTPBadRequest("Not valid json")
+    check_json_format(request)
+    json = request.json_body
 
     schema = {
         "description": "Validate json inputs",
