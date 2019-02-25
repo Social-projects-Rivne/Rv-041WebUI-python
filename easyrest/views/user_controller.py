@@ -88,5 +88,5 @@ def toggle_activity(request):
     current_user = request.token.user
     check_action_access(current_user.role.name, foreign_role=requested_user.role.name, action='toggle_activity')
 
-    User.toggle_activity(database, requested_user)
+    requested_user.toggle_activity()
     return wrap([], success=True, message='Activity status successfully changed')
