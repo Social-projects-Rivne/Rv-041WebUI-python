@@ -109,17 +109,19 @@ def get_draft_order(request):
     except ValueError:
         raise HTTPForbidden("rest_id should be iteger")
 
-    order = request.dbsession.query(Order).filter(
+    orders = request.dbsession.query(Order).filter(
         Order.status == "Draft",
         Order.user_id == request.token.user.id,
-        Order.rest_id == rest_id).first()
+        Order.rest_id == rest_id).all()
 
-    if order is None:
+    if not orders:
         raise HTTPNotFound("No order in draft")
 
-    data = order.as_dict(exclude=["user_id"])
+    print(orders)
+
+    data = orders[-1].as_dict(exclude=["user_id"])
     data.update({
-        "items": order.get_items(request.dbsession)
+        "items": orders[-1].get_items(request.dbsession)
     })
     return wrap(data)
 
@@ -198,7 +200,7 @@ def add_item(request):
         "description": "Validate json inputs",
         "type": "object",
         "properties": {
-                "order_id": {"type": "integer"},
+                "q_value": {"type": "integer"},
                 "item_id": {"type": "integer"}
         },
         "required": ["q_value", "item_id"]
