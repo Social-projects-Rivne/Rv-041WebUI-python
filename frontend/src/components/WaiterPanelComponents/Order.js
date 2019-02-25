@@ -1,50 +1,56 @@
 import React from "react";
 import {
-    Avatar,
-    Button,
-    Card,
-    CardActions,
-    CardContent,
-    CardHeader,
-    CardMedia,
-    Chip,
-    Grid,
-    Table,
-    TableBody,
-    TableCell,
-    TableRow,
-    TableFooter,
-    Typography
-  } from '@material-ui/core';
-  import { withStyles } from '@material-ui/core/styles';
-  import red from "@material-ui/core/colors/red";
+  Avatar,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Chip,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  TableFooter,
+  Typography,
+  Paper
+} from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import red from "@material-ui/core/colors/red";
 
-  const styles = theme => ({
-    card: {},
-    actions: {
-      display: "flex",
-      justifyContent: "flex-end"
-    },
-    expand: {
-      transform: "rotate(0deg)",
-      marginLeft: "auto",
-      transition: theme.transitions.create("transform", {
-        duration: theme.transitions.duration.shortest
-      })
-    },
-    avatar: {
-      backgroundColor: red[500]
-    },
-    chip: {
-      margin: theme.spacing.unit,
-    },
-  });
-  
-  
+const styles = theme => ({
+  card: {
+
+  },
+  actions: {
+    display: "flex",
+    justifyContent: "flex-end"
+  },
+  expand: {
+    transform: "rotate(0deg)",
+    marginLeft: "auto",
+    transition: theme.transitions.create("transform", {
+      duration: theme.transitions.duration.shortest
+    })
+  },
+  avatar: {
+    backgroundColor: red[500]
+  },
+  chip: {
+    margin: theme.spacing.unit,
+  },
+});
+
+
 function Order(props) {
 
   const { classes, order, changeOrderStatus } = props;
-  const {id, status, items} = order;
+  const { id, status, items } = order;
   const date = new Date(order.creation_time * 1000);
   let buttonArray = [];
   let statusColor = "inherit";
@@ -79,18 +85,28 @@ function Order(props) {
 
   return (
     <Card className={classes.card}>
-      <CardHeader
-        avatar={
-          <Avatar aria-label={order.user} className={classes.avatar}>
-            {order.user[0]}
-          </Avatar>
-        }
-        title={order.user}
-        subheader={"Added: " + String(date.toISOString().slice(0, 10))}
-      />
+      <Paper style={{ display: "flex", alignItems: "center" }}>
+        <CardHeader
+          avatar={
+            <Avatar aria-label={order.user} className={classes.avatar}>
+              {order.user[0]}
+            </Avatar>
+          }
+          title={
+            <Typography>
+              {order.user}
+
+            </Typography>
+          }
+          subheader={"Added: " + String(date.toISOString().slice(0, 10))}
+        />
+        <div style={{ marginLeft: "auto" }}>
+          <Chip style={{ marginLeft: "auto " }} label={status} color={statusColor} className={classes.chip} />
+
+        </div>
+      </Paper>
 
       <CardContent>
-        <Chip label={status} color={statusColor} className={classes.chip} />
         <Grid container>
           <Table className={classes.table}>
             <TableBody>
@@ -122,7 +138,7 @@ function Order(props) {
             <TableFooter>
               <TableRow>
                 <TableCell colSpan={3} align="right">
-                  <Grid container >
+                  <Grid container justify="flex-end" alignItems="flex-end" direction="column">
                     <Grid>
                       <Typography gutterBottom variant="subtitle1" >
                         Order sum: {"$" + order.total_price}
