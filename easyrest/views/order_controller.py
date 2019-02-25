@@ -117,8 +117,6 @@ def get_draft_order(request):
     if not orders:
         raise HTTPNotFound("No order in draft")
 
-    print(orders)
-
     data = orders[-1].as_dict(exclude=["user_id"])
     data.update({
         "items": orders[-1].get_items(request.dbsession)
@@ -368,8 +366,6 @@ def change_status(request):
     except ValueError:
         raise HTTPBadRequest("Not valid json")
 
-    print(json)
-
     schema = {
         "description": "Validate json inputs",
         "type": "object",
@@ -487,7 +483,7 @@ def get_user_order_list(request):
         order_data = form_dict(order, order_keys, True, True)
         order_data["restaurant"] = order.restaurant.name
         order_items = order.get_items(request.dbsession)
-        order_data["items"] = order_items 
+        order_data["items"] = order_items
         orders_data.append(order_data)
     data["orders_data"] = orders_data
     return wrap(data)
