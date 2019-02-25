@@ -4,9 +4,7 @@ This module describe data model for "user_statuses" table
 
 from sqlalchemy import (
     Column,
-    Integer,
     Text,
-    ForeignKey,
 )
 
 from .meta import Base

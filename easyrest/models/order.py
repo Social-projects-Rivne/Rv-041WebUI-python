@@ -10,7 +10,7 @@ from sqlalchemy import (
     Float,
     Numeric,
 )
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship
 from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest, HTTPForbidden
 
 from .meta import Base
@@ -103,7 +103,7 @@ class Order(Base):
         total = 0
         for item in self.items:
             q = item.quantity
-            p_per_item = item.food.price if item.food.price is not None else 0
+            p_per_item = item.food.price
             total += q * p_per_item
         self.total_price = total
         return self.total_price

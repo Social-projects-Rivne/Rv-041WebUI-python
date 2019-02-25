@@ -18,18 +18,18 @@ from ..models.validator import validation
 from ..exceptions import ValidationError
 
 
-def get_order(request, order_id, filterList=False):
+def get_order(request, order_id, filter_list=False):
     """'Smart' get order. If you want to specify some constrains 
-    on get order pass filterList.
+    on get order pass filter_list.
     Example:
         {
             "field_name": value
             ...
         }
     """
-    if filterList:
+    if filter_list:
         order = request.dbsession.query(Order).filter(Order.id == order_id)
-        for constrain in filterList:
+        for constrain in filter_list:
             order = order.filter(constrain)
         order = order.first()
     else:

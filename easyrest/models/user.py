@@ -7,14 +7,12 @@ from sqlalchemy import (
     Date,
     ForeignKey,
     Boolean,
-    inspect
 )
 from sqlalchemy.orm import relationship
 from passlib.hash import pbkdf2_sha256
 
 from .meta import Base
 from validator import validation
-from .user_role import UserRole
 
 
 class User(Base):
