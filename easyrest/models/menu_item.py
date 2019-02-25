@@ -28,7 +28,7 @@ class MenuItem(Base):
     description = Column(Text)
     ingredients = Column(Text)
     img = Column(Text)
-    price = Column(Numeric(precision=10, scale=2))
+    price = Column(Numeric(precision=10, scale=2), default=0)
     amount = Column(Numeric())
     menu_id = Column(Integer, ForeignKey('menus.id'))
     category_id = Column(Integer, ForeignKey('categories.id'))

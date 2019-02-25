@@ -32,7 +32,7 @@ def asign_tags(rests):
     """
     rests_list = []
     for rest in rests:
-        tags = rest.tag
+        tags = rest.tags
         has_menu = len(rest.menu) != 0
         tags_list = [tag.as_dict() for tag in tags]
         rest_dict = rest.as_dict()
@@ -140,7 +140,7 @@ def get_restaurant_controler(request):
             is_owner = True
 
         rest_with_tags = asign_tags([rest])
-        body = wrap(rest_with_tags)
+        body = wrap([rest_with_tags])
         body['is_owner'] = is_owner
 
     return body

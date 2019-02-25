@@ -113,7 +113,7 @@ def fill_db(session):
 
         # using model relationship defined in models.restaurant
         # asign one of 5 users to restaurant
-        rest_model.user = Users[randint(0, 4)]
+        rest_model.owner = Users[randint(0, 4)]
 
         # define random number of tags for each restaurant
         tag_number = randint(0, len(Tags) - 1)
@@ -129,7 +129,7 @@ def fill_db(session):
 
         # using model relationship defined in models.restaurant
         # asign tag to restaurant
-        rest_model.tag = related_tags
+        rest_model.tags = related_tags
 
         Rest_models.append(rest_model)
 
@@ -145,46 +145,7 @@ def fill_db(session):
                             birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
         user_model.append(current_user)
 
-    # Example orders
-    order = Order(date_created=int(time.time()), status="Draft")
-    user = user_model[-1]
-    user.orders.append(order)
-    items = Rest_models[-1].menu[0].menu_items[0:10]
-    user.orders[-1].items.append(OrderAssoc(quantity=1))
-    user.orders[-1].items.append(OrderAssoc(quantity=2))
-    user.orders[-1].items.append(OrderAssoc(quantity=3))
-    user.orders[-1].items.append(OrderAssoc(quantity=4))
-    user.orders[-1].items.append(OrderAssoc(quantity=5))
-
-    user.orders[-1].restaurant = Rest_models[-1]
-
-    user.orders[-1].items[0].food = items[0]
-    user.orders[-1].items[1].food = items[1]
-    user.orders[-1].items[2].food = items[2]
-    user.orders[-1].items[3].food = items[3]
-    user.orders[-1].items[4].food = items[4]
-    user.orders[-1].items[-1].food = items[5]
-    order = Order(date_created=int(time.time()), status="Draft")
-    user = user_model[-1]
-    user.orders.append(order)
-    items = Rest_models[-1].menu[0].menu_items[0:10]
-    user.orders[-1].items.append(OrderAssoc(quantity=10))
-    user.orders[-1].items.append(OrderAssoc(quantity=20))
-    user.orders[-1].items.append(OrderAssoc(quantity=30))
-    user.orders[-1].items.append(OrderAssoc(quantity=40))
-    user.orders[-1].items.append(OrderAssoc(quantity=50))
-    user.orders[-1].items.append(OrderAssoc(quantity=60))
-
-    user.orders[-1].restaurant = Rest_models[-1]
-
-    user.orders[-1].items[0].food = items[0]
-    user.orders[-1].items[1].food = items[1]
-    user.orders[-1].items[2].food = items[2]
-    user.orders[-1].items[3].food = items[3]
-    user.orders[-1].items[4].food = items[4]
-    user.orders[-1].items[-1].food = items[5]
-    user.orders[-1].items[-1].food = items[6]
-    # add Moderator and Admin
+    # add Moderator, Admin, Administrator, 3 Waiters
     user_name = fake.name()
     moderator = User(name="Peter Moderator",
                      email='petermoderator'+'@test.com',
@@ -203,14 +164,33 @@ def fill_db(session):
                       birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
     user_model.append(admin)
 
-    user_name = fake.name()
-    admin = User(name="Peter Administrator",
-                      email="peteradmin"+'@test.com',
-                      password=pbkdf2_sha256.hash("1"),
-                      role=UserRoles[4],
-                      phone_number="+380666666662",
-                      birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
-    user_model.append(admin)
+    administrator = User(name="Peter Administrator",
+                         email="peteradmin"+'@test.com',
+                         password=pbkdf2_sha256.hash("1"),
+                         role=UserRoles[4],
+                         phone_number="+380666666662",
+                         birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
+    user_model.append(administrator)
+
+    waiter1 = User(name="Steve waiter",
+                   email="stevewaiter"+'@test.com',
+                   password=pbkdf2_sha256.hash("1"),
+                   role=UserRoles[3],
+                   phone_number="+380666666662",
+                   birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
+    user_model.append(waiter1)
+
+    waiter2 = User(name="karl waiter",
+                   email="karlwaiter"+'@test.com',
+                   password=pbkdf2_sha256.hash("1"),
+                   role=UserRoles[3],
+                   phone_number="+380666666662",
+                   birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
+    user_model.append(waiter2)
+
+    Rest_models[-1].waiters.extend([waiter1, waiter2])
+    for rest_model in Rest_models:
+        rest_model.administrator = administrator
 
     user_name = fake.name()
     waiter = User(name="Stepan the Waiter",
@@ -220,6 +200,46 @@ def fill_db(session):
                   phone_number="+380666666662",
                   birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
     user_model.append(waiter)
+
+    # Example orders
+    order = Order(creation_time=int(time.time()), status="Draft")
+    user = user_model[-6]
+    user.orders.append(order)
+    items = Rest_models[-1].menu[0].menu_items[0:10]
+    user.orders[-1].items.append(OrderAssoc(quantity=1))
+    user.orders[-1].items.append(OrderAssoc(quantity=2))
+    user.orders[-1].items.append(OrderAssoc(quantity=3))
+    user.orders[-1].items.append(OrderAssoc(quantity=4))
+    user.orders[-1].items.append(OrderAssoc(quantity=5))
+
+    user.orders[-1].restaurant = Rest_models[-1]
+
+    user.orders[-1].items[0].food = items[0]
+    user.orders[-1].items[1].food = items[1]
+    user.orders[-1].items[2].food = items[2]
+    user.orders[-1].items[3].food = items[3]
+    user.orders[-1].items[4].food = items[4]
+    user.orders[-1].items[-1].food = items[5]
+    order = Order(creation_time=int(time.time()), status="Draft")
+    user = user_model[-6]
+    user.orders.append(order)
+    items = Rest_models[-1].menu[0].menu_items[0:10]
+    user.orders[-1].items.append(OrderAssoc(quantity=10))
+    user.orders[-1].items.append(OrderAssoc(quantity=20))
+    user.orders[-1].items.append(OrderAssoc(quantity=30))
+    user.orders[-1].items.append(OrderAssoc(quantity=40))
+    user.orders[-1].items.append(OrderAssoc(quantity=50))
+    user.orders[-1].items.append(OrderAssoc(quantity=60))
+
+    user.orders[-1].restaurant = Rest_models[-1]
+
+    user.orders[-1].items[0].food = items[0]
+    user.orders[-1].items[1].food = items[1]
+    user.orders[-1].items[2].food = items[2]
+    user.orders[-1].items[3].food = items[3]
+    user.orders[-1].items[4].food = items[4]
+    user.orders[-1].items[-1].food = items[5]
+    user.orders[-1].items[-1].food = items[6]
 
     # insert data into database
     session.add_all(Rest_models)

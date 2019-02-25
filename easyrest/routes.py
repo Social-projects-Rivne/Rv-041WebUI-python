@@ -24,6 +24,8 @@ def includeme(config):
                      request_method="GET")
     config.add_route('get_user_info', 'profile',
                      request_method="GET")
+    config.add_route('get_orders_info', 'profile/orders/{status}',
+                     request_method="GET")
     config.add_route('authorize_moderator', 'moderator',
                      request_method="GET")
     config.add_route('moderator_get_restaurants', 'moderator/restaurants',
@@ -53,4 +55,8 @@ def includeme(config):
                      request_method=["POST", "GET", "PUT", "DELETE"])
     config.add_route('order_status', 'order/{order_id:\d+}/status',
                      request_method=["GET", "PUT"])
+    config.add_route('users_list', 'users/{role_id:\d+}', request_method="GET")
+    config.add_route('user_create', 'user/{role_id:\d+}', request_method="POST")
+    config.add_route('user_update', 'user/{user_id:\d+}', request_method="PUT")
+    config.add_route('user_delete', 'user/{user_id:\d+}', request_method="DELETE")
     config.add_route('toggle_activity', "user/toggle_activity/{user_id:\d+}", request_method="GET")
