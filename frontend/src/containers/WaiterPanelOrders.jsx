@@ -58,14 +58,17 @@ class WaiterPanelOrders extends React.Component {
 			);
 	}
 
-	changeOrderStatus = (orderId, action, date) => {
+	changeOrderStatus = (orderId, new_status, booked_time) => {
     fetch("http://localhost:6543/api/order/" + orderId + "/status", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "x-auth-token": localStorage.getItem("token")
       },
-      body: JSON.stringify({ action: action })
+			body: JSON.stringify({
+        new_status: new_status,
+        booked_time: Math.round(booked_time / 1000)
+      })
     })
       .then(response =>
         [404, 403, 400].includes(response.status)
@@ -73,8 +76,17 @@ class WaiterPanelOrders extends React.Component {
           : response.json()
       )
       .then(json => {
-        this.setState({
-          cartItems: [],
+        this.setState(prevState => {
+					return{
+						orders: prevState.orders.map(orderInfo => {
+							if (orderInfo.id === orderId) {
+								orderInfo.status = new_status;
+								return orderInfo;
+							} else {
+								return orderInfo;
+							}
+						})
+					}
         });
       })
       .catch(error => {

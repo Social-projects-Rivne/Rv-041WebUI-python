@@ -376,7 +376,7 @@ def change_status(request):
 
     query_constrains = []
     if request.token.user.role.name == "Waiter":
-        query_constrains.append([
+        query_constrains.extend([
             Order.waiter_id == request.token.user.id
         ])
     elif request.token.user.role.name == "Administrator":
@@ -415,7 +415,7 @@ def get_status(request):
 
     query_constrains = []
     if request.token.user.role.name == "Waiter":
-        query_constrains.append([
+        query_constrains.extend([
             Order.waiter_id == request.token.user.id
         ])
     elif request.token.user.role.name == "Administrator":
@@ -452,7 +452,6 @@ def get_user_order_list(request):
     order_status = request.matchdict['status']
     if order_status == "current":
         statuses = [
-            "Draft",
             "Waiting for confirm",
             "Declined",
             "Accepted",
@@ -468,7 +467,7 @@ def get_user_order_list(request):
         Order.user_id == request.token.user.id, Order.status.in_(statuses)).all()
     data = {}
     data["statuses"] = statuses
-    order_keys = ("id", "creation_time", "date_booked", "total_price", "status")
+    order_keys = ("id", "creation_time", "booked_time", "total_price", "status")
     orders_data = []
     for order in orders:
         order_data = form_dict(order, order_keys, True, True)

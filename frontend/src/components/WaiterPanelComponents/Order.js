@@ -1,4 +1,5 @@
 import React from "react";
+import classnames from 'classnames';
 import {
   Avatar,
   Button,
@@ -8,9 +9,11 @@ import {
   CardHeader,
   CardMedia,
   Chip,
+  Collapse,
   ExpansionPanel,
   ExpansionPanelDetails,
   ExpansionPanelSummary,
+  IconButton,
   Grid,
   Table,
   TableBody,
@@ -22,6 +25,7 @@ import {
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import red from "@material-ui/core/colors/red";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const styles = theme => ({
   card: {
@@ -32,11 +36,14 @@ const styles = theme => ({
     justifyContent: "flex-end"
   },
   expand: {
-    transform: "rotate(0deg)",
-    marginLeft: "auto",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest
-    })
+    transform: 'rotate(0deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  expandOpen: {
+    transform: 'rotate(180deg)',
   },
   avatar: {
     backgroundColor: red[500]
@@ -53,8 +60,9 @@ function Order(props) {
   const { id, status, items } = order;
   const date = new Date(order.creation_time * 1000);
   let buttonArray = [];
-  let statusColor = "inherit";
+  let statusColor = "default";
   const dateModified = new Date().getTime();
+  let expanded = true;
 
   switch (status) {
     case "Asigned waiter":
@@ -62,7 +70,7 @@ function Order(props) {
         key={0}
         size="small"
         color="primary"
-        onClick={() => changeOrderStatus(id, "Start order", dateModified)}
+        onClick={() => changeOrderStatus(id, "In progress", dateModified)}
       >
         Start order
       </Button>);
@@ -73,7 +81,7 @@ function Order(props) {
         key={0}
         size="small"
         color="secondary"
-        onClick={() => changeOrderStatus(id, "Close order", dateModified)}
+        onClick={() => changeOrderStatus(id, "Waiting for feedback", dateModified)}
       >
         Close order
       </Button>);
@@ -95,16 +103,28 @@ function Order(props) {
           title={
             <Typography>
               {order.user}
-
             </Typography>
           }
           subheader={"Added: " + String(date.toISOString().slice(0, 10))}
         />
         <div style={{ marginLeft: "auto" }}>
           <Chip style={{ marginLeft: "auto " }} label={status} color={statusColor} className={classes.chip} />
-
+          <CardActions className={classes.actions}>
+            <IconButton
+              className={classnames(classes.expand, {
+                [classes.expandOpen]: this.state.expanded,
+              })}
+              onClick={this.handleExpandClick}
+              aria-expanded={this.state.expanded}
+              aria-label="Show more"
+            >
+              <ExpandMoreIcon />
+            </IconButton>
+          </CardActions>
         </div>
       </Paper>
+
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
 
       <CardContent>
         <Grid container>
@@ -156,6 +176,9 @@ function Order(props) {
       <CardActions className={classes.actions}>
         {buttonArray.map(button => button)}
       </CardActions>
+
+      </Collapse>
+
     </Card>
   )
 }

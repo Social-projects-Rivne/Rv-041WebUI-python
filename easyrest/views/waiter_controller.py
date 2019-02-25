@@ -22,12 +22,11 @@ def get_orders_controller(request):
         "Waiting for feedback",
         "History",
     ]
-    orders = request.dbsession.query(Order).filter(
-        # TODO: add "Order.waiter" clause and field in Order DB Table
+    orders = request.dbsession.query(Order).filter(Order.waiter_id==request.token.user.id,
         Order.status.in_(statuses)).all()
     data = {}
     data["statuses"] = statuses
-    order_keys = ("id", "creation_time", "date_booked", "total_price", "status")
+    order_keys = ("id", "creation_time", "booked_time", "total_price", "status")
     orders_data = []
     for order in orders:
         order_data = form_dict(order, order_keys, True, True)
