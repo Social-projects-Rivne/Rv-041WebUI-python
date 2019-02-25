@@ -53,7 +53,7 @@ class User(Base):
     password = Column(Text)
     role_id = Column(Integer, ForeignKey('user_roles.id'), default=1)
     restaurant_id = Column(Integer, ForeignKey('restaurants.id'))
-    is_active = Column(Boolean, default=False)
+    is_active = Column(Boolean, default=True)
 
     tokens = relationship('Token')
     role = relationship('UserRole')
