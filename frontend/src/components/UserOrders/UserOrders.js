@@ -49,7 +49,7 @@ function UserOrders(props) {
     return (
         <div className={classes.root}>
           {orders.map((orderInfo, index) => {
-            const date = new Date(orderInfo.date_created * 1000);
+            const date = new Date(orderInfo.creation_time * 1000);
             const orderItems = orderInfo.items;
             //extract photo to make icons
             let iconsArray = [];

@@ -23,15 +23,16 @@ def get_orders_controller(request):
         "History",
     ]
     orders = request.dbsession.query(Order).filter(
-        Order.user_id == request.token.user.id,
+        # TODO: add "Order.waiter" clause and field in Order DB Table
         Order.status.in_(statuses)).all()
     data = {}
     data["statuses"] = statuses
-    order_keys = ("id", "date_created", "date_booked", "total_price", "status")
+    order_keys = ("id", "creation_time", "date_booked", "total_price", "status")
     orders_data = []
     for order in orders:
         order_data = form_dict(order, order_keys, True, True)
         order_data["restaurant"] = order.restaurant.name
+        order_data["user"] = order.user.name
         order_items = order.get_items(request.dbsession)
         order_data["items"] = order_items 
         orders_data.append(order_data)
