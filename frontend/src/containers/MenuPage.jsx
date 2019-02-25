@@ -99,8 +99,9 @@ class MenuPage extends React.Component {
     const cart = localStorage.getItem("Cart");
     const orderId = localStorage.getItem("OrderId");
     const token = localStorage.getItem("token");
+    const storageRestId = localStorage.getItem("RestId");
 
-    if (cart && orderId == "Local") {
+    if (cart && orderId == "Local" && storageRestId == restId) {
       this.setState(
         {
           cartItems: JSON.parse(cart),
@@ -146,6 +147,8 @@ class MenuPage extends React.Component {
           });
         }
         localStorage.setItem("OrderId", json.data.id);
+        localStorage.removeItem("Cart");
+        localStorage.removeItem("RestId");
       })
       .catch(error => {
         localStorage.setItem("OrderId", "Local");
@@ -215,7 +218,7 @@ class MenuPage extends React.Component {
           localStorage.setItem("OrderId", json.data.order_id);
           if (Array.isArray(item)) {
             item.forEach(i => {
-              this.sendAddItem(i, json.data.order_id);
+              this.sendAddItem(i, json.data.order_id, false);
             });
           } else {
             this.sendAddItem(item, json.data.order_id);
@@ -262,7 +265,7 @@ class MenuPage extends React.Component {
     } else {
       if (Array.isArray(item)) {
         item.forEach(i => {
-          this.sendAddItem(i, orderId);
+          this.sendAddItem(i, orderId, false);
         });
       } else {
         this.sendAddItem(item, orderId);
@@ -273,6 +276,8 @@ class MenuPage extends React.Component {
 
   AddItemUnauth = item => {
     localStorage.setItem("OrderId", "Local");
+    const { restId } = this.props.match.params;
+    localStorage.setItem("RestId", restId);
     this.setState({
       cartItems: [...this.state.cartItems, item],
       SnackbarMsg: "Item was added",
@@ -451,6 +456,8 @@ class MenuPage extends React.Component {
   handleDialogToggle = () => {
     const user = localStorage.getItem("token");
     if (!user) {
+      const { restId } = this.props.match.params;
+      localStorage.setItem("RestId", restId);
       localStorage.setItem("Cart", JSON.stringify(this.state.cartItems));
       this.setState({ redirectToLogin: true });
     } else {

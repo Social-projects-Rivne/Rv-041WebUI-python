@@ -54,6 +54,7 @@ class UserMenu extends React.Component {
         if (localStorage.getItem("OrderId") !== "Local") {
           localStorage.removeItem("OrderId");
         }
+        localStorage.removeItem("RestId");
 
         this.props.ctx.changeState({
           auth: false,
