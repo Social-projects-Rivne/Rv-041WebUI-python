@@ -7,7 +7,6 @@ It provides many to many relation between restaurant and tag
 from sqlalchemy import (
     Column,
     Integer,
-    Text,
     ForeignKey,
 )
 from sqlalchemy.orm import relationship

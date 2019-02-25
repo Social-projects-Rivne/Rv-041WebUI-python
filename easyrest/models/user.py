@@ -6,7 +6,7 @@ from sqlalchemy import (
     Text,
     Date,
     ForeignKey,
-    Boolean
+    Boolean,
 )
 from sqlalchemy.orm import relationship
 from passlib.hash import pbkdf2_sha256
@@ -61,7 +61,10 @@ class User(Base):
         'Restaurant', foreign_keys="[Restaurant.owner_id]")
     restaurant = relationship(
         'Restaurant', foreign_keys="[User.restaurant_id]")
-    orders = relationship('Order')
+    a_restaurant = relationship(
+        'Restaurant', foreign_keys="[Restaurant.administrator_id]")
+    orders = relationship('Order', foreign_keys="[Order.user_id]")
+    w_orders = relationship('Order', foreign_keys="[Order.waiter_id]")
 
     @staticmethod
     def add(database, form_data, role=CLIENT):

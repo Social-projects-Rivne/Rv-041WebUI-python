@@ -6,7 +6,6 @@ from sqlalchemy import (
     Column,
     Integer,
     Text,
-    ForeignKey,
 )
 
 from .meta import Base
