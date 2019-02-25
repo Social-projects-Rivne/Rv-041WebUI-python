@@ -50,6 +50,7 @@ def check_action_access(user_role, foreign_role, action):
     :raise HTTPForbidden: If the action is prohibited
     """
     log = logging.getLogger(__name__)
+    # TODO: Refactor the access list. Remove roles with the empty list.
     user_access_list = {
         'Client': {
             'Client': ['create'],
@@ -84,22 +85,23 @@ def check_action_access(user_role, foreign_role, action):
             'Admin': []
         },
         'Moderator': {
-            'Client': ['create', 'read', 'delete'],
+            'Client': ['create', 'read', 'delete', 'toggle_activity'],
             'Waiter': [],
             'Administrator': [],
-            'Owner': ['read'],
+            'Owner': ['read', 'toggle_activity'],
             'Moderator': [],
             'Admin': []
         },
         'Admin': {
-            'Client': ['create', 'read', 'update', 'delete'],
+            'Client': ['create', 'read', 'update', 'delete', 'toggle_activity'],
             'Waiter': [],
             'Administrator': [],
-            'Owner': ['create', 'read', 'update', 'delete'],
-            'Moderator': ['create', 'read', 'update', 'delete'],
+            'Owner': ['create', 'read', 'update', 'delete', 'toggle_activity'],
+            'Moderator': ['create', 'read', 'update', 'delete', 'toggle_activity'],
             'Admin': []
         }
     }
+    # TODO: Refactor action accessibility check for roles with the empty list.
     if action not in user_access_list[user_role][foreign_role]:
         log.error('%s can\'t perform "%s" action', user_role, action)
         raise HTTPForbidden('Action not allowed')
