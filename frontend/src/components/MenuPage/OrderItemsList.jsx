@@ -19,16 +19,16 @@ const styles = theme => ({
     width: "100%",
     marginTop: theme.spacing.unit * 3,
     overflowX: "auto"
-  },
+  }
 });
 
 function priceRow(qty, unit) {
-  return (qty * unit).toFixed(2);
+  return ((unit / 100) * qty).toFixed(2);
 }
 
 function priceTotal(items) {
   return items
-    .map(({ price, quantity }) => price * quantity)
+    .map(({ price, quantity }) => (price / 100) * quantity)
     .reduce((sum, i) => sum + i, 0)
     .toFixed(2);
 }
@@ -64,7 +64,7 @@ function OrderItemsList(props) {
                 )}
                 <TableCell>{row.name}</TableCell>
                 <TableCell align="right">{row.amount}</TableCell>
-                <TableCell align="right">{row.price}</TableCell>
+                <TableCell align="right">{row.price / 100}</TableCell>
                 {controls && (
                   <TableCell>
                     <TextField

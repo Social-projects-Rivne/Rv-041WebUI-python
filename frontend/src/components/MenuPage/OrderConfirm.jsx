@@ -36,10 +36,9 @@ class OrderConfirmDialog extends React.Component {
   };
 
   handleDateChange = date => {
-    console.log(date, date - this.state.selectedDate);
     if (date - this.state.selectedDate < 0) {
       this.props.handleSnackbarMessage(
-        "Sory you can`t book date on past time",
+        "Sorry, you can`t pick past book time",
         "error"
       );
     } else {
