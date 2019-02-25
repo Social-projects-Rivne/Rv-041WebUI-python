@@ -8,7 +8,8 @@ import MenuToolbar from "./MenuToolbar";
 const styles = theme => ({
   media: {
     maxWidth: "100%",
-    height: "auto"
+    height: "auto",
+    minHeight: "200px"
   }
 });
 
@@ -19,12 +20,14 @@ class MenuImage extends React.Component {
       <Paper>
         <MenuToolbar menuName={menuName} />
         <Divider />
-        <CardMedia
-          className={classes.media}
-          component="img"
-          src={menuItems}
-          title={menuName}
-        />
+        {menuItems && (
+          <CardMedia
+            className={classes.media}
+            component="img"
+            src={menuItems}
+            title={menuName}
+          />
+        )}
       </Paper>
     );
   }

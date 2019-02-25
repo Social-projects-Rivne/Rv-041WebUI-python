@@ -12,8 +12,11 @@ import {
   Paper,
   Checkbox,
   CardMedia,
-  Divider
+  Divider,
+  IconButton
 } from "@material-ui/core/";
+import IconDelete from "@material-ui/icons/Delete";
+import IconEdit from "@material-ui/icons/Edit";
 
 import MenuHeader from "./MenuHeader";
 import MenuToolbar from "./MenuToolbar";
@@ -61,7 +64,7 @@ const styles = theme => ({
     width: "100%"
   },
   table: {
-    minWidth: 1232,
+    // minWidth: 1232,
     tableLayout: "fixed"
   },
   media: {
@@ -75,6 +78,7 @@ const styles = theme => ({
     overflowX: "auto"
   },
   tableRow: {
+    position: "relative",
     cursor: "pointer",
     "& > *": {
       paddingRight: theme.spacing.unit,
@@ -82,7 +86,22 @@ const styles = theme => ({
     },
     "& > *:first-child": {
       paddingLeft: theme.spacing.unit * 3
+    },
+    "&:hover $actions": {
+      display: "table-cell"
+    },
+    "&:hover $hideOnHover": {
+      display: "none"
     }
+  },
+  actions: {
+    display: "none"
+  },
+  actionsBtns: {
+    display: "flex"
+  },
+  hideOnHover: {
+    display: "table-cell"
   }
 });
 
@@ -163,11 +182,11 @@ class MenuTable extends React.Component {
               <col style={{ width: "56px" }} />
               <col style={{ width: "64px" }} />
               <col style={{ width: "200px" }} />
-              <col style={{ width: "324px" }} />
+              <col style={{ width: "316px" }} />
               <col style={{ width: "324px" }} />
               <col style={{ width: "80px" }} />
               <col style={{ width: "80px" }} />
-              <col style={{ width: "96px" }} />
+              <col style={{ width: "102px" }} />
             </colgroup>
             <MenuHeader
               numSelected={selected.length}
@@ -228,10 +247,22 @@ class MenuTable extends React.Component {
                         {item.ingredients}
                       </Typography>
                       <TableCell align="right">{item.amount}</TableCell>
-                      <TableCell align="right">
+                      <TableCell className={classes.hide} align="right">
                         {formatPrice(item.price)}
                       </TableCell>
-                      <TableCell align="right">{item.category.name}</TableCell>
+                      <TableCell className={classes.actions}>
+                        <div className={classes.actionsBtns}>
+                          <IconButton>
+                            <IconDelete fontSize="small" />
+                          </IconButton>
+                          <IconButton>
+                            <IconEdit fontSize="small" />
+                          </IconButton>
+                        </div>
+                      </TableCell>
+                      <TableCell className={classes.hideOnHover} align="right">
+                        {item.category.name}
+                      </TableCell>
                     </TableRow>
                   );
                 })}
