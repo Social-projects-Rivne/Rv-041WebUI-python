@@ -77,7 +77,4 @@ class User(Base):
         The method works as a trigger. The method makes the user active or inactive,
         depending on his current state of activity.
         """
-        if self.is_active:
-            self.is_active = False
-        else:
-            self.is_active = True
+        self.is_active = not self.is_active
