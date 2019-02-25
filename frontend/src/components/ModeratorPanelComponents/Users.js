@@ -94,10 +94,10 @@ function Users(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map(userInfo => {
+          {users.map((userInfo, id) => {
             if (userActivity.indexOf(userInfo.is_active) !== -1) {
               return (
-                <TableRow key={userInfo.id}>
+                <TableRow key={id}>
                   <TableCell component="th" scope="row">
                     {userInfo.name}
                   </TableCell>
@@ -105,8 +105,8 @@ function Users(props) {
                   <TableCell align="right">{userInfo.phone_number}</TableCell>
                   <TableCell align="right">{userInfo.birth_date}</TableCell>
                   {userStatus === "owners" ?  <TableCell align="right">
-                                                {userInfo.restaurants.map(restaurantName => {
-                                                  return(<Typography component="p">
+                                                {userInfo.restaurants.map((restaurantName, id) => {
+                                                  return(<Typography component="p" key={id}>
                                                     {restaurantName}
                                                   </Typography>);})}
                                               </TableCell>: null}

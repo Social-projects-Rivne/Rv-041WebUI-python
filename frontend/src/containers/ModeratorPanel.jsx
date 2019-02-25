@@ -189,7 +189,7 @@ class ModeratorPanel extends React.Component {
     fetch("http://localhost:6543/api/moderator", fetchInit)
       .then(response =>
         !(response.status >= 200 && response.status < 300)
-          ? Promise.reject(response.status)
+          ? Promise.reject.bind(Promise)
           : response.json()
       )
       .then(data =>

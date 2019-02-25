@@ -21,7 +21,7 @@ function RestaurantsForApproval(props) {
   return (
     <Grid className={classes.root} container spacing={16}>
       {unapprovedRestaurants.map(restaurantInfo => {
-        if (restaurantStatus.indexOf(restaurantInfo.status) !== -1 ) {
+        if (restaurantStatus.includes(restaurantInfo.status)) {
           return (
             <Grid item xs={12} md={6} lg={3} key={restaurantInfo.id}>
               <RestaurantForApproval

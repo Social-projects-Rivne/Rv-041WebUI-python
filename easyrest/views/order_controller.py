@@ -8,6 +8,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPForbidden, HTTPBadRequest
 from sqlalchemy.sql.expression import text
 
 from ..scripts.json_helpers import wrap
+from ..scripts.json_helpers import form_dict
 from ..models.order import Order
 from ..models.order_assoc import OrderAssoc
 from ..models.menu_item import MenuItem
@@ -446,4 +447,45 @@ def get_status(request):
         ],
         with_relations=["waiter"])
 
+    return wrap(data)
+
+
+@view_config(route_name='get_orders_info', renderer='json', request_method='GET')
+@restrict_access(user_types=["Client"])
+def get_user_order_list(request):
+    """Controller for get list of user's orders with full order information
+    Return:
+        [
+            Order.as_dict(), ...
+        ]
+    """
+    restaurant_status = request.matchdict['status']
+    if restaurant_status == "current":
+        statuses = [
+            "Draft",
+            "Waiting for confirm",
+            "Declined",
+            "Accepted",
+            "Asigned waiter",
+            "In progress",
+            "Failed",
+            "Waiting for feedback"]
+    elif restaurant_status == "history":
+        statuses = ["History", "Removed"]
+    else:
+        raise HTTPNotFound()
+    # TODO: need find out about function chains from Max, and after that - refactor this code
+    orders = request.dbsession.query(Order).filter(
+        Order.user_id == request.token.user.id, Order.status.in_(statuses)).all()
+    data = {}
+    data["statuses"] = statuses
+    order_keys = ("id", "date_created", "date_booked", "total_price", "status")
+    orders_data = []
+    for order in orders:
+        order_data = form_dict(order, order_keys, True, True)
+        order_data["restaurant"] = order.restaurant.name
+        order_items = order.get_items(request.dbsession)
+        order_data["items"] = order_items 
+        orders_data.append(order_data)
+    data["orders_data"] = orders_data
     return wrap(data)

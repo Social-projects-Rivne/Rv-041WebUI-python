@@ -4,6 +4,7 @@ import { Grid, Card, CardContent } from "@material-ui/core";
 import ProfileTabs from "../components/Profile/ProfileTabs";
 import MyRestaurants from "./MyRestaurants";
 import UserInfoPage from "./UserInfo";
+import OrderListPage from "./OrderListPage";
 import PageContainer from "./PageContainer";
 import { Route, Switch } from "react-router-dom";
 
@@ -19,6 +20,22 @@ const ProfilePage = props => {
                 <Route
                   path={`${match.url}/personal_info`}
                   component={UserInfoPage}
+                />
+                <Route
+                  path={`${match.url}/current_orders`}
+                  key="current"
+                  render={(props) => <OrderListPage 
+                    status="current"
+                    {...props}
+                  />}
+                />
+                <Route
+                  path={`${match.url}/order_history`}
+                  key="history"
+                  render={(props) => <OrderListPage
+                    status="history"
+                    {...props}
+                  />}
                 />
                 <Route
                   path={`${match.url}/restaurants`}
