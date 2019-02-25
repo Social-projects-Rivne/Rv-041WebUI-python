@@ -33,7 +33,7 @@ def login_post(request):
 
     if user is None or not pbkdf2_sha256.verify(password, user.password):
         raise HTTPForbidden("Email or password is invalid")
-    elif user.is_active is False:
+    elif not user.is_active:
         raise HTTPForbidden("Sorry, you have been blocked")
 
     token = remember(request, user)
