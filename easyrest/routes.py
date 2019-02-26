@@ -60,3 +60,4 @@ def includeme(config):
     config.add_route('user_update', 'user/{user_id:\d+}', request_method="PUT")
     config.add_route('user_delete', 'user/{user_id:\d+}', request_method="DELETE")
     config.add_route('toggle_activity', "user/toggle_activity/{user_id:\d+}", request_method="GET")
+    config.add_route('file_upload', 'file', request_method="POST")
