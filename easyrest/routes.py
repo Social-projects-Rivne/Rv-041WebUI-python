@@ -40,6 +40,8 @@ def includeme(config):
                      request_method="GET")
     config.add_route('moderator_manage_owners', 'moderator/owners',
                      request_method="POST")
+    config.add_route('waiter_manage_orders', 'waiter/orders',
+                     request_method=["GET", "POST"])
     config.add_route('user_restaurants', 'user_restaurants',
                      request_method=["GET", "POST"])
     config.add_route('user_restaurant', 'user_restaurant/{id:[1-9]\d*}',

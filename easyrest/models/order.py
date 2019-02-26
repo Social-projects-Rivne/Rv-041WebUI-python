@@ -160,6 +160,9 @@ class Order(Base):
         ("In progress", "Waiting for feedback"): {
             "roles": ["Waiter"],
         },
+        ("In progress", "History"): {
+            "roles": ["Waiter", "Client", "Owner", "Administrator"],
+        },
         ("Waiting for feedback", "History"): {
             "roles": ["Client", "Owner"],
         },

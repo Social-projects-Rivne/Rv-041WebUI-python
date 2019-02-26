@@ -12,6 +12,7 @@ import ProfilePage from "./containers/ProfilePage";
 import AppHeader from "./containers/AppHeader";
 import RestaurantManagmentPage from "./containers/RestaurantManagmentPage";
 import PrivateRoute from "./Service/PrivatRoute";
+import WaiterPanel from "./containers/WaiterPanel";
 
 const routes = [
   {
@@ -63,6 +64,11 @@ const routes = [
     path: "/moderator",
     component: ModeratorPanel,
     access: ["Moderator"]
+  },
+  {
+    path: "/waiter",
+    component: WaiterPanel,
+    access: ["Waiter"]
   }
 ];
 

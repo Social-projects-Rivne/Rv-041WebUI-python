@@ -71,8 +71,10 @@ class UserMenu extends React.Component {
 
   render() {
     const { auth, role, userName } = this.props.ctx;
+    const isClient = role === "Client";
     const isOwner = role === "Owner";
     const isModerator = role === "Moderator";
+    const isWaiter = role === "Waiter";
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const { classes, isLogIn, isSignUp } = this.props;
@@ -132,12 +134,21 @@ class UserMenu extends React.Component {
               open={open}
               onClose={this.handleClose}
             >
-              <MenuItem
-                component={Link}
-                to={isModerator ? `/moderator` : `/profile/personal_info`}
-              >
-                {isModerator ? "Moderator panel" : "My Profile"}
-              </MenuItem>
+              {isWaiter &&(
+                <MenuItem component={Link} to={"/waiter"}>
+                  Waiter panel
+                </MenuItem>
+              )}
+              {isModerator &&(
+                <MenuItem component={Link} to={"/moderator"}>
+                  Moderator panel
+                </MenuItem>
+              )}
+              {isClient &&(
+                <MenuItem component={Link} to={"/profile/personal_info"}>
+                  My Profile
+                </MenuItem>
+              )}
               {isOwner && (
                 <MenuItem component={Link} to="/profile/restaurants">
                   My restaurants

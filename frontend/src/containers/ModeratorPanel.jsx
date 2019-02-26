@@ -223,8 +223,6 @@ class ModeratorPanel extends React.Component {
   render() {
 
     const { isLoading, 
-      accessAllowed, 
-      error, 
       selectedItemName, 
       selectedStatus, 
       currentStatusAdditionalValues } = this.state;
