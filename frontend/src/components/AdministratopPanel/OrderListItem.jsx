@@ -8,9 +8,8 @@ import {
   CardContent,
   Grid
 } from "@material-ui/core/";
-import { amber, green } from "@material-ui/core/colors/";
 import { Link } from "react-router-dom";
-import RestaurantListItemMenu from "../../components/RestaurantList/RestaurantListItemMenu";
+
 
 const styles = theme => ({
   card: {
@@ -21,42 +20,25 @@ const styles = theme => ({
   itemName: {
     flex: 1
   },
-  media: {
-    flex: 1,
-    minWidth: theme.spacing.unit * 30,
-    minHeight: theme.spacing.unit * 30
-  },
   details: {
     flex: 9999,
     minWidth: "25em",
     display: "flex",
   },
-  tagItem: {
-    margin: theme.spacing.unit / 2
-  },
-  active: {
-    background: green[500]
-  },
-  notApproved: {
-    background: amber[700]
-  }
 });
 
-const restaurantStatus = {
-  0: ["NOT APPROVED", "notApproved"],
-  1: ["ACTIVE", "active"],
-  2: ["ARCHIVED"]
-};
-const OrderInfo ={
-  time: " 25.05.2019 19.00",
-  orderId : "1234",
-  name : "Vitalii Bondar",
-  price : "250$",
-  phone: "+380973232323",
-};
+function handlerChangeDate(date){
+  let u = new Date(date*1000);
+  return u.getUTCFullYear() +
+      '-' + ('0' + u.getUTCMonth()).slice(-2) +
+      '-' + ('0' + u.getUTCDate()).slice(-2) +
+      ' ' + ('0' + u.getUTCHours()).slice(-2) +
+      ':' + ('0' + u.getUTCMinutes()).slice(-2) +
+      ':' + ('0' + u.getUTCSeconds()).slice(-2)
+}
 
 function OrderListItem(props) {
-  const { classes, restData} = props;
+  const { classes, orderData} = props;
 
 
   return (
@@ -75,27 +57,27 @@ function OrderListItem(props) {
               variant="subtitle2"
               align="left"
             >
-              Order id #{OrderInfo.orderId}
+              Order id #{orderData.id}
             </Typography>
               <Typography
                   className={classes.itemName}
                   variant="subtitle2"
                   align="left"
               >
-                  Client: {OrderInfo.name}
+                  Client: {orderData.user.name}
               </Typography>
               <Typography
                   className={classes.itemName}
                   variant="subtitle2"
                   align="center"
               >
-                  Booking time: {OrderInfo.time}
+                  Creating time: {handlerChangeDate(orderData.creation_time)}
               </Typography>
               <Grid item>
                   <Button
                       variant="contained"
                       component={Link}
-                      to={"/administrator-panel/order/" + restData.id}
+                      to={"/administrator-panel/order/" + orderData.id}
                       color="primary"
                   >
                       Show more

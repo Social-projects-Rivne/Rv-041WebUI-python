@@ -45,7 +45,7 @@ def get_order(request, order_id, filter_list=False):
 
 
 @view_config(route_name='get_orders', renderer='json', request_method='GET')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Administrator"])
 def get_orders(request):
     """Controller for get list of user orders without items
     Return:
@@ -53,8 +53,9 @@ def get_orders(request):
             Order.as_dict(), ...
         ]
     """
-    orders = request.token.user.orders
-    data = [order.as_dict(exclude=["user_id", "rest_id"]) for order in orders]
+    orders = request.dbsession.query(Order).filter(Order.rest_id == Restaurant.id,
+                                                   Restaurant.administrator_id == request.token.user.id).all()
+    data = [order.as_dict(with_relations=["user"]) for order in orders]
     return wrap(data)
 
 
@@ -149,11 +150,11 @@ def parse_localStorage(request):
         "description": "Validate json inputs",
         "type": "object",
         "properties": {
-                "rest_id": {"type": "integer"},
-                "items": {"type": "array", "items": {
-                    "type": "integer",
-                    "minimum": 0
-                }}
+            "rest_id": {"type": "integer"},
+            "items": {"type": "array", "items": {
+                "type": "integer",
+                "minimum": 0
+            }}
         },
     }
 
@@ -196,8 +197,8 @@ def add_item(request):
         "description": "Validate json inputs",
         "type": "object",
         "properties": {
-                "q_value": {"type": "integer"},
-                "item_id": {"type": "integer"}
+            "q_value": {"type": "integer"},
+            "item_id": {"type": "integer"}
         },
         "required": ["q_value", "item_id"]
     }
@@ -389,9 +390,9 @@ def change_status(request):
 
     waiter_id = json.get("set_waiter_id", False)
     if waiter_id:
-        waiter = request.dbsession.query(User)\
-            .filter(User.restaurant_id == order.rest_id)\
-            .filter(User.id == waiter_id)\
+        waiter = request.dbsession.query(User) \
+            .filter(User.restaurant_id == order.rest_id) \
+            .filter(User.id == waiter_id) \
             .first()
     else:
         waiter = None
@@ -434,8 +435,14 @@ def get_status(request):
             "administrator_id",
             "restaurant_id",
             "password",
+            "email",
+            "birth_date",
+            "is_active"
         ],
-        with_relations=["waiter"])
+        with_relations=["waiter", "user"])
+    data.update({
+        "items": order.get_items(request.dbsession)
+    })
 
     return wrap(data)
 

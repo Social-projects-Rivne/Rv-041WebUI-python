@@ -6,7 +6,6 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-// import RestaurantListItem from "../../components/RestaurantList/RestaurantListItem";
 import OrderListItem from "./OrderListItem";
 import { Link } from "react-router-dom";
 
@@ -27,93 +26,55 @@ const styles = {
     }
 };
 
-class TagsTab extends React.Component {
+class AdministratorPanel extends React.Component {
     state = {
-        rests: []
+        orders: []
     };
 
     componentDidMount() {
-        fetch("http://localhost:6543/api/restaurant")
+        const headers = new Headers({
+            "Content-Type": "application/json",
+            "X-Auth-Token": localStorage.getItem("token")
+        });
+        const fetchInit = {
+            method: "GET",
+            headers: headers,
+        };
+        fetch("http://localhost:6543/api/orders", fetchInit)
             .then(response => response.json())
             .then(data => {
-                this.setState({ rests: data.data });
+                this.setState({ orders: data.data });
             })
             .catch(err => console.log(err));
-    }
 
-    handleGetTags = rests => {
-        let tagNames = [];
-        rests.map(rest =>
-            rest.tags.map(tag => {
-                if (!tagNames.includes(tag.name)) tagNames.push(tag.name);
-                return "";
-            })
-        );
-        return tagNames;
-    };
+    }
 
     render() {
         const { classes } = this.props;
         let value = 0;
-        const tagNames = this.handleGetTags(this.state.rests);
-        let params = new URLSearchParams(this.props.url.location.search).get("tag");
-
-        if (params !== null) {
-            value = params;
-        }
-
         return (
             <div className={classes.root}>
                 <AppBar position="static">
                     <Tabs value={value} variant="scrollable" scrollButtons="on">
                         <Tab label="New Orders" component={Link} to={{ search: "" }} />
                         {/*<Tab label="Waiters"  />*/}
-                        {/*{tagNames.map(i => {*/}
-                            {/*return (*/}
-                                {/*<Tab*/}
-                                    {/*key={i}*/}
-                                    {/*component={Link}*/}
-                                    {/*to={{ search: `?tag=${i}` }}*/}
-                                    {/*label={i}*/}
-                                    {/*value={i}*/}
-                                {/*/>*/}
-                            {/*);*/}
-                        {/*})}*/}
                     </Tabs>
                 </AppBar>
-                {value === 0 && params === null && (
-                    <TabContainer>
-                        {this.state.rests.map(rest => {
-                            return <Grid className={classes.item}>
-                                <OrderListItem restData={rest} />
-                            </Grid>;
-                        })}
-                    </TabContainer>
-                )}
-                {tagNames.map(i => {
-                    if (value === i && params === i) {
-                        return (
-                            <TabContainer key={i}>
-                                {this.state.rests.map(rest => {
-                                    if (rest.tags.filter(p => p.name === value).length !== 0) {
-                                        return <Grid className={classes.item}>
-                                            <OrderListItem restData={rest} />
+                            <TabContainer>
+                                {this.state.orders.map(order => {
+                                        return <Grid key={order.id} className={classes.item}>
+                                            <OrderListItem  orderData={order} />
                                         </Grid>;
-                                    }
-                                    return "";
+
                                 })}
                             </TabContainer>
-                        );
-                    }
-                    return "";
-                })}
             </div>
         );
     }
 }
 
-TagsTab.propTypes = {
+AdministratorPanel.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(TagsTab);
+export default withStyles(styles)(AdministratorPanel);

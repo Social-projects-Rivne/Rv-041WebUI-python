@@ -12,6 +12,7 @@ import {
 import NativeSelect from '@material-ui/core/NativeSelect';
 import { Link } from "react-router-dom";
 import { amber, green, red } from "@material-ui/core/colors/index";
+import OrderItemsList from "../MenuPage/OrderItemsList";
 
 const styles = theme => ({
     root: {},
@@ -59,7 +60,28 @@ const deleteStatus = 2;
 // }
 
 class OrderItem extends React.Component {
+    state = {
+        rests: []
+    };
+    componentDidMount() {
+        const headers = new Headers({
+            "Content-Type": "application/json",
+            "X-Auth-Token": localStorage.getItem("token")
+        });
+        const fetchInit = {
+            method: "GET",
+            headers: headers,
+        };
+        fetch(`http://localhost:6543/api/order/${window.location.pathname.match(/\d+/)[0]}/status`, fetchInit)
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ rests: data.data });
+            })
+            .catch(err => console.log(err));
+    }
     render() {
+        console.log(window.location.pathname.match(/\d+/)[0]);
+        console.log(this.state.rests.items);
         const { classes, auth, ableUpdate } = this.props;
         const restInfo ={
             title: "sometext",
@@ -71,6 +93,7 @@ class OrderItem extends React.Component {
             dateCreate: "27.02.2019 17.42"
 
         };
+        const list = this.state.rests.items || [];
         return (
             <Card className={classes.card}>
                 <CardContent>
@@ -154,9 +177,10 @@ class OrderItem extends React.Component {
                             </Button>
                         </Grid>
                     </Grid>
-
+                    <OrderItemsList cartItems={list}/>
                 </CardContent>
             </Card>
+
         );
     }
 }
