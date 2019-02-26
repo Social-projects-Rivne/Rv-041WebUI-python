@@ -85,6 +85,8 @@ class User(Base):
             "properties": {
                 "name": {"type": "string"},
                 "email": {"type": "string", "format": "email"},
+                "phone_number": {"format": "string"},
+                "birth_date": {"format": "string"},
                 "password": {"type": "string", "minLength": 8}
             },
             "required": ["name", "email", "password"]
@@ -97,8 +99,12 @@ class User(Base):
         name = form_data['name']
         password = form_data['password']
         password_hash = pbkdf2_sha256.hash(password)
+        phone_number = form_data['phone_number']
+        birth_date = form_data['birth_date']
 
-        database.add(User(name=name, email=email, password=password_hash, role_id=role))
+        database.add(User(name=name, email=email, phone_number=phone_number,
+                          birth_date=birth_date, password=password_hash, role_id=role))
+        # TODO: Refactor database.add
 
     @staticmethod
     def update(database, user, form_data):
