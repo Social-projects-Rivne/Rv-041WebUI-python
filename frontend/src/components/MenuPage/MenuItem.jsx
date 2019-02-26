@@ -129,9 +129,7 @@ class MenuItem extends React.Component {
                   />
                 </Grid>
                 <Grid item xs={2} className={classes.borderLeft}>
-                  <Typography>
-                    {(price / 100) * this.state.quantity + "$"}
-                  </Typography>
+                  <Typography>{price * this.state.quantity + "$"}</Typography>
                 </Grid>
               </Grid>
               <Divider variant="fullWidth" />

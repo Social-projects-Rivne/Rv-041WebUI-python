@@ -144,3 +144,11 @@ class User(Base):
 
         database.query(User).filter_by(id=user.id)\
             .update({'name': name, 'email': new_email, 'phone_number': phone_number, 'birth_date': birth_date})
+
+    def toggle_activity(self):
+        """Method to switch field state `is_active`.
+
+        The method works as a trigger. The method makes the user active or inactive,
+        depending on his current state of activity.
+        """
+        self.is_active = not self.is_active
