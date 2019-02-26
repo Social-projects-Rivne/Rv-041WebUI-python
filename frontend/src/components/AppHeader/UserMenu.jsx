@@ -68,6 +68,7 @@ class UserMenu extends React.Component {
     const { auth, role, userName } = this.props.ctx;
     const isOwner = role === "Owner";
     const isModerator = role === "Moderator";
+    const isAdministrator =role === "Administrator";
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const { classes, isLogIn, isSignUp } = this.props;
@@ -135,9 +136,14 @@ class UserMenu extends React.Component {
               </MenuItem>
               {isOwner && (
                 <MenuItem component={Link} to="/profile/restaurants">
-                  My restaurants
+                    My restaurants
                 </MenuItem>
-              )}
+            )}
+                {isAdministrator && (
+                    <MenuItem component={Link} to="/administrator-panel">
+                        Administrator panel
+                    </MenuItem>
+                )}
               <Divider />
               <MenuItem onClick={this.handleLogout}>Log Out</MenuItem>
             </Menu>
