@@ -215,7 +215,7 @@ def fill_db(session):
 
     # Example orders
     order = Order(creation_time=int(time.time()), status="Draft")
-    user = user_model[-6]
+    user = user_model[0]
     user.orders.append(order)
     items = Rest_models[-1].menu[0].menu_items[0:10]
     user.orders[-1].items.append(OrderAssoc(quantity=1))
@@ -233,7 +233,7 @@ def fill_db(session):
     user.orders[-1].items[4].food = items[4]
     user.orders[-1].items[-1].food = items[5]
     order = Order(creation_time=int(time.time()), status="Draft")
-    user = user_model[-6]
+    user = user_model[0]
     user.orders.append(order)
     items = Rest_models[-1].menu[0].menu_items[0:10]
     user.orders[-1].items.append(OrderAssoc(quantity=10))
