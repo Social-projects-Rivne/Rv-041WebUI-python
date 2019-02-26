@@ -1,6 +1,7 @@
 import React from "react";
 import {
-	Grid
+	Grid,
+  Divider,
 } from '@material-ui/core';
 import Order from "./Order"
 import { withStyles } from '@material-ui/core/styles';
@@ -26,6 +27,7 @@ function Orders(props) {
 							order={order}
 							changeOrderStatus={changeOrderStatus}
 						/>
+						<Divider />
 					</Grid>
 				);
 			})}

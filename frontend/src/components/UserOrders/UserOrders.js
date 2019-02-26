@@ -49,7 +49,8 @@ function UserOrders(props) {
     return (
         <div className={classes.root}>
           {orders.map((orderInfo, index) => {
-            const date = new Date(orderInfo.creation_time * 1000);
+            const creation_time = new Date(orderInfo.creation_time * 1000);
+            const booked_time = new Date(orderInfo.booked_time * 1000);
             const orderItems = orderInfo.items;
             //extract photo to make icons
             let iconsArray = [];
@@ -70,7 +71,8 @@ function UserOrders(props) {
                     </Grid>
                     <Grid item key={2} xs={6} sm={2}>
                       <Typography className={classes.secondaryHeading}>
-                        {String(date.toISOString().slice(0, 10))}
+                        {"Created: " + String(creation_time.toISOString().slice(0, 10))} <br/>
+                        {"Booked for: " + String(booked_time.toISOString().slice(0, 10))}
                       </Typography>
                     </Grid>
                     <Grid item key={3} xs={6} sm={2}>
