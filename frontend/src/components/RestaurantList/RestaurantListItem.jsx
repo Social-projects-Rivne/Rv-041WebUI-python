@@ -57,7 +57,7 @@ function RestaurantListItem(props) {
     <Card className={classes.card}>
       <CardMedia
         className={classes.media}
-        image="https://media-cdn.tripadvisor.com/media/photo-f/04/43/20/9c/whisky-corner.jpg"
+        image={restData.image}
         title={restData.name}
       />
       <CardContent className={classes.details}>

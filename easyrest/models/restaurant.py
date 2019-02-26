@@ -48,6 +48,7 @@ class Restaurant(Base):
     administrator_id = Column(Integer, ForeignKey('users.id'))
     status = Column(Integer, default=0)
     creation_date = Column(Integer)
+    image = Column(Text)
 
     menu = relationship("Menu")
     owner = relationship("User", foreign_keys="[Restaurant.owner_id]")
