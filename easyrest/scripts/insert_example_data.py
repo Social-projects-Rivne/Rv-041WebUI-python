@@ -8,7 +8,9 @@ from passlib.hash import pbkdf2_sha256
 
 from tags_data import Tags
 from ..models import Tag, Menu, Restaurant, MenuItem, User, UserRole, Category, Order, OrderAssoc
-from menu_data import Menus, Categories, Meals, Images
+from menu_data import Menus, Categories, Images
+from new_menu_items import Menu_items as Meals
+import rest_data
 
 
 def fill_db(session):
@@ -69,19 +71,30 @@ def fill_db(session):
     rest_status = 0
 
     Cat_models = [Category(**cat) for cat in Categories]
+
     meals_len = len(Meals)
+    used_images = []
 
     for i in range(10):
         if rest_status == 3:
             rest_status = 0
         company_name = fake.company()
+
+        key = True
+        while key:
+            img_index = randint(0, len(rest_data.Images)-1)
+            if img_index not in used_images:
+                used_images.append(img_index)
+                key = False
+
         rest = {
             "name": company_name,
             "address_id": fake.address(),
             "description": fake.text(max_nb_chars=200),
             "phone": "+380362" + str(100000 + i),
             "status": rest_status,
-            "creation_date": int(time.time())
+            "creation_date": int(time.time()),
+            "image": rest_data.Images[img_index]
         }
         rest_status = rest_status + 1
 
@@ -90,22 +103,21 @@ def fill_db(session):
         Menu_models = [Menu(**menu_dict) for menu_dict in Menus]
 
         Menu_items_all_cat = []
-        for cat_model in Cat_models:
-            menu_item_number = randint(0, 10)
-            Menu_item_models = []
-            for j in range(menu_item_number):
-                menu_item = Meals[randint(0, meals_len-1)]
-                menu_item.update({
-                    "price": randrange(50, 10000, 5),
-                    "amount": round(uniform(0, 10), 1)
-                })
-                menu_item_model = MenuItem(**menu_item)
-                menu_item_model.category = cat_model
-                Menu_item_models.append(menu_item_model)
+        menu_item_number = randint(10, 15)
+        Menu_item_models = []
+        for j in range(menu_item_number):
+            menu_item = Meals[randint(0, meals_len-1)]
+            menu_item["category_id"]
+            menu_item.update({
+                "price": randrange(50, 10000, 5),
+                "amount": round(uniform(0, 10), 1)
+            })
+            menu_item_model = MenuItem(**menu_item)
+            menu_item_model.category = Cat_models[menu_item["category_id"]]
+            Menu_item_models.append(menu_item_model)
 
-            Menu_items_all_cat.extend(Menu_item_models)
-        Menu_models[0].menu_items = Menu_items_all_cat
-        Menu_models[1].image = Images[randint(0, len(Images) - 1)]
+        Menu_models[0].menu_items = Menu_item_models
+        Menu_models[1].image = Images[randint(0, len(Images)-1)]
 
         # using model relationship defined in models.restaurant
         # asign menu to restaurant
@@ -189,7 +201,8 @@ def fill_db(session):
     user_model.append(waiter2)
 
     Rest_models[-1].waiters.extend([waiter1, waiter2])
-    Rest_models[-1].administrator = administrator
+    for rest_model in Rest_models:
+        rest_model.administrator = administrator
 
     user_name = fake.name()
     waiter = User(name="Stepan the Waiter",
@@ -202,7 +215,7 @@ def fill_db(session):
 
     # Example orders
     order = Order(creation_time=int(time.time()), status="Draft")
-    user = user_model[-6]
+    user = user_model[0]
     user.orders.append(order)
     items = Rest_models[-1].menu[0].menu_items[0:10]
     user.orders[-1].items.append(OrderAssoc(quantity=1))
@@ -220,7 +233,7 @@ def fill_db(session):
     user.orders[-1].items[4].food = items[4]
     user.orders[-1].items[-1].food = items[5]
     order = Order(creation_time=int(time.time()), status="Draft")
-    user = user_model[-6]
+    user = user_model[0]
     user.orders.append(order)
     items = Rest_models[-1].menu[0].menu_items[0:10]
     user.orders[-1].items.append(OrderAssoc(quantity=10))

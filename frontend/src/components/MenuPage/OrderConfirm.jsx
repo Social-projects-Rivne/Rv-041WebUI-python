@@ -1,35 +1,50 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Slide from "@material-ui/core/Slide";
 import "date-fns";
-import Grid from "@material-ui/core/Grid";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  withStyles,
+  Slide,
+  Grid,
+  Typography
+} from "@material-ui/core";
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
   TimePicker,
   DatePicker
 } from "material-ui-pickers";
+import OrderItemsList from "./OrderItemsList";
+
+const styles = theme => ({
+  dialog: {
+    width: "900px",
+    margin: "auto"
+  }
+});
 
 function Transition(props) {
-  return <Slide direction="right" {...props} />;
+  return <Slide direction="left" {...props} />;
 }
 
-class AlertDialogSlide extends React.Component {
+class OrderConfirmDialog extends React.Component {
   state = {
-    open: false,
     selectedDate: new Date()
   };
 
-  handleClickToggle = () => {
-    this.setState({ open: !this.state.open });
-  };
-
   handleDateChange = date => {
-    this.setState({ selectedDate: date });
+    if (date - this.state.selectedDate < 0) {
+      this.props.handleSnackbarMessage(
+        "Sorry, you can`t pick past book time",
+        "error"
+      );
+    } else {
+      this.props.handleSnackbarMessage("Book time selected", "info");
+      this.setState({ selectedDate: date });
+    }
   };
 
   render() {
@@ -38,25 +53,21 @@ class AlertDialogSlide extends React.Component {
 
     return (
       <div>
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={this.handleClickToggle}
-        >
-          Slide in alert dialog
-        </Button>
         <Dialog
-          open={this.state.open}
+          open={this.props.open}
           TransitionComponent={Transition}
           keepMounted
-          onClose={this.handleClickToggle}
+          maxWidth={false}
+          className={classes.dialog}
+          onClose={this.props.handleClickToggle}
           aria-labelledby="alert-dialog-slide-title"
           aria-describedby="alert-dialog-slide-description"
         >
           <DialogTitle id="alert-dialog-slide-title">
-            {"Please chose date or skip"}
+            {"Order confirmation"}
           </DialogTitle>
           <DialogContent>
+            <Typography variant="h6">{"Please chose date"}</Typography>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <Grid container className={classes.grid} justify="space-around">
                 <DatePicker
@@ -73,16 +84,26 @@ class AlertDialogSlide extends React.Component {
                 />
               </Grid>
             </MuiPickersUtilsProvider>
+            <OrderItemsList
+              cartItems={this.props.cartItems}
+              handleDialogToggle={this.props.handleDialogToggle}
+              handleRemoveItem={this.props.handleRemoveItem}
+              handleQuantityChange={this.props.handleQuantityChange}
+              controls
+            />
           </DialogContent>
+
           <DialogActions>
-            <Button onClick={this.handleClickToggle} color="primary">
+            <Button onClick={this.props.handleDialogToggle} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.props.sendSubmitOrder} color="primary">
-              Skip
-            </Button>
-            <Button onClick={this.props.sendSubmitOrder} color="primary">
-              Skip
+            <Button
+              onClick={() =>
+                this.props.sendSubmitOrder(this.state.selectedDate)
+              }
+              color="primary"
+            >
+              Submit
             </Button>
           </DialogActions>
         </Dialog>
@@ -91,4 +112,4 @@ class AlertDialogSlide extends React.Component {
   }
 }
 
-export default AlertDialogSlide;
+export default withStyles(styles)(OrderConfirmDialog);

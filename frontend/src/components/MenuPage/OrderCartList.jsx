@@ -25,6 +25,7 @@ class OrderCartList extends React.Component {
               <OrderCartItem
                 item={item}
                 key={item.name + index}
+                index={index}
                 handleRemoveItem={this.props.handleRemoveItem}
                 handleQuantityChange={this.props.handleQuantityChange}
               />
@@ -36,7 +37,7 @@ class OrderCartList extends React.Component {
               variant="contained"
               color="primary"
               className={classes.submitButton}
-              onClick={this.props.sendSubmitOrder}
+              onClick={this.props.handleDialogToggle}
             >
               {"Submit order"}
             </Button>

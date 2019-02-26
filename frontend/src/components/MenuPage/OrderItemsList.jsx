@@ -1,6 +1,6 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import PropTypes from 'prop-types';
+import React from "react";
+import { withStyles } from "@material-ui/core/styles";
+import PropTypes from "prop-types";
 import {
   Paper,
   Table,
@@ -9,40 +9,38 @@ import {
   TableBody,
   TableRow,
   TextField,
-  IconButton
-} from '@material-ui/core';
+  IconButton,
+  Typography
+} from "@material-ui/core";
 import { Clear } from "@material-ui/icons";
 
 const styles = theme => ({
   root: {
-    width: '100%',
+    width: "100%",
     marginTop: theme.spacing.unit * 3,
-    overflowX: 'auto',
-  },
-  table: {
-    minWidth: 700,
-  },
+    overflowX: "auto"
+  }
 });
 
 function priceRow(qty, unit) {
-  return (qty * unit).toFixed(2);
+  return (unit * qty).toFixed(2);
 }
 
 function priceTotal(items) {
-  return items.map(({ price, quantity }) => price * quantity)
-              .reduce((sum, i) => sum + i, 0)
-              .toFixed(2);
+  return items
+    .map(({ price, quantity }) => price * quantity)
+    .reduce((sum, i) => sum + i, 0)
+    .toFixed(2);
 }
 
 function OrderItemsList(props) {
   const { classes, cartItems, controls } = props;
   return (
-    <Paper className={classes.root}>
+    <Paper className={classes.root} elevation="0">
+      <Typography variant="h6">{"Order summary"}</Typography>
       <Table className={classes.table}>
         <TableHead>
-          {controls && (
-            <TableCell>Action</TableCell>
-          )}
+          {controls && <TableCell>Action</TableCell>}
           <TableCell>Item name</TableCell>
           <TableCell>Volume</TableCell>
           <TableCell>Price per item, $</TableCell>
@@ -64,39 +62,51 @@ function OrderItemsList(props) {
                     </IconButton>
                   </TableCell>
                 )}
-                <TableCell >{row.name}</TableCell>
+                <TableCell>{row.name}</TableCell>
                 <TableCell align="right">{row.amount}</TableCell>
                 <TableCell align="right">{row.price}</TableCell>
                 {controls && (
-                  <TextField
-                    value={row.quantity}
-                    onChange={(event) => props.handleQuantityChange(event, row.quantity, row.id, true, index)}
-                    type="number"
-                    className={classes.textField}
-                  />
+                  <TableCell>
+                    <TextField
+                      value={row.quantity}
+                      onChange={event =>
+                        props.handleQuantityChange(
+                          event,
+                          row.quantity,
+                          row.id,
+                          true,
+                          index
+                        )
+                      }
+                      type="number"
+                      className={classes.textField}
+                    />
+                  </TableCell>
                 )}
                 {!controls && (
                   <TableCell align="right">{row.quantity}</TableCell>
                 )}
-                <TableCell align="right">{priceRow(row.quantity, row.price)}</TableCell>
+                <TableCell align="right">
+                  {priceRow(row.quantity, row.price)}
+                </TableCell>
               </TableRow>
-          )})}
-           <TableRow>
+            );
+          })}
+          <TableRow>
             <TableCell colSpan={controls ? 4 : 3} />
             <TableCell>Total:</TableCell>
             <TableCell align="right">{priceTotal(cartItems) + "$"}</TableCell>
           </TableRow>
-         </TableBody>
+        </TableBody>
       </Table>
     </Paper>
-  )
+  );
 }
 
 OrderItemsList.propTypes = {
   classes: PropTypes.object.isRequired,
   cartItems: PropTypes.array.isRequired,
-  controls: PropTypes.bool.isRequired,
+  controls: PropTypes.bool.isRequired
 };
 
 export default withStyles(styles)(OrderItemsList);
-

@@ -76,7 +76,7 @@ class RestaurantsForApprovalPage extends Component {
     fetch("http://localhost:6543/api/moderator/restaurants", fetchInit)
       .then(response =>
         !(response.status >= 200 && response.status < 300)
-          ? Promise.reject(response.status)
+          ? Promise.reject.bind(Promise)
           : response.json()
       )
       .then(data =>
@@ -150,7 +150,7 @@ class RestaurantsForApprovalPage extends Component {
       const tagValue = tagsValues[tagName];
       for (let i = 0; i < data.length; i++) {
         const info = data[i];
-        if (tagValue.indexOf(info.status) != -1) {
+        if (tagValue.includes(info.status)) {
           quantity = quantity + 1;
         }
       }

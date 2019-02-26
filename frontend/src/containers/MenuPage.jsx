@@ -18,7 +18,8 @@ import OrderCartList from "../components/MenuPage/OrderCartList";
 import GeneralError from "../components/ErrorPages/GeneralError";
 import classnames from "classnames";
 import SnackbarContent from "../components/SnackbarContent";
-import OrderItemsList from "../components/MenuPage/OrderItemsList";
+import OrderConfirmDialog from "../components/MenuPage/OrderConfirm";
+import { Redirect } from "react-router";
 
 const styles = theme => ({
   image: { height: "100%", backgroundSize: "contain" },
@@ -59,7 +60,8 @@ class MenuPage extends React.Component {
     isSnackbarOpen: false,
     orderDate: null,
     restaurantName: "",
-    isDialogOpen: true
+    isDialogOpen: false,
+    redirectToLogin: false
   };
 
   componentDidMount() {
@@ -89,36 +91,71 @@ class MenuPage extends React.Component {
             restaurantName: json.data.restaurantName
           });
         }
-      })
-      .then(
-        fetch("http://localhost:6543/api/order?rest_id=" + restId, {
-          headers: {
-            "Content-Type": "application/json",
-            "x-auth-token": localStorage.getItem("token")
-          }
-        })
-          .then(response =>
-            response.status === 404 || response.status === 403
-              ? Promise.reject(response)
-              : response.json()
-          )
-          .then(json => {
-            if (json.data.items.length > 0) {
-              this.setState({
-                cartItems: json.data.items,
-                SnackbarMsg: "Cart synchronized",
-                isSnackbarOpen: true,
-                SnackbarType: "info"
-              });
-            }
-            localStorage.setItem("OrderId", json.data.id || null);
-          })
-          .catch(error => {
-            localStorage.setItem("OrderId", null);
-          })
-      );
+      });
+    this.handleSynch(restId);
   }
-  sendAddItem = (item, orderId) => {
+
+  handleSynch = restId => {
+    const cart = localStorage.getItem("Cart");
+    const orderId = localStorage.getItem("OrderId");
+    const token = localStorage.getItem("token");
+    const storageRestId = localStorage.getItem("RestId");
+
+    if (cart && orderId == "Local" && storageRestId == restId) {
+      this.setState(
+        {
+          cartItems: JSON.parse(cart),
+          SnackbarMsg: "Cart synchronized",
+          isSnackbarOpen: true,
+          SnackbarType: "info"
+        },
+        () => {
+          localStorage.removeItem("Cart");
+          if (token) {
+            this.handleAddItem(JSON.parse(cart));
+          }
+        }
+      );
+    } else {
+      if (token != null) {
+        this.sendSynch(restId, token);
+      } else {
+        localStorage.setItem("OrderId", "Local");
+      }
+    }
+  };
+
+  sendSynch = (restId, token) => {
+    fetch("http://localhost:6543/api/order?rest_id=" + restId, {
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": localStorage.getItem("token")
+      }
+    })
+      .then(response => {
+        return [404, 403, 400].includes(response.status)
+          ? response.json().then(Promise.reject.bind(Promise))
+          : response.json();
+      })
+      .then(json => {
+        if (json.data.items.length > 0) {
+          this.setState({
+            cartItems: json.data.items,
+            SnackbarMsg: "Cart synchronized",
+            isSnackbarOpen: true,
+            SnackbarType: "info"
+          });
+        }
+        localStorage.setItem("OrderId", json.data.id);
+        localStorage.removeItem("Cart");
+        localStorage.removeItem("RestId");
+      })
+      .catch(error => {
+        localStorage.setItem("OrderId", "Local");
+      });
+  };
+
+  sendAddItem = (item, orderId, push = true) => {
     fetch("http://localhost:6543/api/order/" + orderId, {
       method: "POST",
       headers: {
@@ -130,18 +167,26 @@ class MenuPage extends React.Component {
         q_value: item.quantity
       })
     })
-      .then(response =>
-        [404, 403, 400].includes(response.status)
-          ? response.json().then(Promise.reject())
-          : response.json()
-      )
+      .then(response => {
+        [404, 400].includes(response.status)
+          ? response.json().then(Promise.reject.bind(Promise))
+          : response.json();
+      })
       .then(json => {
-        this.setState({
-          cartItems: [...this.state.cartItems, item],
-          SnackbarMsg: "Item was added",
-          isSnackbarOpen: true,
-          SnackbarType: "success"
-        });
+        if (push) {
+          this.setState({
+            cartItems: [...this.state.cartItems, item],
+            SnackbarMsg: "Item was added",
+            isSnackbarOpen: true,
+            SnackbarType: "success"
+          });
+        } else {
+          this.setState({
+            SnackbarMsg: "Item was added",
+            isSnackbarOpen: true,
+            SnackbarType: "success"
+          });
+        }
       })
       .catch(error =>
         this.setState({
@@ -153,37 +198,42 @@ class MenuPage extends React.Component {
   };
 
   sendCreateOrder = item => {
-    const orderId = localStorage.getItem("OrderId");
-    if (orderId === "null" || orderId === "undefined") {
-      fetch("http://localhost:6543/api/order", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-auth-token": localStorage.getItem("token")
-        },
-        body: JSON.stringify({
-          rest_id: this.props.match.params.restId
-        })
+    fetch("http://localhost:6543/api/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": localStorage.getItem("token")
+      },
+      body: JSON.stringify({
+        rest_id: this.props.match.params.restId
       })
-        .then(response =>
-          [404, 403, 400].includes(response.status)
-            ? response.json().then(Promise.reject())
-            : response.json()
-        )
-        .then(json => {
+    })
+      .then(response => {
+        return [404, 400].includes(response.status)
+          ? response.json().then(Promise.reject.bind(Promise))
+          : response.json();
+      })
+      .then(json => {
+        if (json.data.order_id) {
           localStorage.setItem("OrderId", json.data.order_id);
-          this.sendAddItem(item, json.data.order_id);
+          if (Array.isArray(item)) {
+            item.forEach(i => {
+              this.sendAddItem(i, json.data.order_id, false);
+            });
+          } else {
+            this.sendAddItem(item, json.data.order_id);
+          }
+        } else {
+          this.AddItemUnauth(item);
+        }
+      })
+      .catch(error =>
+        this.setState({
+          SnackbarMsg: error.error || "Somethind went wrong",
+          isSnackbarOpen: true,
+          SnackbarType: "error"
         })
-        .catch(error =>
-          this.setState({
-            SnackbarMsg: error.error || "Somethind went wrong",
-            isSnackbarOpen: true,
-            SnackbarType: "error"
-          })
-        );
-    } else {
-      this.sendAddItem(item, orderId);
-    }
+      );
   };
 
   handleSnackbarClose = (event, reason) => {
@@ -191,6 +241,14 @@ class MenuPage extends React.Component {
       return;
     }
     this.setState({ isSnackbarOpen: false });
+  };
+
+  handleSnackbarMessage = (msg, type) => {
+    this.setState({
+      SnackbarMsg: msg,
+      isSnackbarOpen: true,
+      SnackbarType: type
+    });
   };
 
   getCartItemIds = () => {
@@ -204,12 +262,54 @@ class MenuPage extends React.Component {
   };
 
   handleAddItem = item => {
-    this.sendCreateOrder(item);
+    const orderId = localStorage.getItem("OrderId");
+    const token = localStorage.getItem("token");
+    if (orderId == "Local") {
+      if (token != null) {
+        this.sendCreateOrder(item);
+      } else {
+        this.AddItemUnauth(item);
+      }
+    } else {
+      if (Array.isArray(item)) {
+        item.forEach(i => {
+          this.sendAddItem(i, orderId, false);
+        });
+      } else {
+        this.sendAddItem(item, orderId);
+      }
+    }
     this.setState(state => ({ isCartOpen: true }));
+  };
+
+  AddItemUnauth = item => {
+    localStorage.setItem("OrderId", "Local");
+    const { restId } = this.props.match.params;
+    localStorage.setItem("RestId", restId);
+    this.setState({
+      cartItems: [...this.state.cartItems, item],
+      SnackbarMsg: "Item was added",
+      isSnackbarOpen: true,
+      SnackbarType: "success"
+    });
   };
 
   handleRemoveItem = itemId => {
     const orderId = localStorage.getItem("OrderId");
+
+    if (orderId == "Local") {
+      const nextCart = this.state.cartItems.filter(item => {
+        return item.id != itemId;
+      });
+      this.setState({
+        cartItems: nextCart,
+        SnackbarMsg: "Item was removed",
+        isSnackbarOpen: true,
+        SnackbarType: "success"
+      });
+      return null;
+    }
+
     fetch("http://localhost:6543/api/order/" + orderId, {
       method: "DELETE",
       headers: {
@@ -221,7 +321,7 @@ class MenuPage extends React.Component {
       })
     })
       .then(response =>
-        [404, 403, 400].includes(response.status)
+        [404, 400].includes(response.status)
           ? response.json().then(Promise.reject())
           : response.json()
       )
@@ -247,24 +347,46 @@ class MenuPage extends React.Component {
 
   QuantityTimeOut = false;
 
-  handleQuantityChange = (event, quantity, itemId, inList=false, inListIndex) => {
-    const quantity1 = parseInt(event.target.value);
+  handleQuantityChange = (
+    event,
+    quantity,
+    itemId,
+    inList = false,
+    inListIndex = 0
+  ) => {
+    let quantity1 = parseInt(event.target.value);
     if (inList) {
       const newItems = this.state.cartItems.map((item, index) => {
         if (index == inListIndex) {
-          item.quantity = quantity1;
-          return item
+          if (quantity1 >= 1) {
+            item.quantity = quantity1;
+            return item;
+          } else {
+            item.quantity = 1;
+            return item;
+          }
         } else {
-          return item
+          return item;
         }
       });
-      this.setState({cartItems: newItems});
+      this.setState({ cartItems: newItems });
     }
     const orderId = localStorage.getItem("OrderId");
+    if (!(quantity1 >= 1)) {
+      quantity1 = 1;
+    }
     this.sendQuantityChange(orderId, quantity1, itemId);
   };
 
   sendQuantityChange = (orderId, quantity, itemId) => {
+    if (orderId == "Local") {
+      this.setState({
+        SnackbarMsg: "Quantity changed to " + quantity,
+        isSnackbarOpen: true,
+        SnackbarType: "success"
+      });
+      return null;
+    }
     fetch("http://localhost:6543/api/order/" + orderId, {
       method: "PUT",
       headers: {
@@ -277,8 +399,8 @@ class MenuPage extends React.Component {
       })
     })
       .then(response =>
-        [404, 403, 400].includes(response.status)
-          ? response.json().then(Promise.reject())
+        [404, 400].includes(response.status)
+          ? response.json().then(Promise.reject.bind(Promise))
           : response.json()
       )
       .then(json => {
@@ -297,34 +419,35 @@ class MenuPage extends React.Component {
       });
   };
 
-  sendSubmitOrder = date => {
+  sendSubmitOrder = inDate => {
     const orderId = localStorage.getItem("OrderId");
-    // let body1 = null;
-    // if (date) {
-    //   body1 = Object.assign({ action: "Submit" }, { book_date: date });
-    // } else {
-    //   body1 = { action: "Submit" };
-    // }
-    // console.log(body1);
     fetch("http://localhost:6543/api/order/" + orderId + "/status", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "x-auth-token": localStorage.getItem("token")
       },
-      body: JSON.stringify({ action: "Submit" })
+      body: JSON.stringify({
+        new_status: "Waiting for confirm",
+        booked_time: Math.round(inDate / 1000)
+      })
     })
-      .then(response =>
-        [404, 403, 400].includes(response.status)
-          ? response.json().then(Promise.reject())
-          : response.json()
-      )
+      .then(response => {
+        if ([404, 403, 400].includes(response.status)) {
+          return response.json().then(json => {
+            throw json;
+          });
+        } else {
+          return response.json();
+        }
+      })
       .then(json => {
-        localStorage.setItem("OrderId", null);
+        localStorage.setItem("OrderId", "Local");
         this.setState({
           cartItems: [],
           isCartOpen: false,
-          SnackbarMsg: "Order status changed to " + json.data,
+          isDialogOpen: false,
+          SnackbarMsg: "Order status changed to " + json.data.status,
           isSnackbarOpen: true,
           SnackbarType: "success"
         });
@@ -339,7 +462,15 @@ class MenuPage extends React.Component {
   };
 
   handleDialogToggle = () => {
-    this.setState(state => ({ isDialogOpen: !this.state.isDialogOpen }));
+    const user = localStorage.getItem("token");
+    if (!user) {
+      const { restId } = this.props.match.params;
+      localStorage.setItem("RestId", restId);
+      localStorage.setItem("Cart", JSON.stringify(this.state.cartItems));
+      this.setState({ redirectToLogin: true });
+    } else {
+      this.setState(state => ({ isDialogOpen: !this.state.isDialogOpen }));
+    }
   };
 
   handleCatScroll = index => {
@@ -350,8 +481,8 @@ class MenuPage extends React.Component {
 
   render() {
     const { classes } = this.props;
-    if (this.state.error) {
-      return <GeneralError error={this.state.errorMes} />;
+    if (this.state.redirectToLogin) {
+      return <Redirect to="/log-in" />;
     } else {
       return (
         <PageContainer>
@@ -411,7 +542,7 @@ class MenuPage extends React.Component {
                       items={this.state.cartItems}
                       handleRemoveItem={this.handleRemoveItem}
                       handleQuantityChange={this.handleQuantityChange}
-                      sendSubmitOrder={this.sendSubmitOrder}
+                      handleDialogToggle={this.handleDialogToggle}
                     />
                   </Slide>
                 )}
@@ -438,15 +569,17 @@ class MenuPage extends React.Component {
             />
           </Snackbar>
           {this.state.isDialogOpen && (
-              <OrderItemsList 
-                cartItems={this.state.cartItems}
-                handleDialogToggle={this.handleDialogToggle}
-                handleRemoveItem={this.handleRemoveItem}
-                handleQuantityChange={this.handleQuantityChange}
-                
-              />
-            )
-          }
+            <OrderConfirmDialog
+              open={this.state.isDialogOpen}
+              handleClickToggle={this.handleClickToggle}
+              cartItems={this.state.cartItems}
+              handleDialogToggle={this.handleDialogToggle}
+              handleRemoveItem={this.handleRemoveItem}
+              handleQuantityChange={this.handleQuantityChange}
+              sendSubmitOrder={this.sendSubmitOrder}
+              handleSnackbarMessage={this.handleSnackbarMessage}
+            />
+          )}
         </PageContainer>
       );
     }

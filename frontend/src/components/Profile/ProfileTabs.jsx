@@ -30,8 +30,20 @@ const ProfileTabs = props => {
         icon={<Person />}
         label="Personal Info"
       />
-      <Tab icon={<ListAlt />} label="Current Orders" />
-      <Tab icon={<History />} label="Order History" />
+      <Tab
+        className={classes.tab}
+        component={NavLink}
+        to="/profile/current_orders"
+        icon={<ListAlt />}
+        label="Current Orders"
+      />
+      <Tab
+        className={classes.tab}
+        component={NavLink}
+        to="/profile/order_history"
+        icon={<History />}
+        label="Order History"
+      />
       <Tab icon={<Comment />} label="Comments" />
       <Tab
         disableRipple
