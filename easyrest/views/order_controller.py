@@ -441,7 +441,7 @@ def get_status(request):
 
 
 @view_config(route_name='get_orders_info', renderer='json', request_method='GET')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Client", "Owner"])
 def get_user_order_list(request):
     """Controller for get list of user's orders with full order information
     Return:
@@ -465,7 +465,8 @@ def get_user_order_list(request):
         Order.user_id == request.token.user.id, Order.status.in_(statuses)).all()
     data = {}
     data["statuses"] = statuses
-    order_keys = ("id", "creation_time", "booked_time", "total_price", "status")
+    order_keys = ("id", "creation_time", "booked_time",
+                  "total_price", "status")
     orders_data = []
     for order in orders:
         order_data = form_dict(order, order_keys, True, True)

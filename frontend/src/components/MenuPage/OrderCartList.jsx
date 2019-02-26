@@ -25,6 +25,7 @@ class OrderCartList extends React.Component {
               <OrderCartItem
                 item={item}
                 key={item.name + index}
+                index={index}
                 handleRemoveItem={this.props.handleRemoveItem}
                 handleQuantityChange={this.props.handleQuantityChange}
               />
