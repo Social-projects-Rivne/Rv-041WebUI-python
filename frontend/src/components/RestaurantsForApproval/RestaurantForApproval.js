@@ -46,7 +46,8 @@ function RestaurantForApproval(props) {
     id,
     owner_name,
     phone,
-    creation_date
+    creation_date,
+    image
   } = props.restaurant;
   const { classes, handleRestaurantApprovement } = props;
   const date = new Date(creation_date * 1000);
@@ -120,7 +121,7 @@ function RestaurantForApproval(props) {
         <CardContent>
           <CardMedia
             className={classes.media}
-            image="https://media-cdn.tripadvisor.com/media/photo-f/04/43/20/9c/whisky-corner.jpg"
+            image={image}
             title={name}
           />
 

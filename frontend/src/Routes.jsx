@@ -13,6 +13,8 @@ import AppHeader from "./containers/AppHeader";
 import RestaurantManagmentPage from "./containers/RestaurantManagmentPage";
 import PrivateRoute from "./Service/PrivatRoute";
 import AdminPanel from "./containers/AdminPanel";
+import WaiterPanel from "./containers/WaiterPanel";
+
 
 const routes = [
   {
@@ -70,6 +72,10 @@ const routes = [
     component: AdminPanel,
     access: ["Admin"]
   },
+    path: "/waiter",
+    component: WaiterPanel,
+    access: ["Waiter"]
+  }
 ];
 
 class Routes extends React.Component {

@@ -19,11 +19,11 @@ const styles = theme => ({
     width: "100%",
     marginTop: theme.spacing.unit * 3,
     overflowX: "auto"
-  },
+  }
 });
 
 function priceRow(qty, unit) {
-  return (qty * unit).toFixed(2);
+  return (unit * qty).toFixed(2);
 }
 
 function priceTotal(items) {

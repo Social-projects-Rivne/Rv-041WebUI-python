@@ -243,6 +243,14 @@ class MenuPage extends React.Component {
     this.setState({ isSnackbarOpen: false });
   };
 
+  handleSnackbarMessage = (msg, type) => {
+    this.setState({
+      SnackbarMsg: msg,
+      isSnackbarOpen: true,
+      SnackbarType: type
+    });
+  };
+
   getCartItemIds = () => {
     return this.state.cartItems.map(item => {
       return item.id;
@@ -434,7 +442,7 @@ class MenuPage extends React.Component {
         }
       })
       .then(json => {
-        localStorage.removeItem("OrderId");
+        localStorage.setItem("OrderId", "Local");
         this.setState({
           cartItems: [],
           isCartOpen: false,
@@ -569,6 +577,7 @@ class MenuPage extends React.Component {
               handleRemoveItem={this.handleRemoveItem}
               handleQuantityChange={this.handleQuantityChange}
               sendSubmitOrder={this.sendSubmitOrder}
+              handleSnackbarMessage={this.handleSnackbarMessage}
             />
           )}
         </PageContainer>

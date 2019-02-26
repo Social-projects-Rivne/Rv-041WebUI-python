@@ -1,9 +1,9 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Route, Switch } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 import GenericTabs from "../Service/GenericTabs";
-import UserOrders from "../components/UserOrders/UserOrders"; 
+import UserOrders from "../components/UserOrders/UserOrders";
+import {AddAllCategory, GetCurrentRouteLocation} from "../Service/functions"
 
 
 const styles = theme => ({
@@ -33,19 +33,6 @@ const styles = theme => ({
   }
 });
 
-function GetCurrentRouteLocation(CurrentPath, ParentPath){
-  let currentRouteLocation = CurrentPath.replace(ParentPath, "");
-  currentRouteLocation = currentRouteLocation.replace("/", "");
-  return(currentRouteLocation.trim());
-};
-
-function AddAllCategory(statuses){
-    //add default "All" status Tab to tab statuses array (to the beginning)
-    if (!statuses.includes("")){
-      statuses = [""].concat(statuses);
-    };
-    return statuses;
-};
 
 class OrderListPage extends React.Component {
   state = {

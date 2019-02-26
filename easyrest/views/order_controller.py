@@ -376,7 +376,7 @@ def change_status(request):
 
     query_constrains = []
     if request.token.user.role.name == "Waiter":
-        query_constrains.append([
+        query_constrains.extend([
             Order.waiter_id == request.token.user.id
         ])
     elif request.token.user.role.name == "Administrator":
@@ -415,7 +415,7 @@ def get_status(request):
 
     query_constrains = []
     if request.token.user.role.name == "Waiter":
-        query_constrains.append([
+        query_constrains.extend([
             Order.waiter_id == request.token.user.id
         ])
     elif request.token.user.role.name == "Administrator":
@@ -441,7 +441,7 @@ def get_status(request):
 
 
 @view_config(route_name='get_orders_info', renderer='json', request_method='GET')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Client", "Owner"])
 def get_user_order_list(request):
     """Controller for get list of user's orders with full order information
     Return:
@@ -449,27 +449,24 @@ def get_user_order_list(request):
             Order.as_dict(), ...
         ]
     """
-    restaurant_status = request.matchdict['status']
-    if restaurant_status == "current":
+    order_status = request.matchdict['status']
+    if order_status == "current":
         statuses = [
-            "Draft",
             "Waiting for confirm",
             "Declined",
             "Accepted",
             "Asigned waiter",
-            "In progress",
-            "Failed",
-            "Waiting for feedback"]
-    elif restaurant_status == "history":
-        statuses = ["History", "Removed"]
+            "In progress",]
+    elif order_status == "history":
+        statuses = ["History", "Removed", "Failed",]
     else:
         raise HTTPNotFound()
-    # TODO: need find out about function chains from Max, and after that - refactor this code
     orders = request.dbsession.query(Order).filter(
         Order.user_id == request.token.user.id, Order.status.in_(statuses)).all()
     data = {}
     data["statuses"] = statuses
-    order_keys = ("id", "date_created", "date_booked", "total_price", "status")
+    order_keys = ("id", "creation_time", "booked_time",
+                  "total_price", "status")
     orders_data = []
     for order in orders:
         order_data = form_dict(order, order_keys, True, True)
