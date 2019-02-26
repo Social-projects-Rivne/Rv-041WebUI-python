@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import classnames from "classnames";
 
 import {
   withStyles,
@@ -13,13 +14,18 @@ import {
   Checkbox,
   CardMedia,
   Divider,
-  IconButton
+  IconButton,
+  TextField,
+  Input
 } from "@material-ui/core/";
 import IconDelete from "@material-ui/icons/Delete";
 import IconEdit from "@material-ui/icons/Edit";
+import IconSave from "@material-ui/icons/Save";
+import IconCancel from "@material-ui/icons/Cancel";
 
 import MenuHeader from "./MenuHeader";
 import MenuToolbar from "./MenuToolbar";
+import CategorySelect from "./CategorySelect";
 
 let counter = 0;
 function createData(name, calories, fat, carbs, protein) {
@@ -78,7 +84,6 @@ const styles = theme => ({
     overflowX: "auto"
   },
   tableRow: {
-    position: "relative",
     cursor: "pointer",
     "& > *": {
       paddingRight: theme.spacing.unit,
@@ -86,7 +91,20 @@ const styles = theme => ({
     },
     "& > *:first-child": {
       paddingLeft: theme.spacing.unit * 3
+    }
+  },
+  tableRowEditable: {
+    cursor: "pointer",
+    "& > *": {
+      paddingRight: theme.spacing.unit,
+      paddingLeft: theme.spacing.unit
     },
+    "& > *:first-child": {
+      paddingLeft: theme.spacing.unit * 2
+    }
+  },
+  tableRowHover: {
+    position: "relative",
     "&:hover $actions": {
       display: "table-cell"
     },
@@ -106,13 +124,23 @@ const styles = theme => ({
 });
 
 class MenuTable extends React.Component {
-  state = {
-    order: "asc",
-    orderBy: "name",
-    selected: [],
-    page: 0,
-    rowsPerPage: 10
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      order: "asc",
+      orderBy: "name",
+      selected: [],
+      page: 0,
+      rowsPerPage: 10,
+      editableRows: []
+    };
+    this.nameRef = React.createRef();
+    this.descriptionRef = React.createRef();
+    this.ingredientsRef = React.createRef();
+    this.valueRef = React.createRef();
+    this.priceRef = React.createRef();
+    this.categoryRef = React.createRef();
+  }
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -128,7 +156,7 @@ class MenuTable extends React.Component {
   handleSelectAllClick = event => {
     if (event.target.checked) {
       this.setState(state => ({
-        selected: this.props.menu.map(item => item.id)
+        selected: this.props.menuItems.map(item => item.id)
       }));
       return;
     }
@@ -166,9 +194,38 @@ class MenuTable extends React.Component {
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
+  handleEditClick = (event, id) => {
+    event.stopPropagation();
+    this.setState(prevState => ({
+      editableRows: [...prevState.editableRows, id]
+    }));
+  };
+
+  handleSaveClick = (event, id) => {
+    const name = this.nameRef.current.value;
+    const description = this.descriptionRef.current.value;
+    const ingredients = this.ingredientsRef.current.value;
+    const value = this.valueRef.current.value;
+    const price = this.priceRef.current.value;
+    const category = this.categoryRef.current.value;
+    console.log(id, name, description, ingredients, value, price, category);
+  };
+
+  handeNewCategory = event => {
+    console.log(event.target.value);
+    this.setState({ newCategory: event.target.value });
+  };
+
   render() {
     const { classes, menuItems, menuName } = this.props;
-    const { order, orderBy, selected, rowsPerPage, page } = this.state;
+    const {
+      order,
+      orderBy,
+      selected,
+      rowsPerPage,
+      page,
+      editableRows
+    } = this.state;
     const emptyRows =
       rowsPerPage -
       Math.min(rowsPerPage, menuItems.length - page * rowsPerPage);
@@ -201,7 +258,120 @@ class MenuTable extends React.Component {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(item => {
                   const isSelected = this.isSelected(item.id);
-                  return (
+                  return editableRows.includes(item.id) ? (
+                    <TableRow
+                      className={classes.tableRowEditable}
+                      tabIndex={-1}
+                      key={item.id}
+                    >
+                      <TableCell>
+                        <IconButton
+                          onClick={event =>
+                            this.handleSaveClick(event, item.id)
+                          }
+                          style={{ padding: 8 }}
+                        >
+                          <IconSave />
+                        </IconButton>
+                      </TableCell>
+                      <TableCell align="center">
+                        <CardMedia
+                          className={classes.media}
+                          image={item.img}
+                          title={item.name}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          multiline
+                          rows="3"
+                          inputProps={{
+                            style: { fontSize: "0.8125rem" },
+                            ref: this.nameRef
+                          }}
+                          fullWidth
+                          defaultValue={item.name}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          multiline
+                          rows="3"
+                          inputProps={{
+                            style: { fontSize: "0.8125rem" },
+                            ref: this.descriptionRef
+                          }}
+                          fullWidth
+                          defaultValue={item.description}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          multiline
+                          rows="3"
+                          fullWidth
+                          inputProps={{
+                            style: { fontSize: "0.8125rem" },
+                            ref: this.ingredientsRef
+                          }}
+                          defaultValue={item.ingredients}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <TextField
+                          type="number"
+                          inputProps={{
+                            style: { fontSize: "0.8125rem" },
+                            ref: this.valueRef,
+                            min: 0,
+                            step: 0.1
+                          }}
+                          fullWidth
+                          defaultValue={item.amount}
+                        />
+                      </TableCell>
+                      <TableCell className={classes.hide} align="right">
+                        <TextField
+                          type="number"
+                          fullWidth
+                          inputProps={{
+                            style: { fontSize: "0.8125rem" },
+                            ref: this.priceRef,
+                            min: 0,
+                            step: 0.1
+                          }}
+                          defaultValue={formatPrice(item.price)}
+                        />
+                      </TableCell>
+                      <TableCell className={classes.actions}>
+                        <div className={classes.actionsBtns}>
+                          <IconButton>
+                            <IconDelete fontSize="small" />
+                          </IconButton>
+                          <IconButton
+                            onClick={event =>
+                              this.handleEditClick(event, item.id)
+                            }
+                          >
+                            <IconEdit fontSize="small" />
+                          </IconButton>
+                        </div>
+                      </TableCell>
+                      <TableCell align="right">
+                        <CategorySelect
+                          input={
+                            <Input
+                              inputProps={{
+                                style: { fontSize: "0.8125rem" },
+                                ref: this.categoryRef
+                              }}
+                            />
+                          }
+                          currentCategory={item.category.name}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ) : (
                     <TableRow
                       hover
                       onClick={event => this.handleClick(event, item.id)}
@@ -210,7 +380,10 @@ class MenuTable extends React.Component {
                       tabIndex={-1}
                       key={item.id}
                       selected={isSelected}
-                      className={classes.tableRow}
+                      className={classnames(
+                        classes.tableRow,
+                        classes.tableRowHover
+                      )}
                     >
                       <TableCell>
                         <Checkbox
@@ -255,7 +428,11 @@ class MenuTable extends React.Component {
                           <IconButton>
                             <IconDelete fontSize="small" />
                           </IconButton>
-                          <IconButton>
+                          <IconButton
+                            onClick={event =>
+                              this.handleEditClick(event, item.id)
+                            }
+                          >
                             <IconEdit fontSize="small" />
                           </IconButton>
                         </div>
