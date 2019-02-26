@@ -19,7 +19,8 @@ import GenericTabs from "../Service/GenericTabs";
 
 const styles = theme => ({
   root: {
-    display: "flex"
+    display: "flex",
+    marginTop: "64px"
     /*zIndex: theme.zIndex.appBar - 1,*/
   },
   /*drawer: {
