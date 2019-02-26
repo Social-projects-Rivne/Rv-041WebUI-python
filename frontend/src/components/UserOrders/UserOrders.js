@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Avatar,
-  Button,
   CardMedia,
   ExpansionPanel,
   ExpansionPanelDetails,
@@ -163,8 +162,6 @@ function UserOrders(props) {
                         </Grid>
                       </TableCell>
                     </TableRow>
-                    );
-                  })}
                     </TableFooter>
                 </Table>
               </Grid>

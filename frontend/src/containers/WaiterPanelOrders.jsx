@@ -101,7 +101,7 @@ class WaiterPanelOrders extends React.Component {
   };
 
 	render() {
-    const { classes, match } = this.props;
+    const { match } = this.props;
     const { isLoading, statuses, orders, selectedTab } = this.state;
 
     if (isLoading) {
