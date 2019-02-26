@@ -134,12 +134,6 @@ class UserMenu extends React.Component {
               open={open}
               onClose={this.handleClose}
             >
-              {/*<MenuItem*/}
-                {/*component={Link}*/}
-                {/*to={isModerator ? `/moderator` : `/profile/personal_info`}*/}
-              {/*>*/}
-                {/*{isModerator ? "Moderator panel" : "My Profile"}*/}
-              {/*</MenuItem>*/}
               {isModerator && (
                 <MenuItem component={Link} to="/moderator">
                   Moderator Panel
