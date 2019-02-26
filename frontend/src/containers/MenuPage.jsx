@@ -434,7 +434,7 @@ class MenuPage extends React.Component {
         }
       })
       .then(json => {
-        localStorage.removeItem("OrderId");
+        localStorage.setItem("OrderId", "Local");
         this.setState({
           cartItems: [],
           isCartOpen: false,

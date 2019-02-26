@@ -17,6 +17,7 @@ import {
   import { withStyles } from '@material-ui/core/styles';
   import { Repeat } from "@material-ui/icons";
   import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+  
 
 const styles = theme => ({
   root: {
@@ -51,31 +52,42 @@ function UserOrders(props) {
           {orders.map((orderInfo, index) => {
             const creation_time = new Date(orderInfo.creation_time * 1000);
             const booked_time = new Date(orderInfo.booked_time * 1000);
+            const creationDateString = "" + creation_time.getDate() + "-" + creation_time.getMonth() 
+                    + "-" + creation_time.getFullYear() + " " + creation_time.getHours() + ":" +  creation_time.getMinutes();
+            const bookingDateString = "" + booked_time.getDate() + "-" + booked_time.getMonth() 
+                    + "-" + booked_time.getFullYear() + " " + booked_time.getHours() + ":" +  booked_time.getMinutes();
             const orderItems = orderInfo.items;
             //extract photo to make icons
             let iconsArray = [];
-            orderItems.forEach(orderItem => {
+            for(let i=0; i<(orderItems.length > 3 ? 3 : orderItems.length); i++) {
+              const orderItem = orderItems[i];
               iconsArray.push({
                 "name": orderItem.name,
                 "img": orderItem.img
               });  
-            });
+            }
+            if (orderItems.length > 3) {
+              iconsArray.push({
+                "name": "more",
+                "img": "https://www.materialui.co/materialIcons/hardware/keyboard_arrow_right_grey_192x192.png"
+              })
+            }  
             return(
               <ExpansionPanel key={index} >
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                   <Grid container justify="space-between" alignItems="center" spacing={8}>
-                    <Grid item key={1} xs={6} sm={2}>
+                    <Grid item key={1} xs={3} >
                       <Typography className={classes.heading}>
                         {orderInfo.restaurant}
                       </Typography>
                     </Grid>
-                    <Grid item key={2} xs={6} sm={2}>
+                    <Grid item key={2} xs={3} >
                       <Typography className={classes.secondaryHeading}>
-                        {"Created: " + String(creation_time.toISOString().slice(0, 10))} <br/>
-                        {"Booked for: " + String(booked_time.toISOString().slice(0, 10))}
+                        {"Created: " + creationDateString} <br/>
+                        {"Booked for: " + bookingDateString}
                       </Typography>
                     </Grid>
-                    <Grid item key={3} xs={6} sm={2}>
+                    <Grid item key={3} xs={2} >
                       <Grid container alignItems="center">
                       {iconsArray.map((imgInfo, image_index) => {
                         return(
@@ -86,12 +98,12 @@ function UserOrders(props) {
                       })}
                       </Grid>
                     </Grid>
-                    <Grid item key={4} xs={6} sm={2}>
+                    <Grid item key={4} xs={2} >
                       <Typography>
                         {orderItems.length} items for ${orderInfo.total_price}
                       </Typography>
                     </Grid>
-                    <Grid item key={5} xs={6} sm={2}>
+                    <Grid item key={5} xs={2} >
                       <Typography>
                         {orderInfo.status}
                       </Typography>
@@ -143,12 +155,12 @@ function UserOrders(props) {
                                   Order sum: {"$" + orderInfo.total_price}
                                 </Typography>
                               </Grid>
-                              <Grid>
+                              {/*TODO: <Grid>
                                 <Button variant="contained" color="primary">
                                   Reorder
                                   <Repeat />
                                 </Button>
-                              </Grid>
+                              </Grid>*/}
                             </Grid>
                           </TableCell>
                         </TableRow>

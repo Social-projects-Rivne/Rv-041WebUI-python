@@ -79,7 +79,7 @@ class Order extends React.Component {
           key={0}
           size="small"
           color="secondary"
-          onClick={() => this.props.changeOrderStatus(id, "Waiting for feedback", dateModified)}
+          onClick={() => this.props.changeOrderStatus(id, "History", dateModified)}
         >
           Close order
         </Button>);
@@ -102,6 +102,11 @@ class Order extends React.Component {
     const { id, status, items } = order;
     const creation_time = new Date(order.creation_time * 1000);
     const booked_time = new Date(order.booked_time * 1000);
+    const creationDateString = "" + creation_time.getDate() + "-" + creation_time.getMonth() 
+          + "-" + creation_time.getFullYear() + " " + creation_time.getHours() + ":" +  creation_time.getMinutes();
+    const bookingDateString = "" + booked_time.getDate() + "-" + booked_time.getMonth() 
+          + "-" + booked_time.getFullYear() + " " + booked_time.getHours() + ":" +  booked_time.getMinutes();
+
 
     let statusColor = status === "In progress" ? "primary": "secondary";
   
@@ -116,30 +121,31 @@ class Order extends React.Component {
             }
             title={
               <Typography>
-                {order.user}
+                {"Client: " + order.user + " | phone: " + order.phone_number + " | email: " + order.email}
               </Typography>
             }
             subheader={
-              "Created: " + String(creation_time.toISOString().slice(0, 10)) + 
-              " | Booked for: " + String(booked_time.toISOString().slice(0, 10)) 
+              "№" + id + 
+              " | Created: " + creationDateString + 
+              " | Booked for: " + bookingDateString 
             }
           />
-          <div style={{ marginLeft: "auto" }}>
-            <Grid container alignItems="center" >
-              <Grid element >
-                <Typography style={{ marginLeft: "auto " }} variant="subtitle1" >
+          <div style={{ marginLeft: "auto" , padding: 8 }}>
+            <Grid container alignItems="center" justify="space-between" spacing={16}>
+              <Grid item >
+                <Typography style={{ marginLeft: "auto " }} variant="body2" noWrap >
                   Order items: {items.length}
                 </Typography>
               </Grid>
-              <Grid element >
-                <Typography style={{ marginLeft: "auto " }} variant="subtitle1" >
+              <Grid item >
+                <Typography style={{ marginLeft: "auto " }} variant="body2" noWrap >
                   Order sum: {"$" + order.total_price}
                 </Typography>
               </Grid>
-              <Grid element >
+              <Grid item >
                 <Chip style={{ marginLeft: "auto " }} label={status} color={statusColor} className={classes.chip} />
               </Grid>
-              <Grid element >
+              <Grid item >
                 <CardActions className={classes.actions}>
                   <IconButton
                     className={classnames(classes.expand, {

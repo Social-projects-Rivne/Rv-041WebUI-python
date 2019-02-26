@@ -456,11 +456,9 @@ def get_user_order_list(request):
             "Declined",
             "Accepted",
             "Asigned waiter",
-            "In progress",
-            "Failed",
-            "Waiting for feedback"]
+            "In progress",]
     elif order_status == "history":
-        statuses = ["History", "Removed"]
+        statuses = ["History", "Removed", "Failed",]
     else:
         raise HTTPNotFound()
     orders = request.dbsession.query(Order).filter(
