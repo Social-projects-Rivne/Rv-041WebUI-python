@@ -8,14 +8,15 @@ from sqlalchemy import (
     Text,
     ForeignKey,
     Float,
-    Numeric
+    Numeric,
 )
 from sqlalchemy.orm import relationship
-from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
+from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest, HTTPForbidden
 
 from .meta import Base
 from .order_assoc import OrderAssoc
 from .menu_item import MenuItem
+from .user import User
 
 
 class Order(Base):
@@ -29,15 +30,19 @@ class Order(Base):
     __tablename__ = 'orders'
     id = Column(Integer, primary_key=True)
     creation_time = Column(Integer)
-    date_booked = Column(Integer)
+    booked_time = Column(Integer)
     status = Column(Text, default="Draft")
     table = Column(Integer, default=0)
     total_price = Column(Numeric(precision=10, scale=2), default=0)
     user_id = Column(Integer, ForeignKey('users.id'))
+    waiter_id = Column(Integer, ForeignKey('users.id'))
     rest_id = Column(Integer, ForeignKey('restaurants.id'))
 
     items = relationship("OrderAssoc")
-    user = relationship("User")
+    user = relationship(
+        "User", foreign_keys="[Order.user_id]")
+    waiter = relationship(
+        "User", foreign_keys="[Order.waiter_id]")
     restaurant = relationship("Restaurant")
 
     # Designed to be called from instance of order
@@ -98,7 +103,91 @@ class Order(Base):
         total = 0
         for item in self.items:
             q = item.quantity
-            p_per_item = item.food.price if item.food.price is not None else 3.50
+            p_per_item = item.food.price
             total += q * p_per_item
         self.total_price = total
         return self.total_price
+
+    _graph = {
+        ("Draft", "Waiting for confirm"): {
+            "roles": ["Client", "Owner"],
+            "set_date": True
+        },
+        ("Draft", "Removed"): {
+            "roles": ["Client", "Owner"],
+        },
+        ("Waiting for confirm", "Draft"): {
+            "roles": ["Client", "Owner"],
+        },
+        ("Waiting for confirm", "Declined"): {
+            "roles": ["Administrator"],
+        },
+        ("Waiting for confirm", "Accepted"): {
+            "roles": ["Administrator"],
+            "set_date": True
+        },
+        ("Declined", "Removed"): {
+            "roles": ["Client", "Owner"],
+        },
+        ("Declined", "Draft"): {
+            "roles": ["Client", "Owner"],
+        },
+        ("Declined", "History"): {
+            "roles": ["Client", "Owner"],
+        },
+        ("Accepted", "Declined"): {
+            "roles": ["Administrator"],
+        },
+        ("Accepted", "Asigned waiter"): {
+            "roles": ["Administrator", "Waiter"],
+            "set_waiter": True
+        },
+        ("Accepted", "Draft"): {
+            "roles": ["Client", "Owner"],
+        },
+        ("History", "Draft"): {
+            "roles": ["Client", "Owner"],
+        },
+        ("Asigned waiter", "In progress"): {
+            "roles": ["Waiter"],
+        },
+        ("In progress", "Failed"): {
+            "roles": ["Administrator"],
+        },
+        ("In progress", "Failed"): {
+            "roles": ["Client", "Owner"],
+        },
+        ("In progress", "Waiting for feedback"): {
+            "roles": ["Waiter"],
+        },
+        ("Waiting for feedback", "History"): {
+            "roles": ["Client", "Owner"],
+        },
+        ("Failed", "History"): {
+            "roles": ["Moderator"],
+        }
+    }
+
+    def change_status(self, new_status, role, waiter=None, time=None):
+        try:
+            options = self._graph[(self.status, new_status)]
+        except KeyError as e:
+            raise HTTPForbidden("Forbidden action % s" % e)
+
+        if role not in options["roles"]:
+            raise HTTPForbidden("Wrong role: %s" % role)
+
+        if options.get("set_date", False):
+            if time is not None:
+                self.booked_time = time
+
+        if options.get("set_waiter", False):
+            if waiter is None:
+                raise HTTPBadRequest("Waiter not found")
+            self.waiter = waiter
+
+        self.count_total()
+
+        self.status = new_status
+
+        return self

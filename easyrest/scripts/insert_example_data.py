@@ -189,7 +189,8 @@ def fill_db(session):
     user_model.append(waiter2)
 
     Rest_models[-1].waiters.extend([waiter1, waiter2])
-    Rest_models[-1].administrator = administrator
+    for rest_model in Rest_models:
+        rest_model.administrator = administrator
 
     user_name = fake.name()
     waiter = User(name="Stepan the Waiter",

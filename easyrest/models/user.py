@@ -6,7 +6,7 @@ from sqlalchemy import (
     Text,
     Date,
     ForeignKey,
-    Boolean
+    Boolean,
 )
 from sqlalchemy.orm import relationship
 from passlib.hash import pbkdf2_sha256
@@ -53,7 +53,7 @@ class User(Base):
     password = Column(Text)
     role_id = Column(Integer, ForeignKey('user_roles.id'), default=1)
     restaurant_id = Column(Integer, ForeignKey('restaurants.id'))
-    is_active = Column(Boolean, default=False)
+    is_active = Column(Boolean, default=True)
 
     tokens = relationship('Token')
     role = relationship('UserRole')
@@ -61,7 +61,10 @@ class User(Base):
         'Restaurant', foreign_keys="[Restaurant.owner_id]")
     restaurant = relationship(
         'Restaurant', foreign_keys="[User.restaurant_id]")
-    orders = relationship('Order')
+    a_restaurant = relationship(
+        'Restaurant', foreign_keys="[Restaurant.administrator_id]")
+    orders = relationship('Order', foreign_keys="[Order.user_id]")
+    w_orders = relationship('Order', foreign_keys="[Order.waiter_id]")
 
     @staticmethod
     def add(database, form_data, role=CLIENT):
@@ -141,3 +144,11 @@ class User(Base):
 
         database.query(User).filter_by(id=user.id)\
             .update({'name': name, 'email': new_email, 'phone_number': phone_number, 'birth_date': birth_date})
+
+    def toggle_activity(self):
+        """Method to switch field state `is_active`.
+
+        The method works as a trigger. The method makes the user active or inactive,
+        depending on his current state of activity.
+        """
+        self.is_active = not self.is_active
