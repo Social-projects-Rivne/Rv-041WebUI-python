@@ -11,6 +11,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import select, func
+from sqlalchemy.exc import IntegrityError
+from pyramid.httpexceptions import HTTPForbidden
 
 from .meta import Base
 from .category import Category
@@ -32,6 +34,7 @@ class Menu(Base):
     primary = Column(Boolean, default=False)
     priority = Column(Integer)
     rest_id = Column(Integer, ForeignKey('restaurants.id'))
+
     rest = relationship("Restaurant")
     menu_items = relationship("MenuItem")
 
@@ -67,9 +70,14 @@ class Menu(Base):
     def create_menu(session, form_data):
         name = form_data["name"]
         image = form_data["image"]
-        is_active = form_data["is_active"]
-
-        name = "New Menu"
+        # is_active = form_data["is_active"]
         is_active = True
+        menu = Menu(name=name, image=image, is_active=is_active)
+        session.add(menu)
+        try:
+            session.flush()
+        except IntegrityError:
+            session.rollback()
+            raise HTTPForbidden("Can't Create Menu")
 
-        session.add(Menu(name=name, image=image, is_active=is_active))
+        return menu.id

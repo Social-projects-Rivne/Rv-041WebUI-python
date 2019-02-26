@@ -33,6 +33,7 @@ class CategorySelect extends React.Component {
         defaultValue={this.props.currentCategory}
         input={this.props.input}
       >
+        <option value="" />
         {this.state.categoriest.map(option => (
           <option key={option.name} value={option.name}>
             {option.name}

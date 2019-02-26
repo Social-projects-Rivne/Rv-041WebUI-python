@@ -95,12 +95,14 @@ const FillMenu = props => {
       <Grid item xs={12}>
         <input
           onChange={props.handleImageChange}
+          name="img"
           accept="image/*"
           style={{ display: "none" }}
           id="icon-button-file"
           type="file"
         />
         <label htmlFor="icon-button-file">
+          <Typography>{`Choose ${props.menuName} image:`}</Typography>
           <IconButton color="primary" component="span">
             <PhotoCamera />
           </IconButton>
@@ -132,6 +134,7 @@ function getStepContent(
           handleImageChange={handleImageChange}
           menuType={menuType}
           imgName={imgName}
+          menuName={menuName}
         >
           <MenuImage menuItems={imgSrc} menuName={menuName} />
         </FillMenu>
@@ -154,10 +157,12 @@ function getStepContent(
 
 class CreateMenu extends React.Component {
   state = {
+    img: "",
     activeStep: 0,
     menuName: "",
     menuType: "list",
     imgSrc: "",
+    imgBody: {},
     imgName: ""
   };
 
@@ -180,10 +185,12 @@ class CreateMenu extends React.Component {
   };
 
   handleImageChange = e => {
-    this.setState({
-      imgSrc: URL.createObjectURL(e.target.files[0]),
-      imgName: e.target.files[0].name
-    });
+    e.target.files[0] &&
+      this.setState({
+        imgBody: e.target.files[0],
+        imgSrc: URL.createObjectURL(e.target.files[0]),
+        imgName: e.target.files[0].name
+      });
   };
 
   handleFormChange = e => {

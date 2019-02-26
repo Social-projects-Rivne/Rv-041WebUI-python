@@ -74,12 +74,12 @@ def get_menu_controler(request):
 def add_menu_controler(request):
     from_data = request.json_body
     try:
-        Menu.create_menu(request.dbsession, from_data)
-        request.dbsession.flush()
-        return wrap([], success=True)
+    menu_id = Menu.create_menu(request.dbsession, from_data)
+
+    return wrap(menu_id)
     except IntegrityError:
         request.dbsession.rollback()
-        raise HTTPForbidden("asdsad")
+        raise HTTPForbidden("Can't Create Menu")
 
 
 @view_config(route_name='menu_items', renderer='json', request_method='GET')

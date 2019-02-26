@@ -22,10 +22,12 @@ import IconDelete from "@material-ui/icons/Delete";
 import IconEdit from "@material-ui/icons/Edit";
 import IconSave from "@material-ui/icons/Save";
 import IconCancel from "@material-ui/icons/Cancel";
+import { PhotoCamera } from "@material-ui/icons";
 
 import MenuHeader from "./MenuHeader";
 import MenuToolbar from "./MenuToolbar";
 import CategorySelect from "./CategorySelect";
+import CreateNewItem from "./CreateNewItem";
 
 let counter = 0;
 function createData(name, calories, fat, carbs, protein) {
@@ -80,6 +82,9 @@ const styles = theme => ({
     marginLeft: 0,
     borderRadius: theme.spacing.unit / 2
   },
+  editMedia: {
+    filter: "blur(3px)"
+  },
   tableWrapper: {
     overflowX: "auto"
   },
@@ -120,6 +125,19 @@ const styles = theme => ({
   },
   hideOnHover: {
     display: "table-cell"
+  },
+  editImg: {
+    position: "relative"
+  },
+  imgInput: {
+    position: "absolute",
+    margin: "auto",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: 48,
+    height: 48
   }
 });
 
@@ -135,6 +153,7 @@ class MenuTable extends React.Component {
       editableRows: []
     };
     this.nameRef = React.createRef();
+    this.imgRef = React.createRef();
     this.descriptionRef = React.createRef();
     this.ingredientsRef = React.createRef();
     this.valueRef = React.createRef();
@@ -196,6 +215,7 @@ class MenuTable extends React.Component {
 
   handleEditClick = (event, id) => {
     event.stopPropagation();
+
     this.setState(prevState => ({
       editableRows: [...prevState.editableRows, id]
     }));
@@ -203,17 +223,22 @@ class MenuTable extends React.Component {
 
   handleSaveClick = (event, id) => {
     const name = this.nameRef.current.value;
+    const img = this.imgRef.current.value;
     const description = this.descriptionRef.current.value;
     const ingredients = this.ingredientsRef.current.value;
     const value = this.valueRef.current.value;
     const price = this.priceRef.current.value;
     const category = this.categoryRef.current.value;
-    console.log(id, name, description, ingredients, value, price, category);
-  };
-
-  handeNewCategory = event => {
-    console.log(event.target.value);
-    this.setState({ newCategory: event.target.value });
+    console.log(
+      id,
+      name,
+      img,
+      description,
+      ingredients,
+      value,
+      price,
+      category
+    );
   };
 
   render() {
@@ -253,6 +278,7 @@ class MenuTable extends React.Component {
               onRequestSort={this.handleRequestSort}
               rowCount={menuItems.length}
             />
+            <CreateNewItem />
             <TableBody>
               {stableSort(menuItems, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -266,6 +292,7 @@ class MenuTable extends React.Component {
                     >
                       <TableCell>
                         <IconButton
+                          color="primary"
                           onClick={event =>
                             this.handleSaveClick(event, item.id)
                           }
@@ -274,12 +301,29 @@ class MenuTable extends React.Component {
                           <IconSave />
                         </IconButton>
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell className={classes.editImg} align="center">
                         <CardMedia
-                          className={classes.media}
+                          className={classnames(
+                            classes.media,
+                            classes.editMedia
+                          )}
                           image={item.img}
                           title={item.name}
                         />
+                        <div className={classes.imgInput}>
+                          <input
+                            accept="image/*"
+                            style={{ display: "none" }}
+                            id="icon-edit-file"
+                            type="file"
+                            ref={this.imgRef}
+                          />
+                          <label htmlFor="icon-edit-file">
+                            <IconButton color="primary" component="span">
+                              <PhotoCamera />
+                            </IconButton>
+                          </label>
+                        </div>
                       </TableCell>
                       <TableCell>
                         <TextField
@@ -345,10 +389,11 @@ class MenuTable extends React.Component {
                       </TableCell>
                       <TableCell className={classes.actions}>
                         <div className={classes.actionsBtns}>
-                          <IconButton>
+                          <IconButton color="primary">
                             <IconDelete fontSize="small" />
                           </IconButton>
                           <IconButton
+                            color="primary"
                             onClick={event =>
                               this.handleEditClick(event, item.id)
                             }
