@@ -10,11 +10,10 @@ import {
 } from "@material-ui/core/";
 import { Link } from "react-router-dom";
 
-
 const styles = theme => ({
   card: {
     display: "flex",
-    flexWrap: "wrap",
+    flexWrap: "wrap"
     // width : "40%"
   },
   itemName: {
@@ -23,23 +22,29 @@ const styles = theme => ({
   details: {
     flex: 9999,
     minWidth: "25em",
-    display: "flex",
-  },
+    display: "flex"
+  }
 });
 
-function handlerChangeDate(date){
-  let u = new Date(date*1000);
-  return u.getUTCFullYear() +
-      '-' + ('0' + u.getUTCMonth()).slice(-2) +
-      '-' + ('0' + u.getUTCDate()).slice(-2) +
-      ' ' + ('0' + u.getUTCHours()).slice(-2) +
-      ':' + ('0' + u.getUTCMinutes()).slice(-2) +
-      ':' + ('0' + u.getUTCSeconds()).slice(-2)
+function handlerChangeDate(date) {
+  let u = new Date(date * 1000);
+  return (
+    u.getUTCFullYear() +
+    "-" +
+    ("0" + u.getUTCMonth()).slice(-2) +
+    "-" +
+    ("0" + u.getUTCDate()).slice(-2) +
+    " " +
+    ("0" + u.getUTCHours()).slice(-2) +
+    ":" +
+    ("0" + u.getUTCMinutes()).slice(-2) +
+    ":" +
+    ("0" + u.getUTCSeconds()).slice(-2)
+  );
 }
 
 function OrderListItem(props) {
-  const { classes, orderData} = props;
-
+  const { classes, orderData } = props;
 
   return (
     <Card className={classes.card}>
@@ -59,30 +64,30 @@ function OrderListItem(props) {
             >
               Order id #{orderData.id}
             </Typography>
-              <Typography
-                  className={classes.itemName}
-                  variant="subtitle2"
-                  align="left"
+            <Typography
+              className={classes.itemName}
+              variant="subtitle2"
+              align="left"
+            >
+              Client: {orderData.user.name}
+            </Typography>
+            <Typography
+              className={classes.itemName}
+              variant="subtitle2"
+              align="center"
+            >
+              Creating time: {handlerChangeDate(orderData.creation_time)}
+            </Typography>
+            <Grid item>
+              <Button
+                variant="contained"
+                component={Link}
+                to={"/administrator-panel/order/" + orderData.id}
+                color="primary"
               >
-                  Client: {orderData.user.name}
-              </Typography>
-              <Typography
-                  className={classes.itemName}
-                  variant="subtitle2"
-                  align="center"
-              >
-                  Creating time: {handlerChangeDate(orderData.creation_time)}
-              </Typography>
-              <Grid item>
-                  <Button
-                      variant="contained"
-                      component={Link}
-                      to={"/administrator-panel/order/" + orderData.id}
-                      color="primary"
-                  >
-                      Show more
-                  </Button>
-              </Grid>
+                Show more
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
       </CardContent>

@@ -47,15 +47,23 @@ def get_order(request, order_id, filter_list=False):
 @view_config(route_name='get_orders', renderer='json', request_method='GET')
 @restrict_access(user_types=["Administrator"])
 def get_orders(request):
-    """Controller for get list of user orders without items
+    """Controller for get list of user orders without items for Administrator
     Return:
         [
             Order.as_dict(), ...
         ]
     """
     orders = request.dbsession.query(Order).filter(Order.rest_id == Restaurant.id,
-                                                   Restaurant.administrator_id == request.token.user.id).all()
-    data = [order.as_dict(with_relations=["user"]) for order in orders]
+                                                   Restaurant.administrator_id == request.token.user.id,
+                                                   Order.status != "Draft").all()
+    exclude = ["password", "email", "role_id"]
+    data = []
+    for order in orders:
+        order_dict = order.as_dict(with_relations=["user"], exclude=exclude)
+        order_dict.update({
+            "items": order.get_items(request.dbsession)
+        })
+        data.append(order_dict)
     return wrap(data)
 
 
