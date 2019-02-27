@@ -18,7 +18,7 @@ def includeme(config):
                      request_method=["GET", "POST", "PUT", "DELETE"])
     config.add_route('menu_items', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}',
                      request_method=["GET", "POST", "PUT", "DELETE"])
-    config.add_route('menu_item', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}/menu_item/{item_id:\d+}',
+    config.add_route('menu_item', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}/item/{item_id:\d+}',
                      request_method=["PUT", "DELETE"])
     config.add_route('get_by_category', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}/{cat_id:\d+}',
                      request_method="GET")

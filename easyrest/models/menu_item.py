@@ -62,3 +62,22 @@ class MenuItem(Base):
             raise HTTPForbidden("Can't Create Item")
 
         return item
+
+    def update_item(self, session, form_data):
+        name = form_data["name"]
+        description = form_data["description"]
+        ingredients = form_data["ingredients"]
+        img = form_data["image"]
+        price = float(form_data["price"]) * 100
+        amount = form_data["value"]
+        category_id = form_data["category"]
+
+        self.name = name
+        self.description = description
+        self.ingredients = ingredients
+        self.img = img
+        self.price = price
+        self.amount = amount
+        self.category_id = category_id
+
+        return self
