@@ -16,7 +16,7 @@ import {
 import { withStyles } from "@material-ui/core/styles";
 import { Repeat } from "@material-ui/icons";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-
+import {convertIntToData} from "../../Service/functions";
 
 const styles = theme => ({
   root: {
@@ -48,12 +48,8 @@ function UserOrders(props) {
   return (
     <div className={classes.root}>
       {orders.map((orderInfo, index) => {
-        const creation_time = new Date(orderInfo.creation_time * 1000);
-        const booked_time = new Date(orderInfo.booked_time * 1000);
-        const creationDateString = "" + creation_time.getDate() + "-" + creation_time.getMonth()
-          + "-" + creation_time.getFullYear() + " " + creation_time.getHours() + ":" + creation_time.getMinutes();
-        const bookingDateString = "" + booked_time.getDate() + "-" + booked_time.getMonth()
-          + "-" + booked_time.getFullYear() + " " + booked_time.getHours() + ":" + booked_time.getMinutes();
+        const creationDateString = convertIntToData(orderInfo.creation_time);
+        const bookingDateString  = convertIntToData(orderInfo.booked_time);
         const orderItems = orderInfo.items;
         //extract photo to make icons
         let iconsArray = [];

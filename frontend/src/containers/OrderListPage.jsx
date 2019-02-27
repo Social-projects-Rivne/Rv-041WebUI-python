@@ -38,7 +38,7 @@ class OrderListPage extends React.Component {
   state = {
     token: localStorage.getItem("token"),
     isLoading: true,
-    statuses: [],
+    statuses: [''],
     orders: [],
     selectedTab: 0
   };
@@ -64,14 +64,14 @@ class OrderListPage extends React.Component {
           : response.json()
       )
       .then(data =>
-        this.setState({
+        this.setState(prevState => ({
           isLoading: false,
-          statuses: AddAllCategory(data.data.statuses),
-          selectedTab: AddAllCategory(data.data.statuses).indexOf(currentRouteLocation),
+          statuses: [...prevState.statuses, ...data.data.statuses],
+          selectedTab: [...prevState.statuses, ...data.data.statuses].indexOf(currentRouteLocation),
           orders: data.data.orders_data,
           success: data.success,
           error: data.error
-        })
+        }))
       )
       .catch(err => this.setState({ success: false, error: err.message, isLoading: false }));
   }

@@ -62,6 +62,7 @@ function RestaurantForApproval(props) {
         key={0}
         size="small"
         color="secondary"
+        variant="outlined"
         onClick={() => handleRestaurantApprovement(id, "DELETE", 2, status)}
       >
         Disapprove
@@ -70,6 +71,7 @@ function RestaurantForApproval(props) {
         key={1}
         size="small"
         color="primary"
+        variant="outlined"
         onClick={() => handleRestaurantApprovement(id, "POST", 1, status)}
       >
         Approve
@@ -82,6 +84,7 @@ function RestaurantForApproval(props) {
         key={0}
         size="small"
         color="secondary"
+        variant="outlined"
         onClick={() => handleRestaurantApprovement(id, "DELETE", 2, status)}
       >
         Delete
@@ -94,6 +97,7 @@ function RestaurantForApproval(props) {
         key={0}
         size="small"
         color="primary"
+        variant="outlined"
         onClick={() => handleRestaurantApprovement(id, "POST", 1, status)}
       >
         Restore
