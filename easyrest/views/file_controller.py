@@ -25,7 +25,7 @@ def upload(request):
 
     file_type = filename.split(".")[-1]
 
-    new_filename = uuid.uuid4()
+    new_filename = "123123"
 
     file_path = os.path.join(
         '%s/easyrest/static/images' % os.getcwd(), '%s%d.%s' % (new_filename,
@@ -44,6 +44,6 @@ def upload(request):
                                                                     img_index,
                                                                     file_type)
 
-    img_index += 1
+    # img_index += 1
 
     return url_root

@@ -62,7 +62,6 @@ export class RestaurantManagmentPage extends React.Component {
     this.setState(prevState => ({
       menusList: [...prevState.menusList, newItem]
     }));
-    console.log(this.state);
   };
 
   render() {

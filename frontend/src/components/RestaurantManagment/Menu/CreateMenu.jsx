@@ -202,7 +202,7 @@ class CreateMenu extends React.Component {
     const img = this.state.imgBody;
     let formData = new FormData();
     formData.append("img", img);
-    let data = { name: this.state.menuName, restId: restId, image: "" };
+    let data = { name: this.state.menuName, image: "" };
 
     fetch("http://localhost:6543/api/file", {
       method: "POST",
@@ -232,7 +232,7 @@ class CreateMenu extends React.Component {
               : response.json().then(Promise.reject.bind(Promise));
           })
           .then(response => {
-            this.props.onAddMenu(response.data[0]);
+            this.props.onAddMenu(response.data);
           })
           .catch(err => {
             console.log(err);

@@ -76,8 +76,9 @@ def add_menu_controler(request):
     """
     POST request controller. Create new restaurant menu database and return created menu
     """
+    rest_id = request.matchdict["rest_id"]
     from_data = request.json_body
-    menu = Menu.create_menu(request.dbsession, from_data)
+    menu = Menu.create_menu(request.dbsession, from_data, rest_id)
 
     return wrap(menu.as_dict())
 

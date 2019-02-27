@@ -88,19 +88,18 @@ class DrawerMenu extends React.Component {
               <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                   {ctx.menusList.map(listItem => (
-                    <Zoom in={true} key={listItem.id}>
-                      <ListItem
-                        component={NavLink}
-                        button
-                        to={`${match.url}/menues/${listItem.id}`}
-                        className={classes.nested}
-                      >
-                        <ListItemIcon>
-                          {listItem.is_active ? <Star /> : <StarBorder />}
-                        </ListItemIcon>
-                        <ListItemText inset primary={listItem.name} />
-                      </ListItem>
-                    </Zoom>
+                    <ListItem
+                      key={listItem.id}
+                      component={NavLink}
+                      button
+                      to={`${match.url}/menues/${listItem.id}`}
+                      className={classes.nested}
+                    >
+                      <ListItemIcon>
+                        {listItem.is_active ? <Star /> : <StarBorder />}
+                      </ListItemIcon>
+                      <ListItemText inset primary={listItem.name} />
+                    </ListItem>
                   ))}
                   <ListItem
                     component={NavLink}

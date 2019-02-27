@@ -33,4 +33,4 @@ def update_menu_item(request):
 
     item.update_item(request.dbsession, from_data)
 
-    return wrap(item.as_dict())
+    return wrap(item.as_dict(with_relations=["category"]))

@@ -270,11 +270,16 @@ class MenuTable extends React.Component {
               : response.json().then(Promise.reject.bind(Promise));
           })
           .then(response => {
-            // this.setState(prevState => ({
-            //   editableRows: [prevState.editableRows]
-            // }));
+            console.log(response.data);
+            this.props.onUpdateItem(response.data);
           })
-
+          .then(response => {
+            this.setState(prevState => ({
+              editableRows: [
+                prevState.editableRows.filter(item => item.id !== id)
+              ]
+            }));
+          })
           .catch(err => {
             this.setState(prevState => ({
               editableRows: [prevState.editableRows]

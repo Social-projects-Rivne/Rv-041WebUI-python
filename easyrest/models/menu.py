@@ -67,10 +67,10 @@ class Menu(Base):
         return item_dict
 
     @staticmethod
-    def create_menu(session, form_data):
+    def create_menu(session, form_data, rest_id):
         name = form_data["name"]
         image = form_data["image"]
-        rest_id = form_data["restId"]
+        rest_id = rest_id
         # is_active = form_data["is_active"]
         is_active = True
         menu = Menu(name=name, image=image,
