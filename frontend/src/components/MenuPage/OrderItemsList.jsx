@@ -19,7 +19,7 @@ const styles = theme => ({
     width: "100%",
     marginTop: theme.spacing.unit * 3,
     overflowX: "auto"
-  },
+  }
 });
 
 function priceRow(qty, unit) {
@@ -36,16 +36,18 @@ function priceTotal(items) {
 function OrderItemsList(props) {
   const { classes, cartItems, controls } = props;
   return (
-    <Paper className={classes.root} elevation="0">
+    <Paper className={classes.root} elevation={0}>
       <Typography variant="h6">{"Order summary"}</Typography>
       <Table className={classes.table}>
         <TableHead>
-          {controls && <TableCell>Action</TableCell>}
-          <TableCell>Item name</TableCell>
-          <TableCell>Volume</TableCell>
-          <TableCell>Price per item, $</TableCell>
-          <TableCell>Quantity</TableCell>
-          <TableCell>Total price, $</TableCell>
+          <TableRow>
+            {controls && <TableCell>Action</TableCell>}
+            <TableCell>Item name</TableCell>
+            <TableCell>Volume</TableCell>
+            <TableCell>Price per item, $</TableCell>
+            <TableCell>Quantity</TableCell>
+            <TableCell>Total price, $</TableCell>
+          </TableRow>
         </TableHead>
         <TableBody>
           {cartItems.map((row, index) => {
