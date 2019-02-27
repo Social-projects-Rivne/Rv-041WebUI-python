@@ -1,36 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Route, Switch, Link } from "react-router-dom";
+import {List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core"
 import { withStyles } from "@material-ui/core/styles";
-/*import Drawer from "@material-ui/core/Drawer";*/
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import { Restaurant, AccountCircle, Work, Report } from "@material-ui/icons";
-
-import Messages from "./MessagesFeedbacksPage";
+import {Restaurant, AccountCircle, Work, SupervisedUserCircle} from "@material-ui/icons"
+import UsersPage from "../components/AdminPanelComponents/UsersPage";
+import UserCreate from "../components/AdminPanelComponents/UserCreate";
+import RestaurantsPage from "../components/AdminPanelComponents/RestaurantsPage";
 import GeneralError from "../components/ErrorPages/GeneralError";
-import RestaurantsForApprovalPage from "./RestaurantsForApprovalPage";
-import ModeratorUsersPage from "./ModeratorUsersPage";
 import GenericTabs from "../Service/GenericTabs";
 
-/*const drawerWidth = 240;*/
 
 const styles = theme => ({
   root: {
-    display: "flex",
-    marginTop: "64px"
-    /*zIndex: theme.zIndex.appBar - 1,*/
+    display: "flex"
   },
-  /*drawer: {
-    zIndex: theme.zIndex.appBar - 2,
-    width: drawerWidth,
-    flexShrink: 0
-  },
-  drawerPaper: {
-    width: drawerWidth
-  },*/
   toolbar: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
@@ -40,10 +24,10 @@ const styles = theme => ({
 });
 
 function getSelectedItemName(pathname) {
-  const findedIndex = pathname.lastIndexOf("moderator");
+  const findedIndex = pathname.lastIndexOf("admin");
 
   if (findedIndex === -1) {
-    return "Restaurants";
+    return "Users";
   }
 
   let firstCharIndex = 0;
@@ -51,26 +35,26 @@ function getSelectedItemName(pathname) {
   if (pathname.charAt(findedIndex + 9) === "/") {
     firstCharIndex = findedIndex + 10;
   } else {
-    return "Restaurants";
+    return "Users";
   }
 
   const firstChar = pathname.charAt(firstCharIndex).toUpperCase();
   const restWord = pathname.substring(firstCharIndex + 1).toLowerCase();
 
   const fullWord = firstChar + restWord;
-  return fullWord ? fullWord : "Restaurants";
+  return fullWord ? fullWord : "Users";
 }
 
-class ModeratorPanel extends React.Component {
+class AdminPanel extends React.Component {
   state = {
     error: "",
-    token: localStorage.getItem("token"),
+    showTabs: true,
     selectedItemName: getSelectedItemName(this.props.location.pathname),
     selectedStatus: {
       Restaurants: "All",
       Users: "All",
       Owners: "All",
-      Messages: "All"
+      Moderators: "All"
     },
     currentStatusAdditionalValues: {}
   };
@@ -79,7 +63,7 @@ class ModeratorPanel extends React.Component {
     Restaurants: ["All", "Unapproved", "Approved", "Archived"],
     Users: ["All", "Active", "Banned"],
     Owners: ["All", "Active", "Banned"],
-    Messages: ["All", "Feedbacks", "Reports"]
+    Moderators: ["All", "Active", "Banned"]
   };
 
   tagsValues = {
@@ -90,87 +74,134 @@ class ModeratorPanel extends React.Component {
       Archived: [2]
     },
     Users: { All: [false, true], Active: [true], Banned: [false] },
-    Owners: { All: [false, true], Active: [true], Banned: [false] }
+    Owners: { All: [false, true], Active: [true], Banned: [false] },
+    Moderators: { All: [false, true], Active: [true], Banned: [false] }
   };
+
+  roles = {
+    client: 1,
+    owner: 2,
+    moderator: 3,
+    admin: 4,
+    administrator: 5,
+    waiter: 6
+  };
+
+  icons = {
+    Restaurants: <Restaurant />,
+    Users: <AccountCircle />,
+    Owners: <Work />,
+    Moderators: <SupervisedUserCircle />
+  };
+
+  classes = this.props.classes;
 
   routes = () => {
     return [
       {
-        path: "/moderator/",
-        render: props => {
+        path: "/admin",
+        render: () => {
           return (
-            <RestaurantsForApprovalPage
-              restaurantStatus={
-                this.tagsValues.Restaurants[
-                  this.state.selectedStatus.Restaurants
-                ]
-              }
-              tagsValues={this.tagsValues.Restaurants}
-              setAdditionalTabData={this.setAdditionalTabData}
-            />
-          );
-        },
-        exact: true
-      },
-      {
-        path: "/moderator/restaurants",
-        render: props => {
-          return (
-            <RestaurantsForApprovalPage
-              restaurantStatus={
-                this.tagsValues.Restaurants[
-                  this.state.selectedStatus.Restaurants
-                ]
-              }
-              tagsValues={this.tagsValues.Restaurants}
-              setAdditionalTabData={this.setAdditionalTabData}
-            />
-          );
-        },
-        exact: true
-      },
-      {
-        path: "/moderator/users",
-        render: props => {
-          return (
-            <ModeratorUsersPage
+            <UsersPage
               userActivity={
                 this.tagsValues.Users[this.state.selectedStatus.Users]
               }
-              userStatus={"users"}
+              userStatus={this.roles.client}
               tagsValues={this.tagsValues.Users}
               setAdditionalTabData={this.setAdditionalTabData}
+              tabsDisplay={(value) => this.setState({ showTabs: value })}
+              /*
+              TODO: Refactor "showTabs" tabsDisplay={(value) => this.setState({ showTabs: value })}
+               here and in the code below.
+              */
             />
           );
         },
         exact: true
       },
       {
-        path: "/moderator/owners",
-        render: props => {
+        path: "/admin/users",
+        render: () => {
           return (
-            <ModeratorUsersPage
+            <UsersPage
+              userActivity={
+                this.tagsValues.Users[this.state.selectedStatus.Users]
+              }
+              userStatus={this.roles.client}
+              tagsValues={this.tagsValues.Users}
+              setAdditionalTabData={this.setAdditionalTabData}
+              tabsDisplay={(value) => this.setState({ showTabs: value })}
+            />
+          );
+        },
+        exact: true
+      },
+      {
+        path: "/admin/owners",
+        render: () => {
+          return (
+            <UsersPage
               userActivity={
                 this.tagsValues.Owners[this.state.selectedStatus.Owners]
               }
-              userStatus={"owners"}
+              userStatus={this.roles.owner}
               tagsValues={this.tagsValues.Owners}
               setAdditionalTabData={this.setAdditionalTabData}
+              tabsDisplay={(value) => this.setState({ showTabs: value })}
             />
           );
         },
         exact: true
       },
       {
-        path: "/moderator/messages",
-        render: props => {
-          return <Messages />;
+        path: "/admin/moderators",
+        render: () => {
+          return (
+            <UsersPage
+              userActivity={
+                this.tagsValues.Moderators[this.state.selectedStatus.Moderators]
+              }
+              userStatus={this.roles.moderator}
+              tagsValues={this.tagsValues.Moderators}
+              setAdditionalTabData={this.setAdditionalTabData}
+              tabsDisplay={(value) => this.setState({ showTabs: value })}
+            />
+          );
+        },
+        exact: true
+      },
+      {
+        path: "/admin/moderators/create",
+        render: () => {
+          return (
+            <UserCreate
+              userStatus={this.roles.moderator}
+              tabsDisplay={(value) => this.setState({ showTabs: value })}
+            />
+          );
+        },
+        exact: true
+      },
+      {
+        path: "/admin/restaurants",
+        render: () => {
+          return (
+            <RestaurantsPage
+              restaurantStatus={
+                this.tagsValues.Restaurants[
+                  this.state.selectedStatus.Restaurants
+                ]
+              }
+              tagsValues={this.tagsValues.Restaurants}
+              setAdditionalTabData={this.setAdditionalTabData}
+            />
+          );
         },
         exact: true
       },
       {
         path: "",
-        render: props => {
+        render: () => {
           return <GeneralError error="404 Not Found" />;
         },
         exact: true
@@ -178,19 +209,10 @@ class ModeratorPanel extends React.Component {
     ];
   };
 
-  icons = {
-    Restaurants: <Restaurant />,
-    Users: <AccountCircle />,
-    Owners: <Work />,
-    Messages: <Report />
-  };
-
-  classes = this.props.classes;
-
   componentDidMount() {
     const headers = new Headers({
       "Content-Type": "application/json",
-      "X-Auth-Token": this.state.token
+      "X-Auth-Token": localStorage.getItem("token")
     });
 
     const fetchInit = {
@@ -198,10 +220,10 @@ class ModeratorPanel extends React.Component {
       headers: headers
     };
 
-    fetch("http://localhost:6543/api/moderator", fetchInit)
+    fetch('http://localhost:6543/api/users/' + this.roles.client, fetchInit)
       .then(response =>
         !(response.status >= 200 && response.status < 300)
-          ? Promise.reject.bind(Promise)
+          ? Promise.reject(response.status)
           : response.json()
       )
       .then(data =>
@@ -227,7 +249,7 @@ class ModeratorPanel extends React.Component {
   };
 
   setAdditionalTabData = additionalTabData => {
-    this.setState(prevState => {
+    this.setState(() => {
       return { currentStatusAdditionalValues: additionalTabData };
     });
   };
@@ -247,16 +269,9 @@ class ModeratorPanel extends React.Component {
 
     return (
       <div className={classes.root}>
-        {/*<Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{
-            paper: classes.drawerPaper
-          }}
-        >*/}
         <div className={classes.toolbar} />
         <List>
-          {["Restaurants", "Users", "Owners"].map((text, index) => (
+          {["Users", "Owners", "Moderators", "Restaurants"].map((text) => (
             <ListItem
               button
               selected={this.state.selectedItemName === text}
@@ -265,28 +280,30 @@ class ModeratorPanel extends React.Component {
                 this.setState({ selectedItemName: text });
               }}
               component={Link}
-              to={"/moderator/" + text.toLowerCase()}
+              to={"/admin/" + text.toLowerCase()}
             >
               <ListItemIcon>{this.icons[text]}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
           ))}
         </List>
-        {/*</Drawer>*/}
         <main className={classes.content}>
-          <div>
-            <GenericTabs
-              tags={this.tags[selectedItemName]}
-              tagsAdditionalInformation={currentStatusAdditionalValues}
-              selectedValue={this.tags[selectedItemName].indexOf(
-                selectedStatus[selectedItemName]
-              )}
-              handleTabChange={this.handleTabChange}
-            />
-          </div>
+          {this.state.showTabs ?
+            <div>
+              <GenericTabs
+                tags={this.tags[selectedItemName]}
+                tagsAdditionalInformation={currentStatusAdditionalValues}
+                selectedValue={this.tags[selectedItemName].indexOf(
+                  selectedStatus[selectedItemName]
+                )}
+                handleTabChange={this.handleTabChange}
+              />
+            </div>
+            : null
+          }
           <Switch>
             {this.routes().map(({ path, render, exact }, index) => (
-              <Route exact={exact} key={index} path={path} render={render} />
+              <Route exact={exact} key={index} path={path} render={render}/>
             ))}
           </Switch>
         </main>
@@ -295,8 +312,8 @@ class ModeratorPanel extends React.Component {
   }
 }
 
-ModeratorPanel.propTypes = {
+AdminPanel.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(ModeratorPanel);
+export default withStyles(styles)(AdminPanel);

@@ -32,7 +32,7 @@ def authorize_moderator_controller(request):
 
 
 @view_config(route_name='moderator_get_restaurants', renderer='json', request_method='GET')
-@restrict_access(user_types=["Moderator"])
+@restrict_access(user_types=["Moderator", "Admin"])
 def get_restaurants_controller(request):
     """
     GET request controller to return information about restaurants for moderator
@@ -57,7 +57,7 @@ def get_restaurants_controller(request):
     unapproved_restaurants =\
         request.dbsession.query(Restaurant).all()
     if unapproved_restaurants:
-        keys = ("id", "status", "creation_date", "name", "address_id", "phone", "owner_id")
+        keys = ("id", "status", "creation_date", "name", "address_id", "phone", "owner_id", "image")
         data = []
         for restaurant in unapproved_restaurants:
             restaurant_data = form_dict(restaurant, keys)
@@ -70,7 +70,7 @@ def get_restaurants_controller(request):
 
 
 @view_config(route_name='moderator_manage_restaurants', renderer='json', request_method='POST')
-@restrict_access(user_types=["Moderator"])
+@restrict_access(user_types=["Moderator", "Admin"])
 def approve_restaurant_controller(request):
     """
     POST request controller to handle restaurant approvement or reverting approval by moderator
@@ -98,7 +98,7 @@ def approve_restaurant_controller(request):
 
 
 @view_config(route_name='moderator_manage_restaurants', renderer='json', request_method='DELETE')
-@restrict_access(user_types=["Moderator"])
+@restrict_access(user_types=["Moderator", "Admin"])
 def disapprove_restaurant_controller(request):
     """
     DELETE request controller to handle restaurant disapprovement by moderator

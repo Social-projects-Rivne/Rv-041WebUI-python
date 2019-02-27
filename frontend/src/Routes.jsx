@@ -12,7 +12,9 @@ import ProfilePage from "./containers/ProfilePage";
 import AppHeader from "./containers/AppHeader";
 import RestaurantManagmentPage from "./containers/RestaurantManegmentPage/RestaurantManagmentPage";
 import PrivateRoute from "./Service/PrivatRoute";
+import AdminPanel from "./containers/AdminPanel";
 import WaiterPanel from "./containers/WaiterPanel";
+
 
 const routes = [
   {
@@ -64,6 +66,11 @@ const routes = [
     path: "/moderator",
     component: ModeratorPanel,
     access: ["Moderator"]
+  },
+  {
+    path: "/admin",
+    component: AdminPanel,
+    access: ["Admin"]
   },
   {
     path: "/waiter",
