@@ -72,6 +72,7 @@ const routes = [
     component: AdminPanel,
     access: ["Admin"]
   },
+  {
     path: "/waiter",
     component: WaiterPanel,
     access: ["Waiter"]
