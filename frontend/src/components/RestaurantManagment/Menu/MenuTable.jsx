@@ -143,10 +143,11 @@ class MenuTable extends React.Component {
       selected: [],
       page: 0,
       rowsPerPage: 10,
-      editableRows: []
+      editableRows: [],
+      imgBody: {},
+      img: ""
     };
     this.nameRef = React.createRef();
-    this.imgRef = React.createRef();
     this.descriptionRef = React.createRef();
     this.ingredientsRef = React.createRef();
     this.valueRef = React.createRef();
@@ -214,24 +215,75 @@ class MenuTable extends React.Component {
     }));
   };
 
+  handleImageChange = e => {
+    e.target.files[0] &&
+      this.setState({
+        imgBody: e.target.files[0],
+        img: URL.createObjectURL(e.target.files[0])
+      });
+  };
+
   handleSaveClick = (event, id) => {
+    const restId = this.props.restId;
+    const menuId = this.props.match.params.id;
+
     const name = this.nameRef.current.value;
-    const img = this.imgRef.current.value;
     const description = this.descriptionRef.current.value;
     const ingredients = this.ingredientsRef.current.value;
     const value = this.valueRef.current.value;
     const price = this.priceRef.current.value;
     const category = this.categoryRef.current.value;
-    console.log(
-      id,
-      name,
-      img,
-      description,
-      ingredients,
-      value,
-      price,
-      category
-    );
+
+    const img = this.state.imgBody;
+    let formData = new FormData();
+    formData.append("img", img);
+
+    let data = { name, description, ingredients, value, price, category };
+    fetch("http://localhost:6543/api/file", {
+      method: "POST",
+      headers: {
+        "x-auth-token": localStorage.getItem("token")
+      },
+      body: formData
+    })
+      .then(response => {
+        return response.status >= 200 && response.status < 300
+          ? response.json()
+          : response.json().then(Promise.reject.bind(Promise));
+      })
+      .then(response => {
+        data["image"] = response;
+        fetch(
+          `http://localhost:6543/api/restaurant/${restId}/menu/${menuId}/item/${id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              "x-auth-token": localStorage.getItem("token")
+            },
+            body: JSON.stringify(data)
+          }
+        )
+          .then(response => {
+            return response.status >= 200 && response.status < 300
+              ? response.json()
+              : response.json().then(Promise.reject.bind(Promise));
+          })
+          .then(response => {
+            // this.setState(prevState => ({
+            //   editableRows: [prevState.editableRows]
+            // }));
+          })
+
+          .catch(err => {
+            this.setState(prevState => ({
+              editableRows: [prevState.editableRows]
+            }));
+          });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   render() {
@@ -309,11 +361,11 @@ class MenuTable extends React.Component {
                         />
                         <div className={classes.imgInput}>
                           <input
+                            onChange={this.handleImageChange}
                             accept="image/*"
                             style={{ display: "none" }}
                             id="icon-edit-file"
                             type="file"
-                            ref={this.imgRef}
                           />
                           <label htmlFor="icon-edit-file">
                             <IconButton color="primary" component="span">
