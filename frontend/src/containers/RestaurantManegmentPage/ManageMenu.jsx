@@ -45,6 +45,12 @@ class ManageMenu extends React.Component {
       });
   }
 
+  handleMenuItemAdd = newItem => {
+    this.setState(prevState => ({
+      menuItems: [newItem, ...prevState.menuItems]
+    }));
+  };
+
   render() {
     const { menuItems, isImageMenu } = this.state;
     return (
@@ -63,6 +69,7 @@ class ManageMenu extends React.Component {
           ) : (
             <MenuTable
               {...this.props}
+              onMenuItemAdd={this.handleMenuItemAdd}
               menuName={menuName}
               menuItems={menuItems}
             />

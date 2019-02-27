@@ -58,6 +58,13 @@ export class RestaurantManagmentPage extends React.Component {
       });
   }
 
+  handleAddMenu = newItem => {
+    this.setState(prevState => ({
+      menusList: [...prevState.menusList, newItem]
+    }));
+    console.log(this.state);
+  };
+
   render() {
     const { classes, match } = this.props;
     const { menusList } = this.state;
@@ -91,7 +98,11 @@ export class RestaurantManagmentPage extends React.Component {
               <Route
                 path={`${match.url}/create_menu`}
                 render={props => (
-                  <CreateMenu restId={match.params.id} {...props} />
+                  <CreateMenu
+                    onAddMenu={this.handleAddMenu}
+                    restId={match.params.id}
+                    {...props}
+                  />
                 )}
               />
               <Route path={`${match.url}/waiters`} component={ManageWaiters} />

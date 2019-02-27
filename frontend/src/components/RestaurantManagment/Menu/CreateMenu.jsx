@@ -198,9 +198,54 @@ class CreateMenu extends React.Component {
   };
 
   handleSubmit = () => {
-    this.setState(state => ({
-      activeStep: state.activeStep + 1
-    }));
+    const restId = this.props.restId;
+    const img = this.state.imgBody;
+    let formData = new FormData();
+    formData.append("img", img);
+    let data = { name: this.state.menuName, restId: restId, image: "" };
+
+    fetch("http://localhost:6543/api/file", {
+      method: "POST",
+      headers: {
+        "x-auth-token": localStorage.getItem("token")
+      },
+      body: formData
+    })
+      .then(response => {
+        return response.status >= 200 && response.status < 300
+          ? response.json()
+          : response.json().then(Promise.reject.bind(Promise));
+      })
+      .then(response => {
+        data["image"] = response;
+        fetch(`http://localhost:6543/api/restaurant/${restId}/menu`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": localStorage.getItem("token")
+          },
+          body: JSON.stringify(data)
+        })
+          .then(response => {
+            return response.status >= 200 && response.status < 300
+              ? response.json()
+              : response.json().then(Promise.reject.bind(Promise));
+          })
+          .then(response => {
+            this.props.onAddMenu(response.data[0]);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      })
+      .then(
+        this.setState(state => ({
+          activeStep: state.activeStep + 1
+        }))
+      )
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   render() {

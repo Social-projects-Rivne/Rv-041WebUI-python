@@ -11,6 +11,8 @@ from sqlalchemy import (
     Numeric
 )
 from sqlalchemy.orm import relationship
+from sqlalchemy.exc import IntegrityError
+from pyramid.httpexceptions import HTTPForbidden
 
 from .meta import Base
 
@@ -36,3 +38,27 @@ class MenuItem(Base):
     category = relationship("Category")
     orders = relationship('OrderAssoc')
     menu = relationship('Menu')
+
+    @staticmethod
+    def create_item(session, form_data):
+        name = form_data["name"]
+        description = form_data["description"]
+        ingredients = form_data["ingredients"]
+        img = form_data["image"]
+        price = float(form_data["price"]) * 100
+        amount = form_data["value"]
+        menu_id = form_data["menuId"]
+        category_id = form_data["category"]
+
+        item = MenuItem(name=name, description=description,
+                        ingredients=ingredients, img=img, price=price,
+                        amount=amount, menu_id=menu_id, category_id=category_id)
+        session.add(item)
+
+        try:
+            session.flush()
+        except IntegrityError:
+            session.rollback()
+            raise HTTPForbidden("Can't Create Item")
+
+        return item

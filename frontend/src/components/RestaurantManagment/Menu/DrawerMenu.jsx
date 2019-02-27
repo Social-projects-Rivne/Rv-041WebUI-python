@@ -8,7 +8,8 @@ import {
   ListItemText,
   List,
   withStyles,
-  Collapse
+  Collapse,
+  Zoom
 } from "@material-ui/core";
 import {
   Assignment,
@@ -87,18 +88,19 @@ class DrawerMenu extends React.Component {
               <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                   {ctx.menusList.map(listItem => (
-                    <ListItem
-                      component={NavLink}
-                      key={listItem.id}
-                      button
-                      to={`${match.url}/menues/${listItem.id}`}
-                      className={classes.nested}
-                    >
-                      <ListItemIcon>
-                        {listItem.is_active ? <Star /> : <StarBorder />}
-                      </ListItemIcon>
-                      <ListItemText inset primary={listItem.name} />
-                    </ListItem>
+                    <Zoom in={true} key={listItem.id}>
+                      <ListItem
+                        component={NavLink}
+                        button
+                        to={`${match.url}/menues/${listItem.id}`}
+                        className={classes.nested}
+                      >
+                        <ListItemIcon>
+                          {listItem.is_active ? <Star /> : <StarBorder />}
+                        </ListItemIcon>
+                        <ListItemText inset primary={listItem.name} />
+                      </ListItem>
+                    </Zoom>
                   ))}
                   <ListItem
                     component={NavLink}

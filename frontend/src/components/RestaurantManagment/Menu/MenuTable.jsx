@@ -21,19 +21,12 @@ import {
 import IconDelete from "@material-ui/icons/Delete";
 import IconEdit from "@material-ui/icons/Edit";
 import IconSave from "@material-ui/icons/Save";
-import IconCancel from "@material-ui/icons/Cancel";
 import { PhotoCamera } from "@material-ui/icons";
 
 import MenuHeader from "./MenuHeader";
 import MenuToolbar from "./MenuToolbar";
 import CategorySelect from "./CategorySelect";
 import CreateNewItem from "./CreateNewItem";
-
-let counter = 0;
-function createData(name, calories, fat, carbs, protein) {
-  counter += 1;
-  return { id: counter, name, calories, fat, carbs, protein };
-}
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -242,7 +235,7 @@ class MenuTable extends React.Component {
   };
 
   render() {
-    const { classes, menuItems, menuName } = this.props;
+    const { classes, menuItems, menuName, restId } = this.props;
     const {
       order,
       orderBy,
@@ -278,7 +271,11 @@ class MenuTable extends React.Component {
               onRequestSort={this.handleRequestSort}
               rowCount={menuItems.length}
             />
-            <CreateNewItem />
+            <CreateNewItem
+              restId={restId}
+              menuId={this.props.match.params.id}
+              onMenuItemAdd={this.props.onMenuItemAdd}
+            />
             <TableBody>
               {stableSort(menuItems, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -412,7 +409,7 @@ class MenuTable extends React.Component {
                               }}
                             />
                           }
-                          currentCategory={item.category.name}
+                          currentCategory={item.category.id}
                         />
                       </TableCell>
                     </TableRow>

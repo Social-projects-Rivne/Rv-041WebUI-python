@@ -25,8 +25,6 @@ def upload(request):
 
     file_type = filename.split(".")[-1]
 
-    print(file_type)
-
     new_filename = uuid.uuid4()
 
     file_path = os.path.join(
@@ -42,9 +40,9 @@ def upload(request):
 
     os.rename(temp_file_path, file_path)
 
-    url_root = "http://localhost:6543/api/static/%s%s.%s" % (new_filename,
-                                                             img_index,
-                                                             file_type)
+    url_root = "http://localhost:6543/api/static/images/%s%s.%s" % (new_filename,
+                                                                    img_index,
+                                                                    file_type)
 
     img_index += 1
 

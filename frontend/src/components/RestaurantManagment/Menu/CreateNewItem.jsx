@@ -1,7 +1,6 @@
 import React from "react";
 
 import {
-  NativeSelect,
   TableBody,
   TableCell,
   TableRow,
@@ -55,60 +54,155 @@ class CreateNewItem extends React.Component {
     super(props);
     this.state = {
       img: "",
+      imgBody: {},
       name: "",
       description: "",
       ingredients: "",
       value: 0,
-      price: 0
+      price: 0,
+      category: ""
     };
-    this.imgAddRef = React.createRef();
   }
+
+  _getInitialState = () => {
+    const initialState = {
+      img: "",
+      imgBody: {},
+      name: "",
+      description: "",
+      ingredients: "",
+      value: 0,
+      price: 0,
+      category: ""
+    };
+    return initialState;
+  };
+
+  _resetState = () => {
+    this.setState(this._getInitialState());
+  };
 
   handleChange = e => {
     let name = e.target.name;
     let value = e.target.value;
 
     this.setState({
-      [e.target.name]: e.target.value
+      [name]: value
     });
   };
 
   handleImageChange = e => {
     e.target.files[0] &&
       this.setState({
+        imgBody: e.target.files[0],
         img: URL.createObjectURL(e.target.files[0])
       });
   };
 
   validate = () => {
-    const { img, name, description, ingredients, value, price } = this.state;
+    const {
+      img,
+      name,
+      description,
+      ingredients,
+      value,
+      price,
+      category
+    } = this.state;
 
-    return img && name && description && ingredients && value && price
+    return img &&
+      name &&
+      description &&
+      ingredients &&
+      value &&
+      price &&
+      category
       ? true
       : false;
+  };
+
+  handleAddClick = () => {
+    const restId = this.props.restId;
+    const menuId = this.props.menuId;
+    const imgage = this.state.imgBody;
+    let formData = new FormData();
+    formData.append("img", imgage);
+
+    let { imgBody, img, ...data } = this.state;
+    data = { ...data, menuId, restId };
+
+    fetch("http://localhost:6543/api/file", {
+      method: "POST",
+      headers: {
+        "x-auth-token": localStorage.getItem("token")
+      },
+      body: formData
+    })
+      .then(response => {
+        return response.status >= 200 && response.status < 300
+          ? response.json()
+          : response.json().then(Promise.reject.bind(Promise));
+      })
+      .then(response => {
+        data["image"] = response;
+        fetch(`http://localhost:6543/api/restaurant/${restId}/menu/${menuId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": localStorage.getItem("token")
+          },
+          body: JSON.stringify(data)
+        })
+          .then(response => {
+            return response.status >= 200 && response.status < 300
+              ? response.json()
+              : response.json().then(Promise.reject.bind(Promise));
+          })
+          .then(response => {
+            this.props.onMenuItemAdd(response.data);
+          })
+          .then(response => {
+            this._resetState();
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   render() {
     const { classes } = this.props;
     const { img, name, description, ingredients, value, price } = this.state;
+
     return (
       <TableBody onChange={this.handleChange}>
         <TableRow className={classes.tableRowEditable} tabIndex={-1}>
           <TableCell>
-            <Fab disabled={!this.validate()} size="small" color="primary">
+            <Fab
+              disabled={!this.validate()}
+              onClick={this.handleAddClick}
+              size="small"
+              color="primary"
+            >
               <AddIcon />
             </Fab>
           </TableCell>
           <TableCell className={classes.editImg} align="center">
-            <CardMedia className={classes.media} image={img} />
+            <CardMedia
+              className={classes.media}
+              image={img ? img : "placeholder"}
+            />
             <div className={classes.imgInput}>
               <input
                 onChange={this.handleImageChange}
                 accept="image/*"
+                name="imgPath"
                 style={{ display: "none" }}
                 id="icon-button-file"
                 type="file"
-                ref={this.imgAddRef}
               />
               <label htmlFor="icon-button-file">
                 <IconButton color="primary" component="span">
@@ -173,8 +267,7 @@ class CreateNewItem extends React.Component {
               input={
                 <Input
                   inputProps={{
-                    style: { fontSize: "0.8125rem" },
-                    ref: this.categoryRef
+                    style: { fontSize: "0.8125rem" }
                   }}
                 />
               }

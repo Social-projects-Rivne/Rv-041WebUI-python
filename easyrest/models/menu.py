@@ -70,9 +70,11 @@ class Menu(Base):
     def create_menu(session, form_data):
         name = form_data["name"]
         image = form_data["image"]
+        rest_id = form_data["restId"]
         # is_active = form_data["is_active"]
         is_active = True
-        menu = Menu(name=name, image=image, is_active=is_active)
+        menu = Menu(name=name, image=image,
+                    is_active=is_active, rest_id=rest_id)
         session.add(menu)
         try:
             session.flush()
@@ -80,4 +82,4 @@ class Menu(Base):
             session.rollback()
             raise HTTPForbidden("Can't Create Menu")
 
-        return menu.id
+        return menu

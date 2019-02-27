@@ -71,11 +71,27 @@ def get_menu_controler(request):
 
 
 @view_config(route_name='menus', renderer='json', request_method='POST')
+@restrict_access(user_types=['Client', 'Owner'])
 def add_menu_controler(request):
+    """
+    POST request controller. Create new restaurant menu database and return created menu
+    """
     from_data = request.json_body
-    menu_id = Menu.create_menu(request.dbsession, from_data)
+    menu = Menu.create_menu(request.dbsession, from_data)
 
-    return wrap(menu_id)
+    return wrap(menu.as_dict())
+
+
+@view_config(route_name='menu_items', renderer='json', request_method='POST')
+@restrict_access(user_types=['Client', 'Owner'])
+def create_menu_item_controler(request):
+    """
+    POST request controller. Create new restaurant menu item in database and return created item
+    """
+    from_data = request.json_body
+    item = MenuItem.create_item(request.dbsession, from_data)
+
+    return wrap(item.as_dict(with_relations=["category"]))
 
 
 @view_config(route_name='menu_items', renderer='json', request_method='GET')
@@ -135,47 +151,6 @@ def get_cats_controler(request):
             })
 
     return body
-
-
-@view_config(
-    route_name='menu_items',
-    request_method="POST",
-    renderer='json'
-)
-@restrict_access(user_types=['Client', 'Owner'])
-def create_restaurant_menu_item(request):
-    """
-    POST request controller. Create new restaurant menu item in database and return created item
-    """
-    menu_item_data = request.json_body
-
-    rest_id = request.matchdict['rest_id']
-    menu_type = int(request.matchdict['menu_id'])
-
-    menu_models = request.dbsession.query(
-        Menu).filter_by(rest_id=rest_id).all()
-
-    name = menu_item_data["name"]
-    description = menu_item_data["description"]
-    ingredients = menu_item_data["ingredients"]
-    img = menu_item_data["img"]
-    category = menu_item_data["category"]
-    menu_id = menu_models[menu_type - 1].id
-
-    category_model = request.dbsession.query(
-        Category).filter_by(name=category).first()
-
-    new_menu_item = MenuItem(name=name, description=description,
-                             ingredients=ingredients, img=img, menu_id=menu_id, category_id=category_model.id, category=category_model)
-
-    request.dbsession.add(new_menu_item)
-    request.dbsession.flush()
-
-    new_menu_item_as_dict = new_menu_item.as_dict()
-    new_menu_item_as_dict["category"] = category_model.name
-
-    request.response.status_code = 201
-    return wrap(new_menu_item_as_dict, message="New menu item was successfully created")
 
 
 @view_config(route_name='get_by_category', renderer='json', request_method='GET')

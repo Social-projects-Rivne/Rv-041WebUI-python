@@ -30,12 +30,13 @@ class CategorySelect extends React.Component {
   render() {
     return (
       <NativeSelect
-        defaultValue={this.props.currentCategory}
+        name="category"
+        value={this.props.currentCategory}
         input={this.props.input}
       >
         <option value="" />
         {this.state.categoriest.map(option => (
-          <option key={option.name} value={option.name}>
+          <option key={option.name} value={option.id}>
             {option.name}
           </option>
         ))}
