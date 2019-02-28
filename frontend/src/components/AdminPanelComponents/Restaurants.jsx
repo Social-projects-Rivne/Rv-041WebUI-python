@@ -1,5 +1,6 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
+import { format } from "date-fns";
 import Typography from "@material-ui/core/Typography";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -50,6 +51,11 @@ function Restaurants(props) {
                   Phone
               </Typography>
             </TableCell>
+            <TableCell align="left">
+              <Typography gutterBottom variant="subtitle2" >
+                  Added
+              </Typography>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -63,6 +69,7 @@ function Restaurants(props) {
               <TableCell align="left">{restaurantInfo.owner_name}</TableCell>
               <TableCell align="left">{restaurantInfo.address_id}</TableCell>
               <TableCell align="left">{restaurantInfo.phone}</TableCell>
+              <TableCell align="left">{format(restaurantInfo.creation_date, "dd.MM.yyyy")}</TableCell>
             </TableRow>
           );
         } else {
