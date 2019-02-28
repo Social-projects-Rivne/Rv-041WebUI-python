@@ -158,7 +158,7 @@ function UserOrders(props) {
                                   color="primary"
                                   onClick={() => handleOrderDecline(orderInfo.id, orderInfo.status)}
                                 >
-                                  Decline
+                                  {orderInfo.status === "Draft" ? "Delete" : "Decline"}
                                 </Button>
                               </Grid>
                             )

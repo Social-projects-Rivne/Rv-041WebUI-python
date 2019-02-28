@@ -16,14 +16,11 @@ export function AddAllCategory(statuses) {
 
 export function convertIntToDate(dateTime) {
 
-	let orderDate;
-
 	if (!dateTime) {
-		orderDate = new Date();
-	} else {
-		orderDate = new Date(dateTime * 1000);
-	};
+		return "--.--.---- : --:--";
+	}
 
+	let orderDate = dateTime;
 	const now = new Date();
 
 	orderDate = orderDate === null ? new Date() : orderDate;
@@ -57,11 +54,19 @@ export function convertIntToDate(dateTime) {
 
 export function makeDate(dateTime, variant = "simple european date with time") {
 
+	if (!dateTime) {
+		return "--.--.---- : --:--";
+	}
+
 	if (typeof(dateTime) === "number") {
 		dateTime = dateTime*1000;
 	}
+	else if (typeof(dateTime) === "string") {
+		dateTime = Date.parse(dateTime);
+	}
+	
 	let result = "";
-
+	console.log(typeof(dateTime));
 	switch (variant) {
 		case ("simple european date with time"):
 			result = format(dateTime, 'dd.MM.yyyy HH:mm');
