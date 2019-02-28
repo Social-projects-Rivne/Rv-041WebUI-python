@@ -13,12 +13,43 @@ export function AddAllCategory(statuses) {
     return statuses;
 };
 
-export function convertIntToData(timeTime) {
+export function convertIntToData(dateTime) {
 
-    const multipliedDateTime = new Date(timeTime * 1000);
-    const motht = (multipliedDateTime.getMonth() + 1) < 10 ? "0" + (multipliedDateTime.getMonth() + 1) : (multipliedDateTime.getMonth() + 1);
-    const dateTimeString = "" + multipliedDateTime.getDate() + "." + motht
-          + "." + multipliedDateTime.getFullYear() + " " + multipliedDateTime.getHours() + ":" +  multipliedDateTime.getMinutes();
-    return dateTimeString;
+	let orderDate;
+
+	if (!dateTime) {
+		orderDate = new Date();
+	} else {
+		orderDate = new Date(dateTime * 1000);
+	};
+
+	const now = new Date();
+
+	orderDate = orderDate === null ? new Date() : orderDate;
+
+	const motht = (orderDate.getMonth() + 1) < 10 ? "0" + (orderDate.getMonth() + 1) : (orderDate.getMonth() + 1);
+	const date = orderDate.getDate() < 10 ? "0" + orderDate.getDate() : orderDate.getDate();
+	const hours = orderDate.getHours() < 10 ? "0" + orderDate.getHours() : orderDate.getHours();
+	const minutes = orderDate.getMinutes() < 10 ? "0" + orderDate.getMinutes() : orderDate.getMinutes();
+
+	let result;
+
+	if (now.getFullYear() === orderDate.getFullYear() && (now.getMonth() === orderDate.getMonth())) {
+		const dateDifference = orderDate.getDate() - now.getDate();
+		if (dateDifference === 0) {
+			result = "Today at";
+		} else if (dateDifference === 1) {
+			result = "Tomorrow at";
+		} else if (dateDifference === -1) {
+			result = "Yesterday at";
+		} else {
+			result = "" + date + "." + motht
+				+ "." + orderDate.getFullYear();
+		}
+	}
+
+	result += " " + hours + ":" + minutes;
+
+	return result;
     
 };
