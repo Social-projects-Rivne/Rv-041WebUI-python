@@ -2,6 +2,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import {Lock, LockOpen} from '@material-ui/icons';
+import { format } from "date-fns";
 import {
   Button,
   IconButton,
@@ -122,7 +123,7 @@ function Users(props) {
                     </TableCell>
                     <TableCell align="left">{userInfo.email}</TableCell>
                     <TableCell align="left">{userInfo.phone_number}</TableCell>
-                    <TableCell align="left">{userInfo.birth_date}</TableCell>
+                    <TableCell align="left">{format(userInfo.birth_date, "dd.MM.yyyy")}</TableCell>
                     <TableCell align="left">
                       <Typography component="p" color={userInfo.is_active ? "primary" : "error"}>
                           {userInfo.is_active ? "Active" : "Banned"}
