@@ -22,7 +22,7 @@ import {
 import { withStyles } from "@material-ui/core/styles";
 import red from "@material-ui/core/colors/red";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import {convertIntToData} from "../../Service/functions";
+import { makeDate } from "../../Service/functions";
 
 const styles = theme => ({
   card: {
@@ -69,7 +69,7 @@ class Order extends React.Component {
           key={0}
           size="small"
           color="primary"
-          variant="outlined"
+          variant="contained"
           onClick={() => this.props.changeOrderStatus(id, "In progress", dateModified)}
         >
           Start order
@@ -81,7 +81,7 @@ class Order extends React.Component {
           key={0}
           size="small"
           color="secondary"
-          variant="outlined"
+          variant="contained"
           onClick={() => this.props.changeOrderStatus(id, "History", dateModified)}
         >
           Close order
@@ -103,8 +103,8 @@ class Order extends React.Component {
     const { expanded }  = this.state;
     const { classes, order } = this.props;
     const { id, status, items } = order;
-    const creationDateString = convertIntToData(order.creation_time);
-    const bookingDateString  = convertIntToData(order.booked_time);
+    const creationDateString = makeDate(order.creation_time);
+    const bookingDateString  = makeDate(order.booked_time);
 
     let statusColor = status === "In progress" ? "primary": "secondary";
   

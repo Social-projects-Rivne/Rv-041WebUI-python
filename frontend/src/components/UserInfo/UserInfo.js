@@ -6,6 +6,7 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import { makeDate } from "../../Service/functions";
 
 const styles = {
     root: {
@@ -43,7 +44,7 @@ class UserInfo extends React.Component {
                                 <TableCell component="th" scope="row">
                                   Birth date:
                                 </TableCell>
-                                <TableCell align="right">{userInfo.birth_date}</TableCell>
+                                <TableCell align="right">{makeDate(userInfo.birth_date, "simple european date")}</TableCell>
                              </TableRow>
                             <TableRow key={3}>
                                 <TableCell component="th" scope="row">

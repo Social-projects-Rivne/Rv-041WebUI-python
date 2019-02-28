@@ -1,3 +1,4 @@
+import { format, formatDistance, subDays } from  "date-fns";
 
 export function GetCurrentRouteLocation(CurrentPath, ParentPath) {
     let currentRouteLocation = CurrentPath.replace(ParentPath, "");
@@ -13,7 +14,7 @@ export function AddAllCategory(statuses) {
     return statuses;
 };
 
-export function convertIntToData(dateTime) {
+export function convertIntToDate(dateTime) {
 
 	let orderDate;
 
@@ -53,3 +54,28 @@ export function convertIntToData(dateTime) {
 	return result;
     
 };
+
+export function makeDate(dateTime, variant = "simple european date with time") {
+
+	if (typeof(dateTime) === "number") {
+		dateTime = dateTime*1000;
+	}
+	let result = "";
+
+	switch (variant) {
+		case ("simple european date with time"):
+			result = format(dateTime, 'dd.MM.yyyy HH:mm');
+			//result = formatDistance(subDays(new Date(), 1), dateTime);
+			break;
+		case ("simple european date"):
+			result = format(dateTime, 'dd.MM.yyyy');
+			break;
+		default:
+			result = "";
+			break;
+	}
+	
+	return result;
+    
+};
+

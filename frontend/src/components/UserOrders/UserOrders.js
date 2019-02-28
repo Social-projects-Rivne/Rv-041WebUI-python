@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Avatar,
+  Button,
   CardMedia,
   ExpansionPanel,
   ExpansionPanelDetails,
@@ -16,7 +17,7 @@ import {
 import { withStyles } from "@material-ui/core/styles";
 import { Repeat } from "@material-ui/icons";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import {convertIntToData} from "../../Service/functions";
+import { makeDate } from "../../Service/functions";
 
 const styles = theme => ({
   root: {
@@ -43,13 +44,13 @@ const styles = theme => ({
 });
 
 function UserOrders(props) {
-  const { classes, orders } = props;
+  const { classes, orders, handleOrderDecline } = props;
 
   return (
     <div className={classes.root}>
       {orders.map((orderInfo, index) => {
-        const creationDateString = convertIntToData(orderInfo.creation_time);
-        const bookingDateString  = convertIntToData(orderInfo.booked_time);
+        const creationDateString = makeDate(orderInfo.creation_time);
+        const bookingDateString  = makeDate(orderInfo.booked_time);
         const orderItems = orderInfo.items;
         //extract photo to make icons
         let iconsArray = [];
@@ -149,6 +150,19 @@ function UserOrders(props) {
                               Order sum: {"$" + orderInfo.total_price}
                             </Typography>
                           </Grid>
+                          {
+                            (orderInfo.status === "Draft" || orderInfo.status === "Waiting for confirm") && (
+                              <Grid>
+                                <Button 
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() => handleOrderDecline(orderInfo.id, orderInfo.status)}
+                                >
+                                  Decline
+                                </Button>
+                              </Grid>
+                            )
+                          }
                           {/*TODO: <Grid>
                                 <Button variant="contained" color="primary">
                                   Reorder
