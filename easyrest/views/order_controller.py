@@ -83,14 +83,12 @@ def create_draft_order(request):
 
     if rest is None:
         raise HTTPNotFound("No such rest")
-    
 
     order = Order(creation_time=int(time.time()), status="Draft")
     user = request.token.user
     order.user = user
     order.restaurant = rest
     request.dbsession.add(order)
-    
 
     if "baseOrderId" in request.json_body:
         request.dbsession.flush()
@@ -99,7 +97,7 @@ def create_draft_order(request):
         except ValueError as e:
             raise HTTPBadRequest("Order id must be integer")
         base_order = request.dbsession.query(Order).get(base_order_id)
-        order.fill_in_by_other_order(request.dbsession, base_order)
+        order.fill_by_other_order(request.dbsession, base_order)
 
     request.dbsession.flush()
     # if order.id is None:
