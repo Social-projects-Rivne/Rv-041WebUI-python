@@ -80,6 +80,51 @@ class OrderListPage extends React.Component {
     this.setState({ selectedTab: value })
   };
 
+  handleOrderReordering = (orderId) => {
+
+    const headers = new Headers({
+      "Content-Type": "application/json",
+      "X-Auth-Token": this.state.token
+    });
+
+    const route = "http://localhost:6543/api/order";
+
+    const fetchInit = {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify({
+        baseOrderId: orderId,
+      })
+    }
+
+    fetch(route, fetchInit)
+      .then(response =>
+        !(response.status >= 200 && response.status < 300)
+          ? Promise.reject.bind(Promise)
+          : response.json()
+      )
+      .then(data => {
+
+          this.setState(prevState => {
+            return {
+              orders:  [...data.data.order_info, ...prevState.orders],
+              success: data.success,
+              error: data.error
+    
+            }
+          })
+        }
+      
+      )
+      .catch(err => this.setState({ 
+        success: false,
+        error: err.message,
+        isLoading: false,
+        /*snackbarOpen: true,
+        snackbarMsg: "err.message",*/
+      }));
+  }
+
   render() {
     const { classes, match } = this.props;
     const { isLoading, statuses, orders, selectedTab } = this.state;
@@ -125,6 +170,7 @@ class OrderListPage extends React.Component {
                 exact={true}
                 render={() => <UserOrders
                   orders={statusesObject[status]}
+                  handleOrderReordering={this.handleOrderReordering}
                 />}
               />
             );

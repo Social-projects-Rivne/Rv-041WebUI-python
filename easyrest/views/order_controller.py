@@ -105,7 +105,9 @@ def create_draft_order(request):
         "order_id": order.id
     }
     if "baseOrderId" in request.json_body:
-        data["order_info"] = order.as_dict()    
+        order_dict = order.as_dict()
+        order_dict["items"] = order.get_items(request.dbsession)
+        data["order_info"] = order_dict
 
     return wrap(data)
 
