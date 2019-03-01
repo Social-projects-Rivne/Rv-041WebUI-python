@@ -17,12 +17,11 @@ import {
   IconButton,
   FormControl,
   FormLabel,
-  Divider
+  Divider,
+  TextField
 } from "@material-ui/core/";
 import { PhotoCamera } from "@material-ui/icons";
-import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
-import MenuToolbar from "./MenuToolbar";
 import MenuImage from "./MenuImage";
 
 const styles = theme => ({
@@ -37,81 +36,6 @@ const styles = theme => ({
     alignItems: "center"
   }
 });
-
-const AddInfo = props => {
-  return (
-    <>
-      <Grid item xs={12}>
-        <Typography>
-          For each ad campaign that you create, you can control how much you're
-          willing to spend on clicks and conversions, which networks and
-          geographical locations you want your ads to show on, and more.
-        </Typography>
-      </Grid>
-      <Grid item xs={12}>
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Menu Type</FormLabel>
-          <RadioGroup name="menuType" row value={props.menuType}>
-            <FormControlLabel
-              value="list"
-              control={<Radio />}
-              label="List menu"
-            />
-            <FormControlLabel
-              value="image"
-              control={<Radio />}
-              label="Image menu"
-            />
-          </RadioGroup>
-        </FormControl>
-      </Grid>
-      <Grid item xs={12}>
-        <TextValidator
-          required
-          value={props.menuName}
-          name="menuName"
-          label="Menu Name"
-          fullWidth
-          validators={["required"]}
-          errorMessages={["Name is required"]}
-        />
-      </Grid>
-    </>
-  );
-};
-
-const FillMenu = props => {
-  return (
-    <>
-      <Grid item xs={12}>
-        <Typography>
-          An ad group contains one or more ads which target a shared set of
-          keywords.
-        </Typography>
-      </Grid>
-      <Grid item xs={12}>
-        {props.children}
-      </Grid>
-      <Grid item xs={12}>
-        <input
-          onChange={props.handleImageChange}
-          name="img"
-          accept="image/*"
-          style={{ display: "none" }}
-          id="icon-button-file"
-          type="file"
-        />
-        <label htmlFor="icon-button-file">
-          <Typography>{`Choose ${props.menuName} image:`}</Typography>
-          <IconButton color="primary" component="span">
-            <PhotoCamera />
-          </IconButton>
-          {props.imgName}
-        </label>
-      </Grid>
-    </>
-  );
-};
 
 function getSteps() {
   return ["Add basic information", "Create an ad group", "Create an ad"];
@@ -155,15 +79,89 @@ function getStepContent(
   }
 }
 
+const AddInfo = props => {
+  return (
+    <>
+      <Grid item xs={12}>
+        <Typography gutterBottom>
+          For each ad campaign that you create, you can control how much you're
+          willing to spend on clicks and conversions, which networks and
+          geographical locations you want your ads to show on, and more.
+        </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <TextField
+          required
+          value={props.menuName}
+          name="menuName"
+          label="Menu Name"
+          fullWidth
+          variant="outlined"
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <FormControl>
+          <FormLabel component="legend">Choose menu type:</FormLabel>
+          <RadioGroup name="menuType" value={props.menuType}>
+            <FormControlLabel
+              value="list"
+              control={<Radio />}
+              label="List menu"
+            />
+            <FormControlLabel
+              value="image"
+              control={<Radio />}
+              label="Image menu"
+            />
+          </RadioGroup>
+        </FormControl>
+      </Grid>
+    </>
+  );
+};
+
+const FillMenu = props => {
+  return (
+    <>
+      <Grid item xs={12}>
+        <Typography>
+          An ad group contains one or more ads which target a shared set of
+          keywords.
+        </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        {props.children}
+      </Grid>
+    </>
+  );
+};
+
 class CreateMenu extends React.Component {
   state = {
     img: "",
-    activeStep: 0,
+    activeStep: 1,
     menuName: "",
     menuType: "list",
     imgSrc: "",
     imgBody: {},
     imgName: ""
+  };
+
+  _getInitialState = () => {
+    const initialState = {
+      img: "",
+      activeStep: 0,
+      menuName: "",
+      menuType: "list",
+      imgSrc: "",
+      imgBody: {},
+      imgName: ""
+    };
+    return initialState;
+  };
+
+  _resetState = () => {
+    this.setState(this._getInitialState());
   };
 
   handleNext = () => {
@@ -179,9 +177,7 @@ class CreateMenu extends React.Component {
   };
 
   handleReset = () => {
-    this.setState({
-      activeStep: 0
-    });
+    this._resetState();
   };
 
   handleImageChange = e => {
@@ -255,10 +251,9 @@ class CreateMenu extends React.Component {
 
     return (
       <Paper className={classes.root}>
-        <ValidatorForm
+        <form
           onChange={this.handleFormChange}
           onSubmit={this.handleSubmit}
-          instantValidate
           noValidate
           autoComplete="off"
         >
@@ -276,13 +271,7 @@ class CreateMenu extends React.Component {
                       imgName,
                       this.handleImageChange
                     )}
-
-                    <Grid
-                      style={{ padding: 8 }}
-                      container
-                      spacing={16}
-                      justify="space-between"
-                    >
+                    <Grid container spacing={32} justify="space-between">
                       <Grid item xs={3}>
                         <Button
                           variant="contained"
@@ -324,7 +313,7 @@ class CreateMenu extends React.Component {
               </Button>
             </Paper>
           )}
-        </ValidatorForm>
+        </form>
       </Paper>
     );
   }

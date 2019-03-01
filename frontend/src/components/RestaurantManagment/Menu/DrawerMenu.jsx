@@ -8,8 +8,7 @@ import {
   ListItemText,
   List,
   withStyles,
-  Collapse,
-  Zoom
+  Collapse
 } from "@material-ui/core";
 import {
   Assignment,

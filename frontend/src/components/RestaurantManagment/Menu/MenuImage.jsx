@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { CardMedia, withStyles, Paper, Divider } from "@material-ui/core";
 
 import MenuToolbar from "./MenuToolbar";
+import ImageUploader from "./ImageUploader";
 
 const styles = theme => ({
   media: {
@@ -28,6 +29,7 @@ class MenuImage extends React.Component {
             title={menuName}
           />
         )}
+        <ImageUploader />
       </Paper>
     );
   }
