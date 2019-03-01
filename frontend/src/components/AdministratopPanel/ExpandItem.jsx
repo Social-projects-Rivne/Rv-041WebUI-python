@@ -83,85 +83,79 @@ class ExpandItem extends React.Component {
   render() {
     const { classes, order, index } = this.props;
     return (
-      <Grid item xs={12} key={index}>
-        <ExpansionPanel
-          expanded={this.state.expanded}
-          onChange={this.handleExpand}
-        >
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+      <ExpansionPanel
+        expanded={this.state.expanded}
+        onChange={this.handleExpand}
+      >
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <Grid
+            container
+            spacing={16}
+            justify="space-between"
+            alignItems="center"
+          >
+            <Grid item spacing={16} container xs={4} nowrap="true">
+              <Grid item>
+                <Typography gutterBottom variant="h6">
+                  Order id#{order.id}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Chip
+                  label={order.status}
+                  className={classes.chip}
+                  style={{ marginRight: "16px" }}
+                />
+              </Grid>
+            </Grid>
+            <Grid item xs={3}>
+              <Typography gutterBottom variant="h6" component="p">
+                User: {order.user.name || ""}
+              </Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <Typography gutterBottom variant="h6" component="p">
+                Date created: {order.creation_date || ""}
+              </Typography>
+            </Grid>
+          </Grid>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <Grid container spacing={16}>
+            <Grid item xs={12}>
+              <OrderItemsList cartItems={order.items || []} />
+            </Grid>
             <Grid
               container
-              spacing={16}
-              justify="space-between"
               alignItems="center"
-              nowrap="true"
+              justify="flex-end"
+              style={{ padding: "8px" }}
             >
-              <Grid item spacing={16} container xs={4} nowrap="true">
-                <Grid item>
-                  <Typography gutterBottom variant="h6">
-                    Order id#{order.id}
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Chip
-                    label={order.status}
-                    className={classes.chip}
-                    style={{ marginRight: "16px" }}
-                  />
-                </Grid>
+              <Grid item xs={9}>
+                <WaitersRadio
+                  waiters={this.props.waiters}
+                  pickedWaiter={this.state.pickedWaiter}
+                  handleWaiterPick={this.handleWaiterPick}
+                />
               </Grid>
-              <Grid item xs={3}>
-                <Typography gutterBottom variant="h6" component="p">
-                  User: {order.user.name || ""}
-                </Typography>
+              <Grid item xs={2}>
+                <Button variant="contained" color="primary">
+                  disapprove
+                </Button>
               </Grid>
-              <Grid item xs={3}>
-                <Typography gutterBottom variant="h6" component="p">
-                  Date created: {order.creation_date || ""}
-                </Typography>
-              </Grid>
-            </Grid>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            <Grid container spacing={16}>
-              <Grid item xs={12}>
-                <OrderItemsList cartItems={order.items || []} />
-              </Grid>
-              {order.status == "Waiting for confirm" ? (
-                <Grid
-                  container
-                  alignItems="center"
-                  justify="flex-end"
-                  style={{ padding: "8px" }}
+              <Grid item xs={1}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => this.handleAprove(order.id, index)}
                 >
-                  <Grid item xs={9}>
-                    <WaitersRadio
-                      pickedWaiter={this.state.pickedWaiter}
-                      handleWaiterPick={this.handleWaiterPick}
-                    />
-                  </Grid>
-                  <Grid item xs={2}>
-                    <Button variant="contained" color="primary">
-                      disapprove
-                    </Button>
-                  </Grid>
-                  <Grid item xs={1}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => this.handleAprove(order.id, index)}
-                    >
-                      approve
-                    </Button>
-                  </Grid>
-                </Grid>
-              ) : (
-                <></>
-              )}
+                  approve
+                </Button>
+              </Grid>
             </Grid>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-      </Grid>
+          </Grid>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
     );
   }
 }

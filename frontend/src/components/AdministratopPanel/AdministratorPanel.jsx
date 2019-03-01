@@ -24,6 +24,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import SnackbarContent from "../SnackbarContent";
 import PageContainer from "../../containers/PageContainer";
 import ExpandItem from "./ExpandItem";
+import WaitersRadio from "./WaitersRadio";
 
 function TabContainer(props) {
   return <Typography component="div">{props.children}</Typography>;
@@ -45,6 +46,7 @@ const styles = {
 class AdministratorPanel extends React.Component {
   state = {
     orders: [],
+    waiters: [],
     SnackbarType: "",
     SnackbarMsg: "",
     isSnackbarOpen: false
@@ -52,6 +54,7 @@ class AdministratorPanel extends React.Component {
 
   componentDidMount() {
     this.getOrders();
+    this.getWaiters();
   }
 
   getOrders = () => {
@@ -67,6 +70,23 @@ class AdministratorPanel extends React.Component {
       .then(response => response.json())
       .then(data => {
         this.setState({ orders: data.data });
+      })
+      .catch(err => console.log(err));
+  };
+
+  getWaiters = () => {
+    const headers = new Headers({
+      "Content-Type": "application/json",
+      "X-Auth-Token": localStorage.getItem("token")
+    });
+    const fetchInit = {
+      method: "GET",
+      headers: headers
+    };
+    fetch("http://localhost:6543/api/waiters", fetchInit)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ waiters: data.data });
       })
       .catch(err => console.log(err));
   };
@@ -112,6 +132,7 @@ class AdministratorPanel extends React.Component {
                     index={index}
                     handleSnackbar={this.handleSnackbar}
                     changeStatus={this.changeStatus}
+                    waiters={this.state.waiters}
                   />
                 );
               })}

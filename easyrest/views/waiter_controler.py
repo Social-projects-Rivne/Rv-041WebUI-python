@@ -13,8 +13,6 @@ def get_waiters(request):
         .filter(User.restaurant_id == Restaurant.id)\
         .filter(Restaurant.administrator_id == request.token.user.id).all()
 
-    print(waiters)
-
     waiters = [waiter.as_dict(include=["name", "id"]) for waiter in waiters]
 
     return wrap(waiters)
