@@ -12,6 +12,8 @@ import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
 import red from "@material-ui/core/colors/red";
 
+import { makeDate } from "../../Service/functions";
+
 const styles = theme => ({
   card: {},
   media: {
@@ -50,7 +52,6 @@ function RestaurantForApproval(props) {
     image
   } = props.restaurant;
   const { classes, handleRestaurantApprovement } = props;
-  const date = new Date(creation_date * 1000);
   //make button array, depending on Restaurant status
   let buttonArray = [];
   let statusColor = "inherit";
@@ -62,6 +63,7 @@ function RestaurantForApproval(props) {
         key={0}
         size="small"
         color="secondary"
+        variant="contained"
         onClick={() => handleRestaurantApprovement(id, "DELETE", 2, status)}
       >
         Disapprove
@@ -70,6 +72,7 @@ function RestaurantForApproval(props) {
         key={1}
         size="small"
         color="primary"
+        variant="contained"
         onClick={() => handleRestaurantApprovement(id, "POST", 1, status)}
       >
         Approve
@@ -82,6 +85,7 @@ function RestaurantForApproval(props) {
         key={0}
         size="small"
         color="secondary"
+        variant="contained"
         onClick={() => handleRestaurantApprovement(id, "DELETE", 2, status)}
       >
         Delete
@@ -94,6 +98,7 @@ function RestaurantForApproval(props) {
         key={0}
         size="small"
         color="primary"
+        variant="contained"
         onClick={() => handleRestaurantApprovement(id, "POST", 1, status)}
       >
         Restore
@@ -115,7 +120,7 @@ function RestaurantForApproval(props) {
             </Avatar>
           }
           title={name}
-          subheader={"Added: " + String(date.toISOString().slice(0, 10))}
+          subheader={"Added: " +  makeDate(creation_date)}
         />
 
         <CardContent>

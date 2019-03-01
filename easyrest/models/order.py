@@ -120,7 +120,7 @@ class Order(Base):
             "roles": ["Client", "Owner"],
         },
         ("Waiting for confirm", "Declined"): {
-            "roles": ["Administrator"],
+            "roles": ["Administrator", "Client"],
         },
         ("Waiting for confirm", "Accepted"): {
             "roles": ["Administrator"],

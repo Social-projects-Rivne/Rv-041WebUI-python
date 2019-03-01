@@ -18,10 +18,11 @@ import {
   TableFooter,
   Typography,
   Paper
-} from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+} from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 import red from "@material-ui/core/colors/red";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { makeDate } from "../../Service/functions";
 
 const styles = theme => ({
   card: {
@@ -68,6 +69,7 @@ class Order extends React.Component {
           key={0}
           size="small"
           color="primary"
+          variant="contained"
           onClick={() => this.props.changeOrderStatus(id, "In progress", dateModified)}
         >
           Start order
@@ -79,6 +81,7 @@ class Order extends React.Component {
           key={0}
           size="small"
           color="secondary"
+          variant="contained"
           onClick={() => this.props.changeOrderStatus(id, "History", dateModified)}
         >
           Close order
@@ -100,13 +103,8 @@ class Order extends React.Component {
     const { expanded }  = this.state;
     const { classes, order } = this.props;
     const { id, status, items } = order;
-    const creation_time = new Date(order.creation_time * 1000);
-    const booked_time = new Date(order.booked_time * 1000);
-    const creationDateString = "" + creation_time.getDate() + "-" + creation_time.getMonth() 
-          + "-" + creation_time.getFullYear() + " " + creation_time.getHours() + ":" +  creation_time.getMinutes();
-    const bookingDateString = "" + booked_time.getDate() + "-" + booked_time.getMonth() 
-          + "-" + booked_time.getFullYear() + " " + booked_time.getHours() + ":" +  booked_time.getMinutes();
-
+    const creationDateString = makeDate(order.creation_time);
+    const bookingDateString  = makeDate(order.booked_time);
 
     let statusColor = status === "In progress" ? "primary": "secondary";
   
