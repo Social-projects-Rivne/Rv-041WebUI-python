@@ -61,6 +61,10 @@ class UserCreate extends React.Component {
   };
 
   handleDateChange = date => {
+    const currentDate = new Date()
+    date > currentDate ?
+      this.setState({ birthDate: currentDate })
+      :
       this.setState({ birthDate: date })
   };
 
