@@ -194,3 +194,17 @@ class Order(Base):
         self.status = new_status
 
         return self
+
+    
+    def fill_in_by_other_order(self, session, base_order):
+
+        base_order_items = base_order.items
+        for base_order_item in base_order_items:
+            try:
+                self.add_item(session, base_order_item.quantity, base_order_item.item_id)
+            except HTTPNotFound:
+                # scip this product
+                continue 
+            except HTTPBadRequest:
+                # scip this product
+                continue 

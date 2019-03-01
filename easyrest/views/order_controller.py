@@ -62,6 +62,7 @@ def get_orders(request):
 @restrict_access(user_types=["Client", "Owner"])
 def create_draft_order(request):
     """Controller for creating empty(in Draft) order
+    in case, when "baseOrderId" presented in request body - new Order fills based on it.
     Expects:
     {
         rest_id: (int)
@@ -87,6 +88,15 @@ def create_draft_order(request):
     user = request.token.user
     order.user = user
     order.restaurant = rest
+
+    if "baseOrderId" in request.json_body:
+        try:
+            base_order_id = int(request.json_body["baseOrderId"]) 
+        except ValueError as e:
+            raise HTTPBadRequest("Order id must be integer")
+        base_order = request.dbsession.query(Order).get(base_order_id)
+        order.fill_in_by_other_order(request.dbsession, base_order)
+
     request.dbsession.add(order)
     request.dbsession.flush()
     # if order.id is None:
@@ -94,6 +104,9 @@ def create_draft_order(request):
     data = {
         "order_id": order.id
     }
+    if "baseOrderId" in request.json_body:
+        data["order_info"] = order.as_dict()    
+
     return wrap(data)
 
 
