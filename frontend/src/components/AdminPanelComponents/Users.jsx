@@ -123,7 +123,11 @@ function Users(props) {
                     </TableCell>
                     <TableCell align="left">{userInfo.email}</TableCell>
                     <TableCell align="left">{userInfo.phone_number}</TableCell>
-                    <TableCell align="left">{format(userInfo.birth_date, "dd.MM.yyyy")}</TableCell>
+                    <TableCell align="left">
+                      { userInfo.birth_date != null &&
+                        format(userInfo.birth_date, "dd.MM.yyyy")
+                      }
+                    </TableCell>
                     <TableCell align="left">
                       <Typography component="p" color={userInfo.is_active ? "primary" : "error"}>
                           {userInfo.is_active ? "Active" : "Banned"}
