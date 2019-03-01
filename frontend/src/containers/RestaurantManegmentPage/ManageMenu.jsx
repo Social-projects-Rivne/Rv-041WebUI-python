@@ -75,6 +75,7 @@ class ManageMenu extends React.Component {
           ) : (
             <MenuTable
               {...this.props}
+              restId={this.props.restId}
               onMenuItemAdd={this.handleMenuItemAdd}
               onUpdateItem={this.handleUpdateMenu}
               menuName={menuName}

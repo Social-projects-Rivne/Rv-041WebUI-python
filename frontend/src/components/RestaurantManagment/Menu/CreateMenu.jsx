@@ -23,6 +23,9 @@ import {
 import { PhotoCamera } from "@material-ui/icons";
 
 import MenuImage from "./MenuImage";
+import MenuToolbar from "./MenuToolbar";
+import ImageUploader from "./ImageUploader";
+import MenuTable from "./MenuTable";
 
 const styles = theme => ({
   root: {
@@ -41,26 +44,26 @@ function getSteps() {
   return ["Add basic information", "Create an ad group", "Create an ad"];
 }
 
-function getStepContent(
-  step,
-  menuType,
-  menuName,
-  imgSrc,
-  imgName,
-  handleImageChange
-) {
+function getStepContent(step, props, menuType, menuName, menuItems) {
   switch (step) {
     case 0:
       return <AddInfo menuName={menuName} menuType={menuType} />;
     case 1:
       return (
-        <FillMenu
-          handleImageChange={handleImageChange}
-          menuType={menuType}
-          imgName={imgName}
-          menuName={menuName}
-        >
-          <MenuImage menuItems={imgSrc} menuName={menuName} />
+        <FillMenu>
+          {menuType === "image" ? (
+            <Paper>
+              <MenuToolbar menuName={menuName} />
+              <Divider />
+              <ImageUploader />
+            </Paper>
+          ) : (
+            <MenuTable
+              menuName={menuName}
+              props={props}
+              menuItems={menuItems}
+            />
+          )}
         </FillMenu>
       );
     case 2:
@@ -139,12 +142,13 @@ const FillMenu = props => {
 class CreateMenu extends React.Component {
   state = {
     img: "",
-    activeStep: 1,
+    activeStep: 0,
     menuName: "",
     menuType: "list",
     imgSrc: "",
     imgBody: {},
-    imgName: ""
+    imgName: "",
+    menuItems: []
   };
 
   _getInitialState = () => {
@@ -155,7 +159,8 @@ class CreateMenu extends React.Component {
       menuType: "list",
       imgSrc: "",
       imgBody: {},
-      imgName: ""
+      imgName: "",
+      menuItems: []
     };
     return initialState;
   };
@@ -245,9 +250,16 @@ class CreateMenu extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, ...props } = this.props;
     const steps = getSteps();
-    const { imgSrc, imgName, activeStep, menuType, menuName } = this.state;
+    const {
+      imgSrc,
+      imgName,
+      activeStep,
+      menuType,
+      menuName,
+      menuItems
+    } = this.state;
 
     return (
       <Paper className={classes.root}>
@@ -265,38 +277,36 @@ class CreateMenu extends React.Component {
                   <Grid container spacing={16} justify="space-between">
                     {getStepContent(
                       index,
+                      props,
                       menuType,
                       menuName,
-                      imgSrc,
-                      imgName,
+                      menuItems,
                       this.handleImageChange
                     )}
-                    <Grid container spacing={32} justify="space-between">
-                      <Grid item xs={3}>
-                        <Button
-                          variant="contained"
-                          disabled={activeStep === 0}
-                          onClick={this.handleBack}
-                          fullWidth
-                        >
-                          Back
-                        </Button>
-                      </Grid>
-                      <Grid item xs={3}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={
-                            activeStep === steps.length - 1
-                              ? this.handleSubmit
-                              : this.handleNext
-                          }
-                          disabled={menuName.trim().length === 0}
-                          fullWidth
-                        >
-                          {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                        </Button>
-                      </Grid>
+                    <Grid item xs={3}>
+                      <Button
+                        variant="contained"
+                        disabled={activeStep === 0}
+                        onClick={this.handleBack}
+                        fullWidth
+                      >
+                        Back
+                      </Button>
+                    </Grid>
+                    <Grid item xs={3}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={
+                          activeStep === steps.length - 1
+                            ? this.handleSubmit
+                            : this.handleNext
+                        }
+                        disabled={menuName.trim().length === 0}
+                        fullWidth
+                      >
+                        {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                      </Button>
                     </Grid>
                   </Grid>
                 </StepContent>

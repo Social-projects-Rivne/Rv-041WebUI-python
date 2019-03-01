@@ -123,13 +123,12 @@ class CreateNewItem extends React.Component {
 
   handleAddClick = () => {
     const restId = this.props.restId;
-    const menuId = this.props.menuId;
+    const menuId = this.props.menuId || "draft";
     const imgage = this.state.imgBody;
     let formData = new FormData();
     formData.append("img", imgage);
 
     let { imgBody, img, ...data } = this.state;
-    data = { ...data, menuId, restId };
 
     fetch("http://localhost:6543/api/file", {
       method: "POST",
