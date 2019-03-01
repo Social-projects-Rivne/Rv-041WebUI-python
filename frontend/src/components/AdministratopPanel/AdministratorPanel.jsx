@@ -118,7 +118,13 @@ class AdministratorPanel extends React.Component {
       <PageContainer>
         <AppBar position="static">
           <Tabs value={value} variant="scrollable" scrollButtons="on">
-            <Tab label="New Orders" component={Link} to={{ search: "" }} />
+            <Tab
+              label="Waiting for confirm"
+              component={Link}
+              to={{ search: "" }}
+            />
+            <Tab label="Accepted" component={Link} to={{ search: "" }} />
+            <Tab label="Assigned waiter" component={Link} to={{ search: "" }} />
           </Tabs>
         </AppBar>
         <TabContainer>
