@@ -83,13 +83,17 @@ def create_draft_order(request):
 
     if rest is None:
         raise HTTPNotFound("No such rest")
+    
 
     order = Order(creation_time=int(time.time()), status="Draft")
     user = request.token.user
     order.user = user
     order.restaurant = rest
+    request.dbsession.add(order)
+    
 
     if "baseOrderId" in request.json_body:
+        request.dbsession.flush()
         try:
             base_order_id = int(request.json_body["baseOrderId"]) 
         except ValueError as e:
@@ -97,7 +101,6 @@ def create_draft_order(request):
         base_order = request.dbsession.query(Order).get(base_order_id)
         order.fill_in_by_other_order(request.dbsession, base_order)
 
-    request.dbsession.add(order)
     request.dbsession.flush()
     # if order.id is None:
     #     raise HTTPBadRequest("Something went wrong")
@@ -521,6 +524,7 @@ def get_user_order_list(request):
     for order in orders:
         order_data = form_dict(order, order_keys, True, True)
         order_data["restaurant"] = order.restaurant.name
+        order_data["restaurant_id"] = order.restaurant.id
         order_items = order.get_items(request.dbsession)
         order_data["items"] = order_items
         orders_data.append(order_data)

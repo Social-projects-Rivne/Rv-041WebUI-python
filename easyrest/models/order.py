@@ -66,8 +66,10 @@ class Order(Base):
         return items
 
     def add_item(self, session, quantity, item_id):
+        # print quantity, item_id
         q = OrderAssoc(quantity=quantity)
         food = session.query(MenuItem).get(item_id)
+        print food.menu.rest_id, self.restaurant.id
         if food is None:
             raise HTTPNotFound("Item id did not exist")
         if food.menu.rest_id != self.rest_id:
@@ -76,10 +78,12 @@ class Order(Base):
         # dublicate check
         flag = session.query(session.query(OrderAssoc).filter(
             OrderAssoc.item_id == item_id, OrderAssoc.order_id == self.id).exists()).scalar()
+        print flag, q.item_id
         if flag:
             raise HTTPBadRequest("Item dublication in order")
 
         q.food = food
+        print q
         self.items.append(q)
 
     def remove_item(self, session, item_id):
@@ -200,11 +204,12 @@ class Order(Base):
 
         base_order_items = base_order.items
         for base_order_item in base_order_items:
-            try:
-                self.add_item(session, base_order_item.quantity, base_order_item.item_id)
-            except HTTPNotFound:
-                # scip this product
-                continue 
-            except HTTPBadRequest:
-                # scip this product
-                continue 
+            # try:
+            self.add_item(session, base_order_item.quantity, base_order_item.item_id)
+            self.count_total()
+            # except HTTPNotFound:
+            #     # scip this product
+            #     continue 
+            # except HTTPBadRequest:
+            #     # scip this product
+            #     continue 

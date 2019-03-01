@@ -93,10 +93,9 @@ class OrderListPage extends React.Component {
   };
 
 
-  handleOrderReordering = (orderId) => {
+  handleOrderReordering = (orderId, rest_id) => {
 
     const route = "http://localhost:6543/api/order";
-
     const headers = new Headers({
       "Content-Type": "application/json",
       "X-Auth-Token": this.state.token
@@ -106,32 +105,33 @@ class OrderListPage extends React.Component {
       method: "POST",
       headers: headers,
       body: JSON.stringify({
+        rest_id: rest_id,
         baseOrderId: orderId,
       })
     };
 
     fetch(route, fetchInit)
-    .then(response =>
-      !(response.status >= 200 && response.status < 300)
-        ? Promise.reject.bind(Promise)
-        : response.json()
-    )
-    .then(data => {
-      this.setState(prevState => {
-        return {
-          orders:  [...data.data.order_info, ...prevState.orders],
-          success: data.success,
-          error: data.error
-        }
+      .then(response =>
+        !(response.status >= 200 && response.status < 300)
+          ? Promise.reject.bind(Promise)
+          : response.json()
+      )
+      .then(data => {
+        this.setState(prevState => {
+          return {
+            orders: [data.data.order_info].concat(prevState.orders),
+            success: data.success,
+            error: data.error,
+          }
+        })
       })
-    })
-    .catch(err => this.setState({ 
-      success: false,
-      error: err.message,
-      isLoading: false,
-      snackbarOpen: true,
-      snackbarMsg: "err.message",
-    }));
+      .catch(err => this.setState({ 
+        success: false,
+        error: err.message,
+        isLoading: false,
+        snackbarOpen: true,
+        snackbarMsg: "err.message",
+      }));
   }
 
   handleOrderDecline = (orderId, currentStatus) => {
