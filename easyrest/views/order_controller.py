@@ -6,6 +6,7 @@ import time
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPNotFound, HTTPForbidden, HTTPBadRequest
 from sqlalchemy.sql.expression import text
+from sqlalchemy import desc
 
 from ..scripts.json_helpers import wrap
 from ..scripts.json_helpers import form_dict
@@ -513,7 +514,7 @@ def get_user_order_list(request):
     else:
         raise HTTPNotFound()
     orders = request.dbsession.query(Order).filter(
-        Order.user_id == request.token.user.id, Order.status.in_(statuses)).all()
+        Order.user_id == request.token.user.id, Order.status.in_(statuses)).order_by(desc(Order.id)).all()
     data = {}
     data["statuses"] = statuses
     order_keys = ("id", "creation_time", "booked_time",

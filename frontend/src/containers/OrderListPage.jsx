@@ -182,38 +182,39 @@ class OrderListPage extends React.Component {
       .then(data => {
         if (data.success) {
           this.setState(prevState => {
-            if (currentStatus === "Waiting for confirm") {
-              return {
-                orders: prevState.orders.map(orderInfo => {
-                  if (orderInfo.id === orderId) {
+            return {
+              orders: prevState.orders.filter(orderInfo => {
+                if (orderInfo.id === orderId) {
+                  if (currentStatus === "Waiting for confirm") {
                     orderInfo.status = "Declined";
-                    return orderInfo;
-                  } else {
-                    return orderInfo;
                   }
-                }),
-                success: true,
-                snackbarOpen: true,
-                snackbarMsg: "Order declined",
-              }
-            } else {
-              return {
-                orders: prevState.orders.filter(orderInfo => {
-                  if (orderInfo.id === orderId) {
-                    return false;
-                  } else {
-                    return true;
-                  }
-                }),
-                success: true,
-                snackbarOpen: true,
-                snackbarMsg: "Order deleted",
-              }
+                  return false;
+                } else {
+                  return true;
+                }
+              }),
+              success: true,
+              snackbarOpen: true,
+              snackbarMsg: "Order declined",
+            }
+          })
+        } else {
+          this.setState(prevState => {
+            return {
+              orders: prevState.orders.filter(orderInfo => {
+                if (orderInfo.id === orderId) {
+                  return false;
+                } else {
+                  return true;
+                }
+              }),
+              success: true,
+              snackbarOpen: true,
+              snackbarMsg: "Order deleted",
             }
           })
         }
-      }
-      )
+      })
       .catch(err => this.setState({ 
         success: false,
         error: err.message,
