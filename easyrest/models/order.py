@@ -66,7 +66,6 @@ class Order(Base):
         return items
 
     def add_item(self, session, quantity, item_id):
-        # print quantity, item_id
         q = OrderAssoc(quantity=quantity)
         food = session.query(MenuItem).get(item_id)
         if food is None:
@@ -206,9 +205,9 @@ class Order(Base):
             try:
                 self.add_item(session, base_order_item.quantity, base_order_item.item_id)
             except HTTPNotFound:
-                # scip this product
+                # skip this product
                 continue 
             except HTTPBadRequest:
-                # scip this product
+                # skip this product
                 continue
         self.count_total() 
