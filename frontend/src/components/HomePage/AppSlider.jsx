@@ -7,17 +7,17 @@ const slides = [
   {
     label: "Some text 1",
     imgPath:
-      "https://doc-08-7k-docs.googleusercontent.com/docs/securesc/is1pe2eo3caj79a86q2rkn22a7s6idur/b01mbthvlsfgbf97f5n07de7uetof6ln/1551254400000/15387216800683716261/15387216800683716261/1S3Ykn8nlYaR7RFBaH97WJFqbnX1kVTnr?e=download"
+      "/images/HomepageSlider/marshmallow.jpg"
   },
   {
     label: "Some text 2",
     imgPath:
-      "https://doc-00-7k-docs.googleusercontent.com/docs/securesc/is1pe2eo3caj79a86q2rkn22a7s6idur/ubmcehhsu784a6egoel755nopbjd4idc/1551254400000/15387216800683716261/15387216800683716261/19ypbiZDQEd8yDLUj6scjj43eGC5_FCQv?e=download"
+      "/images/HomepageSlider/food_relax.jpg"
   },
   {
     label: "Some text 3",
     imgPath:
-      "https://doc-0o-7k-docs.googleusercontent.com/docs/securesc/is1pe2eo3caj79a86q2rkn22a7s6idur/7bslvdf2g7aigqdv8nirlcaqflunt7c9/1551254400000/15387216800683716261/15387216800683716261/1F8-2DW3a-fK8z5876CFpNga6AjxSN221?e=download"
+      "/images/HomepageSlider/vegan.jpg"
   }
 ];
 
