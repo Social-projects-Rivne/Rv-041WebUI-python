@@ -94,9 +94,15 @@ class AdministratorPanel extends React.Component {
   };
 
   handleTabChange = (event, value) => {
-    this.setState({
-      selectedTab: value
-    })
+    if (value === 4) {
+      this.getWaiters();
+      this.getOrders();
+    } else {
+      this.setState({
+        selectedTab: value
+      })
+    }
+    
   }
 
   handleSnackbarClose = (event, reason) => {
@@ -116,6 +122,7 @@ class AdministratorPanel extends React.Component {
             <Tab label="Accepted" />
             <Tab label="Assigned waiter" />
             <Tab label="Waiters" />
+            <Tab label="Refresh" />
           </Tabs>
         </AppBar>
         {this.state.selectedTab === 1 && (
@@ -123,6 +130,9 @@ class AdministratorPanel extends React.Component {
             <div style={{ padding: 8 }}>
               <Grid container spacing={16}>
                 {this.state.orders.map((order, index) => {
+                  if (order.status != "Accepted") {
+                    return null
+                  }
                   return (
                     <ExpandItem
                       key={"i" + index}

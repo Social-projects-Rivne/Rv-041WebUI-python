@@ -14,23 +14,19 @@ const styles = theme => ({
 
 
 function WaitersDetails(props) {
-  const { classes, waiter } = this.props;
+  const { classes, waiter } = props;
   const { w_orders } = waiter;
   return (
-    <>
-      {w_orders == null ? w_orders.map((order, index) => {
+    <Grid container spacing={16}>
+      {w_orders.length !== 0 ? w_orders.map((order, index) => {
           return (
-            <ExpPanel
-              key={"Order" + index}
-              summary={<OrderSummary order={order}/>}
-              details={
-                <Grid container spacing={16}>
-                  <Grid item xs={12}>
-                    <OrderItemsList cartItems={order.items || []} />
-                  </Grid>
-                </Grid>
-              }
-            />
+            <Grid item xs={12}>
+              <ExpPanel
+                key={"Order" + waiter.id + index}
+                summary={<OrderSummary order={order}/>}
+                details={<OrderItemsList cartItems={order.items || []} />}
+              />
+            </Grid>
           )
         }) : (
           <Typography>
@@ -38,7 +34,7 @@ function WaitersDetails(props) {
           </Typography>
         )
       }
-    </>
+    </Grid>
   )
 }
 

@@ -11,7 +11,7 @@ const styles = theme => ({
 
 
 function WaitersSummary(props) {
-  const { classes, waiter } = this.props;
+  const { classes, waiter } = props;
   return (
     <Grid
       container
@@ -20,7 +20,7 @@ function WaitersSummary(props) {
       alignItems="center"
     >
       <Grid item>
-        <Typography gutterBottom variant="h6">
+        <Typography gutterBottom>
           Waiter: {waiter.name}
         </Typography>
       </Grid>
