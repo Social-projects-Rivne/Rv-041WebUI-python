@@ -39,6 +39,13 @@ def fill_db(session):
 
     # create example user statuses(user types)
 
+    Client = 0
+    Owner = 1
+    Moderator = 2
+    Admin = 3
+    Administrator = 4
+    Waiter = 5
+
     UserRoles = [
         UserRole(name='Client'),
         UserRole(name='Owner'),
@@ -59,7 +66,7 @@ def fill_db(session):
         Users.append(User(name=user_name,
                           email=user_name.lower().replace(" ", "")+'@test.com',
                           password=pbkdf2_sha256.hash("1111"),
-                          role=UserRoles[1],
+                          role=UserRoles[Owner],
                           phone_number="+38098" + str(1000000 + i),
                           birth_date=fake.date_of_birth(
                               tzinfo=None, minimum_age=18, maximum_age=100)
@@ -146,23 +153,24 @@ def fill_db(session):
         Rest_models.append(rest_model)
 
     # add users with hashed password "1111"
+    client_models = []
     for i in range(menu_item_number):
         user_name = fake.name()
         current_user = User(name=user_name,
                             email=user_name.lower().replace(" ", "")+'@test.com',
                             password=pbkdf2_sha256.hash("1111"),
-                            role=UserRoles[0],
+                            role=UserRoles[Client],
                             phone_number="+38098" +
                             str(1000000 + number_of_owners + i),
                             birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
-        user_model.append(current_user)
+        client_models.append(current_user)
 
-    # add Moderator, Admin, Administrator, 3 Waiters
+    # add Moderator, Admin
     user_name = fake.name()
     moderator = User(name="Peter Moderator",
                      email='petermoderator'+'@test.com',
                      password=pbkdf2_sha256.hash("1"),
-                     role=UserRoles[2],
+                     role=UserRoles[Moderator],
                      phone_number="+380666666661",
                      birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
     user_model.append(moderator)
@@ -171,88 +179,114 @@ def fill_db(session):
     admin = User(name="Steve Admin",
                       email="steveadmin"+'@test.com',
                       password=pbkdf2_sha256.hash("1"),
-                      role=UserRoles[3],
+                      role=UserRoles[Admin],
                       phone_number="+380666666662",
                       birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
     user_model.append(admin)
 
-    administrator = User(name="Peter Administrator",
-                         email="peteradmin"+'@test.com',
-                         password=pbkdf2_sha256.hash("1"),
-                         role=UserRoles[4],
-                         phone_number="+380666666662",
-                         birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
-    user_model.append(administrator)
-
-    waiter1 = User(name="Steve waiter",
-                   email="stevewaiter"+'@test.com',
-                   password=pbkdf2_sha256.hash("1"),
-                   role=UserRoles[3],
-                   phone_number="+380666666662",
-                   birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
-    user_model.append(waiter1)
-
-    waiter2 = User(name="karl waiter",
-                   email="karlwaiter"+'@test.com',
-                   password=pbkdf2_sha256.hash("1"),
-                   role=UserRoles[3],
-                   phone_number="+380666666662",
-                   birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
-    user_model.append(waiter2)
-
-    Rest_models[-1].waiters.extend([waiter1, waiter2])
+    # Add Administrator and 2 Waiters for each restaurant
+    order_statuses = [
+        # "Draft",
+        "Waiting for confirm",
+        "Accepted",
+        "Assigned waiter",
+        "In progress",
+        "History"
+    ]
     for rest_model in Rest_models:
+        user_name = fake.name()
+        administrator = User(name=user_name + " The Administrator",
+                             email=user_name.lower().replace(" ", "")+'@test.com',
+                             password=pbkdf2_sha256.hash("1"),
+                             role=UserRoles[Administrator],
+                             phone_number="+380666666662",
+                             birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
+        user_model.append(administrator)
         rest_model.administrator = administrator
+        user_name = fake.name()
+        waiter1 = User(name=user_name + " The Waiter 1",
+                       email=user_name.lower().replace(" ", "")+'@test.com',
+                       password=pbkdf2_sha256.hash("1"),
+                       role=UserRoles[Waiter],
+                       phone_number="+380666666662",
+                       birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
+        user_model.append(waiter1)
+        user_name = fake.name()
+        waiter2 = User(name=user_name + " The Waiter 2",
+                       email=user_name.lower().replace(" ", "")+'@test.com',
+                       password=pbkdf2_sha256.hash("1"),
+                       role=UserRoles[Waiter],
+                       phone_number="+380666666662",
+                       birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
+        user_model.append(waiter2)
 
-    user_name = fake.name()
-    waiter = User(name="Stepan the Waiter",
-                  email="stepanwaiter"+'@test.com',
-                  password=pbkdf2_sha256.hash("1"),
-                  role=UserRoles[5],
-                  phone_number="+380666666662",
-                  birth_date=fake.date_of_birth(tzinfo=None, minimum_age=18, maximum_age=100))
-    user_model.append(waiter)
+        waiters = [waiter1, waiter2]
+        rest_model.waiters.extend(waiters)
 
-    # Example orders
-    order = Order(creation_time=int(time.time()), status="Draft")
-    user = user_model[0]
-    user.orders.append(order)
-    items = Rest_models[-1].menu[0].menu_items[0:10]
-    user.orders[-1].items.append(OrderAssoc(quantity=1))
-    user.orders[-1].items.append(OrderAssoc(quantity=2))
-    user.orders[-1].items.append(OrderAssoc(quantity=3))
-    user.orders[-1].items.append(OrderAssoc(quantity=4))
-    user.orders[-1].items.append(OrderAssoc(quantity=5))
+        if rest_model.status != 1:
+            continue
 
-    user.orders[-1].restaurant = Rest_models[-1]
+        for client_model in client_models:
+            for order_status in order_statuses:
+                n_items = 5
+                order = Order(creation_time=int(time.time()),
+                              booked_time=int(time.time()),
+                              status=order_status)
+                client_model.orders.append(order)
+                client_model.orders[-1].restaurant = rest_model
+                items = rest_model.menu[0].menu_items[0:n_items]
+                order_total = 0
+                for i, item in enumerate(items):
+                    client_model.orders[-1].items.append(OrderAssoc(quantity=i+1))
+                    client_model.orders[-1].items[-1].food = item
+                    order_total += item.price
+                if order_status != "Draft":
+                    client_model.orders[-1].total_price = order_total
+                if order_status not in ["Draft", "Accepted", "Waiting for confirm"]:
+                    waiter_index = randint(0, 1)
+                    client_model.orders[-1].waiter = waiters[waiter_index]
+    
+    # # Example orders
+    # order = Order(creation_time=int(time.time()), booked_time=int(time.time()), status="Draft")
+    # user = user_model[0]
+    # user.orders.append(order)
+    # items = Rest_models[-1].menu[0].menu_items[0:10]
+    # user.orders[-1].items.append(OrderAssoc(quantity=1))
+    # user.orders[-1].items.append(OrderAssoc(quantity=2))
+    # user.orders[-1].items.append(OrderAssoc(quantity=3))
+    # user.orders[-1].items.append(OrderAssoc(quantity=4))
+    # user.orders[-1].items.append(OrderAssoc(quantity=5))
 
-    user.orders[-1].items[0].food = items[0]
-    user.orders[-1].items[1].food = items[1]
-    user.orders[-1].items[2].food = items[2]
-    user.orders[-1].items[3].food = items[3]
-    user.orders[-1].items[4].food = items[4]
-    user.orders[-1].items[-1].food = items[5]
-    order = Order(creation_time=int(time.time()), status="Draft")
-    user = user_model[0]
-    user.orders.append(order)
-    items = Rest_models[-1].menu[0].menu_items[0:10]
-    user.orders[-1].items.append(OrderAssoc(quantity=10))
-    user.orders[-1].items.append(OrderAssoc(quantity=20))
-    user.orders[-1].items.append(OrderAssoc(quantity=30))
-    user.orders[-1].items.append(OrderAssoc(quantity=40))
-    user.orders[-1].items.append(OrderAssoc(quantity=50))
-    user.orders[-1].items.append(OrderAssoc(quantity=60))
+    # user.orders[-1].restaurant = Rest_models[-1]
 
-    user.orders[-1].restaurant = Rest_models[-1]
+    # user.orders[-1].items[0].food = items[0]
+    # user.orders[-1].items[1].food = items[1]
+    # user.orders[-1].items[2].food = items[2]
+    # user.orders[-1].items[3].food = items[3]
+    # user.orders[-1].items[4].food = items[4]
+    # user.orders[-1].items[-1].food = items[5]
+    # order = Order(creation_time=int(time.time()), booked_time=int(time.time()), status="Draft")
+    # user = user_model[0]
+    # user.orders.append(order)
+    # items = Rest_models[-1].menu[0].menu_items[0:10]
+    # user.orders[-1].items.append(OrderAssoc(quantity=10))
+    # user.orders[-1].items.append(OrderAssoc(quantity=20))
+    # user.orders[-1].items.append(OrderAssoc(quantity=30))
+    # user.orders[-1].items.append(OrderAssoc(quantity=40))
+    # user.orders[-1].items.append(OrderAssoc(quantity=50))
+    # user.orders[-1].items.append(OrderAssoc(quantity=60))
 
-    user.orders[-1].items[0].food = items[0]
-    user.orders[-1].items[1].food = items[1]
-    user.orders[-1].items[2].food = items[2]
-    user.orders[-1].items[3].food = items[3]
-    user.orders[-1].items[4].food = items[4]
-    user.orders[-1].items[-1].food = items[5]
-    user.orders[-1].items[-1].food = items[6]
+    # user.orders[-1].restaurant = Rest_models[-1]
+
+    # user.orders[-1].items[0].food = items[0]
+    # user.orders[-1].items[1].food = items[1]
+    # user.orders[-1].items[2].food = items[2]
+    # user.orders[-1].items[3].food = items[3]
+    # user.orders[-1].items[4].food = items[4]
+    # user.orders[-1].items[-1].food = items[5]
+    # user.orders[-1].items[-1].food = items[6]
 
     # insert data into database
     session.add_all(Rest_models)
     session.add_all(user_model)
+    session.add_all(client_models)
