@@ -12,8 +12,10 @@ import ProfilePage from "./containers/ProfilePage";
 import AppHeader from "./containers/AppHeader";
 import RestaurantManagmentPage from "./containers/RestaurantManagmentPage";
 import PrivateRoute from "./Service/PrivatRoute";
-import AdministratorPanel from "./containers/AdministratorPanel";
-import OrderItem from "./containers/OrderItemPage";
+import AdminPanel from "./containers/AdminPanel";
+import WaiterPanel from "./containers/WaiterPanel";
+import AdministratorPanel from "./containers/AdministratorPanel"
+
 
 const routes = [
   {
@@ -70,14 +72,19 @@ const routes = [
     path: "/administrator-panel",
     component: AdministratorPanel,
     access: ["Administrator"],
-      exact: true
+    exact: true
   },
   {
-    path: "/administrator-panel/order/:id",
-    component: OrderItem,
-    access: ["Administrator"],
-      exact: true
+    path: "/admin",
+    component: AdminPanel,
+    access: ["Admin"]
   },
+  {
+    path: "/waiter",
+    component: WaiterPanel,
+    access: ["Waiter"]
+  }
+
 ];
 
 class Routes extends React.Component {

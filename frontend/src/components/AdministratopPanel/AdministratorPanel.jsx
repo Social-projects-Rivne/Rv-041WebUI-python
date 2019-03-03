@@ -6,25 +6,13 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import { Link } from "react-router-dom";
-import OrderItemsList from "../MenuPage/OrderItemsList";
 import {
-  ExpansionPanelDetails,
-  ExpansionPanelSummary,
-  ExpansionPanel,
-  Button,
-  FormControl,
-  FormLabel,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
   Snackbar
 } from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import SnackbarContent from "../SnackbarContent";
 import PageContainer from "../../containers/PageContainer";
 import ExpandItem from "./ExpandItem";
-import WaitersRadio from "./WaitersRadio";
+import WaitersTab from './WaitersTab';
 
 function TabContainer(props) {
   return <Typography component="div">{props.children}</Typography>;
@@ -47,6 +35,7 @@ class AdministratorPanel extends React.Component {
   state = {
     orders: [],
     waiters: [],
+    selectedTab: 0,
     SnackbarType: "",
     SnackbarMsg: "",
     isSnackbarOpen: false
@@ -104,6 +93,12 @@ class AdministratorPanel extends React.Component {
     this.state.orders[orderIndex].status = newStatus;
   };
 
+  handleTabChange = (event, value) => {
+    this.setState({
+      selectedTab: value
+    })
+  }
+
   handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -113,38 +108,38 @@ class AdministratorPanel extends React.Component {
 
   render() {
     const { classes } = this.props;
-    let value = 0;
     return (
       <PageContainer>
         <AppBar position="static">
-          <Tabs value={value} variant="scrollable" scrollButtons="on">
-            <Tab
-              label="Waiting for confirm"
-              component={Link}
-              to={{ search: "" }}
-            />
-            <Tab label="Accepted" component={Link} to={{ search: "" }} />
-            <Tab label="Assigned waiter" component={Link} to={{ search: "" }} />
+          <Tabs value={this.state.selectedTab} onChange={this.handleTabChange} variant="scrollable" scrollButtons="on">
+            <Tab label="Waiting for confirm" />
+            <Tab label="Accepted" />
+            <Tab label="Assigned waiter" />
+            <Tab label="Waiters" />
           </Tabs>
         </AppBar>
-        <TabContainer>
-          <div style={{ padding: 8 }}>
-            <Grid container spacing={16}>
-              {this.state.orders.map((order, index) => {
-                return (
-                  <ExpandItem
-                    key={"i" + index}
-                    order={order}
-                    index={index}
-                    handleSnackbar={this.handleSnackbar}
-                    changeStatus={this.changeStatus}
-                    waiters={this.state.waiters}
-                  />
-                );
-              })}
-            </Grid>
-          </div>
-        </TabContainer>
+        {this.state.selectedTab === 1 && (
+          <TabContainer>
+            <div style={{ padding: 8 }}>
+              <Grid container spacing={16}>
+                {this.state.orders.map((order, index) => {
+                  return (
+                    <ExpandItem
+                      key={"i" + index}
+                      order={order}
+                      index={index}
+                      handleSnackbar={this.handleSnackbar}
+                      changeStatus={this.changeStatus}
+                      waiters={this.state.waiters}
+                    />
+                  );
+                })}
+              </Grid>
+            </div>
+          </TabContainer>)}
+        {this.state.selectedTab === 3 && (
+          <WaitersTab />
+        )}
         <Snackbar
           anchorOrigin={{
             vertical: "bottom",

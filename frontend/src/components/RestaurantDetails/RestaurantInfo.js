@@ -65,7 +65,7 @@ class RestaurantInfo extends React.Component {
             <Grid item xs={3}>
               <CardMedia
                 className={classes.media}
-                image="https://media-cdn.tripadvisor.com/media/photo-f/04/43/20/9c/whisky-corner.jpg"
+                image={restInfo.image}
                 title={restInfo.name}
               />
             </Grid>

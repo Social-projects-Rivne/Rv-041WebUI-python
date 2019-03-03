@@ -7,17 +7,17 @@ const slides = [
   {
     label: "Some text 1",
     imgPath:
-      "https://images.unsplash.com/photo-1462121457351-9fb0f5622b72?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1400&h=500&q=80"
+      "/images/HomepageSlider/marshmallow.jpg"
   },
   {
     label: "Some text 2",
     imgPath:
-      "https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=1400&h=500&q=60"
+      "/images/HomepageSlider/food_relax.jpg"
   },
   {
     label: "Some text 3",
     imgPath:
-      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1400&h=500&q=80"
+      "/images/HomepageSlider/vegan.jpg"
   }
 ];
 

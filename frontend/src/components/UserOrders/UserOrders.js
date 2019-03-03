@@ -13,10 +13,11 @@ import {
   TableRow,
   TableFooter,
   Typography
-} from "@material-ui/core";
+} from '@material-ui/core';
 import { withStyles } from "@material-ui/core/styles";
 import { Repeat } from "@material-ui/icons";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { makeDate } from "../../Service/functions";
 
 const styles = theme => ({
   root: {
@@ -43,62 +44,64 @@ const styles = theme => ({
 });
 
 function UserOrders(props) {
-  const { classes, orders } = props;
+  const { classes, orders, handleOrderDecline } = props;
 
   return (
     <div className={classes.root}>
       {orders.map((orderInfo, index) => {
-        const date = new Date(orderInfo.creation_time * 1000);
+        const creationDateString = makeDate(orderInfo.creation_time);
+        const bookingDateString  = makeDate(orderInfo.booked_time);
         const orderItems = orderInfo.items;
         //extract photo to make icons
         let iconsArray = [];
-        orderItems.forEach(orderItem => {
+        for (let i = 0; i < (orderItems.length > 3 ? 3 : orderItems.length); i++) {
+          const orderItem = orderItems[i];
           iconsArray.push({
-            name: orderItem.name,
-            img: orderItem.img
+            "name": orderItem.name,
+            "img": orderItem.img
           });
-        });
+        }
+        if (orderItems.length > 3) {
+          iconsArray.push({
+            "name": "more",
+            "img": "https://www.materialui.co/materialIcons/hardware/keyboard_arrow_right_grey_192x192.png"
+          })
+        }
         return (
-          <ExpansionPanel key={index}>
+          <ExpansionPanel key={index} >
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Grid
-                container
-                justify="space-between"
-                alignItems="center"
-                spacing={8}
-              >
-                <Grid item key={1} xs={6} sm={2}>
+              <Grid container justify="space-between" alignItems="center" spacing={8}>
+                <Grid item key={1} xs={3} >
                   <Typography className={classes.heading}>
                     {orderInfo.restaurant}
                   </Typography>
                 </Grid>
-                <Grid item key={2} xs={6} sm={2}>
+                <Grid item key={2} xs={3} >
                   <Typography className={classes.secondaryHeading}>
-                    {String(date.toISOString().slice(0, 10))}
+                    {"Created: " + creationDateString} <br />
+                    {"Booked for: " + bookingDateString}
                   </Typography>
                 </Grid>
-                <Grid item key={3} xs={6} sm={2}>
+                <Grid item key={3} xs={2} >
                   <Grid container alignItems="center">
                     {iconsArray.map((imgInfo, image_index) => {
                       return (
                         <Grid item key={image_index} xs={6} sm={2}>
-                          <Avatar
-                            alt={imgInfo.name}
-                            src={imgInfo.img}
-                            className={classes.avatar}
-                          />
+                          <Avatar alt={imgInfo.name} src={imgInfo.img} className={classes.avatar} />
                         </Grid>
                       );
                     })}
                   </Grid>
                 </Grid>
-                <Grid item key={4} xs={6} sm={2}>
+                <Grid item key={4} xs={2} >
                   <Typography>
                     {orderItems.length} items for ${orderInfo.total_price}
                   </Typography>
                 </Grid>
-                <Grid item key={5} xs={6} sm={2}>
-                  <Typography>{orderInfo.status}</Typography>
+                <Grid item key={5} xs={2} >
+                  <Typography>
+                    {orderInfo.status}
+                  </Typography>
                 </Grid>
               </Grid>
             </ExpansionPanelSummary>
@@ -125,44 +128,51 @@ function UserOrders(props) {
                             </Typography>
                           </TableCell>
                           <TableCell component="th">
-                            <Typography>{orderItem.quantity} serv.</Typography>
+                            <Typography>
+                              {orderItem.quantity} serv.
+                                </Typography>
                           </TableCell>
                           <TableCell component="th">
                             <Typography gutterBottom variant="subtitle1">
-                              {"$" +
-                                (orderItem.quantity * orderItem.price).toFixed(
-                                  2
-                                )}
+                              {"$" + (orderItem.quantity * orderItem.price).toFixed(2)}
                             </Typography>
                           </TableCell>
                         </TableRow>
-                      );
+                      )
                     })}
                   </TableBody>
                   <TableFooter>
                     <TableRow>
                       <TableCell colSpan={4} align="right">
-                        <Grid
-                          container
-                          justify="flex-end"
-                          alignItems="flex-end"
-                          direction="column"
-                        >
+                        <Grid container justify="flex-end" alignItems="flex-end" direction="column">
                           <Grid>
-                            <Typography gutterBottom variant="subtitle1">
+                            <Typography gutterBottom variant="subtitle1" >
                               Order sum: {"$" + orderInfo.total_price}
                             </Typography>
                           </Grid>
-                          <Grid>
-                            <Button variant="contained" color="primary">
-                              Reorder
-                              <Repeat />
-                            </Button>
-                          </Grid>
+                          {
+                            (orderInfo.status === "Draft" || orderInfo.status === "Waiting for confirm") && (
+                              <Grid>
+                                <Button 
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() => handleOrderDecline(orderInfo.id, orderInfo.status)}
+                                >
+                                  {orderInfo.status === "Draft" ? "Delete" : "Decline"}
+                                </Button>
+                              </Grid>
+                            )
+                          }
+                          {/*TODO: <Grid>
+                                <Button variant="contained" color="primary">
+                                  Reorder
+                                  <Repeat />
+                                </Button>
+                              </Grid>*/}
                         </Grid>
                       </TableCell>
                     </TableRow>
-                  </TableFooter>
+                    </TableFooter>
                 </Table>
               </Grid>
             </ExpansionPanelDetails>

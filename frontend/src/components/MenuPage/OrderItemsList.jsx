@@ -23,7 +23,7 @@ const styles = theme => ({
 });
 
 function priceRow(qty, unit) {
-  return (qty * unit).toFixed(2);
+  return (unit * qty).toFixed(2);
 }
 
 function priceTotal(items) {

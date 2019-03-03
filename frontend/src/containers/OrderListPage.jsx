@@ -1,9 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Route, Switch } from "react-router-dom";
+import { Snackbar, Typography } from "@material-ui/core";
 import { withStyles } from '@material-ui/core/styles';
 import GenericTabs from "../Service/GenericTabs";
-import UserOrders from "../components/UserOrders/UserOrders"; 
+import UserOrders from "../components/UserOrders/UserOrders";
+import SnackbarContent from "../components/SnackbarContent";
+import { GetCurrentRouteLocation} from "../Service/functions"
 
 
 const styles = theme => ({
@@ -33,27 +35,17 @@ const styles = theme => ({
   }
 });
 
-function GetCurrentRouteLocation(CurrentPath, ParentPath){
-  let currentRouteLocation = CurrentPath.replace(ParentPath, "");
-  currentRouteLocation = currentRouteLocation.replace("/", "");
-  return(currentRouteLocation.trim());
-};
-
-function AddAllCategory(statuses){
-    //add default "All" status Tab to tab statuses array (to the beginning)
-    if (!statuses.includes("")){
-      statuses = [""].concat(statuses);
-    };
-    return statuses;
-};
 
 class OrderListPage extends React.Component {
   state = {
     token: localStorage.getItem("token"),
     isLoading: true,
-    statuses: [],
+    success: true,
+    statuses: [''],
     orders: [],
-    selectedTab: 0
+    selectedTab: 0,
+    snackbarOpen: false,
+    snackbarMsg: ""
   };
 
   componentDidMount() {
@@ -77,14 +69,14 @@ class OrderListPage extends React.Component {
           : response.json()
       )
       .then(data =>
-        this.setState({
+        this.setState(prevState => ({
           isLoading: false,
-          statuses: AddAllCategory(data.data.statuses),
-          selectedTab: AddAllCategory(data.data.statuses).indexOf(currentRouteLocation),
+          statuses: [...prevState.statuses, ...data.data.statuses],
+          selectedTab: [...prevState.statuses, ...data.data.statuses].indexOf(currentRouteLocation),
           orders: data.data.orders_data,
           success: data.success,
           error: data.error
-        })
+        }))
       )
       .catch(err => this.setState({ success: false, error: err.message, isLoading: false }));
   }
@@ -93,9 +85,105 @@ class OrderListPage extends React.Component {
     this.setState({ selectedTab: value })
   };
 
+  handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    this.setState({ snackbarOpen: false });
+  };
+
+  handleOrderDecline = (orderId, currentStatus) => {
+
+    let route     = ""; 
+    let fetchInit = {};
+
+    const headers = new Headers({
+      "Content-Type": "application/json",
+      "X-Auth-Token": this.state.token
+    });
+
+    if (currentStatus === "Waiting for confirm") {
+      route = "http://localhost:6543/api/order/" + orderId + "/status";
+      fetchInit = {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify({
+          new_status: "Declined",
+          booked_time: Math.round(new Date()/1000)
+        })
+      }
+    } else {
+      route = "http://localhost:6543/api/order";
+      fetchInit = {
+        method: "DELETE",
+        headers: headers,
+        body: JSON.stringify({
+          orderId: orderId,
+        })
+      }
+    }
+
+    fetch(route, fetchInit)
+      .then(response =>
+        !(response.status >= 200 && response.status < 300)
+          ? Promise.reject.bind(Promise)
+          : response.json()
+      )
+      .then(data => {
+        if (data.success) {
+          this.setState(prevState => {
+            if (currentStatus === "Waiting for confirm") {
+              return {
+                orders: prevState.orders.map(orderInfo => {
+                  if (orderInfo.id === orderId) {
+                    orderInfo.status = "Declined";
+                    return orderInfo;
+                  } else {
+                    return orderInfo;
+                  }
+                }),
+                success: true,
+                snackbarOpen: true,
+                snackbarMsg: "Order declined",
+              }
+            } else {
+              return {
+                orders: prevState.orders.filter(orderInfo => {
+                  if (orderInfo.id === orderId) {
+                    return false;
+                  } else {
+                    return true;
+                  }
+                }),
+                success: true,
+                snackbarOpen: true,
+                snackbarMsg: "Order deleted",
+              }
+            }
+          })
+        }
+      }
+      )
+      .catch(err => this.setState({ 
+        success: false,
+        error: err.message,
+        isLoading: false,
+        snackbarOpen: true,
+        snackbarMsg: "err.message",
+      }));
+  };
+
   render() {
     const { classes, match } = this.props;
-    const { isLoading, statuses, orders, selectedTab } = this.state;
+    const { 
+      isLoading, 
+      statuses, 
+      orders, 
+      selectedTab, 
+      snackbarOpen,
+      success,
+      snackbarMsg 
+    } = this.state;
 
     if (isLoading) {
       return null;
@@ -138,11 +226,32 @@ class OrderListPage extends React.Component {
                 exact={true}
                 render={() => <UserOrders
                   orders={statusesObject[status]}
+                  handleOrderDecline={this.handleOrderDecline}
                 />}
               />
             );
           })}
         </Switch>
+
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right"
+          }}
+          open={snackbarOpen}
+          autoHideDuration={success ? 4000 : null}
+          onClose={this.handleSnackbarClose}
+        >
+          <SnackbarContent
+            onClose={this.handleSnackbarClose}
+            variant={success ? "success" : "error"}
+            message={
+              <Typography color="inherit" align="center">
+                {snackbarMsg || success || "Something went wrong"}
+              </Typography>
+            }
+          />
+        </Snackbar>
       </div>
     );
   }

@@ -179,6 +179,41 @@ def parse_localStorage(request):
     return wrap(data)
 
 
+@view_config(route_name='order', renderer='json', request_method='DELETE')
+@restrict_access(user_types=["Client", "Owner"])
+def delete_draft_order(request):
+  """Controller for deleting draft order by token
+  Return:
+      {
+          success: if_item_is_deleted - boolean,
+          data: [],
+          error: None
+          message: None
+      }
+  """
+  order_data = request.json_body
+  try:
+    order_id = int(order_data["orderId"])
+  except KeyError:
+    raise HTTPNotFound("No order_id found in request body")
+  except ValueError:
+    raise HTTPForbidden("order_id should be iteger")
+  # I don't use query().get(id) because it's better to check if order is still in
+  # "Draft" status rather than delete it simly finds it by id.
+  order = request.dbsession.query(Order).filter(
+      Order.status == "Draft",
+      Order.user_id == request.token.user.id,
+      Order.id == order_id).first()
+
+  if not order:
+    raise HTTPNotFound("Order doesn't exist. Maby it changes it's status.")
+
+  rows_deleted = request.dbsession.delete(order)
+  success = True if rows_deleted != 0 else False
+
+  return wrap(success=success)
+
+
 @view_config(route_name='order_by_id', renderer='json', request_method='POST')
 @restrict_access(user_types=["Client", "Owner"])
 def add_item(request):
@@ -385,7 +420,7 @@ def change_status(request):
 
     query_constrains = []
     if request.token.user.role.name == "Waiter":
-        query_constrains.append([
+        query_constrains.extend([
             Order.waiter_id == request.token.user.id
         ])
     elif request.token.user.role.name == "Administrator":
@@ -424,7 +459,7 @@ def get_status(request):
 
     query_constrains = []
     if request.token.user.role.name == "Waiter":
-        query_constrains.append([
+        query_constrains.extend([
             Order.waiter_id == request.token.user.id
         ])
     elif request.token.user.role.name == "Administrator":
@@ -456,7 +491,7 @@ def get_status(request):
 
 
 @view_config(route_name='get_orders_info', renderer='json', request_method='GET')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Client", "Owner"])
 def get_user_order_list(request):
     """Controller for get list of user's orders with full order information
     Return:
@@ -464,22 +499,18 @@ def get_user_order_list(request):
             Order.as_dict(), ...
         ]
     """
-    restaurant_status = request.matchdict['status']
-    if restaurant_status == "current":
+    order_status = request.matchdict['status']
+    if order_status == "current":
         statuses = [
             "Draft",
             "Waiting for confirm",
-            "Declined",
             "Accepted",
             "Asigned waiter",
-            "In progress",
-            "Failed",
-            "Waiting for feedback"]
-    elif restaurant_status == "history":
-        statuses = ["History", "Removed"]
+            "In progress",]
+    elif order_status == "history":
+        statuses = ["History", "Declined", "Removed", "Failed",]
     else:
         raise HTTPNotFound()
-    # TODO: need find out about function chains from Max, and after that - refactor this code
     orders = request.dbsession.query(Order).filter(
         Order.user_id == request.token.user.id, Order.status.in_(statuses)).all()
     data = {}

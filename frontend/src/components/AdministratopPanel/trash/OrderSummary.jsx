@@ -2,22 +2,9 @@ import React from "react";
 import {
   withStyles,
   Grid,
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
   Typography,
-  FormControl,
-  FormLabel,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  Button,
-  Link,
   Chip
 } from "@material-ui/core";
-import OrderItemsList from "../MenuPage/OrderItemsList";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import WaitersRadio from "./WaitersRadio";
 
 const styles = theme => ({
   chip: {
@@ -55,8 +42,8 @@ function OrderSummary(props) {
           </Typography>
         </Grid>
       </Grid>
-    );
-  }
+  );
 }
+
 
 export default withStyles(styles)(OrderSummary);

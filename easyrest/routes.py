@@ -40,6 +40,8 @@ def includeme(config):
                      request_method="GET")
     config.add_route('moderator_manage_owners', 'moderator/owners',
                      request_method="POST")
+    config.add_route('waiter_manage_orders', 'waiter/orders',
+                     request_method=["GET", "POST"])
     config.add_route('user_restaurants', 'user_restaurants',
                      request_method=["GET", "POST"])
     config.add_route('user_restaurant', 'user_restaurant/{id:[1-9]\d*}',
@@ -50,7 +52,7 @@ def includeme(config):
     config.add_route('get_orders', 'orders', request_method="GET")
     # acording to CRUD(Create, Read, Update, Delete)
     #                 (POST,   GET,  PUT,    DELETE)
-    config.add_route('order', 'order', request_method=["POST", "GET", "PUT"])
+    config.add_route('order', 'order', request_method=["POST", "GET", "PUT", "DELETE"])
     config.add_route('order_by_id', 'order/{order_id:\d+}',
                      request_method=["POST", "GET", "PUT", "DELETE"])
     config.add_route('order_status', 'order/{order_id:\d+}/status',
@@ -59,9 +61,7 @@ def includeme(config):
     config.add_route(
         'user_create', 'user/{role_id:\d+}', request_method="POST")
     config.add_route('user_update', 'user/{user_id:\d+}', request_method="PUT")
-    config.add_route(
-        'user_delete', 'user/{user_id:\d+}', request_method="DELETE")
-    config.add_route(
-        'toggle_activity', "user/toggle_activity/{user_id:\d+}", request_method="GET")
-    config.add_route(
-        'get_waiters', 'waiters', request_method="GET")
+    config.add_route('user_delete', 'user/{user_id:\d+}', request_method="DELETE")
+    config.add_route('toggle_activity', "user/toggle_activity/{user_id:\d+}", request_method="GET")
+    config.add_route('file_upload', 'file', request_method="POST")
+    config.add_route('get_waiters', 'waiters', request_method="GET")
