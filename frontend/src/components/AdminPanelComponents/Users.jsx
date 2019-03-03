@@ -2,7 +2,6 @@ import React from "react";
 import {Link} from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import {Lock, LockOpen} from '@material-ui/icons';
-import { format } from "date-fns";
 import {
   Button,
   IconButton,
@@ -14,6 +13,7 @@ import {
   TableHead,
   TableRow
 } from "@material-ui/core";
+import {makeDate} from "../../Service/functions";
 
 const styles = theme => ({
   root: {
@@ -124,9 +124,7 @@ function Users(props) {
                     <TableCell align="left">{userInfo.email}</TableCell>
                     <TableCell align="left">{userInfo.phone_number}</TableCell>
                     <TableCell align="left">
-                      { userInfo.birth_date != null &&
-                        format(userInfo.birth_date, "dd.MM.yyyy")
-                      }
+                      {makeDate(userInfo.birth_date, "simple european date")}
                     </TableCell>
                     <TableCell align="left">
                       <Typography component="p" color={userInfo.is_active ? "primary" : "error"}>
