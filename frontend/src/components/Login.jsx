@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types";
+import PropTypes, { string } from "prop-types";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { Link } from "react-router-dom";
 import {
@@ -92,7 +92,7 @@ class Login extends React.Component {
       .catch(error => {
         this.setState({
           error: true,
-          errorMes: error
+          errorMes: "" + error
         });
       });
   };
@@ -100,6 +100,13 @@ class Login extends React.Component {
   render() {
     const { error, errorMes } = this.state;
     const { classes } = this.props;
+
+    let snackBarMessage = "";
+    if (!errorMes || errorMes.search("fetch") !== -1)  {
+      snackBarMessage = "No connection to the server";
+    } else {
+      snackBarMessage = "" + errorMes;
+    }
 
     return (
       <Card className={classes.root}>
@@ -160,7 +167,7 @@ class Login extends React.Component {
                   variant="error"
                   message={
                     <Typography color="inherit" align="center">
-                      {errorMes || "No connection to the server"}
+                      {snackBarMessage}
                     </Typography>
                   }
                 />

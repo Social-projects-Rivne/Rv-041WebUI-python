@@ -6,6 +6,7 @@ import time
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPNotFound, HTTPForbidden, HTTPBadRequest
 from sqlalchemy.sql.expression import text
+from sqlalchemy import desc
 
 from ..scripts.json_helpers import wrap
 from ..scripts.json_helpers import form_dict
@@ -62,6 +63,7 @@ def get_orders(request):
 @restrict_access(user_types=["Client", "Owner"])
 def create_draft_order(request):
     """Controller for creating empty(in Draft) order
+    in case, when "baseOrderId" presented in request body - new Order fills based on it.
     Expects:
     {
         rest_id: (int)
@@ -88,12 +90,27 @@ def create_draft_order(request):
     order.user = user
     order.restaurant = rest
     request.dbsession.add(order)
+
+    if "baseOrderId" in request.json_body:
+        request.dbsession.flush()
+        try:
+            base_order_id = int(request.json_body["baseOrderId"]) 
+        except ValueError as e:
+            raise HTTPBadRequest("Order id must be integer")
+        base_order = request.dbsession.query(Order).get(base_order_id)
+        order.fill_by_other_order(request.dbsession, base_order)
+
     request.dbsession.flush()
     # if order.id is None:
     #     raise HTTPBadRequest("Something went wrong")
     data = {
         "order_id": order.id
     }
+    if "baseOrderId" in request.json_body:
+        order_dict = order.as_dict()
+        order_dict["items"] = order.get_items(request.dbsession)
+        data["order_info"] = order_dict
+
     return wrap(data)
 
 
@@ -497,7 +514,7 @@ def get_user_order_list(request):
     else:
         raise HTTPNotFound()
     orders = request.dbsession.query(Order).filter(
-        Order.user_id == request.token.user.id, Order.status.in_(statuses)).all()
+        Order.user_id == request.token.user.id, Order.status.in_(statuses)).order_by(desc(Order.id)).all()
     data = {}
     data["statuses"] = statuses
     order_keys = ("id", "creation_time", "booked_time",
@@ -506,6 +523,7 @@ def get_user_order_list(request):
     for order in orders:
         order_data = form_dict(order, order_keys, True, True)
         order_data["restaurant"] = order.restaurant.name
+        order_data["restaurant_id"] = order.restaurant.id
         order_items = order.get_items(request.dbsession)
         order_data["items"] = order_items
         orders_data.append(order_data)

@@ -3,17 +3,21 @@ import PropTypes from "prop-types";
 import { Route, Switch, Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 /*import Drawer from "@material-ui/core/Drawer";*/
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import {
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Snackbar,
+  Typography
+} from "@material-ui/core";
 import { Restaurant, AccountCircle, Work, Report } from "@material-ui/icons";
-
 import Messages from "./MessagesFeedbacksPage";
 import GeneralError from "../components/ErrorPages/GeneralError";
 import RestaurantsForApprovalPage from "./RestaurantsForApprovalPage";
 import ModeratorUsersPage from "./ModeratorUsersPage";
 import GenericTabs from "../Service/GenericTabs";
+import SnackbarContent from "../components/SnackbarContent";
 
 /*const drawerWidth = 240;*/
 
@@ -64,6 +68,9 @@ function getSelectedItemName(pathname) {
 class ModeratorPanel extends React.Component {
   state = {
     error: "",
+    success: true,
+    snackbarOpen: false,
+    snackbarMsg: "",
     token: localStorage.getItem("token"),
     selectedItemName: getSelectedItemName(this.props.location.pathname),
     selectedStatus: {
@@ -177,32 +184,9 @@ class ModeratorPanel extends React.Component {
   classes = this.props.classes;
 
   componentDidMount() {
-    const headers = new Headers({
-      "Content-Type": "application/json",
-      "X-Auth-Token": this.state.token
-    });
 
-    const fetchInit = {
-      method: "GET",
-      headers: headers
-    };
-
-    fetch("http://localhost:6543/api/moderator", fetchInit)
-      .then(response =>
-        !(response.status >= 200 && response.status < 300)
-          ? Promise.reject.bind(Promise)
-          : response.json()
-      )
-      .then(data =>
-        this.setState({ isLoading: false, accessAllowed: data.success })
-      )
-      .catch(err =>
-        this.setState({
-          isLoading: false,
-          accessAllowed: false,
-          error: "" + err
-        })
-      );
+    this.setState({ isLoading: false});
+    
   }
 
   handleTabChange = (event, value) => {
@@ -221,12 +205,23 @@ class ModeratorPanel extends React.Component {
     }
   )}
 
+  handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    this.setState({ snackbarOpen: false });
+  };
+
   render() {
 
     const { isLoading, 
       selectedItemName, 
       selectedStatus, 
-      currentStatusAdditionalValues } = this.state;
+      currentStatusAdditionalValues,
+      snackbarOpen,
+      success,
+      snackbarMsg
+    } = this.state;
     const { classes } = this.props;
 
     if (isLoading) {
@@ -275,6 +270,25 @@ class ModeratorPanel extends React.Component {
             ))}
           </Switch>
         </main>
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right"
+          }}
+          open={snackbarOpen}
+          autoHideDuration={success ? 4000 : null}
+          onClose={this.handleSnackbarClose}
+        >
+          <SnackbarContent
+            onClose={this.handleSnackbarClose}
+            variant={success ? "success" : "error"}
+            message={
+              <Typography color="inherit" align="center">
+                {snackbarMsg || success || "Something went wrong"}
+              </Typography>
+            }
+          />
+        </Snackbar>
       </div>
     );
   }

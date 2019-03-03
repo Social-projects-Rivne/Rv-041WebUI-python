@@ -44,7 +44,7 @@ const styles = theme => ({
 });
 
 function UserOrders(props) {
-  const { classes, orders, handleOrderDecline } = props;
+  const { classes, orders, handleOrderDecline, handleOrderReordering } = props;
 
   return (
     <div className={classes.root}>
@@ -71,6 +71,11 @@ function UserOrders(props) {
           <ExpansionPanel key={index} >
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Grid container justify="space-between" alignItems="center" spacing={8}>
+                <Grid item key={0} xs={1} >
+                  <Typography className={classes.heading}>
+                    {"№" + orderInfo.id}
+                  </Typography>
+                </Grid>
                 <Grid item key={1} xs={3} >
                   <Typography className={classes.heading}>
                     {orderInfo.restaurant}
@@ -98,7 +103,7 @@ function UserOrders(props) {
                     {orderItems.length} items for ${orderInfo.total_price}
                   </Typography>
                 </Grid>
-                <Grid item key={5} xs={2} >
+                <Grid item key={5} xs={1} >
                   <Typography>
                     {orderInfo.status}
                   </Typography>
@@ -163,12 +168,20 @@ function UserOrders(props) {
                               </Grid>
                             )
                           }
-                          {/*TODO: <Grid>
-                                <Button variant="contained" color="primary">
+                          {
+                            ["History", "Declined", "Removed", "Failed"].includes(orderInfo.status) && (
+                              <Grid>
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() => handleOrderReordering(orderInfo.id, orderInfo.restaurant_id)}
+                                >
                                   Reorder
                                   <Repeat />
                                 </Button>
-                              </Grid>*/}
+                              </Grid>
+                            )
+                          }
                         </Grid>
                       </TableCell>
                     </TableRow>

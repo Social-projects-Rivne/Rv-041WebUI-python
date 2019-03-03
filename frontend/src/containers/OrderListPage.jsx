@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import GenericTabs from "../Service/GenericTabs";
 import UserOrders from "../components/UserOrders/UserOrders";
 import SnackbarContent from "../components/SnackbarContent";
+import OrderConfirmDialog from "../components/MenuPage/OrderConfirm";
 import { GetCurrentRouteLocation} from "../Service/functions"
 
 
@@ -45,7 +46,13 @@ class OrderListPage extends React.Component {
     orders: [],
     selectedTab: 0,
     snackbarOpen: false,
-    snackbarMsg: ""
+    snackbarMsg: "",
+    isDialogOpen: false,
+    orderId: "Local",
+    cartItems: [],
+    restId: null,
+    redirectToLogin: false,
+    snackbarType: "info"
   };
 
   componentDidMount() {
@@ -92,6 +99,50 @@ class OrderListPage extends React.Component {
     this.setState({ snackbarOpen: false });
   };
 
+
+  handleOrderReordering = (orderId, rest_id) => {
+
+    const route = "http://localhost:6543/api/order";
+    const headers = new Headers({
+      "Content-Type": "application/json",
+      "X-Auth-Token": this.state.token
+    });
+
+    const fetchInit = {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify({
+        rest_id: rest_id,
+        baseOrderId: orderId,
+      })
+    };
+
+    fetch(route, fetchInit)
+      .then(response =>
+        !(response.status >= 200 && response.status < 300)
+          ? Promise.reject.bind(Promise)
+          : response.json()
+      )
+      .then(data => {
+        this.setState(prevState => {
+          return {
+            isDialogOpen: true,
+            cartItems: data.data.order_info.items,
+            orderId: data.data.order_info.id, 
+            restId: rest_id,
+            success: data.success,
+          }
+        })
+      })
+      .catch(err => this.setState({ 
+        success: false,
+        error: err.message,
+        isLoading: false,
+        snackbarOpen: true,
+        snackbarMsg: err.message,
+      }));
+  }
+
   handleOrderDecline = (orderId, currentStatus) => {
 
     let route     = ""; 
@@ -109,7 +160,6 @@ class OrderListPage extends React.Component {
         headers: headers,
         body: JSON.stringify({
           new_status: "Declined",
-          booked_time: Math.round(new Date()/1000)
         })
       }
     } else {
@@ -132,38 +182,31 @@ class OrderListPage extends React.Component {
       .then(data => {
         if (data.success) {
           this.setState(prevState => {
-            if (currentStatus === "Waiting for confirm") {
-              return {
-                orders: prevState.orders.map(orderInfo => {
-                  if (orderInfo.id === orderId) {
+            return {
+              orders: prevState.orders.filter(orderInfo => {
+                if (orderInfo.id === orderId) {
+                  if (currentStatus === "Waiting for confirm") {
                     orderInfo.status = "Declined";
-                    return orderInfo;
-                  } else {
-                    return orderInfo;
                   }
-                }),
-                success: true,
-                snackbarOpen: true,
-                snackbarMsg: "Order declined",
-              }
-            } else {
-              return {
-                orders: prevState.orders.filter(orderInfo => {
-                  if (orderInfo.id === orderId) {
-                    return false;
-                  } else {
-                    return true;
-                  }
-                }),
-                success: true,
-                snackbarOpen: true,
-                snackbarMsg: "Order deleted",
-              }
+                  return false;
+                } else {
+                  return true;
+                }
+              }),
+              success: true,
+              snackbarOpen: true,
+              snackbarMsg: currentStatus === "Waiting for confirm" ? "Order declined" : "Order deleted",
             }
           })
+        } else {
+          this.setState({
+              success: false,
+              snackbarOpen: true,
+              snackbarMsg: "Operation failed",
+            }
+          )
         }
-      }
-      )
+      })
       .catch(err => this.setState({ 
         success: false,
         error: err.message,
@@ -172,6 +215,203 @@ class OrderListPage extends React.Component {
         snackbarMsg: "err.message",
       }));
   };
+
+  //order confirm dialog methods
+
+  handleDialogToggle = () => {
+    const user = localStorage.getItem("token");
+    if (!user) {
+      const { restId } = this.state;
+      localStorage.setItem("RestId", restId);
+      localStorage.setItem("Cart", JSON.stringify(this.state.cartItems));
+      this.setState({ redirectToLogin: true });
+    } else {
+      this.setState(state => ({ isDialogOpen: !this.state.isDialogOpen }));
+    }
+  };
+
+  handleRemoveItem = itemId => {
+
+    let orderId = this.state.orderId;
+    if (!orderId) {
+      orderId = localStorage.getItem("OrderId");
+    }
+
+    if (orderId === "Local") {
+      const nextCart = this.state.cartItems.filter(item => {
+        return item.id !== itemId;
+      });
+      this.setState({
+        cartItems: nextCart,
+        snackbarMsg: "Item was removed",
+        snackbarOpen: true,
+      });
+      return null;
+    }
+
+    fetch("http://localhost:6543/api/order/" + orderId, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": localStorage.getItem("token")
+      },
+      body: JSON.stringify({
+        item_id: itemId
+      })
+    })
+      .then(response =>
+        [404, 400].includes(response.status)
+          ? response.json().then(Promise.reject())
+          : response.json()
+      )
+      .then(json => {
+        const nextCart = this.state.cartItems.filter(item => {
+          return item.id !== itemId;
+        });
+        this.setState({
+          cartItems: nextCart,
+          snackbarMsg: "Item was removed",
+          snackbarOpen: true,
+        });
+      })
+      .catch(error =>
+        this.setState({
+          snackbarMsg: error.error || "Somethind went wrong",
+          snackbarOpen: true,
+        })
+      );
+  };
+
+
+  handleQuantityChange = (
+    event,
+    quantity,
+    itemId,
+    inList = false,
+    inListIndex = 0
+  ) => {
+    let quantity1 = parseInt(event.target.value);
+    if (inList) {
+      const newItems = this.state.cartItems.map((item, index) => {
+        if (index === inListIndex) {
+          if (quantity1 >= 1) {
+            item.quantity = quantity1;
+            return item;
+          } else {
+            item.quantity = 1;
+            return item;
+          }
+        } else {
+          return item;
+        }
+      });
+      this.setState({ cartItems: newItems });
+    }
+
+    let orderId = this.state.orderId;
+    if (!orderId) {
+      orderId = localStorage.getItem("OrderId");
+    }
+    
+    if (!(quantity1 >= 1)) {
+      quantity1 = 1;
+    }
+    this.sendQuantityChange(orderId, quantity1, itemId);
+  };
+
+  sendQuantityChange = (orderId, quantity, itemId) => {
+    if (orderId === "Local") {
+      this.setState({
+        snackbarMsg: "Quantity changed to " + quantity,
+        snackbarOpen: true,
+      });
+      return null;
+    }
+    fetch("http://localhost:6543/api/order/" + orderId, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": localStorage.getItem("token")
+      },
+      body: JSON.stringify({
+        item_id: itemId,
+        quantity: quantity
+      })
+    })
+      .then(response =>
+        [404, 400].includes(response.status)
+          ? response.json().then(Promise.reject.bind(Promise))
+          : response.json()
+      )
+      .then(json => {
+        this.setState({
+          snackbarMsg: "Quantity changed to " + json.data.quantity,
+          snackbarOpen: true,
+        });
+      })
+      .catch(error => {
+        this.setState({
+          snackbarMsg: error.error || "Somethind went wrong",
+          snackbarOpen: true,
+        });
+      });
+  };
+
+
+  sendSubmitOrder = inDate => {
+
+    let orderId = this.state.orderId;
+    if (!orderId) {
+      orderId = localStorage.getItem("OrderId");
+    }
+    
+    fetch("http://localhost:6543/api/order/" + orderId + "/status", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": localStorage.getItem("token")
+      },
+      body: JSON.stringify({
+        new_status: "Waiting for confirm",
+        booked_time: Math.round(inDate / 1000)
+      })
+    })
+      .then(response => {
+        if ([404, 403, 400].includes(response.status)) {
+          return response.json().then(json => {
+            throw json;
+          });
+        } else {
+          return response.json();
+        }
+      })
+      .then(json => {
+        localStorage.setItem("OrderId", "Local");
+        this.setState({
+          cartItems: [],
+          orderId:"Local",  
+          isDialogOpen: false,
+          snackbarMsg: "Order status changed to " + json.data.status,
+          snackbarOpen: true,
+        });
+      })
+      .catch(error => {
+        this.setState({
+          snackbarMsg: error.error || "Somethind went wrong",
+          snackbarOpen: true,
+        });
+      });
+  };
+
+  handleSnackbarMessage = (msg, type) => {
+    this.setState({
+      snackbarMsg: msg,
+      snackbarOpen: true,
+      snackbarType: "info"
+    });
+  };
+
+  //********************* */
 
   render() {
     const { classes, match } = this.props;
@@ -226,6 +466,7 @@ class OrderListPage extends React.Component {
                 exact={true}
                 render={() => <UserOrders
                   orders={statusesObject[status]}
+                  handleOrderReordering={this.handleOrderReordering}
                   handleOrderDecline={this.handleOrderDecline}
                 />}
               />
@@ -252,6 +493,20 @@ class OrderListPage extends React.Component {
             }
           />
         </Snackbar>
+
+        {this.state.isDialogOpen && (
+            <OrderConfirmDialog
+              open={this.state.isDialogOpen}
+              handleClickToggle={this.handleClickToggle}
+              cartItems={this.state.cartItems}
+              handleDialogToggle={this.handleDialogToggle}
+              handleRemoveItem={this.handleRemoveItem}
+              handleQuantityChange={this.handleQuantityChange}
+              sendSubmitOrder={this.sendSubmitOrder}
+              handleSnackbarMessage={this.handleSnackbarMessage}
+            />
+          )}
+        
       </div>
     );
   }
