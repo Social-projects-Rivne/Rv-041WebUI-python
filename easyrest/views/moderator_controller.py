@@ -5,6 +5,7 @@ This module describes behavior of "moderator/restaurants", "moderator/users" and
 """
 
 from pyramid.view import view_config
+from sqlalchemy import desc
 
 from ..auth import restrict_access
 from ..models.restaurant import Restaurant
@@ -55,7 +56,7 @@ def get_restaurants_controller(request):
     """
 
     unapproved_restaurants =\
-        request.dbsession.query(Restaurant).all()
+        request.dbsession.query(Restaurant).order_by(desc(Restaurant.id)).all()
     if unapproved_restaurants:
         keys = ("id", "status", "creation_date", "name", "address_id", "phone", "owner_id", "image")
         data = []
@@ -148,7 +149,7 @@ def get_users_controller(request):
     """
     user_status = 1
     users =\
-        request.dbsession.query(User).filter(User.role_id == user_status).all()
+        request.dbsession.query(User).filter(User.role_id == user_status).order_by(User.name).all()
     if users:
         keys = ("id", "is_active", "name", "phone_number", "email", "birth_date")
         data = []
@@ -186,7 +187,7 @@ def get_owners_controller(request):
     """
     user_status = 2
     users =\
-        request.dbsession.query(User).filter(User.role_id == user_status).all()
+        request.dbsession.query(User).filter(User.role_id == user_status).order_by(User.name).all()
     if users:
         keys = ("id", "is_active", "name", "phone_number", "email", "birth_date", "restaurants")
         data = []

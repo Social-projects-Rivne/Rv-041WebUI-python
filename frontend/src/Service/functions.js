@@ -17,7 +17,7 @@ export function AddAllCategory(statuses) {
 export function convertIntToDate(dateTime) {
 
 	if (!dateTime) {
-		return "--.--.---- : --:--";
+		return "";
 	}
 
 	let orderDate = dateTime;
