@@ -195,24 +195,16 @@ class OrderListPage extends React.Component {
               }),
               success: true,
               snackbarOpen: true,
-              snackbarMsg: "Order declined",
+              snackbarMsg: currentStatus === "Waiting for confirm" ? "Order declined" : "Order deleted",
             }
           })
         } else {
-          this.setState(prevState => {
-            return {
-              orders: prevState.orders.filter(orderInfo => {
-                if (orderInfo.id === orderId) {
-                  return false;
-                } else {
-                  return true;
-                }
-              }),
-              success: true,
+          this.setState({
+              success: false,
               snackbarOpen: true,
-              snackbarMsg: "Order deleted",
+              snackbarMsg: "Operation failed",
             }
-          })
+          )
         }
       })
       .catch(err => this.setState({ 
