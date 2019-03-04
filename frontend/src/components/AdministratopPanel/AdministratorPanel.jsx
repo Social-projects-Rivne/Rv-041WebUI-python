@@ -124,6 +124,50 @@ class AdministratorPanel extends React.Component {
             <Tab label="Refresh" />
           </Tabs>
         </AppBar>
+          {this.state.selectedTab === 0 && (
+              <TabContainer>
+                  <div style={{ padding: 8 }}>
+                      <Grid container spacing={16}>
+                          {this.state.orders.map((order, index) => {
+                              if (order.status != "Waiting for confirm") {
+                                  return null
+                              }
+                              return (
+                                  <ExpandItem
+                                      key={"i" + index}
+                                      order={order}
+                                      index={index}
+                                      handleSnackbar={this.handleSnackbar}
+                                      changeStatus={this.changeStatus}
+                                      waiters={this.state.waiters}
+                                  />
+                              );
+                          })}
+                      </Grid>
+                  </div>
+              </TabContainer>)}
+          {this.state.selectedTab === 2 && (
+              <TabContainer>
+                  <div style={{ padding: 8 }}>
+                      <Grid container spacing={16}>
+                          {this.state.orders.map((order, index) => {
+                              if (order.status != "Assigned waiter") {
+                                  return null
+                              }
+                              return (
+                                  <ExpandItem
+                                      key={"i" + index}
+                                      order={order}
+                                      index={index}
+                                      handleSnackbar={this.handleSnackbar}
+                                      changeStatus={this.changeStatus}
+                                      waiters={this.state.waiters}
+                                  />
+                              );
+                          })}
+                      </Grid>
+                  </div>
+              </TabContainer>)}
         {this.state.selectedTab === 1 && (
           <TabContainer>
             <div style={{ padding: 8 }}>
