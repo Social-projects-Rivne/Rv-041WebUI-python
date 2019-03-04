@@ -1,6 +1,11 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
+import {
+	Snackbar,
+	Typography
+} from "@material-ui/core";
+import SnackbarContent from "../components/SnackbarContent";
 import GenericTabs from "../Service/GenericTabs";
 import PageContainer from "./PageContainer";
 import Orders from "../components/WaiterPanelComponents/Orders"
@@ -17,8 +22,11 @@ class WaiterPanelOrders extends React.Component {
 			token: localStorage.getItem("token"),
 			statuses: [],
 			orders: [],
-			selectedTab: 0
-			};
+			selectedTab: 0,
+			snackbarOpen: false,
+			snackbarMsg: "",
+			success: true,
+		};
   
 	componentDidMount() {
 
@@ -52,7 +60,10 @@ class WaiterPanelOrders extends React.Component {
 			)
 			.catch(err =>
 				this.setState({
+					success: false,
 					isLoading: false,
+					snackbarOpen: true,
+					snackbarMsg: "fail to connect server",
 					error: "" + err
 				})
 			);
@@ -71,13 +82,14 @@ class WaiterPanelOrders extends React.Component {
       })
     })
       .then(response =>
-        [404, 403, 400].includes(response.status)
+        !(response.status >= 200 && response.status < 300)
           ? response.json().then(Promise.reject())
           : response.json()
       )
       .then(json => {
         this.setState(prevState => {
 					return{
+						success: json.success,
 						orders: prevState.orders.map(orderInfo => {
 							if (orderInfo.id === orderId) {
 								orderInfo.status = new_status;
@@ -85,15 +97,27 @@ class WaiterPanelOrders extends React.Component {
 							} else {
 								return orderInfo;
 							}
-						})
+						}),
+						snackbarOpen: true,
+						snackbarMsg: json.success ? "success" : "failure",
 					}
         });
       })
       .catch(error => {
         this.setState({
-          error: error
+					success: false,
+					error: "" + error,
+					snackbarOpen: true,
+					snackbarMsg: "failed to make operation",
         });
       });
+	};
+	
+	handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({ snackbarOpen: false });
   };
 
   handleTabChange = (event, value) => {
@@ -102,7 +126,15 @@ class WaiterPanelOrders extends React.Component {
 
 	render() {
     const { match } = this.props;
-    const { isLoading, statuses, orders, selectedTab } = this.state;
+		const { 
+			isLoading, 
+			statuses, 
+			orders, 
+			selectedTab,
+			snackbarOpen,
+			snackbarMsg,
+			success
+		} = this.state;
 
     if (isLoading) {
       return null;
@@ -153,6 +185,25 @@ class WaiterPanelOrders extends React.Component {
 						);
 					})}
 				</Switch>
+				<Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right"
+            }}
+            open={snackbarOpen}
+            autoHideDuration={success ? 3000 : 15000}
+            onClose={this.handleSnackbarClose}
+          >
+            <SnackbarContent
+              onClose={this.handleSnackbarClose}
+              variant={success ? "success" : "error"}
+              message={
+                <Typography color="inherit" align="center">
+                  {snackbarMsg || success || "Something went wrong"}
+                </Typography>
+              }
+            />
+          </Snackbar>
       </PageContainer>
 		)
 	}

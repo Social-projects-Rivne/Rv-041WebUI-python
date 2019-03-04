@@ -54,7 +54,7 @@ def includeme(config):
     config.add_route('get_orders', 'orders', request_method="GET")
     # acording to CRUD(Create, Read, Update, Delete)
     #                 (POST,   GET,  PUT,    DELETE)
-    config.add_route('order', 'order', request_method=["POST", "GET", "PUT"])
+    config.add_route('order', 'order', request_method=["POST", "GET", "PUT", "DELETE"])
     config.add_route('order_by_id', 'order/{order_id:\d+}',
                      request_method=["POST", "GET", "PUT", "DELETE"])
     config.add_route('order_status', 'order/{order_id:\d+}/status',

@@ -11,6 +11,7 @@ import {
   IconButton
 }from "@material-ui/core/";
 import {Lock, LockOpen} from '@material-ui/icons';
+import { makeDate } from "../../Service/functions";
 
 const styles = theme => ({
   root: {
@@ -103,7 +104,7 @@ function Users(props) {
                   </TableCell>
                   <TableCell align="right">{userInfo.email}</TableCell>
                   <TableCell align="right">{userInfo.phone_number}</TableCell>
-                  <TableCell align="right">{userInfo.birth_date}</TableCell>
+                  <TableCell align="right">{makeDate(userInfo.birth_date, "simple european date")}</TableCell>
                   {userStatus === "owners" ?  <TableCell align="right">
                                                 {userInfo.restaurants.map((restaurantName, id) => {
                                                   return(<Typography component="p" key={id}>

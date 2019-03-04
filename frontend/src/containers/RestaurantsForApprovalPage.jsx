@@ -39,13 +39,22 @@ class RestaurantsForApprovalPage extends Component {
         this.setState({
           unapprovedRestaurants: data.data,
           success: data.success,
-          error: data.error
         })
       )
       .then(() => {
         this.pushTabValues(this.state.unapprovedRestaurants);
       })
-      .catch(err => this.setState({ success: false, error: err.message }));
+      .catch(
+        err => {
+          this.pushTabValues(this.state.unapprovedRestaurants);
+          this.setState({
+            success: false,
+            error: err.message,
+            snackbarOpen: true,
+            snackbarMsg: "fail to connect server",
+          });
+        }
+      );
   }
 
   handleRestaurantApprovement = (
@@ -101,17 +110,17 @@ class RestaurantsForApprovalPage extends Component {
         })
       )
       .then(() => {
-        this.pushTabValues(this.state.unapprovedRestaurants);
       })
-      .catch(err =>
+      .catch(err => {
+        this.pushTabValues(this.state.unapprovedRestaurants);
         this.setState({
           success: false,
           error: "" + err,
           snackbarOpen: true,
-          snackbarMsg: "" + err,
+          snackbarMsg: "failed to make operation",
           currentRestaurantId: restaurant_id
         })
-      );
+      });
   };
 
   handleSnackbarClose = (event, reason) => {
@@ -179,39 +188,35 @@ class RestaurantsForApprovalPage extends Component {
       const redirection = redirectToSignUp(error);
       return redirection;
     } else {
-      if (success) {
-        return (
-          <React.Fragment>
-            <RestaurantsForApproval
-              unapprovedRestaurants={unapprovedRestaurants}
-              handleRestaurantApprovement={this.handleRestaurantApprovement}
-              restaurantStatus={restaurantStatus}
-            />
-            <Snackbar
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right"
-              }}
-              open={snackbarOpen}
-              autoHideDuration={success ? 3000 : null}
+      return (
+        <React.Fragment>
+          <RestaurantsForApproval
+            unapprovedRestaurants={unapprovedRestaurants}
+            handleRestaurantApprovement={this.handleRestaurantApprovement}
+            restaurantStatus={restaurantStatus}
+          />
+          <Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right"
+            }}
+            open={snackbarOpen}
+            autoHideDuration={success ? 3000 : 15000}
+            onClose={this.handleSnackbarClose}
+          >
+            <SnackbarContent
               onClose={this.handleSnackbarClose}
-            >
-              <SnackbarContent
-                onClose={this.handleSnackbarClose}
-                action={success ? this.snackbarAction : null}
-                variant={success ? "success" : "error"}
-                message={
-                  <Typography color="inherit" align="center">
-                    {snackbarMsg || success || "Something went wrong"}
-                  </Typography>
-                }
-              />
-            </Snackbar>
-          </React.Fragment>
-        );
-      } else {
-        return <GeneralError error={error} />;
-      }
+              action={success ? this.snackbarAction : null}
+              variant={success ? "success" : "error"}
+              message={
+                <Typography color="inherit" align="center">
+                  {snackbarMsg || success || "Something went wrong"}
+                </Typography>
+              }
+            />
+          </Snackbar>
+        </React.Fragment>
+      );
     }
   }
 }

@@ -6,6 +6,7 @@ import time
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPNotFound, HTTPForbidden, HTTPBadRequest
 from sqlalchemy.sql.expression import text
+from sqlalchemy import desc
 
 from ..scripts.json_helpers import wrap
 from ..scripts.json_helpers import form_dict
@@ -62,6 +63,7 @@ def get_orders(request):
 @restrict_access(user_types=["Client", "Owner"])
 def create_draft_order(request):
     """Controller for creating empty(in Draft) order
+    in case, when "baseOrderId" presented in request body - new Order fills based on it.
     Expects:
     {
         rest_id: (int)
@@ -88,12 +90,27 @@ def create_draft_order(request):
     order.user = user
     order.restaurant = rest
     request.dbsession.add(order)
+
+    if "baseOrderId" in request.json_body:
+        request.dbsession.flush()
+        try:
+            base_order_id = int(request.json_body["baseOrderId"]) 
+        except ValueError as e:
+            raise HTTPBadRequest("Order id must be integer")
+        base_order = request.dbsession.query(Order).get(base_order_id)
+        order.fill_by_other_order(request.dbsession, base_order)
+
     request.dbsession.flush()
     # if order.id is None:
     #     raise HTTPBadRequest("Something went wrong")
     data = {
         "order_id": order.id
     }
+    if "baseOrderId" in request.json_body:
+        order_dict = order.as_dict()
+        order_dict["items"] = order.get_items(request.dbsession)
+        data["order_info"] = order_dict
+
     return wrap(data)
 
 
@@ -168,6 +185,41 @@ def parse_localStorage(request):
     data = [item.as_dict(exclude=["category_id"]) for item in menu_items]
 
     return wrap(data)
+
+
+@view_config(route_name='order', renderer='json', request_method='DELETE')
+@restrict_access(user_types=["Client", "Owner"])
+def delete_draft_order(request):
+  """Controller for deleting draft order by token
+  Return:
+      {
+          success: if_item_is_deleted - boolean,
+          data: [],
+          error: None
+          message: None
+      }
+  """
+  order_data = request.json_body
+  try:
+    order_id = int(order_data["orderId"])
+  except KeyError:
+    raise HTTPNotFound("No order_id found in request body")
+  except ValueError:
+    raise HTTPForbidden("order_id should be iteger")
+  # I don't use query().get(id) because it's better to check if order is still in
+  # "Draft" status rather than delete it simly finds it by id.
+  order = request.dbsession.query(Order).filter(
+      Order.status == "Draft",
+      Order.user_id == request.token.user.id,
+      Order.id == order_id).first()
+
+  if not order:
+    raise HTTPNotFound("Order doesn't exist. Maby it changes it's status.")
+
+  rows_deleted = request.dbsession.delete(order)
+  success = True if rows_deleted != 0 else False
+
+  return wrap(success=success)
 
 
 @view_config(route_name='order_by_id', renderer='json', request_method='POST')
@@ -452,17 +504,17 @@ def get_user_order_list(request):
     order_status = request.matchdict['status']
     if order_status == "current":
         statuses = [
+            "Draft",
             "Waiting for confirm",
-            "Declined",
             "Accepted",
             "Asigned waiter",
             "In progress",]
     elif order_status == "history":
-        statuses = ["History", "Removed", "Failed",]
+        statuses = ["History", "Declined", "Removed", "Failed",]
     else:
         raise HTTPNotFound()
     orders = request.dbsession.query(Order).filter(
-        Order.user_id == request.token.user.id, Order.status.in_(statuses)).all()
+        Order.user_id == request.token.user.id, Order.status.in_(statuses)).order_by(desc(Order.id)).all()
     data = {}
     data["statuses"] = statuses
     order_keys = ("id", "creation_time", "booked_time",
@@ -471,6 +523,7 @@ def get_user_order_list(request):
     for order in orders:
         order_data = form_dict(order, order_keys, True, True)
         order_data["restaurant"] = order.restaurant.name
+        order_data["restaurant_id"] = order.restaurant.id
         order_items = order.get_items(request.dbsession)
         order_data["items"] = order_items
         orders_data.append(order_data)
