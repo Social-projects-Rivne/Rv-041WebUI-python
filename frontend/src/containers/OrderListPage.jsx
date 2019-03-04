@@ -72,7 +72,7 @@ class OrderListPage extends React.Component {
     fetch(route, fetchInit)
       .then(response =>
         !(response.status >= 200 && response.status < 300)
-          ? Promise.reject.bind(Promise)
+          ? response.json().then(Promise.reject.bind(Promise))
           : response.json()
       )
       .then(data =>
@@ -120,7 +120,7 @@ class OrderListPage extends React.Component {
     fetch(route, fetchInit)
       .then(response =>
         !(response.status >= 200 && response.status < 300)
-          ? Promise.reject.bind(Promise)
+          ? response.json().then(Promise.reject.bind(Promise))
           : response.json()
       )
       .then(data => {
@@ -176,7 +176,7 @@ class OrderListPage extends React.Component {
     fetch(route, fetchInit)
       .then(response =>
         !(response.status >= 200 && response.status < 300)
-          ? Promise.reject.bind(Promise)
+          ? response.json().then(Promise.reject.bind(Promise))
           : response.json()
       )
       .then(data => {
