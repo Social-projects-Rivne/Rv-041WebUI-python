@@ -1,6 +1,6 @@
 """Module for security implementation. Contains functions to add, remove token
-(remember, forget), decorator to check access, function to asign token model 
-to request. 
+(remember, forget), decorator to check access, function to asign token model
+to request.
 """
 
 import datetime as dt
@@ -17,7 +17,7 @@ from .models import Token
 def remember(request, user):
     """Function to create token using system RNG.
     Also creates token model,
-    add token to db, for token header. 
+    add token to db, for token header.
     """
     token = str(genword(length=32, entropy=512))
     t_model = Token(
@@ -32,7 +32,7 @@ def remember(request, user):
 def forget(request):
     """Function to logout. It gets token from request,
     deletes it from db, checks if any rows was deleted.
-    Return: 
+    Return:
         True if any was deleted
         False if none was deleted
     """
@@ -70,8 +70,8 @@ def restrict_access(user_types):
 
 
 def get_token(request):
-    """Function to assign token model to request if 
-    token header exists. It check header field 
+    """Function to assign token model to request if
+    token header exists. It check header field
     (if no token -> None), gets token_id from db
     (if no such token in db -> HTTPForbidden),
     get token model by token_id.

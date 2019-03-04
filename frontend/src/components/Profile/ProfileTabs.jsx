@@ -1,5 +1,10 @@
 import React from "react";
-import { Person, Comment, Store, History, ListAlt } from "@material-ui/icons";
+import { 
+  Person, 
+  //Comment, 
+  Store, 
+  History, 
+  ListAlt } from "@material-ui/icons";
 import { Tab, withStyles } from "@material-ui/core";
 import { NavLink } from "react-router-dom";
 
@@ -44,7 +49,7 @@ const ProfileTabs = props => {
         icon={<History />}
         label="Order History"
       />
-      <Tab icon={<Comment />} label="Comments" />
+      {/*<Tab icon={<Comment />} label="Comments" />*/}
       <Tab
         disableRipple
         className={classes.tab}

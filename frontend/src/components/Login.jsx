@@ -84,7 +84,8 @@ class Login extends React.Component {
           Moderator: "/moderator",
           Owner: "/profile/restaurants",
           Client: "/restaurants",
-          Waiter: "/waiter"
+          Waiter: "/waiter",
+          Administrator: "/administrator-panel"
         };
 
         const { from } = this.props.location.state || {

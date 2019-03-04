@@ -10,7 +10,7 @@ from ..auth import restrict_access
 
 
 @view_config(route_name='get_user_info', renderer='json', request_method='GET')
-@restrict_access(user_types=["Client", "Owner"])
+@restrict_access(user_types=["Administrator", "Client", "Owner"])
 def get_user_info_controller(request):
     """
     GET request controller to return user profile information

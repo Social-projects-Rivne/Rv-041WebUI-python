@@ -28,7 +28,7 @@ const styles = theme => ({
 const Menu = [
   { name: "Home", route: "/" },
   { name: "Restaurants List", route: "/restaurants" },
-  { name: "Restaurants Map", route: "/restaurants-map" }
+  //{ name: "Restaurants Map", route: "/restaurants-map" }
 ];
 
 class NavMenu extends React.Component {

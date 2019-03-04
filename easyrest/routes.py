@@ -68,3 +68,4 @@ def includeme(config):
     config.add_route(
         'toggle_activity', "user/toggle_activity/{user_id:\d+}", request_method="GET")
     config.add_route('file_upload', 'file', request_method="POST")
+    config.add_route('get_waiters', 'waiters', request_method="GET")
