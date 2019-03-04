@@ -50,7 +50,7 @@ class ExpandItem extends React.Component {
       headers: headers,
       body: JSON.stringify({
         set_waiter_id: parseInt(this.state.pickedWaiter),
-        new_status: "Accepted"
+        new_status: "Asigned waiter"
       })
     };
     fetch("http://localhost:6543/api/order/" + orderId + "/status", fetchInit)
