@@ -23,14 +23,20 @@ const styles = theme => ({
 });
 
 function priceRow(qty, unit) {
-  return (unit * qty).toFixed(2);
+  return ((unit / 100) * qty).toFixed(2);
 }
 
 function priceTotal(items) {
   return items
-    .map(({ price, quantity }) => price * quantity)
+    .map(({ price, quantity }) => (price / 100) * quantity)
     .reduce((sum, i) => sum + i, 0)
     .toFixed(2);
+}
+
+function formatPrice(value) {
+  return Number(value / 100)
+    .toFixed(2)
+    .replace(/\d(?=(\d{3})+\.)/g, "$&,");
 }
 
 function OrderItemsList(props) {
@@ -65,8 +71,10 @@ function OrderItemsList(props) {
                   </TableCell>
                 )}
                 <TableCell>{row.name}</TableCell>
-                <TableCell align="right">{row.amount}</TableCell>
-                <TableCell align="right">{row.price}</TableCell>
+                <TableCell align="right">{row.amount + "g"}</TableCell>
+                <TableCell align="right">
+                  {formatPrice(row.price) + "$"}
+                </TableCell>
                 {controls && (
                   <TableCell>
                     <TextField
@@ -89,7 +97,7 @@ function OrderItemsList(props) {
                   <TableCell align="right">{row.quantity}</TableCell>
                 )}
                 <TableCell align="right">
-                  {priceRow(row.quantity, row.price)}
+                  {priceRow(row.quantity, row.price) + "$"}
                 </TableCell>
               </TableRow>
             );

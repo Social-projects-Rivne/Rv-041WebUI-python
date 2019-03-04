@@ -9,6 +9,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from ..scripts.json_helpers import wrap
 from ..models.tag import Tag
 from ..models.tag_association import TagAssociation
+from ..models.restaurant import Restaurant
 
 
 @view_config(route_name='get_tags', renderer='json', request_method='GET')
@@ -38,8 +39,15 @@ def get_tags_controler(request):
             "error": No tags in database
         }
     """
-    tag_query = request.dbsession.query(Tag)
-    tags = tag_query.all()
+    not_empty = request.params.get("with_rests", False)
+    if not_empty:
+        tags = request.dbsession.query(Tag)\
+            .filter(Tag.id == TagAssociation.tag_id)\
+            .filter(Restaurant.id == TagAssociation.restaurant_id)\
+            .filter(Restaurant.status == 1).all()
+    else:
+        tag_query = request.dbsession.query(Tag)
+        tags = tag_query.all()
     if not tags:
         raise HTTPNotFound("No tags in database")
     else:

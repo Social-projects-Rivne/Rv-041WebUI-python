@@ -50,6 +50,12 @@ const styles = {
   addButton: {}
 };
 
+function formatPrice(value) {
+  return Number(value / 100)
+    .toFixed(2)
+    .replace(/\d(?=(\d{3})+\.)/g, "$&,");
+}
+
 class MenuItem extends React.Component {
   state = {
     expanded: false,
@@ -106,7 +112,7 @@ class MenuItem extends React.Component {
                   <CardHeader title={name} />
                 </Grid>
                 <Grid item xs={1} className={classes.borderLeft}>
-                  <Typography>{amount}</Typography>
+                  <Typography>{amount + "g"}</Typography>
                 </Grid>
                 <Grid
                   item
@@ -116,10 +122,11 @@ class MenuItem extends React.Component {
                     classes.borderRight
                   )}
                 >
-                  <Typography>{price / 100 + "$"}</Typography>
+                  <Typography>{formatPrice(price) + "$"}</Typography>
                 </Grid>
                 <Grid item xs={2}>
                   <TextField
+                    disabled={this.props.locked}
                     id="quantity"
                     value={this.state.quantity}
                     onChange={this.handleChange("quantity")}
@@ -129,7 +136,9 @@ class MenuItem extends React.Component {
                   />
                 </Grid>
                 <Grid item xs={2} className={classes.borderLeft}>
-                  <Typography>{price * this.state.quantity + "$"}</Typography>
+                  <Typography>
+                    {formatPrice(price * this.state.quantity) + "$"}
+                  </Typography>
                 </Grid>
               </Grid>
               <Divider variant="fullWidth" />
