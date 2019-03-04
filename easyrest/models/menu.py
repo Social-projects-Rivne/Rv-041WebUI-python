@@ -69,8 +69,9 @@ class Menu(Base):
 
     @staticmethod
     def create_menu(session, form_data, rest_id):
-        name = form_data["name"]
+        name = form_data["menuName"]
         image = form_data["image"]
+
         rest_id = rest_id
         # is_active = form_data["is_active"]
         is_active = True
@@ -84,3 +85,12 @@ class Menu(Base):
             raise HTTPForbidden("Can't Create Menu")
 
         return menu
+
+    def update_menu(self, session, form_data):
+        name = form_data["name"]
+        image = form_data["image"]
+
+        self.name = name
+        self.image = image
+
+        return self

@@ -77,8 +77,11 @@ def add_menu_controler(request):
     POST request controller. Create new restaurant menu database and return created menu
     """
     rest_id = request.matchdict["rest_id"]
-    from_data = request.json_body
-    menu = Menu.create_menu(request.dbsession, from_data, rest_id)
+    form_data = request.json_body
+    menu = Menu.create_menu(request.dbsession, form_data, rest_id)
+
+    for item in form_data["menuItems"]:
+        MenuItem.create_item(request.dbsession, item, menu.id)
 
     return wrap(menu.as_dict())
 
@@ -89,8 +92,10 @@ def create_menu_item_controler(request):
     """
     POST request controller. Create new restaurant menu item in database and return created item
     """
-    from_data = request.json_body
-    item = MenuItem.create_item(request.dbsession, from_data)
+    form_data = request.json_body
+    menu_id = request.matchdict["menu_id"]
+
+    item = MenuItem.create_item(request.dbsession, form_data, menu_id)
 
     return wrap(item.as_dict(with_relations=["category"]))
 

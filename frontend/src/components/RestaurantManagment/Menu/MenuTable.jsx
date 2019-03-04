@@ -313,9 +313,9 @@ class MenuTable extends React.Component {
             <colgroup>
               <col style={{ width: "56px" }} />
               <col style={{ width: "64px" }} />
-              <col style={{ width: "200px" }} />
-              <col style={{ width: "316px" }} />
-              <col style={{ width: "324px" }} />
+              <col style={{ maxWidth: "200px" }} />
+              <col style={{ maxWidth: "316px" }} />
+              <col style={{ maxWidth: "324px" }} />
               <col style={{ width: "80px" }} />
               <col style={{ width: "80px" }} />
               <col style={{ width: "102px" }} />

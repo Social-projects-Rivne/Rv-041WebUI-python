@@ -7,22 +7,32 @@ class ImageUploader extends React.Component {
     super(props);
     this.state = {
       dragging: false,
+      error: false,
       file: null,
       imgPreview: ""
     };
+  }
+
+  allowedTypes = ["image/jpeg", "image/png", "image/svg+xml"];
+
+  isImageType(file) {
+    if (file["type"] === undefined) return false;
+    return this.allowedTypes.includes(file.type);
   }
 
   dragEventCounter = 0;
   dragenterListener = event => {
     this.overrideEventDefaults(event);
     this.dragEventCounter++;
-    if (event.dataTransfer.items && event.dataTransfer.items[0]) {
-      this.setState({ dragging: true });
-    } else if (
-      event.dataTransfer.types &&
-      event.dataTransfer.types[0] === "Files"
+
+    if (
+      event.dataTransfer.items &&
+      event.dataTransfer.items.length <= 1 &&
+      this.isImageType(event.dataTransfer.items[0])
     ) {
-      this.setState({ dragging: true });
+      this.setState({ dragging: true, error: false });
+    } else {
+      this.setState({ error: true });
     }
   };
 
@@ -31,7 +41,7 @@ class ImageUploader extends React.Component {
     this.dragEventCounter--;
 
     if (this.dragEventCounter === 0) {
-      this.setState({ dragging: false });
+      this.setState({ dragging: false, error: false });
     }
   };
 
@@ -40,11 +50,19 @@ class ImageUploader extends React.Component {
     this.dragEventCounter = 0;
     this.setState({ dragging: false });
 
-    if (event.dataTransfer.files && event.dataTransfer.files[0]) {
+    if (
+      event.dataTransfer.files &&
+      event.dataTransfer.files.length <= 1 &&
+      this.isImageType(event.dataTransfer.files[0])
+    ) {
       this.setState({
         file: event.dataTransfer.files[0],
-        imgPreview: URL.createObjectURL(event.dataTransfer.files[0])
+        imgPreview: URL.createObjectURL(event.dataTransfer.files[0]),
+        error: false
       });
+      this.props.imgFileHandler(event.dataTransfer.files[0]);
+    } else {
+      this.setState({ error: true });
     }
   };
 
@@ -58,8 +76,21 @@ class ImageUploader extends React.Component {
   };
 
   onFileChanged = event => {
-    if (event.target.files && event.target.files[0]) {
-      this.setState({ file: event.target.files[0] });
+    if (
+      event.target.files &&
+      event.target.files.length <= 1 &&
+      this.isImageType(event.target.files[0])
+    ) {
+      this.setState({
+        file: event.target.files[0],
+        imgPreview: URL.createObjectURL(event.target.files[0]),
+        error: false
+      });
+      this.props.imgFileHandler(event.target.files[0]);
+    } else {
+      this.setState({
+        error: true
+      });
     }
   };
 
@@ -78,10 +109,11 @@ class ImageUploader extends React.Component {
   }
 
   render() {
-    const { dragging, file, imgPreview } = this.state;
+    const { dragging, file, imgPreview, error } = this.state;
     return (
       <ImageUploaderPresentational
         dragging={dragging}
+        error={error}
         file={file}
         imgPreview={imgPreview}
         onSelectFileClick={this.onSelectFileClick}
@@ -98,6 +130,7 @@ class ImageUploader extends React.Component {
           onChange={this.onFileChanged}
           name="img"
           accept="image/*"
+          multiple={false}
           style={{ display: "none" }}
           type="file"
         />

@@ -40,15 +40,15 @@ class MenuItem(Base):
     menu = relationship('Menu')
 
     @staticmethod
-    def create_item(session, form_data):
+    def create_item(session, form_data, menu_id):
         name = form_data["name"]
         description = form_data["description"]
         ingredients = form_data["ingredients"]
-        img = form_data["image"]
-        price = float(form_data["price"]) * 100
-        amount = form_data["value"]
-        menu_id = form_data["menuId"]
-        category_id = form_data["category"]
+        img = form_data["img"]
+        price = form_data["price"]
+        amount = form_data["amount"]
+        menu_id = menu_id
+        category_id = form_data["category_id"]
 
         item = MenuItem(name=name, description=description,
                         ingredients=ingredients, img=img, price=price,

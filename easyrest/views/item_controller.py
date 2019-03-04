@@ -23,7 +23,7 @@ def update_menu_item(request):
     """
     POST request controller. Update restaurant menu item in database and return updated item
     """
-    print request.matchdict["item_id"]
+
     from_data = request.json_body
     menu_item_id = request.matchdict["item_id"]
     item = request.dbsession.query(MenuItem).get(int(menu_item_id))

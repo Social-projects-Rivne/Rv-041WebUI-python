@@ -52,9 +52,12 @@ class ManageMenu extends React.Component {
   };
 
   handleUpdateMenu = updatedItem => {
-    this.setState(prevState => ({
-      menuItems: [...prevState.menuItems, updatedItem]
-    }));
+    this.setState(prevState => {
+      const newList = prevState.menuItems.map(item =>
+        item.id === updatedItem.id ? updatedItem : item
+      );
+      return { menuItems: [...newList] };
+    });
   };
 
   render() {

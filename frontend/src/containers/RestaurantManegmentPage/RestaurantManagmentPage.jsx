@@ -85,24 +85,23 @@ export class RestaurantManagmentPage extends React.Component {
               <Route path={`${match.url}/info`} component={ManageInfo} />
               <Route
                 path={`${match.url}/menues/:id`}
-                render={props => (
-                  <ManageMenu
-                    menusList={menusList}
-                    key={props.match.params.id}
-                    restId={match.params.id}
-                    {...props}
-                  />
-                )}
-              />
-              <Route
-                path={`${match.url}/create_menu`}
-                render={props => (
-                  <CreateMenu
-                    onAddMenu={this.handleAddMenu}
-                    restId={match.params.id}
-                    {...props}
-                  />
-                )}
+                render={props =>
+                  props.match.params.id !== "create_menu" ? (
+                    <ManageMenu
+                      menusList={menusList}
+                      key={props.match.params.id}
+                      restId={match.params.id}
+                      {...props}
+                    />
+                  ) : (
+                    <CreateMenu
+                      onAddMenu={this.handleAddMenu}
+                      key={props.match.params.id}
+                      restId={match.params.id}
+                      {...props}
+                    />
+                  )
+                }
               />
               <Route path={`${match.url}/waiters`} component={ManageWaiters} />
             </Switch>

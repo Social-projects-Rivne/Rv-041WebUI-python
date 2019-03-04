@@ -30,6 +30,9 @@ const styles = theme => ({
   uploaderDragging: {
     backgroundColor: fade(theme.palette.secondary.light, 0.8)
   },
+  uploaderError: {
+    backgroundColor: fade("#FF0000", 0.2)
+  },
   rightIcon: {
     marginLeft: theme.spacing.unit
   }
@@ -39,6 +42,7 @@ const ImageUploaderPresentational = props => {
   const {
     dragging,
     file,
+    error,
     imgPreview,
     onSelectFileClick,
     onDrag,
@@ -65,21 +69,17 @@ const ImageUploaderPresentational = props => {
       onDrop={onDrop}
     >
       {imgPreview && (
-        <CardMedia
-          className={classes.media}
-          component="img"
-          src={imgPreview}
-          title={file}
-        />
+        <CardMedia component="img" src={imgPreview} title={file} />
       )}
       <div
         className={classnames(classes.uploaderContent, {
           [classes.uploaderDragging]: dragging,
-          [classes.uploaderWithImage]: imgPreview
+          [classes.uploaderWithImage]: imgPreview,
+          [classes.uploaderError]: error
         })}
       >
         <Typography variant="subtitle2" gutterBottom>
-          {fileName}
+          {!error ? fileName : "Wrong file format!!!"}
         </Typography>
         <Typography variant="h5" gutterBottom>
           Drag & Drop Image

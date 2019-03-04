@@ -14,15 +14,12 @@ import {
   FormControlLabel,
   RadioGroup,
   Radio,
-  IconButton,
   FormControl,
   FormLabel,
   Divider,
   TextField
 } from "@material-ui/core/";
-import { PhotoCamera } from "@material-ui/icons";
 
-import MenuImage from "./MenuImage";
 import MenuToolbar from "./MenuToolbar";
 import ImageUploader from "./ImageUploader";
 import MenuTable from "./MenuTable";
@@ -44,10 +41,25 @@ function getSteps() {
   return ["Add basic information", "Create an ad group", "Create an ad"];
 }
 
-function getStepContent(step, props, menuType, menuName, menuItems) {
+function getStepContent(
+  step,
+  props,
+  menuType,
+  menuName,
+  menuItems,
+  handleFormChange,
+  imgFileHandler,
+  onMenuItemAddLocal
+) {
   switch (step) {
     case 0:
-      return <AddInfo menuName={menuName} menuType={menuType} />;
+      return (
+        <AddInfo
+          handleFormChange={handleFormChange}
+          menuName={menuName}
+          menuType={menuType}
+        />
+      );
     case 1:
       return (
         <FillMenu>
@@ -55,12 +67,13 @@ function getStepContent(step, props, menuType, menuName, menuItems) {
             <Paper>
               <MenuToolbar menuName={menuName} />
               <Divider />
-              <ImageUploader />
+              <ImageUploader imgFileHandler={imgFileHandler} />
             </Paper>
           ) : (
             <MenuTable
+              onMenuItemAdd={onMenuItemAddLocal}
               menuName={menuName}
-              props={props}
+              {...props}
               menuItems={menuItems}
             />
           )}
@@ -92,7 +105,7 @@ const AddInfo = props => {
           geographical locations you want your ads to show on, and more.
         </Typography>
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} onChange={props.handleFormChange}>
         <TextField
           required
           value={props.menuName}
@@ -102,7 +115,7 @@ const AddInfo = props => {
           variant="outlined"
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} onChange={props.handleFormChange}>
         <FormControl>
           <FormLabel component="legend">Choose menu type:</FormLabel>
           <RadioGroup name="menuType" value={props.menuType}>
@@ -141,32 +154,32 @@ const FillMenu = props => {
 
 class CreateMenu extends React.Component {
   state = {
-    img: "",
     activeStep: 0,
     menuName: "",
+    image: null,
+    menuItems: [],
     menuType: "list",
-    imgSrc: "",
-    imgBody: {},
-    imgName: "",
-    menuItems: []
+    file: null
   };
 
   _getInitialState = () => {
     const initialState = {
-      img: "",
       activeStep: 0,
       menuName: "",
+      image: null,
+      menuItems: [],
       menuType: "list",
-      imgSrc: "",
-      imgBody: {},
-      imgName: "",
-      menuItems: []
+      file: null
     };
     return initialState;
   };
 
   _resetState = () => {
     this.setState(this._getInitialState());
+  };
+
+  imgFileHandler = value => {
+    this.setState({ file: value });
   };
 
   handleNext = () => {
@@ -185,95 +198,108 @@ class CreateMenu extends React.Component {
     this._resetState();
   };
 
-  handleImageChange = e => {
-    e.target.files[0] &&
-      this.setState({
-        imgBody: e.target.files[0],
-        imgSrc: URL.createObjectURL(e.target.files[0]),
-        imgName: e.target.files[0].name
-      });
-  };
-
   handleFormChange = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
   handleSubmit = () => {
     const restId = this.props.restId;
-    const img = this.state.imgBody;
+    const imgFile = this.state.file;
     let formData = new FormData();
-    formData.append("img", img);
-    let data = { name: this.state.menuName, image: "" };
+    formData.append("img", imgFile);
 
-    fetch("http://localhost:6543/api/file", {
-      method: "POST",
-      headers: {
-        "x-auth-token": localStorage.getItem("token")
-      },
-      body: formData
-    })
-      .then(response => {
-        return response.status >= 200 && response.status < 300
-          ? response.json()
-          : response.json().then(Promise.reject.bind(Promise));
+    if (this.state.menuType !== "list") {
+      fetch("http://localhost:6543/api/file", {
+        method: "POST",
+        headers: {
+          "x-auth-token": localStorage.getItem("token")
+        },
+        body: formData
       })
-      .then(response => {
-        data["image"] = response;
-        fetch(`http://localhost:6543/api/restaurant/${restId}/menu`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-auth-token": localStorage.getItem("token")
-          },
-          body: JSON.stringify(data)
+        .then(response => {
+          return response.status >= 200 && response.status < 300
+            ? response.json()
+            : response.json().then(Promise.reject.bind(Promise));
         })
-          .then(response => {
-            return response.status >= 200 && response.status < 300
-              ? response.json()
-              : response.json().then(Promise.reject.bind(Promise));
+        .then(response => {
+          this.setState({ image: response });
+        })
+        .then(response => {
+          let { activeStep, file, menuType, ...data } = this.state;
+
+          fetch(`http://localhost:6543/api/restaurant/${restId}/menu`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-auth-token": localStorage.getItem("token")
+            },
+            body: JSON.stringify(data)
           })
-          .then(response => {
-            this.props.onAddMenu(response.data);
-          })
-          .catch(err => {
-            console.log(err);
-          });
+            .then(response => {
+              return response.status >= 200 && response.status < 300
+                ? response.json()
+                : response.json().then(Promise.reject.bind(Promise));
+            })
+            .then(response => {
+              this.props.onAddMenu(response.data);
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        })
+        .then(
+          this.setState(state => ({
+            activeStep: state.activeStep + 1
+          }))
+        )
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      let { activeStep, file, menuType, ...data } = this.state;
+      data.menuItems.map(item => (item["category_id"] = item.category.id));
+
+      fetch(`http://localhost:6543/api/restaurant/${restId}/menu`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": localStorage.getItem("token")
+        },
+        body: JSON.stringify(data)
       })
-      .then(
-        this.setState(state => ({
-          activeStep: state.activeStep + 1
-        }))
-      )
-      .catch(err => {
-        console.log(err);
-      });
+        .then(response => {
+          return response.status >= 200 && response.status < 300
+            ? response.json()
+            : response.json().then(Promise.reject.bind(Promise));
+        })
+        .then(response => {
+          this.props.onAddMenu(response.data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  };
+
+  onMenuItemAddLocal = item => {
+    this.setState(prevState => ({
+      menuItems: [...prevState.menuItems, item]
+    }));
   };
 
   render() {
     const { classes, ...props } = this.props;
     const steps = getSteps();
-    const {
-      imgSrc,
-      imgName,
-      activeStep,
-      menuType,
-      menuName,
-      menuItems
-    } = this.state;
+    const { activeStep, menuType, menuName, menuItems } = this.state;
 
     return (
       <Paper className={classes.root}>
-        <form
-          onChange={this.handleFormChange}
-          onSubmit={this.handleSubmit}
-          noValidate
-          autoComplete="off"
-        >
+        <form onSubmit={this.handleSubmit} noValidate autoComplete="off">
           <Stepper activeStep={activeStep} orientation="vertical">
             {steps.map((label, index) => (
               <Step key={label}>
                 <StepLabel>{label}</StepLabel>
-                <StepContent>
+                <StepContent TransitionProps={{ unmountOnExit: false }}>
                   <Grid container spacing={16} justify="space-between">
                     {getStepContent(
                       index,
@@ -281,7 +307,9 @@ class CreateMenu extends React.Component {
                       menuType,
                       menuName,
                       menuItems,
-                      this.handleImageChange
+                      this.handleFormChange,
+                      this.imgFileHandler,
+                      this.onMenuItemAddLocal
                     )}
                     <Grid item xs={3}>
                       <Button
