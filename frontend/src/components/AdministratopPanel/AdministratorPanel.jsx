@@ -90,6 +90,7 @@ class AdministratorPanel extends React.Component {
 
   changeStatus = (orderIndex, newStatus) => {
     this.state.orders[orderIndex].status = newStatus;
+    this.getOrders();
   };
 
   handleTabChange = (event, value) => {

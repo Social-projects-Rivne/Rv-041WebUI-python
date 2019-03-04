@@ -118,7 +118,6 @@ class ExpandItem extends React.Component {
 
   render() {
     const { classes, order, index } = this.props;
-    // console.log(this.props.order);
     console.log(this.props.waiters);
     return (
       <ExpansionPanel
@@ -152,7 +151,6 @@ class ExpandItem extends React.Component {
                 User: {order.user.name || ""}
                   {order.status == "Assigned waiter" && (<>
                       <br/>
-                      {/*Waiter: {order.waiter_id}*/}
                       Waiter: {this.props.waiters.filter(item =>(item.id === order.waiter_id))[0].name}
                       </>) }
 
