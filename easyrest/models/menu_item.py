@@ -10,7 +10,7 @@ from sqlalchemy import (
     Float,
     Numeric
 )
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship
 from sqlalchemy.exc import IntegrityError
 from pyramid.httpexceptions import HTTPForbidden
 

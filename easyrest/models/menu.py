@@ -10,7 +10,6 @@ from sqlalchemy import (
     Boolean
 )
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import select, func
 from sqlalchemy.exc import IntegrityError
 from pyramid.httpexceptions import HTTPForbidden
 
