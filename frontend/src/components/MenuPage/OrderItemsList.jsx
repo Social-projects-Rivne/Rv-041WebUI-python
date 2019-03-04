@@ -107,8 +107,7 @@ function OrderItemsList(props) {
 
 OrderItemsList.propTypes = {
   classes: PropTypes.object.isRequired,
-  cartItems: PropTypes.array.isRequired,
-  controls: PropTypes.bool.isRequired
+  cartItems: PropTypes.array.isRequired
 };
 
 export default withStyles(styles)(OrderItemsList);

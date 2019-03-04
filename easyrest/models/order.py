@@ -138,7 +138,7 @@ class Order(Base):
         ("Accepted", "Declined"): {
             "roles": ["Administrator"],
         },
-        ("Accepted", "Asigned waiter"): {
+        ("Accepted", "Assigned waiter"): {
             "roles": ["Administrator", "Waiter"],
             "set_waiter": True
         },
@@ -148,7 +148,7 @@ class Order(Base):
         ("History", "Draft"): {
             "roles": ["Client", "Owner"],
         },
-        ("Asigned waiter", "In progress"): {
+        ("Assigned waiter", "In progress"): {
             "roles": ["Waiter"],
         },
         ("In progress", "Failed"): {

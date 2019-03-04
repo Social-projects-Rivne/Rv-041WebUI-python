@@ -46,16 +46,26 @@ def get_order(request, order_id, filter_list=False):
 
 
 @view_config(route_name='get_orders', renderer='json', request_method='GET')
-@restrict_access(user_types=["Client"])
+@restrict_access(user_types=["Administrator"])
 def get_orders(request):
-    """Controller for get list of user orders without items
+    """Controller for get list of orders with items for Administrator
+    Filtered by restaurant to witch Administrator assigned
     Return:
         [
             Order.as_dict(), ...
         ]
     """
-    orders = request.token.user.orders
-    data = [order.as_dict(exclude=["user_id", "rest_id"]) for order in orders]
+    orders = request.dbsession.query(Order).filter(Order.rest_id == Restaurant.id,
+                                                   Restaurant.administrator_id == request.token.user.id,
+                                                   Order.status != "Draft").all()
+    exclude = ["password", "email", "role_id"]
+    data = []
+    for order in orders:
+        order_dict = order.as_dict(with_relations=["user"], exclude=exclude)
+        order_dict.update({
+            "items": order.get_items(request.dbsession)
+        })
+        data.append(order_dict)
     return wrap(data)
 
 
@@ -166,11 +176,11 @@ def parse_localStorage(request):
         "description": "Validate json inputs",
         "type": "object",
         "properties": {
-                "rest_id": {"type": "integer"},
-                "items": {"type": "array", "items": {
-                    "type": "integer",
-                    "minimum": 0
-                }}
+            "rest_id": {"type": "integer"},
+            "items": {"type": "array", "items": {
+                "type": "integer",
+                "minimum": 0
+            }}
         },
     }
 
@@ -190,36 +200,36 @@ def parse_localStorage(request):
 @view_config(route_name='order', renderer='json', request_method='DELETE')
 @restrict_access(user_types=["Client", "Owner"])
 def delete_draft_order(request):
-  """Controller for deleting draft order by token
-  Return:
-      {
-          success: if_item_is_deleted - boolean,
-          data: [],
-          error: None
-          message: None
-      }
-  """
-  order_data = request.json_body
-  try:
-    order_id = int(order_data["orderId"])
-  except KeyError:
-    raise HTTPNotFound("No order_id found in request body")
-  except ValueError:
-    raise HTTPForbidden("order_id should be iteger")
-  # I don't use query().get(id) because it's better to check if order is still in
-  # "Draft" status rather than delete it simly finds it by id.
-  order = request.dbsession.query(Order).filter(
-      Order.status == "Draft",
-      Order.user_id == request.token.user.id,
-      Order.id == order_id).first()
+    """Controller for deleting draft order by token
+    Return:
+        {
+            success: if_item_is_deleted - boolean,
+            data: [],
+            error: None
+            message: None
+        }
+    """
+    order_data = request.json_body
+    try:
+        order_id = int(order_data["orderId"])
+    except KeyError:
+        raise HTTPNotFound("No order_id found in request body")
+    except ValueError:
+        raise HTTPForbidden("order_id should be iteger")
+    # I don't use query().get(id) because it's better to check if order is still in
+    # "Draft" status rather than delete it simly finds it by id.
+    order = request.dbsession.query(Order).filter(
+        Order.status == "Draft",
+        Order.user_id == request.token.user.id,
+        Order.id == order_id).first()
 
-  if not order:
-    raise HTTPNotFound("Order doesn't exist. Maby it changes it's status.")
+    if not order:
+        raise HTTPNotFound("Order doesn't exist. Maby it changes it's status.")
 
-  rows_deleted = request.dbsession.delete(order)
-  success = True if rows_deleted != 0 else False
+    rows_deleted = request.dbsession.delete(order)
+    success = True if rows_deleted != 0 else False
 
-  return wrap(success=success)
+    return wrap(success=success)
 
 
 @view_config(route_name='order_by_id', renderer='json', request_method='POST')
@@ -248,8 +258,8 @@ def add_item(request):
         "description": "Validate json inputs",
         "type": "object",
         "properties": {
-                "q_value": {"type": "integer"},
-                "item_id": {"type": "integer"}
+            "q_value": {"type": "integer"},
+            "item_id": {"type": "integer"}
         },
         "required": ["q_value", "item_id"]
     }
@@ -441,9 +451,9 @@ def change_status(request):
 
     waiter_id = json.get("set_waiter_id", False)
     if waiter_id:
-        waiter = request.dbsession.query(User)\
-            .filter(User.restaurant_id == order.rest_id)\
-            .filter(User.id == waiter_id)\
+        waiter = request.dbsession.query(User) \
+            .filter(User.restaurant_id == order.rest_id) \
+            .filter(User.id == waiter_id) \
             .first()
     else:
         waiter = None
@@ -486,8 +496,14 @@ def get_status(request):
             "administrator_id",
             "restaurant_id",
             "password",
+            "email",
+            "birth_date",
+            "is_active"
         ],
-        with_relations=["waiter"])
+        with_relations=["waiter", "user"])
+    data.update({
+        "items": order.get_items(request.dbsession)
+    })
 
     return wrap(data)
 
@@ -508,9 +524,9 @@ def get_user_order_list(request):
             "Waiting for confirm",
             "Accepted",
             "Asigned waiter",
-            "In progress",]
+            "In progress", ]
     elif order_status == "history":
-        statuses = ["History", "Declined", "Removed", "Failed",]
+        statuses = ["History", "Declined", "Removed", "Failed", ]
     else:
         raise HTTPNotFound()
     orders = request.dbsession.query(Order).filter(

@@ -58,8 +58,10 @@ def includeme(config):
     config.add_route('order_status', 'order/{order_id:\d+}/status',
                      request_method=["GET", "PUT"])
     config.add_route('users_list', 'users/{role_id:\d+}', request_method="GET")
-    config.add_route('user_create', 'user/{role_id:\d+}', request_method="POST")
+    config.add_route(
+        'user_create', 'user/{role_id:\d+}', request_method="POST")
     config.add_route('user_update', 'user/{user_id:\d+}', request_method="PUT")
     config.add_route('user_delete', 'user/{user_id:\d+}', request_method="DELETE")
     config.add_route('toggle_activity', "user/toggle_activity/{user_id:\d+}", request_method="GET")
     config.add_route('file_upload', 'file', request_method="POST")
+    config.add_route('get_waiters', 'waiters', request_method="GET")
