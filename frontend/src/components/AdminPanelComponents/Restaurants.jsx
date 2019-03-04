@@ -7,6 +7,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import { makeDate } from "../../Service/functions";
 
 
 const styles = theme => ({
@@ -50,6 +51,11 @@ function Restaurants(props) {
                   Phone
               </Typography>
             </TableCell>
+            <TableCell align="left">
+              <Typography gutterBottom variant="subtitle2" >
+                  Added
+              </Typography>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -63,6 +69,7 @@ function Restaurants(props) {
               <TableCell align="left">{restaurantInfo.owner_name}</TableCell>
               <TableCell align="left">{restaurantInfo.address_id}</TableCell>
               <TableCell align="left">{restaurantInfo.phone}</TableCell>
+              <TableCell align="left">{makeDate(restaurantInfo.creation_date, "simple european date")}</TableCell>
             </TableRow>
           );
         } else {

@@ -14,6 +14,9 @@ import {
 } from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import SnackbarContent from "../SnackbarContent";
+import Clear from "@material-ui/icons/Clear";
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, DatePicker } from 'material-ui-pickers';
 
 
 const styles = theme => ({
@@ -57,6 +60,18 @@ class UserCreate extends React.Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  handleDateChange = date => {
+    const currentDate = new Date()
+    date > currentDate ?
+      this.setState({ birthDate: currentDate })
+      :
+      this.setState({ birthDate: date })
+  };
+
+  clearBirthDate = () => {
+    this.setState({birthDate: null});
+  };
+
   handleSubmit = e => {
     e.preventDefault();
     const { name, email, password } = this.state;
@@ -94,6 +109,7 @@ class UserCreate extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const { birthDate } = this.state;
     if (this.state.serverResponse) {
       return <Redirect to="/admin/moderators" />;
     } else {
@@ -156,20 +172,26 @@ class UserCreate extends React.Component {
                     />
                   </Grid>
                   <Grid item xs={12} md={6}>
-                    <TextValidator
-                      label="Birth date"
-                      onChange={this.handleChange}
-                      className={classes.textField}
-                      validators={["matchRegexp:^\\d{4}-\\d{2}-\\d{2}$"]}
-                      errorMessages={[
-                        "Wrong date format"
-                      ]}
-                      value={this.state.birthDate}
-                      name="birthDate"
-                      helperText="yyyy-mm-dd"
-                      fullWidth
-                    />
-                    {/* TODO: Replace current date field with material datepicker */}
+                    <Grid container alignItems={"flex-end"}>
+                      <Grid item xs>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                          <DatePicker
+                            label="Birth date"
+                            value={birthDate}
+                            onChange={this.handleDateChange}
+                            name="birthDate"
+                            fullWidth
+                          />
+                        </MuiPickersUtilsProvider>
+                        {/* TODO: Change date format in the datepicker */}
+                        {/* TODO: Add error when selected date greater than current date */}
+                      </Grid>
+                      <Grid item>
+                        {this.state.birthDate != null &&
+                          <Clear onClick={this.clearBirthDate}/>
+                        }
+                      </Grid>
+                    </Grid>
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <TextValidator

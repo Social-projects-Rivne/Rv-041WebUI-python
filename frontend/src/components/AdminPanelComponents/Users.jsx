@@ -13,6 +13,7 @@ import {
   TableHead,
   TableRow
 } from "@material-ui/core";
+import {makeDate} from "../../Service/functions";
 
 const styles = theme => ({
   root: {
@@ -122,7 +123,9 @@ function Users(props) {
                     </TableCell>
                     <TableCell align="left">{userInfo.email}</TableCell>
                     <TableCell align="left">{userInfo.phone_number}</TableCell>
-                    <TableCell align="left">{userInfo.birth_date}</TableCell>
+                    <TableCell align="left">
+                      {makeDate(userInfo.birth_date, "simple european date")}
+                    </TableCell>
                     <TableCell align="left">
                       <Typography component="p" color={userInfo.is_active ? "primary" : "error"}>
                           {userInfo.is_active ? "Active" : "Banned"}
