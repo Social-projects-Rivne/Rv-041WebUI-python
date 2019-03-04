@@ -41,7 +41,15 @@ class ModeratorUsersPage extends Component {
       .then(() => {
         this.pushTabValues(this.state.users);
       })
-      .catch(err => this.setState({ success: false, error: err.message }))
+      .catch(err => {
+        this.pushTabValues(this.state.users);
+        this.setState({ 
+          success: false, 
+          error: "" + err.message,
+          snackbarOpen: true,
+          snackbarMsg: "fail to connect server",
+        })
+      })
   }
 
   handleUserBann = (user_id) => {
@@ -73,18 +81,23 @@ class ModeratorUsersPage extends Component {
             }
           }),
           currentUserId: user_id,
+          snackbarOpen: true,
+          snackbarMsg: data.success ? "success" : "failure",
         }
       }))
       .then(() => {
         this.pushTabValues(this.state.users);
       })
-      .catch(err => this.setState({
-        success: false,
-        error: "" + err,
-        snackbarOpen: true,
-        snackbarMsg: "" + err,
-        currentUserId: user_id
-      }))
+      .catch(err => {
+        this.pushTabValues(this.state.users);
+        this.setState({
+          success: false,
+          error: "" + err,
+          snackbarOpen: true,
+          snackbarMsg: "failed to make operation",
+          currentUserId: user_id
+        })
+      })
   };
 
   handleSnackbarClose = (event, reason) => {
@@ -141,41 +154,35 @@ class ModeratorUsersPage extends Component {
       return null;
     }
 
-    if (success) {
-      return (
-        <React.Fragment>
-          <Users
-            users={users}
-            handleUserBann={this.handleUserBann}
-            userActivity={userActivity}
-            userStatus = {userStatus}
-          />
-          <Snackbar
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right"
-            }}
-            open={snackbarOpen}
-            autoHideDuration={success ? 3000 : null}
+    return (
+      <React.Fragment>
+        <Users
+          users={users}
+          handleUserBann={this.handleUserBann}
+          userActivity={userActivity}
+          userStatus={userStatus}
+        />
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right"
+          }}
+          open={snackbarOpen}
+          autoHideDuration={success ? 3000 : 15000}
+          onClose={this.handleSnackbarClose}
+        >
+          <SnackbarContent
             onClose={this.handleSnackbarClose}
-          >
-            <SnackbarContent
-              onClose={this.handleSnackbarClose}
-              variant={success ? "success" : "error"}
-              message={
-                <Typography color="inherit" align="center">
-                  {snackbarMsg || success || "Something went wrong"}
-                </Typography>
-              }
-            />
-          </Snackbar>
-        </React.Fragment>
-      );
-    }
-    else {
-      return (<GeneralError error={error} />);
-    }
-
+            variant={success ? "success" : "error"}
+            message={
+              <Typography color="inherit" align="center">
+                {snackbarMsg || success || "Something went wrong"}
+              </Typography>
+            }
+          />
+        </Snackbar>
+      </React.Fragment>
+    );
   }
 
 }

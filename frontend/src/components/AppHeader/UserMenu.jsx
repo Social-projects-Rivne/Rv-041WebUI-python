@@ -74,6 +74,7 @@ class UserMenu extends React.Component {
     const isClient = role === "Client";
     const isOwner = role === "Owner";
     const isModerator = role === "Moderator";
+    const isAdministrator =role === "Administrator";
     const isAdmin = role === "Admin";
     const isWaiter = role === "Waiter";
     const { anchorEl } = this.state;
@@ -152,8 +153,13 @@ class UserMenu extends React.Component {
               )}
               {isOwner && (
                 <MenuItem component={Link} to="/profile/restaurants">
-                  My restaurants
+                    My restaurants
                 </MenuItem>
+              )}
+              {isAdministrator && (
+                  <MenuItem component={Link} to="/administrator-panel">
+                      Administrator panel
+                  </MenuItem>
               )}
               {isClient && (
                 <MenuItem component={Link} to="/profile/personal_info">

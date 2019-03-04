@@ -17,7 +17,7 @@ export function AddAllCategory(statuses) {
 export function convertIntToDate(dateTime) {
 
 	if (!dateTime) {
-		return "--.--.---- : --:--";
+		return "Date not specified";
 	}
 
 	let orderDate = dateTime;
@@ -55,7 +55,7 @@ export function convertIntToDate(dateTime) {
 export function makeDate(dateTime, variant = "simple european date with time") {
 
 	if (!dateTime) {
-		return "--.--.---- : --:--";
+		return "Date not specified";
 	}
 
 	if (typeof(dateTime) === "number") {
@@ -66,7 +66,6 @@ export function makeDate(dateTime, variant = "simple european date with time") {
 	}
 	
 	let result = "";
-	console.log(typeof(dateTime));
 	switch (variant) {
 		case ("simple european date with time"):
 			result = format(dateTime, 'dd.MM.yyyy HH:mm');

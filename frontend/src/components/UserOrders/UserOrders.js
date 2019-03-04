@@ -44,7 +44,7 @@ const styles = theme => ({
 });
 
 function UserOrders(props) {
-  const { classes, orders, handleOrderDecline } = props;
+  const { classes, orders, handleOrderDecline, handleOrderReordering } = props;
 
   return (
     <div className={classes.root}>
@@ -71,6 +71,11 @@ function UserOrders(props) {
           <ExpansionPanel key={index} >
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Grid container justify="space-between" alignItems="center" spacing={8}>
+                <Grid item key={0} xs={1} >
+                  <Typography className={classes.heading}>
+                    {"№" + orderInfo.id}
+                  </Typography>
+                </Grid>
                 <Grid item key={1} xs={3} >
                   <Typography className={classes.heading}>
                     {orderInfo.restaurant}
@@ -95,10 +100,10 @@ function UserOrders(props) {
                 </Grid>
                 <Grid item key={4} xs={2} >
                   <Typography>
-                    {orderItems.length} items for ${orderInfo.total_price}
+                    {orderItems.length} items for ${(orderInfo.total_price/100).toFixed(2)}
                   </Typography>
                 </Grid>
-                <Grid item key={5} xs={2} >
+                <Grid item key={5} xs={1} >
                   <Typography>
                     {orderInfo.status}
                   </Typography>
@@ -124,7 +129,7 @@ function UserOrders(props) {
                               {orderItem.name}
                             </Typography>
                             <Typography className={classes.secondaryHeading}>
-                              price: ${orderItem.price}
+                              price: ${(orderItem.price/100).toFixed(2)}
                             </Typography>
                           </TableCell>
                           <TableCell component="th">
@@ -134,7 +139,7 @@ function UserOrders(props) {
                           </TableCell>
                           <TableCell component="th">
                             <Typography gutterBottom variant="subtitle1">
-                              {"$" + (orderItem.quantity * orderItem.price).toFixed(2)}
+                              {"$" + (orderItem.quantity * orderItem.price/100).toFixed(2)}
                             </Typography>
                           </TableCell>
                         </TableRow>
@@ -147,7 +152,7 @@ function UserOrders(props) {
                         <Grid container justify="flex-end" alignItems="flex-end" direction="column">
                           <Grid>
                             <Typography gutterBottom variant="subtitle1" >
-                              Order sum: {"$" + orderInfo.total_price}
+                              Order sum: {"$" + (orderInfo.total_price/100).toFixed(2)}
                             </Typography>
                           </Grid>
                           {
@@ -163,12 +168,20 @@ function UserOrders(props) {
                               </Grid>
                             )
                           }
-                          {/*TODO: <Grid>
-                                <Button variant="contained" color="primary">
+                          {
+                            ["History", "Declined", "Removed", "Failed"].includes(orderInfo.status) && (
+                              <Grid>
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() => handleOrderReordering(orderInfo.id, orderInfo.restaurant_id)}
+                                >
                                   Reorder
                                   <Repeat />
                                 </Button>
-                              </Grid>*/}
+                              </Grid>
+                            )
+                          }
                         </Grid>
                       </TableCell>
                     </TableRow>

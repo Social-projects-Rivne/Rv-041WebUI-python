@@ -15,7 +15,6 @@ import {
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import PageContainer from "./PageContainer";
 import OrderCartList from "../components/MenuPage/OrderCartList";
-import GeneralError from "../components/ErrorPages/GeneralError";
 import classnames from "classnames";
 import SnackbarContent from "../components/SnackbarContent";
 import OrderConfirmDialog from "../components/MenuPage/OrderConfirm";

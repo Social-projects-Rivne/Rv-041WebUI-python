@@ -14,10 +14,17 @@ const AppHeader = props => {
   const isSignUp = history.location.pathname === "/sign-up";
 
   return (
-    <AppBar position="relative">
+    <AppBar position="fixed">
       <Toolbar style={{ justifyContent: "space-between" }}>
         {(isLogIn || isSignUp) && history.action !== "POP" ? (
-          <IconButton color="inherit" onClick={() => history.goBack()}>
+          <IconButton
+            color="inherit"
+            onClick={
+              !history.location.state
+                ? () => history.goBack()
+                : () => history.push("/")
+            }
+          >
             <ArrowBack />
           </IconButton>
         ) : (

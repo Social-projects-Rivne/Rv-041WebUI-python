@@ -137,7 +137,7 @@ class Order extends React.Component {
               </Grid>
               <Grid item >
                 <Typography style={{ marginLeft: "auto " }} variant="body2" noWrap >
-                  Order sum: {"$" + order.total_price}
+                  Order sum: {"$" + (order.total_price/100).toFixed(2)}
                 </Typography>
               </Grid>
               <Grid item >
@@ -175,7 +175,7 @@ class Order extends React.Component {
                           {orderItem.name}
                         </Typography>
                         <Typography className={classes.secondaryHeading}>
-                          price: ${orderItem.price}
+                          price: ${(orderItem.price/100).toFixed(2)}
                         </Typography>
                       </TableCell>
                       <TableCell component="th">
@@ -185,7 +185,7 @@ class Order extends React.Component {
                       </TableCell>
                       <TableCell component="th">
                         <Typography gutterBottom variant="subtitle1">
-                          {"$" + (orderItem.quantity * orderItem.price).toFixed(2)}
+                          {"$" + (orderItem.quantity * orderItem.price/100).toFixed(2)}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -198,7 +198,7 @@ class Order extends React.Component {
                     <Grid container justify="flex-end" alignItems="flex-end" direction="column">
                       <Grid>
                         <Typography gutterBottom variant="subtitle1" >
-                          Order sum: {"$" + order.total_price}
+                          Order sum: {"$" + (order.total_price/100).toFixed(2)}
                         </Typography>
                       </Grid>
                     </Grid>

@@ -10,10 +10,11 @@ import SignUpPage from "./containers/SignUpPage";
 import ModeratorPanel from "./containers/ModeratorPanel";
 import ProfilePage from "./containers/ProfilePage";
 import AppHeader from "./containers/AppHeader";
-import RestaurantManagmentPage from "./containers/RestaurantManagmentPage";
+import RestaurantManagmentPage from "./containers/RestaurantManegmentPage/RestaurantManagmentPage";
 import PrivateRoute from "./Service/PrivatRoute";
 import AdminPanel from "./containers/AdminPanel";
 import WaiterPanel from "./containers/WaiterPanel";
+import AdministratorPanel from "./containers/AdministratorPanel"
 
 
 const routes = [
@@ -60,12 +61,18 @@ const routes = [
   {
     path: "/profile",
     component: ProfilePage,
-    access: ["Client", "Owner"]
+    access: ["Client", "Owner", "Administrator"]
   },
   {
     path: "/moderator",
     component: ModeratorPanel,
     access: ["Moderator"]
+  },
+  {
+    path: "/administrator-panel",
+    component: AdministratorPanel,
+    access: ["Administrator"],
+    exact: true
   },
   {
     path: "/admin",
@@ -77,6 +84,7 @@ const routes = [
     component: WaiterPanel,
     access: ["Waiter"]
   }
+
 ];
 
 class Routes extends React.Component {

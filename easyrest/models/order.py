@@ -81,6 +81,7 @@ class Order(Base):
 
         q.food = food
         self.items.append(q)
+        self.count_total()
 
     def remove_item(self, session, item_id):
         item = session.query(OrderAssoc).filter(
@@ -138,7 +139,7 @@ class Order(Base):
         ("Accepted", "Declined"): {
             "roles": ["Administrator"],
         },
-        ("Accepted", "Asigned waiter"): {
+        ("Accepted", "Assigned waiter"): {
             "roles": ["Administrator", "Waiter"],
             "set_waiter": True
         },
@@ -148,7 +149,7 @@ class Order(Base):
         ("History", "Draft"): {
             "roles": ["Client", "Owner"],
         },
-        ("Asigned waiter", "In progress"): {
+        ("Assigned waiter", "In progress"): {
             "roles": ["Waiter"],
         },
         ("In progress", "Failed"): {
@@ -194,3 +195,20 @@ class Order(Base):
         self.status = new_status
 
         return self
+
+    
+    def fill_by_other_order(self, session, base_order):
+        """
+        method fill object of Order with data from another Order object
+        """
+        base_order_items = base_order.items
+        for base_order_item in base_order_items:
+            try:
+                self.add_item(session, base_order_item.quantity, base_order_item.item_id)
+            except HTTPNotFound:
+                # skip this product
+                continue 
+            except HTTPBadRequest:
+                # skip this product
+                continue
+        self.count_total() 

@@ -2,6 +2,7 @@
 This module describes behavior of /waiter/ route
 """
 from pyramid.view import view_config
+from sqlalchemy import desc
 from ..auth import restrict_access
 from ..models.order import Order
 from ..scripts.json_helpers import wrap
@@ -24,7 +25,7 @@ def get_orders_controller(request):
         "History",
     ]
     orders = request.dbsession.query(Order).filter(Order.waiter_id==request.token.user.id,
-        Order.status.in_(statuses)).all()
+        Order.status.in_(statuses)).order_by(desc(Order.id)).all()
     data = {}
     data["statuses"] = statuses
     order_keys = ("id", "creation_time", "booked_time", "total_price", "status")
