@@ -60,6 +60,12 @@ class ManageMenu extends React.Component {
     });
   };
 
+  handleDeleteItem = deletedItem => {
+    this.setState(prevState => ({
+      menuItems: prevState.menuItems.filter(item => item.id !== deletedItem.id)
+    }));
+  };
+
   render() {
     const { menuItems, isImageMenu } = this.state;
     return (
@@ -81,6 +87,7 @@ class ManageMenu extends React.Component {
               restId={this.props.restId}
               onMenuItemAdd={this.handleMenuItemAdd}
               onUpdateItem={this.handleUpdateMenu}
+              onDeleteItem={this.handleDeleteItem}
               menuName={menuName}
               menuItems={menuItems}
             />

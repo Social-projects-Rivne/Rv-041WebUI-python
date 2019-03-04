@@ -145,8 +145,10 @@ class MenuTable extends React.Component {
       rowsPerPage: 10,
       editableRows: [],
       imgBody: {},
-      img: ""
+      img: "",
+      onDelete: []
     };
+    this.imageRef = React.createRef();
     this.nameRef = React.createRef();
     this.descriptionRef = React.createRef();
     this.ingredientsRef = React.createRef();
@@ -209,9 +211,10 @@ class MenuTable extends React.Component {
 
   handleEditClick = (event, id) => {
     event.stopPropagation();
-
     this.setState(prevState => ({
-      editableRows: [...prevState.editableRows, id]
+      editableRows: [id],
+      imgBody: {},
+      img: ""
     }));
   };
 
@@ -227,6 +230,8 @@ class MenuTable extends React.Component {
     const restId = this.props.restId;
     const menuId = this.props.match.params.id;
 
+    const image = this.imageRef.current.props.image;
+
     const name = this.nameRef.current.value;
     const description = this.descriptionRef.current.value;
     const ingredients = this.ingredientsRef.current.value;
@@ -238,54 +243,114 @@ class MenuTable extends React.Component {
     let formData = new FormData();
     formData.append("img", img);
 
-    let data = { name, description, ingredients, value, price, category };
-    fetch("http://localhost:6543/api/file", {
-      method: "POST",
-      headers: {
-        "x-auth-token": localStorage.getItem("token")
-      },
-      body: formData
-    })
+    let data = {
+      name,
+      image,
+      description,
+      ingredients,
+      value,
+      price,
+      category
+    };
+    if (this.state.imgBody.name) {
+      fetch("http://localhost:6543/api/file", {
+        method: "POST",
+        headers: {
+          "x-auth-token": localStorage.getItem("token")
+        },
+        body: formData
+      })
+        .then(response => {
+          return response.status >= 200 && response.status < 300
+            ? response.json()
+            : response.json().then(Promise.reject.bind(Promise));
+        })
+        .then(response => {
+          console.log(data["image"]);
+          data["image"] = response;
+          console.log(data["image"]);
+          fetch(
+            `http://localhost:6543/api/restaurant/${restId}/menu/${menuId}/item/${id}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                "x-auth-token": localStorage.getItem("token")
+              },
+              body: JSON.stringify(data)
+            }
+          )
+            .then(response => {
+              return response.status >= 200 && response.status < 300
+                ? response.json()
+                : response.json().then(Promise.reject.bind(Promise));
+            })
+            .then(response => {
+              this.props.onUpdateItem(response.data);
+            })
+            .then(response => {
+              this.setState({ editableRows: [], imgBody: {}, img: "" });
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      fetch(
+        `http://localhost:6543/api/restaurant/${restId}/menu/${menuId}/item/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": localStorage.getItem("token")
+          },
+          body: JSON.stringify(data)
+        }
+      )
+        .then(response => {
+          return response.status >= 200 && response.status < 300
+            ? response.json()
+            : response.json().then(Promise.reject.bind(Promise));
+        })
+        .then(response => {
+          this.props.onUpdateItem(response.data);
+        })
+        .then(response => {
+          this.setState({ editableRows: [], imgBody: {}, img: "" });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  };
+
+  handleDeleteClick = (event, id) => {
+    event.stopPropagation();
+    const restId = this.props.restId;
+    const menuId = this.props.match.params.id;
+
+    fetch(
+      `http://localhost:6543/api/restaurant/${restId}/menu/${menuId}/item/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": localStorage.getItem("token")
+        }
+      }
+    )
       .then(response => {
         return response.status >= 200 && response.status < 300
           ? response.json()
           : response.json().then(Promise.reject.bind(Promise));
       })
       .then(response => {
-        data["image"] = response;
-        fetch(
-          `http://localhost:6543/api/restaurant/${restId}/menu/${menuId}/item/${id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              "x-auth-token": localStorage.getItem("token")
-            },
-            body: JSON.stringify(data)
-          }
-        )
-          .then(response => {
-            return response.status >= 200 && response.status < 300
-              ? response.json()
-              : response.json().then(Promise.reject.bind(Promise));
-          })
-          .then(response => {
-            console.log(response.data);
-            this.props.onUpdateItem(response.data);
-          })
-          .then(response => {
-            this.setState(prevState => ({
-              editableRows: [
-                prevState.editableRows.filter(item => item.id !== id)
-              ]
-            }));
-          })
-          .catch(err => {
-            this.setState(prevState => ({
-              editableRows: [prevState.editableRows]
-            }));
-          });
+        this.props.onDeleteItem(response.data);
       })
+
       .catch(err => {
         console.log(err);
       });
@@ -304,6 +369,7 @@ class MenuTable extends React.Component {
     const emptyRows =
       rowsPerPage -
       Math.min(rowsPerPage, menuItems.length - page * rowsPerPage);
+
     return (
       <Paper className={classes.root}>
         <MenuToolbar menuName={menuName} numSelected={selected.length} />
@@ -361,7 +427,8 @@ class MenuTable extends React.Component {
                             classes.media,
                             classes.editMedia
                           )}
-                          image={item.img}
+                          ref={this.imageRef}
+                          image={this.state.img || item.img}
                           title={item.name}
                         />
                         <div className={classes.imgInput}>
@@ -524,7 +591,11 @@ class MenuTable extends React.Component {
                       </TableCell>
                       <TableCell className={classes.actions}>
                         <div className={classes.actionsBtns}>
-                          <IconButton>
+                          <IconButton
+                            onClick={event =>
+                              this.handleDeleteClick(event, item.id)
+                            }
+                          >
                             <IconDelete fontSize="small" />
                           </IconButton>
                           <IconButton

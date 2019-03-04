@@ -34,3 +34,24 @@ def update_menu_item(request):
     item.update_item(request.dbsession, from_data)
 
     return wrap(item.as_dict(with_relations=["category"]))
+
+
+@view_config(
+    route_name='menu_item',
+    request_method="DELETE",
+    renderer='json'
+)
+@restrict_access(user_types=['Client', 'Owner'])
+def delete_menu_item(request):
+    """
+    DELETE request controller. DELETE restaurant menu item in database and return deleted item
+    """
+    menu_item_id = request.matchdict["item_id"]
+
+    item = request.dbsession.query(MenuItem).get(int(menu_item_id))
+    if item is None:
+        raise HTTPNotFound("Item not found")
+
+    request.dbsession.delete(item)
+
+    return wrap(item.as_dict())

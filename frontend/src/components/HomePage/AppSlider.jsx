@@ -6,18 +6,15 @@ import SwipeableViews from "react-swipeable-views";
 const slides = [
   {
     label: "Some text 1",
-    imgPath:
-      "/images/HomepageSlider/marshmallow.jpg"
+    imgPath: "/images/HomepageSlider/marshmallow.jpg"
   },
   {
     label: "Some text 2",
-    imgPath:
-      "/images/HomepageSlider/food_relax.jpg"
+    imgPath: "/images/HomepageSlider/food_relax.jpg"
   },
   {
     label: "Some text 3",
-    imgPath:
-      "/images/HomepageSlider/vegan.jpg"
+    imgPath: "/images/HomepageSlider/vegan.jpg"
   }
 ];
 
@@ -41,6 +38,16 @@ const styles = theme => ({
     width: "100%",
     height: "auto",
     margin: "auto"
+  },
+  slider: {
+    position: "relative"
+  },
+  sliderText: {
+    position: "absolute",
+    color: "#fff",
+    fontSize: "25px",
+    top: "10%",
+    right: "20%"
   },
   sliderBtnNext: {
     position: "absolute",
@@ -103,11 +110,14 @@ class AppSlider extends React.Component {
             >
               {slides.map((step, index) => (
                 <div className={classes.sliderItem} key={step.label}>
-                  <img
-                    className={classes.sliderImg}
-                    src={step.imgPath}
-                    alt={step.label}
-                  />
+                  <div className={classes.slider}>
+                    <img
+                      className={classes.sliderImg}
+                      src={step.imgPath}
+                      alt={step.label}
+                    />
+                    <div className={classes.sliderText}>{step.label}</div>
+                  </div>
                 </div>
               ))}
             </SwipeableViews>

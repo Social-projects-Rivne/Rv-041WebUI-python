@@ -96,7 +96,7 @@ class Login extends React.Component {
       .catch(json => {
         this.setState({
           error: true,
-          errorMes: "" + error
+          errorMes: "" + json
         });
       });
   };

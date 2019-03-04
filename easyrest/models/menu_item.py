@@ -10,7 +10,7 @@ from sqlalchemy import (
     Float,
     Numeric
 )
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.exc import IntegrityError
 from pyramid.httpexceptions import HTTPForbidden
 
@@ -36,7 +36,7 @@ class MenuItem(Base):
     category_id = Column(Integer, ForeignKey('categories.id'))
 
     category = relationship("Category")
-    orders = relationship('OrderAssoc')
+    orders = relationship('OrderAssoc',  cascade="delete")
     menu = relationship('Menu')
 
     @staticmethod
