@@ -237,7 +237,8 @@ def fill_db(session):
                 items = rest_model.menu[0].menu_items[0:n_items]
                 order_total = 0
                 for i, item in enumerate(items):
-                    client_model.orders[-1].items.append(OrderAssoc(quantity=i+1))
+                    client_model.orders[-1].items.append(
+                        OrderAssoc(quantity=i+1))
                     client_model.orders[-1].items[-1].food = item
                     order_total += item.price
                 if order_status != "Draft":
@@ -245,46 +246,6 @@ def fill_db(session):
                 if order_status not in ["Draft", "Accepted", "Waiting for confirm"]:
                     waiter_index = randint(0, 1)
                     client_model.orders[-1].waiter = waiters[waiter_index]
-    
-    # # Example orders
-    # order = Order(creation_time=int(time.time()), booked_time=int(time.time()), status="Draft")
-    # user = user_model[0]
-    # user.orders.append(order)
-    # items = Rest_models[-1].menu[0].menu_items[0:10]
-    # user.orders[-1].items.append(OrderAssoc(quantity=1))
-    # user.orders[-1].items.append(OrderAssoc(quantity=2))
-    # user.orders[-1].items.append(OrderAssoc(quantity=3))
-    # user.orders[-1].items.append(OrderAssoc(quantity=4))
-    # user.orders[-1].items.append(OrderAssoc(quantity=5))
-
-    # user.orders[-1].restaurant = Rest_models[-1]
-
-    # user.orders[-1].items[0].food = items[0]
-    # user.orders[-1].items[1].food = items[1]
-    # user.orders[-1].items[2].food = items[2]
-    # user.orders[-1].items[3].food = items[3]
-    # user.orders[-1].items[4].food = items[4]
-    # user.orders[-1].items[-1].food = items[5]
-    # order = Order(creation_time=int(time.time()), booked_time=int(time.time()), status="Draft")
-    # user = user_model[0]
-    # user.orders.append(order)
-    # items = Rest_models[-1].menu[0].menu_items[0:10]
-    # user.orders[-1].items.append(OrderAssoc(quantity=10))
-    # user.orders[-1].items.append(OrderAssoc(quantity=20))
-    # user.orders[-1].items.append(OrderAssoc(quantity=30))
-    # user.orders[-1].items.append(OrderAssoc(quantity=40))
-    # user.orders[-1].items.append(OrderAssoc(quantity=50))
-    # user.orders[-1].items.append(OrderAssoc(quantity=60))
-
-    # user.orders[-1].restaurant = Rest_models[-1]
-
-    # user.orders[-1].items[0].food = items[0]
-    # user.orders[-1].items[1].food = items[1]
-    # user.orders[-1].items[2].food = items[2]
-    # user.orders[-1].items[3].food = items[3]
-    # user.orders[-1].items[4].food = items[4]
-    # user.orders[-1].items[-1].food = items[5]
-    # user.orders[-1].items[-1].food = items[6]
 
     # insert data into database
     session.add_all(Rest_models)
