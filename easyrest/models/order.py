@@ -81,6 +81,7 @@ class Order(Base):
 
         q.food = food
         self.items.append(q)
+        self.count_total()
 
     def remove_item(self, session, item_id):
         item = session.query(OrderAssoc).filter(

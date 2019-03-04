@@ -28,7 +28,7 @@ function priceRow(qty, unit) {
 
 function priceTotal(items) {
   return items
-    .map(({ price, quantity }) => price * quantity)
+    .map(({ price, quantity }) => (price/100) * quantity)
     .reduce((sum, i) => sum + i, 0)
     .toFixed(2);
 }
@@ -66,7 +66,7 @@ function OrderItemsList(props) {
                 )}
                 <TableCell>{row.name}</TableCell>
                 <TableCell align="right">{row.amount}</TableCell>
-                <TableCell align="right">{row.price}</TableCell>
+                <TableCell align="right">{(row.price/100).toFixed(2)}</TableCell>
                 {controls && (
                   <TableCell>
                     <TextField
@@ -89,7 +89,7 @@ function OrderItemsList(props) {
                   <TableCell align="right">{row.quantity}</TableCell>
                 )}
                 <TableCell align="right">
-                  {priceRow(row.quantity, row.price)}
+                  {priceRow(row.quantity, (row.price/100).toFixed(2))}
                 </TableCell>
               </TableRow>
             );
