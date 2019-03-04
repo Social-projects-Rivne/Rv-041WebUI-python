@@ -18,6 +18,16 @@ const styles = theme => ({
   chip: {
     background: theme.palette.secondary.light,
     color: theme.palette.primary.dark
+  },
+  wrapper:{
+    width: "100%",
+    marginTop: 16,
+    padding: "16px",
+  },
+  wrapperSummary:{
+    display: "flex",
+    alignItems: "baseline",
+    justifyContent: "space-between"
   }
 });
 
@@ -67,6 +77,37 @@ class ExpandItem extends React.Component {
         this.props.handleSnackbar(err, "error");
       });
   };
+  sendAccepted = (orderId, index) => {
+        const headers = new Headers({
+            "Content-Type": "application/json",
+            "X-Auth-Token": localStorage.getItem("token")
+        });
+        const fetchInit = {
+            method: "PUT",
+            headers: headers,
+            body: JSON.stringify({
+                new_status: "Accepted"
+            })
+        };
+        fetch("http://localhost:6543/api/order/" + orderId + "/status", fetchInit)
+            .then(response => {
+                if (response.status != 200) {
+                    throw "Something went wrong";
+                } else {
+                    return response.json();
+                }
+            })
+            .then(json => {
+                this.props.changeStatus(index, json.data.status);
+                this.props.handleSnackbar(
+                    "Order #" + orderId + " status changed to " + json.data.status,
+                    "success"
+                );
+            })
+            .catch(err => {
+                this.props.handleSnackbar(err, "error");
+            });
+    };
   handleWaiterPick = e => {
     this.setState({ pickedWaiter: e.target.value });
   };
@@ -77,10 +118,13 @@ class ExpandItem extends React.Component {
 
   render() {
     const { classes, order, index } = this.props;
+    // console.log(this.props.order);
+    console.log(this.props.waiters);
     return (
       <ExpansionPanel
         expanded={this.state.expanded}
         onChange={this.handleExpand}
+        className={classes.wrapper}
       >
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Grid
@@ -89,13 +133,13 @@ class ExpandItem extends React.Component {
             justify="space-between"
             alignItems="center"
           >
-            <Grid item spacing={16} container xs={3} nowrap="true">
+            <Grid item spacing={16} container xs={4} className={classes.wrapperSummary}>
               <Grid item>
                 <Typography gutterBottom>
                   Order id: #{order.id}
                 </Typography>
               </Grid>
-              <Grid item>
+              <Grid item alignContent="center">
                 <Chip
                   label={order.status}
                   className={classes.chip}
@@ -103,9 +147,15 @@ class ExpandItem extends React.Component {
                 />
               </Grid>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
               <Typography gutterBottom component="p">
                 User: {order.user.name || ""}
+                  {order.status == "Assigned waiter" && (<>
+                      <br/>
+                      {/*Waiter: {order.waiter_id}*/}
+                      Waiter: {this.props.waiters.filter(item =>(item.id === order.waiter_id))[0].name}
+                      </>) }
+
               </Typography>
             </Grid>
             <Grid item xs={3}>
@@ -131,27 +181,41 @@ class ExpandItem extends React.Component {
               justify="flex-end"
               style={{ padding: "8px" }}
             >
-              <Grid item xs={9}>
-                <WaitersRadio
-                  waiters={this.props.waiters}
-                  pickedWaiter={this.state.pickedWaiter}
-                  handleWaiterPick={this.handleWaiterPick}
-                />
-              </Grid>
-              <Grid item xs={2}>
-                <Button variant="contained" color="primary">
-                  disapprove
-                </Button>
-              </Grid>
-              <Grid item xs={1}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => this.handleAprove(order.id, index)}
-                >
-                  approve
-                </Button>
-              </Grid>
+                {this.props.order.status === "Accepted" && (
+                    <>
+                        <Grid item xs={9}>
+                            <WaitersRadio
+                                waiters={this.props.waiters}
+                                pickedWaiter={this.state.pickedWaiter}
+                                handleWaiterPick={this.handleWaiterPick}
+                            />
+                        </Grid>
+                        <Grid item xs={2}>
+
+                        </Grid>
+                        <Grid item xs={1}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => this.handleAprove(order.id, index)}
+                            >
+                                Assign
+                            </Button>
+                        </Grid>
+                    </>
+                )}
+                {this.props.order.status === "Waiting for confirm" && (
+                        <Grid item xs={1}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => this.sendAccepted(order.id, index)}
+                            >
+                                Accept
+                            </Button>
+                        </Grid>
+                )}
+
             </Grid>
           </Grid>
         </ExpansionPanelDetails>
