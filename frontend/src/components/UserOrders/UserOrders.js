@@ -100,7 +100,7 @@ function UserOrders(props) {
                 </Grid>
                 <Grid item key={4} xs={2} >
                   <Typography>
-                    {orderItems.length} items for ${orderInfo.total_price}
+                    {orderItems.length} items for ${(orderInfo.total_price/100).toFixed(2)}
                   </Typography>
                 </Grid>
                 <Grid item key={5} xs={1} >
@@ -129,7 +129,7 @@ function UserOrders(props) {
                               {orderItem.name}
                             </Typography>
                             <Typography className={classes.secondaryHeading}>
-                              price: ${orderItem.price}
+                              price: ${(orderItem.price/100).toFixed(2)}
                             </Typography>
                           </TableCell>
                           <TableCell component="th">
@@ -139,7 +139,7 @@ function UserOrders(props) {
                           </TableCell>
                           <TableCell component="th">
                             <Typography gutterBottom variant="subtitle1">
-                              {"$" + (orderItem.quantity * orderItem.price).toFixed(2)}
+                              {"$" + (orderItem.quantity * orderItem.price/100).toFixed(2)}
                             </Typography>
                           </TableCell>
                         </TableRow>
@@ -152,7 +152,7 @@ function UserOrders(props) {
                         <Grid container justify="flex-end" alignItems="flex-end" direction="column">
                           <Grid>
                             <Typography gutterBottom variant="subtitle1" >
-                              Order sum: {"$" + orderInfo.total_price}
+                              Order sum: {"$" + (orderInfo.total_price/100).toFixed(2)}
                             </Typography>
                           </Grid>
                           {

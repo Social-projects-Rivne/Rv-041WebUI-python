@@ -260,7 +260,7 @@ class OrderListPage extends React.Component {
       })
     })
       .then(response =>
-        [404, 400].includes(response.status)
+        !(response.status >= 200 && response.status < 300)
           ? response.json().then(Promise.reject())
           : response.json()
       )
@@ -339,7 +339,7 @@ class OrderListPage extends React.Component {
       })
     })
       .then(response =>
-        [404, 400].includes(response.status)
+        !(response.status >= 200 && response.status < 300)
           ? response.json().then(Promise.reject.bind(Promise))
           : response.json()
       )
@@ -377,7 +377,7 @@ class OrderListPage extends React.Component {
       })
     })
       .then(response => {
-        if ([404, 403, 400].includes(response.status)) {
+        if ( !(response.status >= 200 && response.status < 300)) {
           return response.json().then(json => {
             throw json;
           });
