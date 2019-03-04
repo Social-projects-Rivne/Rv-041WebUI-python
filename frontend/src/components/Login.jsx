@@ -97,7 +97,7 @@ class Login extends React.Component {
       .catch(json => {
         this.setState({
           error: true,
-          errorMes: "" + json
+          errorMes: json.error
         });
       });
   };
@@ -105,7 +105,6 @@ class Login extends React.Component {
   render() {
     const { error, errorMes } = this.state;
     const { classes } = this.props;
-
     let snackBarMessage = "";
     if (!errorMes || errorMes.search("fetch") !== -1) {
       snackBarMessage = "No connection to the server";

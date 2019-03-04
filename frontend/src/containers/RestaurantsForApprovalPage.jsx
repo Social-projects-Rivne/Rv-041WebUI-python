@@ -85,7 +85,7 @@ class RestaurantsForApprovalPage extends Component {
     fetch("http://localhost:6543/api/moderator/restaurants", fetchInit)
       .then(response =>
         !(response.status >= 200 && response.status < 300)
-          ? Promise.reject.bind(Promise)
+          ? response.json().then(Promise.reject.bind(Promise))
           : response.json()
       )
       .then(data =>
@@ -110,6 +110,7 @@ class RestaurantsForApprovalPage extends Component {
         })
       )
       .then(() => {
+        this.pushTabValues(this.state.unapprovedRestaurants);
       })
       .catch(err => {
         this.pushTabValues(this.state.unapprovedRestaurants);
