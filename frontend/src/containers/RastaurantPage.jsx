@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import RestaurantInfo from "../components/RestaurantDetails/RestaurantInfo";
 import PageContainer from "./PageContainer";
-import CollapseForm from "../components/CollapseForm";
-import UpdateRestaurantForm from "../components/UserRestaurants/UpdateRestaurantForm";
-import Edit from "@material-ui/icons/Edit";
 import AppContext from "../components/AppContext";
 import converter from "../components/Markdown/Converter";
 import { convertFromRaw } from "draft-js";

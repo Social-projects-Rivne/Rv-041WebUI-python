@@ -149,7 +149,7 @@ class RestaurantsForApprovalPage extends Component {
   );
 
   //push information about quantity to the Tab component
-  pushTabValues = (data) => {
+  pushTabValues = data => {
     const tagsValues = this.props.tagsValues;
     const tagsNames = Object.keys(tagsValues);
     let additionalValues = {};
@@ -157,16 +157,16 @@ class RestaurantsForApprovalPage extends Component {
       let quantity = 0;
       const tagName = tagsNames[key];
       const tagValue = tagsValues[tagName];
-      for (let i = 0; i < data.length; i++) { 
+      for (let i = 0; i < data.length; i++) {
         const info = data[i];
-        if (tagValue.includes(info.status)){
+        if (tagValue.includes(info.status)) {
           quantity = quantity + 1;
         }
       }
       additionalValues[tagName] = quantity;
     }
-    return this.props.setAdditionalTabData(additionalValues)
-  }
+    return this.props.setAdditionalTabData(additionalValues);
+  };
 
   render() {
     const {

@@ -151,6 +151,7 @@ class SignUpForm extends React.Component {
                       type="password"
                       name="password"
                       helperText="Password must have minimum 8 characters"
+                      fullWidth
                     />
                   </Grid>
                   <Grid item xs={12} md={6}>

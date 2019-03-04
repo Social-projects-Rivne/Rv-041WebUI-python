@@ -2,10 +2,14 @@
 # -*- coding: utf-8 -*-
 Menus = [
     {
-        "name": "Common"
+        "name": "Common",
+        "is_active": True,
+        "priority": 1
     },
     {
-        "name": "Image Menu"
+        "name": "Image Menu",
+        "is_active": False,
+        "priority": 2
     }
 ]
 Images = [

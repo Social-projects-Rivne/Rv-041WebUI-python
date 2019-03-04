@@ -1,6 +1,6 @@
 """This script populate Data base with fake data."""
 
-from random import randint, seed
+from random import randint, seed, randrange, uniform
 import time
 
 from faker import Faker
@@ -116,8 +116,8 @@ def fill_db(session):
             menu_item = Meals[randint(0, meals_len-1)]
             menu_item["category_id"]
             menu_item.update({
-                "price": 350,
-                "amount": 0.2
+                "price": randrange(50, 10000, 5),
+                "amount": round(uniform(0, 10), 1)
             })
             menu_item_model = MenuItem(**menu_item)
             menu_item_model.category = Cat_models[menu_item["category_id"]]

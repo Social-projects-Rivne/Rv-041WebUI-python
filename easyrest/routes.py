@@ -14,10 +14,12 @@ def includeme(config):
                      request_method="GET")
     config.add_route('get_restaurant', 'restaurant/{id:\d+}',
                      request_method="GET")
-    config.add_route('get_menus', 'restaurant/{rest_id:\d+}/menu',
-                     request_method="GET")
-    config.add_route('menu_items', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}',
+    config.add_route('menus', 'restaurant/{rest_id:\d+}/menu',
                      request_method=["GET", "POST", "PUT", "DELETE"])
+    config.add_route('menu_items', 'restaurant/{rest_id:\d+}/menu/{menu_id}',
+                     request_method=["GET", "POST", "PUT", "DELETE"])
+    config.add_route('menu_item', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}/item/{item_id:\d+}',
+                     request_method=["PUT", "DELETE"])
     config.add_route('get_by_category', 'restaurant/{rest_id:\d+}/menu/{menu_id:\d+}/{cat_id:\d+}',
                      request_method="GET")
     config.add_route('get_all_categories', 'categories',
@@ -61,7 +63,9 @@ def includeme(config):
     config.add_route(
         'user_create', 'user/{role_id:\d+}', request_method="POST")
     config.add_route('user_update', 'user/{user_id:\d+}', request_method="PUT")
-    config.add_route('user_delete', 'user/{user_id:\d+}', request_method="DELETE")
-    config.add_route('toggle_activity', "user/toggle_activity/{user_id:\d+}", request_method="GET")
+    config.add_route(
+        'user_delete', 'user/{user_id:\d+}', request_method="DELETE")
+    config.add_route(
+        'toggle_activity', "user/toggle_activity/{user_id:\d+}", request_method="GET")
     config.add_route('file_upload', 'file', request_method="POST")
     config.add_route('get_waiters', 'waiters', request_method="GET")
