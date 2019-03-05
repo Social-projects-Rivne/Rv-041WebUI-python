@@ -136,7 +136,7 @@ def get_restaurant_controler(request):
     if rest is None:
         raise HTTPNotFound("Restaurant with id=%s not found" % (rest_id))
     else:
-        if request.token is not None and request.token.user.id == rest.user.id:
+        if request.token is not None and request.token.user.id == rest.owner_id:
             is_owner = True
 
         rest_with_tags = asign_tags([rest])
