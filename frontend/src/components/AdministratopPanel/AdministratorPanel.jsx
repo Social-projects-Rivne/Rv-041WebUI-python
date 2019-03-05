@@ -122,7 +122,6 @@ class AdministratorPanel extends React.Component {
             <Tab label="Accepted" />
             <Tab label="Assigned waiter" />
             <Tab label="Waiters" />
-            <Tab label="Refresh" />
           </Tabs>
         </AppBar>
           {this.state.selectedTab === 0 && (

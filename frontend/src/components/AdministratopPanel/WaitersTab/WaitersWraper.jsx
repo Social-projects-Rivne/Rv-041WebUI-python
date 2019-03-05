@@ -32,7 +32,6 @@ class WaitersWraper extends React.Component {
   }
 
   render() {
-    const { classes } = this.props
     return (
       <>
         {this.state.waitersWithOrders.map((waiter, index) => {
