@@ -33,6 +33,5 @@ class ExpPanel extends React.Component {
     );
   }
 }
-// <ExpPanel summary={<SumaryComp hook={this.hook}/>} details={<Details />} />
 
 export default withStyles(styles)(ExpPanel);
