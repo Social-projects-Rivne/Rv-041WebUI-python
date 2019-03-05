@@ -41,7 +41,7 @@ const styles = theme => ({
 
 class DrawerMenu extends React.Component {
   state = {
-    open: true
+    open: false
   };
 
   handleClick = () => {
@@ -127,6 +127,18 @@ class DrawerMenu extends React.Component {
             <People />
           </ListItemIcon>
           <ListItemText primary="Waiters" />
+        </ListItem>
+        <ListItem
+          component={NavLink}
+          button
+          to={`${match.url}/administrators`}
+          className={classes.navLink}
+          disableRipple
+        >
+          <ListItemIcon>
+            <People />
+          </ListItemIcon>
+          <ListItemText primary="Administrators" />
         </ListItem>
       </List>
     );
