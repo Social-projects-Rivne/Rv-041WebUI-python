@@ -81,6 +81,7 @@ def fill_db(session):
 
     meals_len = len(Meals)
     used_images = []
+    markup_counter = 0
 
     for i in range(10):
         if rest_status == 3:
@@ -94,6 +95,12 @@ def fill_db(session):
                 used_images.append(img_index)
                 key = False
 
+        if rest_status == 1:
+            markup = str(rest_data.Description_markups[markup_counter])
+            markup_counter += 1
+        else:
+            markup = None
+
         rest = {
             "name": company_name,
             "address_id": fake.address(),
@@ -101,7 +108,8 @@ def fill_db(session):
             "phone": "+380362" + str(100000 + i),
             "status": rest_status,
             "creation_date": int(time.time()),
-            "image": rest_data.Images[img_index]
+            "image": rest_data.Images[img_index],
+            "description_markup": markup
         }
         rest_status = rest_status + 1
 
@@ -129,7 +137,6 @@ def fill_db(session):
         # using model relationship defined in models.restaurant
         # asign menu to restaurant
         rest_model.menu = Menu_models
-        
 
         # using model relationship defined in models.restaurant
         # asign one of 5 users to restaurant
