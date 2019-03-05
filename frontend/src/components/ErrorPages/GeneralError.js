@@ -15,7 +15,7 @@ function GeneralError(props) {
             <Typography variant="h5" component="h3">
               Oooops, something went wrong...
             </Typography>
-            <img src="../images/general_error.png" />
+            <img src="http://localhost:6543/api/static/images/general_error.png" />
             <Typography component="p">{error}</Typography>
           </Grid>
         </Grid>
