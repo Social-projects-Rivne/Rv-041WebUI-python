@@ -14,6 +14,7 @@ import {
 import { amber, green } from "@material-ui/core/colors/";
 import { Link } from "react-router-dom";
 import RestaurantListItemMenu from "./RestaurantListItemMenu";
+import { ArchiveContext } from "../../containers/MyRestaurants";
 
 const styles = theme => ({
   card: {
@@ -84,7 +85,11 @@ function RestaurantListItem(props) {
                   className={classes[restaurantStatus[restData.status][1]]}
                   style={{ marginRight: "16px" }}
                 />
-                <RestaurantListItemMenu restData={restData} />
+                <ArchiveContext.Consumer>
+                  {ctx => (
+                    <RestaurantListItemMenu restData={restData} ctx={ctx} />
+                  )}
+                </ArchiveContext.Consumer>
               </>
             )}
           </Grid>
@@ -138,18 +143,20 @@ function RestaurantListItem(props) {
               <Button
                 variant="contained"
                 component={Link}
-                to={"restaurants/" + restData.id}
+                to={`restaurants/${restData.id}`}
                 color="primary"
               >
                 details
               </Button>
             </Grid>
-            {restData.has_menu && (
+            {restData.menu.length > 0 && (
               <Grid item>
                 <Button
                   variant="contained"
                   component={Link}
-                  to={"/restaurant/" + restData.id + "/menu/1"}
+                  to={`/restaurant/${restData.id}/menu/${
+                    restData.menu.find(item => item.primary).id
+                  }`}
                   color="primary"
                 >
                   Watch Menu

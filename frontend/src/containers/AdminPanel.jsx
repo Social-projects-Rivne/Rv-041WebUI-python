@@ -13,7 +13,8 @@ import GenericTabs from "../Service/GenericTabs";
 
 const styles = theme => ({
   root: {
-    display: "flex"
+    display: "flex",
+    marginTop: "64px"
   },
   toolbar: theme.mixins.toolbar,
   content: {

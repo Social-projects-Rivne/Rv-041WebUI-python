@@ -64,7 +64,7 @@ class TagsList extends Component {
   };
 
   componentDidMount() {
-    fetch("http://localhost:6543/api/tag")
+    fetch("http://localhost:6543/api/tag?with_rests=True")
       .then(response => response.json())
       .then(tags => {
         const sortedTags = tags.data.sort((a, b) => b.priority - a.priority);

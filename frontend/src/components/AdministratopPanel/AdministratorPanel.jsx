@@ -115,14 +115,13 @@ class AdministratorPanel extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <PageContainer>
+      <div className={classes.root}>
         <AppBar position="static">
           <Tabs value={this.state.selectedTab} onChange={this.handleTabChange} variant="scrollable" scrollButtons="on">
             <Tab label="Waiting for confirm" />
             <Tab label="Accepted" />
             <Tab label="Assigned waiter" />
             <Tab label="Waiters" />
-            <Tab label="Refresh" />
           </Tabs>
         </AppBar>
           {this.state.selectedTab === 0 && (
@@ -213,7 +212,7 @@ class AdministratorPanel extends React.Component {
             }
           />
         </Snackbar>
-      </PageContainer>
+      </div>
     );
   }
 }

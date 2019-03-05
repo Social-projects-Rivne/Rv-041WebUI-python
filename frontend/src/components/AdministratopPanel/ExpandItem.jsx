@@ -15,10 +15,6 @@ import WaitersRadio from "./WaitersRadio";
 import format from 'date-fns/format';
 
 const styles = theme => ({
-  chip: {
-    background: theme.palette.secondary.light,
-    color: theme.palette.primary.dark
-  },
   wrapper:{
     width: "100%",
     marginTop: 16,
@@ -141,7 +137,7 @@ class ExpandItem extends React.Component {
               <Grid item alignContent="center">
                 <Chip
                   label={order.status}
-                  className={classes.chip}
+                  color="primary"
                   style={{ marginRight: "16px" }}
                 />
               </Grid>

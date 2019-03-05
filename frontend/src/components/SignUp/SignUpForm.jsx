@@ -10,7 +10,7 @@ import {
   Divider,
   CardHeader,
   Snackbar
-} from "@material-ui/core/";
+} from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { Link, Redirect } from "react-router-dom";
 import SnackbarContent from "../SnackbarContent";
@@ -27,6 +27,8 @@ class SignUpForm extends React.Component {
     name: "",
     email: "",
     password: "",
+    phoneNumber: null,
+    birthDate: null,
     repeated_password: "",
     serverResponse: false,
     errors: false
@@ -53,14 +55,17 @@ class SignUpForm extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
+    const clientRole = 1;
     const { name, email, password } = this.state;
-    const formData = { name, email, password };
+    const phone_number = this.state.phoneNumber;
+    const birth_date = this.state.birthDate;
+    const formData = { name, email, password, phone_number, birth_date };
     const requestConfig = {
       headers: new Headers({ "Content-Type": "application/json" }),
       method: "POST",
       body: JSON.stringify(formData)
     };
-    fetch("http://localhost:6543/api/sign_up", requestConfig)
+    fetch("http://localhost:6543/api/user/" + clientRole, requestConfig)
       .then(response => response.json())
       .then(json => {
         if (json.success) {
@@ -69,14 +74,14 @@ class SignUpForm extends React.Component {
           throw json;
         }
       })
-      .catch(error =>
+      .catch(error => {
         this.setState({
           error: true,
           errorMes:
-            error.errorMes ||
+            error.error ||
             "Ooops something went wrong! Please try again later."
         })
-      );
+      });
   };
 
   render() {

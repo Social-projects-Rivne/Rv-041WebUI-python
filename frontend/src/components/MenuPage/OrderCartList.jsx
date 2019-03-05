@@ -7,7 +7,7 @@ const styles = theme => ({
     position: "sticky",
     height: "80vh",
     overflow: "scroll",
-    top: "30px"
+    top: "70px"
   },
   submitButton: {
     marginTop: "8px"

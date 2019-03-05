@@ -133,7 +133,7 @@ class MenuPage extends React.Component {
     })
       .then(response => {
         return [404, 403, 400].includes(response.status)
-          ? response.json().then(Promise.reject.bind(Promise))
+          ? Promise.reject.bind(Promise)
           : response.json();
       })
       .then(json => {

@@ -10,7 +10,7 @@ import {
 import KeyboardArrowUp from "@material-ui/icons/KeyboardArrowUp";
 import classnames from "classnames";
 const styles = theme => ({
-  root: { position: "sticky", top: "30px" },
+  root: { position: "sticky", top: "70px" },
   button: {
     "&.active": {
       color: theme.palette.secondary.light

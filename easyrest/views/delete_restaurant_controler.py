@@ -16,7 +16,7 @@ from ..scripts.json_helpers import wrap
     request_method='PUT'
 )
 @restrict_access(user_types=["Owner"])
-def approve_restaurant_controller(request):
+def owner_toggle_restaurant_status(request):
     """
     PUT request controller to handle restaurant delete by owner
     Args:
@@ -32,10 +32,11 @@ def approve_restaurant_controller(request):
     """
     restaurant_data = request.json_body
     restaurant_id = restaurant_data["id"]
+    restaurant_status = restaurant_data["status"]
     db_session = request.dbsession
     try:
         restaurant = db_session.query(Restaurant).get(int(restaurant_id))
-        restaurant.status = 2
+        restaurant.status = restaurant_status
     except:
         return wrap(success=False, error="Restaurant delete failure")
     return wrap(success=True)
