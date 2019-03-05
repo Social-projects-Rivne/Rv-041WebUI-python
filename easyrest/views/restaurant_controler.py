@@ -33,11 +33,9 @@ def asign_tags(rests):
     rests_list = []
     for rest in rests:
         tags = rest.tags
-        has_menu = len(rest.menu) != 0
         tags_list = [tag.as_dict() for tag in tags]
-        rest_dict = rest.as_dict()
+        rest_dict = rest.as_dict(with_relations=["menu"])
         rest_dict.update({"tags": tags_list})
-        rest_dict.update({"has_menu": has_menu})
         rests_list.append(rest_dict)
     return rests_list
 

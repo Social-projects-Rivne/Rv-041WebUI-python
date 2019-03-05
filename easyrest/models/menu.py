@@ -29,7 +29,6 @@ class Menu(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Text)
     image = Column(Text)
-    is_draft = Column(Boolean, default=False)
     is_active = Column(Boolean, default=False)
     primary = Column(Boolean, default=False)
     priority = Column(Integer)
