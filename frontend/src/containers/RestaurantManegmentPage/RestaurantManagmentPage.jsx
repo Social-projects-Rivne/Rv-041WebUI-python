@@ -68,6 +68,7 @@ export class RestaurantManagmentPage extends React.Component {
   render() {
     const { classes, match } = this.props;
     const { menusList } = this.state;
+
     return (
       <div className={classes.root}>
         <MenuContext.Provider value={{ menusList }}>
@@ -109,12 +110,20 @@ export class RestaurantManagmentPage extends React.Component {
               />
               <Route
                 path={`${match.url}/waiters`}
-                render={props => <ManageWaiters restId={match.params.id} />}
+                render={props => (
+                  <ManageWaiters
+                    key={props.match.params.id}
+                    restId={match.params.id}
+                  />
+                )}
               />
               <Route
                 path={`${match.url}/administrators`}
                 render={props => (
-                  <ManageAdministrators restId={match.params.id} />
+                  <ManageAdministrators
+                    key={props.match.params.id}
+                    restId={match.params.id}
+                  />
                 )}
               />
             </Switch>

@@ -21,6 +21,7 @@ class MyRestaurants extends React.Component {
     })
       .then(response => response.json())
       .then(rests => {
+        console.log(rests.data);
         this.setState({ myRestaurants: rests.data });
       });
   }
