@@ -54,6 +54,12 @@ const styles = theme => ({
   button: {}
 });
 
+function formatPrice(value) {
+  return Number(value / 100)
+    .toFixed(2)
+    .replace(/\d(?=(\d{3})+\.)/g, "$&,");
+}
+
 function OrderCartItem(props) {
   const { classes, item, index } = props;
   const { img, name, price } = item;
@@ -77,7 +83,9 @@ function OrderCartItem(props) {
           </Grid>
           <Grid item container justify="center" xs={12} spacing={16}>
             <Grid item xs={4}>
-              <Typography color="inherit">{price + "$"}</Typography>
+              <Typography color="inherit">
+                {formatPrice(price) + "$"}
+              </Typography>
             </Grid>
             <Grid item xs={4}>
               <TextField
@@ -97,7 +105,7 @@ function OrderCartItem(props) {
             </Grid>
             <Grid item xs={4}>
               <Typography color="inherit">
-                {price * item.quantity + "$"}
+                {formatPrice(price * item.quantity) + "$"}
               </Typography>
             </Grid>
           </Grid>

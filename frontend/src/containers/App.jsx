@@ -64,6 +64,7 @@ class App extends React.Component {
           localStorage.removeItem("token");
           localStorage.removeItem("role");
           localStorage.removeItem("userName");
+          localStorage.removeItem("OrderId");
         });
     }
   }

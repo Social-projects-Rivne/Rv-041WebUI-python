@@ -1,18 +1,15 @@
-import React from 'react';
+import React from "react";
 import { withStyles } from "@material-ui/core/styles";
-import ExpPanel from './ExpPanel';
-import WaitersSummary from './WaitersSummary'
-import WaitersDetails from './WaitersDetails'
+import ExpPanel from "./ExpPanel";
+import WaitersSummary from "./WaitersSummary";
+import WaitersDetails from "./WaitersDetails";
 
-
-const styles = theme => ({
-  
-});
+const styles = theme => ({});
 
 class WaitersWraper extends React.Component {
   state = {
     waitersWithOrders: []
-  }
+  };
 
   componentDidMount() {
     const headers = new Headers({
@@ -38,13 +35,13 @@ class WaitersWraper extends React.Component {
           return (
             <ExpPanel
               key={"Exp" + index}
-              summary={<WaitersSummary waiter={waiter}/>}
-              details={<WaitersDetails waiter={waiter}/>}
+              summary={<WaitersSummary waiter={waiter} />}
+              details={<WaitersDetails waiter={waiter} />}
             />
-          )
+          );
         })}
       </>
-    )
+    );
   }
 }
 
