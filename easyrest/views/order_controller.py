@@ -523,7 +523,7 @@ def get_user_order_list(request):
             "Draft",
             "Waiting for confirm",
             "Accepted",
-            "Asigned waiter",
+            "Assigned waiter",
             "In progress", ]
     elif order_status == "history":
         statuses = ["History", "Declined", "Removed", "Failed", ]
