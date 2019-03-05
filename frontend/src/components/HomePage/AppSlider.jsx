@@ -82,7 +82,8 @@ const slides = [
 
 const styles = theme => ({
   root: {
-    marginBottom: theme.spacing.unit * 2
+    marginBottom: theme.spacing.unit * 2,
+    marginTop: "64px"
   },
   sliderContainer: {
     width: "100%",
