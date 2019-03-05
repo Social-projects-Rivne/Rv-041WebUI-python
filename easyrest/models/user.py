@@ -9,7 +9,9 @@ from sqlalchemy import (
     Boolean,
 )
 from sqlalchemy.orm import relationship
+from sqlalchemy.exc import IntegrityError
 from passlib.hash import pbkdf2_sha256
+from pyramid.httpexceptions import HTTPForbidden
 
 from .meta import Base
 from validator import validation
@@ -93,7 +95,8 @@ class User(Base):
         }
         validation(schema, form_data)
         email = form_data['email']
-        email_in_database = database.query(User.email).filter(User.email == email).scalar()
+        email_in_database = database.query(
+            User.email).filter(User.email == email).scalar()
         if email_in_database is not None:
             raise ValidationError('already exist', email)
         name = form_data['name']
@@ -102,8 +105,22 @@ class User(Base):
         phone_number = form_data['phone_number']
         birth_date = form_data['birth_date']
 
-        database.add(User(name=name, email=email, phone_number=phone_number,
-                          birth_date=birth_date, password=password_hash, role_id=role))
+        try:
+            restaurant_id = form_data["restaurant_id"]
+        except KeyError:
+            restaurant_id = None
+
+        user = User(name=name, email=email, phone_number=phone_number,
+                    birth_date=birth_date, password=password_hash, role_id=role, restaurant_id=restaurant_id)
+
+        database.add(user)
+        try:
+            database.flush()
+        except IntegrityError:
+            database.rollback()
+            raise HTTPForbidden("Can't Create User")
+
+        return user
         # TODO: Refactor database.add
 
     @staticmethod
@@ -146,7 +163,8 @@ class User(Base):
         birth_date = form_data['birth_date']
         if password is not None:
             password_hash = pbkdf2_sha256.hash(password)
-            database.query(User).filter_by(id=user.id).update({"password": password_hash})
+            database.query(User).filter_by(id=user.id).update(
+                {"password": password_hash})
 
         database.query(User).filter_by(id=user.id)\
             .update({'name': name, 'email': new_email, 'phone_number': phone_number, 'birth_date': birth_date})

@@ -7,19 +7,22 @@ import WorkersList from "../../components/RestaurantManagment/WorkersList";
 import CollapseForm from "../../components/CollapseForm";
 import AddWorkerForm from "../../components/RestaurantManagment/AddWorkerForm";
 
-class ManageWaiters extends React.Component {
+class ManageAdministrators extends React.Component {
   state = {
-    waiters: []
+    administrators: []
   };
 
   componentDidMount() {
     const restId = this.props.restId;
-    fetch(`http://localhost:6543/api/workers/${restId}/${ROLES.WAITER}`, {
-      headers: {
-        "Content-Type": "application/json",
-        "x-auth-token": localStorage.getItem("token")
+    fetch(
+      `http://localhost:6543/api/workers/${restId}/${ROLES.ADMINISTRATOR}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": localStorage.getItem("token")
+        }
       }
-    })
+    )
       .then(response => {
         return response.status >= 200 && response.status < 300
           ? response.json()
@@ -27,7 +30,7 @@ class ManageWaiters extends React.Component {
       })
       .then(json => {
         this.setState({
-          waiters: json.data
+          administrators: json.data
         });
       })
       .catch(err => {
@@ -37,7 +40,7 @@ class ManageWaiters extends React.Component {
 
   handleAddUser = newUser => {
     this.setState(prevState => ({
-      waiters: [...prevState.waiters, newUser]
+      administrators: [...prevState.administrators, newUser]
     }));
   };
 
@@ -56,7 +59,9 @@ class ManageWaiters extends React.Component {
       })
       .then(json => {
         this.setState(prevState => ({
-          waiters: prevState.waiters.filter(item => item.id !== id)
+          administrators: prevState.administrators.filter(
+            item => item.id !== id
+          )
         }));
       })
       .catch(err => {
@@ -65,23 +70,29 @@ class ManageWaiters extends React.Component {
   };
 
   render() {
-    const { waiters } = this.state;
+    const { administrators } = this.state;
     return (
       <>
         <Paper>
-          {waiters.length > 0 ? (
-            <WorkersList onDelete={this.handleDeleteUser} workers={waiters} />
+          {administrators.length > 0 ? (
+            <WorkersList
+              onDelete={this.handleDeleteUser}
+              workers={administrators}
+            />
           ) : (
             <Typography style={{ padding: 16 }} variant="subtitle2">
               Create your worker:
             </Typography>
           )}
         </Paper>
-        <CollapseForm tooltipText="Add Waiter" formTitle="Create New Waiter:">
+        <CollapseForm
+          tooltipText="Add Administrator"
+          formTitle="Create New Administrator:"
+        >
           <AddWorkerForm
             onAdd={this.handleAddUser}
             restId={this.props.restId}
-            role={ROLES.WAITER}
+            role={ROLES.ADMINISTRATOR}
           />
         </CollapseForm>
       </>
@@ -89,4 +100,4 @@ class ManageWaiters extends React.Component {
   }
 }
 
-export default ManageWaiters;
+export default ManageAdministrators;

@@ -105,13 +105,33 @@ def get_users_list(request):
     if role is None:
         raise HTTPNotFound(request.path)
     current_user = request.token.user
-    check_action_access(current_user.role.name, foreign_role=role.name, action='read')
+    check_action_access(current_user.role.name,
+                        foreign_role=role.name, action='read')
     users_list = [user.as_dict(exclude=['role_id', 'password']) for user in
                   request.dbsession.query(User).filter_by(role_id=derivable_role_id).order_by(User.name).all()]
 
     return wrap(users_list, success=True, message="Users with role '{}'".format(role.name))
 
-  
+
+@view_config(route_name='workers', renderer='json', request_method='GET')
+@restrict_access(['Owner', 'Admin'])
+def get_workers_list(request):
+
+    role_id = int(request.matchdict['role_id'])
+    rest_id = int(request.matchdict['rest_id'])
+
+    role = request.dbsession.query(UserRole).get(role_id)
+    if role is None:
+        raise HTTPNotFound(request.path)
+    current_user = request.token.user
+    check_action_access(current_user.role.name,
+                        foreign_role=role.name, action='read')
+    workers = [worker.as_dict(exclude=['password']) for worker in
+               request.dbsession.query(User).filter_by(role_id=role_id, restaurant_id=rest_id).all()]
+
+    return wrap(workers, success=True, message="Worker with role '{}'".format(role.name))
+
+
 @view_config(route_name='user_create', renderer='json', request_method='POST')
 def create_user(request):
     """This function is intended to create a user with a specific role.
@@ -147,7 +167,8 @@ def create_user(request):
         raise HTTPForbidden('Need token for access')
 
     new_user_role_name = role.name
-    check_action_access(current_user.role.name, foreign_role=new_user_role_name, action='create')
+    check_action_access(current_user.role.name,
+                        foreign_role=new_user_role_name, action='create')
     return attempt_add_user(database, form_data, new_user_role)
 
 
@@ -175,11 +196,11 @@ def attempt_add_user(database, form_data, role=User.CLIENT):
                 }
     """
     try:
-        User.add(database, form_data, role=role)
+        user = User.add(database, form_data, role=role)
     except ValidationError as ve:
         return wrap([], success=False, error=str(ve))
     else:
-        return wrap([], success=True, message='User successfully added')
+        return wrap([user.as_dict()], success=True, message='User successfully added')
 
 
 @view_config(route_name='user_update', renderer='json', request_method='PUT')
@@ -210,7 +231,8 @@ def update_user(request):
     current_user = request.token.user
     if current_user.id == requested_user_id:
         return attempt_update_user(database, updated_user, form_data)
-    check_action_access(current_user.role.name, foreign_role=updated_user.role.name, action='update')
+    check_action_access(current_user.role.name,
+                        foreign_role=updated_user.role.name, action='update')
 
     return attempt_update_user(database, updated_user, form_data)
 
@@ -245,7 +267,7 @@ def attempt_update_user(database, updated_user, form_data):
     else:
         return wrap([], success=True, message='User successfully updated')
 
-      
+
 @view_config(route_name='user_delete', renderer='json', request_method='DELETE')
 @restrict_access(['Client', 'Waiter', 'Administrator', 'Owner', 'Moderator', 'Admin'])
 def delete_user(request):
@@ -271,7 +293,8 @@ def delete_user(request):
     current_user = request.token.user
     if current_user.id == requested_user_id:
         return attempt_delete_user(database, deletable_user)
-    check_action_access(current_user.role.name, foreign_role=deletable_user.role.name, action='delete')
+    check_action_access(current_user.role.name,
+                        foreign_role=deletable_user.role.name, action='delete')
 
     return attempt_delete_user(database, deletable_user)
 
@@ -292,8 +315,8 @@ def attempt_delete_user(database, user):
     database.delete(user)
     # TODO: Add soft delete and token delete for user.
     return wrap([], success=True, message='User successfully deleted')
-  
-  
+
+
 @view_config(route_name='toggle_activity', renderer='json', request_method='GET')
 @restrict_access(['Administrator', 'Owner', 'Moderator', 'Admin'])
 def toggle_activity(request):
@@ -323,7 +346,8 @@ def toggle_activity(request):
         raise HTTPNotFound(request.path)
 
     current_user = request.token.user
-    check_action_access(current_user.role.name, foreign_role=requested_user.role.name, action='toggle_activity')
+    check_action_access(current_user.role.name,
+                        foreign_role=requested_user.role.name, action='toggle_activity')
 
     requested_user.toggle_activity()
     return wrap([], success=True, message='Activity status successfully changed')

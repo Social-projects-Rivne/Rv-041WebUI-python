@@ -10,6 +10,7 @@ import ManageInfo from "./ManageInfo";
 import ManageWaiters from "./ManageWaiters";
 import DrawerMenu from "../../components/RestaurantManagment/Menu/DrawerMenu";
 import CreateMenu from "../../components/RestaurantManagment/Menu/CreateMenu";
+import ManageAdministrators from "./ManageAdministrators";
 
 const drawerWidth = 240;
 
@@ -82,7 +83,10 @@ export class RestaurantManagmentPage extends React.Component {
           </Drawer>
           <PageContainer>
             <Switch>
-              <Route path={`${match.url}/info`} component={ManageInfo} />
+              <Route
+                path={`${match.url}/info`}
+                render={props => <ManageInfo restId={match.params.id} />}
+              />
               <Route
                 path={`${match.url}/menues/:id`}
                 render={props =>
@@ -103,7 +107,16 @@ export class RestaurantManagmentPage extends React.Component {
                   )
                 }
               />
-              <Route path={`${match.url}/waiters`} component={ManageWaiters} />
+              <Route
+                path={`${match.url}/waiters`}
+                render={props => <ManageWaiters restId={match.params.id} />}
+              />
+              <Route
+                path={`${match.url}/administrators`}
+                render={props => (
+                  <ManageAdministrators restId={match.params.id} />
+                )}
+              />
             </Switch>
           </PageContainer>
         </MenuContext.Provider>
