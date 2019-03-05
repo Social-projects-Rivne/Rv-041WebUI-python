@@ -108,7 +108,7 @@ class MenuItem extends React.Component {
             </Grid>
             <Grid item xs={9}>
               <Grid container alignItems="center" spacing={16}>
-                <Grid item xs={6}>
+                <Grid item xs={5}>
                   <CardHeader title={name} />
                 </Grid>
                 <Grid item xs={1} className={classes.borderLeft}>
@@ -116,7 +116,7 @@ class MenuItem extends React.Component {
                 </Grid>
                 <Grid
                   item
-                  xs={1}
+                  xs={2}
                   className={classNames(
                     classes.borderLeft,
                     classes.borderRight
