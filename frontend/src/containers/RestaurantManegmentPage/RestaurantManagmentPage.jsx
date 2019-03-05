@@ -83,7 +83,10 @@ export class RestaurantManagmentPage extends React.Component {
           </Drawer>
           <PageContainer>
             <Switch>
-              <Route path={`${match.url}/info`} component={ManageInfo} />
+              <Route
+                path={`${match.url}/info`}
+                render={props => <ManageInfo restId={match.params.id} />}
+              />
               <Route
                 path={`${match.url}/menues/:id`}
                 render={props =>

@@ -2,16 +2,17 @@ import React from "react";
 
 import { Paper } from "@material-ui/core";
 
-import { EditorState, RichUtils, convertFromRaw } from "draft-js";
+import { convertFromRaw } from "draft-js";
+import Converter from "../../components/Markdown/Converter";
+import RestaurantInfo from "../../components/RestaurantManagment/Info/RestaurantInfo";
 
 class ManageInfo extends React.Component {
   state = {
-    restInfo: [],
-    restMarkup: ""
+    restInfo: []
   };
 
   componentDidMount() {
-    const restId = this.props.match.params.id;
+    const restId = this.props.restId;
     fetch(`http://localhost:6543/api/restaurant/${restId}`, {
       method: "GET",
       headers: {
@@ -26,12 +27,10 @@ class ManageInfo extends React.Component {
       })
       .then(rest => {
         if (rest.data[0].description_markup) {
-          // const markup = converter(
-          //   convertFromRaw(JSON.parse(rest.data[0].description_markup))
-          // );
-          // this.setState({
-          //   restMarkup: markup
-          // });
+          const markup = Converter(
+            convertFromRaw(JSON.parse(rest.data[0].description_markup))
+          );
+          rest.data[0].description_markup = markup;
         }
         this.setState({
           restInfo: rest.data[0]
@@ -43,7 +42,12 @@ class ManageInfo extends React.Component {
   }
 
   render() {
-    return <Paper>Info</Paper>;
+    const { restInfo } = this.state;
+    return (
+      <Paper>
+        <RestaurantInfo info={restInfo} />
+      </Paper>
+    );
   }
 }
 
