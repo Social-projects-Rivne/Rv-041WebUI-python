@@ -9,10 +9,11 @@ import format from 'date-fns/format';
 
 
 const styles = theme => ({
-  chip: {
-    background: theme.palette.secondary.light,
-    color: theme.palette.primary.dark
-  }
+    wrapperSummary:{
+        display: "flex",
+        alignItems: "baseline",
+        justifyContent: "space-between"
+    }
 });
 
 function OrderSummary(props) {
@@ -24,7 +25,7 @@ function OrderSummary(props) {
           justify="space-between"
           alignItems="center"
         >
-          <Grid item spacing={16} container xs={3} nowrap="true">
+          <Grid item spacing={16} container xs={4} className={classes.wrapperSummary}>
             <Grid item>
               <Typography gutterBottom>
                 Order id: #{order.id}
@@ -33,12 +34,12 @@ function OrderSummary(props) {
             <Grid item>
               <Chip
                 label={order.status}
-                className={classes.chip}
+                color="primary"
                 style={{ marginRight: "16px" }}
               />
             </Grid>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={2}>
             <Typography gutterBottom component="p">
               User: {order.user.name || ""}
             </Typography>

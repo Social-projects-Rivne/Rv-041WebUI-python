@@ -9,7 +9,11 @@ import { withStyles } from "@material-ui/core/styles";
 
 
 const styles = theme => ({
-
+    wrapper:{
+        width: "100%",
+        marginTop: 16,
+        padding: 8,
+    },
 });
 
 class ExpPanel extends React.Component {
@@ -20,10 +24,12 @@ class ExpPanel extends React.Component {
     this.setState({ expanded: !this.state.expanded });
   };
   render() {
+      const { classes } = this.props;
     return (
       <ExpansionPanel
         expanded={this.state.expanded}
         onChange={this.handleExpand}
+        className={classes.wrapper}
       >
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           {this.props.summary}
