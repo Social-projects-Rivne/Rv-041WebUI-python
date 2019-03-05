@@ -19,6 +19,7 @@ from ..exceptions import ValidationError
 from ..auth import restrict_access
 from ..models.user_role import UserRole
 from ..models.user import User
+from ..models.restaurant import Restaurant
 
 
 @view_config(route_name='sign_up', renderer='json', request_method='POST')
@@ -126,8 +127,16 @@ def get_workers_list(request):
     current_user = request.token.user
     check_action_access(current_user.role.name,
                         foreign_role=role.name, action='read')
-    workers = [worker.as_dict(exclude=['password']) for worker in
-               request.dbsession.query(User).filter_by(role_id=role_id, restaurant_id=rest_id).all()]
+
+    workers = request.dbsession.query(User).filter_by(role_id=role_id)
+    if role_id == 6:
+        workers = workers.filter_by(restaurant_id=rest_id)
+    elif role_id == 5:
+        workers = workers.filter(User.id == Restaurant.administrator_id)
+        workers = workers.filter(Restaurant.id == rest_id)
+
+    workers = [worker.as_dict(exclude=['password'])
+               for worker in workers.all()]
 
     return wrap(workers, success=True, message="Worker with role '{}'".format(role.name))
 
@@ -195,6 +204,7 @@ def attempt_add_user(database, form_data, role=User.CLIENT):
                   "error": null
                 }
     """
+
     try:
         user = User.add(database, form_data, role=role)
     except ValidationError as ve:

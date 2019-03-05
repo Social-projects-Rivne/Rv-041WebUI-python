@@ -26,9 +26,7 @@ export class AddWorkerForm extends React.Component {
       body: JSON.stringify(newUser)
     })
       .then(response => {
-        return response.status >= 200 &&
-          response.status < 300 &&
-          response.json().status
+        return response.status >= 200 && response.status < 300
           ? response.json()
           : response.json().then(Promise.reject.bind(Promise));
       })

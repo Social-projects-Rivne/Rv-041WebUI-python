@@ -26,6 +26,7 @@ class ManageWaiters extends React.Component {
           : response.json().then(Promise.reject.bind(Promise));
       })
       .then(json => {
+        console.log(json);
         this.setState({
           waiters: json.data
         });

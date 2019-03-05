@@ -16,6 +16,7 @@ from pyramid.httpexceptions import HTTPForbidden
 from .meta import Base
 from validator import validation
 from ..exceptions import ValidationError
+from restaurant import Restaurant
 
 
 class User(Base):
@@ -105,13 +106,18 @@ class User(Base):
         phone_number = form_data['phone_number']
         birth_date = form_data['birth_date']
 
+        user = User(name=name, email=email, phone_number=phone_number,
+                    birth_date=birth_date, password=password_hash, role_id=role)
+
         try:
             restaurant_id = form_data["restaurant_id"]
+            rest = database.query(Restaurant).get(restaurant_id)
+            if role == User.WAITER:
+                user.restaurant = rest
+            elif role == User.ADMINISTRATOR:
+                user.a_restaurant = [rest]
         except KeyError:
             restaurant_id = None
-
-        user = User(name=name, email=email, phone_number=phone_number,
-                    birth_date=birth_date, password=password_hash, role_id=role, restaurant_id=restaurant_id)
 
         database.add(user)
         try:
