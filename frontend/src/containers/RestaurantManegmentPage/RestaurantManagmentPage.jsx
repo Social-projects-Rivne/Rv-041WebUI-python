@@ -65,13 +65,39 @@ export class RestaurantManagmentPage extends React.Component {
     }));
   };
 
+  handlePrimaryToggle = menuId => {
+    let flag = null
+    const newMenus1 = this.state.menusList.map(item => {
+      if (item.id == menuId) {
+        flag = item.primary
+        item.primary = !item.primary
+        return item
+      } else {
+        return item
+      }
+    })
+    const newMenus = newMenus1.map(item => {
+      if (!flag && item.primary) {
+        if (item.id != menuId) {
+          item.primary = false
+        }
+        return item
+      } else {
+        item.primary = false
+        return item
+      }
+    })
+    this.setState({menusList: newMenus})
+  };
+
   render() {
     const { classes, match } = this.props;
     const { menusList } = this.state;
-
+    const handlePrimaryToggle = this.handlePrimaryToggle;
+    const restId = match.params.id;
     return (
       <div className={classes.root}>
-        <MenuContext.Provider value={{ menusList }}>
+        <MenuContext.Provider value={{ menusList, handlePrimaryToggle, restId }}>
           <Drawer
             className={classes.drawer}
             variant="permanent"
@@ -95,7 +121,7 @@ export class RestaurantManagmentPage extends React.Component {
                     <ManageMenu
                       menusList={menusList}
                       key={props.match.params.id}
-                      restId={match.params.id}
+                      restId={restId}
                       {...props}
                     />
                   ) : (

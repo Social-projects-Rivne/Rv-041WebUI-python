@@ -155,7 +155,7 @@ function RestaurantListItem(props) {
                   variant="contained"
                   component={Link}
                   to={`/restaurant/${restData.id}/menu/${
-                    restData.menu.find(item => item.primary).id
+                    (restData.menu.find(item => item.primary) || restData.menu[0]).id
                   }`}
                   color="primary"
                 >

@@ -27,6 +27,8 @@ import MenuHeader from "./MenuHeader";
 import MenuToolbar from "./MenuToolbar";
 import CategorySelect from "./CategorySelect";
 import CreateNewItem from "./CreateNewItem";
+import { MenuContext } from "../../../containers/RestaurantManegmentPage/RestaurantManagmentPage";
+
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -369,10 +371,15 @@ class MenuTable extends React.Component {
     const emptyRows =
       rowsPerPage -
       Math.min(rowsPerPage, menuItems.length - page * rowsPerPage);
+    const menuId = this.props.match.params.id;
 
     return (
       <Paper className={classes.root}>
-        <MenuToolbar menuName={menuName} numSelected={selected.length} />
+        <MenuContext.Consumer>
+          {ctx => (
+            <MenuToolbar ctx={ctx} menuId={menuId} menuName={menuName} numSelected={selected.length} />
+          )}
+        </MenuContext.Consumer>
         <Divider />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
