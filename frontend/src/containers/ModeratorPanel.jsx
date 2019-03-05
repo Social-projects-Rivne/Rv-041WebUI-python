@@ -74,10 +74,10 @@ class ModeratorPanel extends React.Component {
     token: localStorage.getItem("token"),
     selectedItemName: getSelectedItemName(this.props.location.pathname),
     selectedStatus: {
-      "Restaurants": "All",
-      "Users": "All",
-      "Owners": "All",
-      "Messages": "All",
+      Restaurants: "All",
+      Users: "All",
+      Owners: "All",
+      Messages: "All"
     },
     currentStatusAdditionalValues: {}
   };
@@ -100,63 +100,74 @@ class ModeratorPanel extends React.Component {
     Owners: { All: [false, true], Active: [true], Banned: [false] }
   };
 
-  routes = () =>{
-    return( 
-      [
-        {
-          path: "/moderator/",
-          render: (props) => {
-            return (
-              <RestaurantsForApprovalPage
-                restaurantStatus={this.tagsValues.Restaurants[this.state.selectedStatus.Restaurants]}
-                tagsValues = {this.tagsValues.Restaurants}
-                setAdditionalTabData = {this.setAdditionalTabData}
-              />
-            );
-          },
-          exact: true
+  routes = () => {
+    return [
+      {
+        path: "/moderator/",
+        render: props => {
+          return (
+            <RestaurantsForApprovalPage
+              restaurantStatus={
+                this.tagsValues.Restaurants[
+                  this.state.selectedStatus.Restaurants
+                ]
+              }
+              tagsValues={this.tagsValues.Restaurants}
+              setAdditionalTabData={this.setAdditionalTabData}
+            />
+          );
         },
-        {
-          path: "/moderator/restaurants",
-          render: (props) => {
-            return (
-              <RestaurantsForApprovalPage
-                restaurantStatus={this.tagsValues.Restaurants[this.state.selectedStatus.Restaurants]}
-                tagsValues = {this.tagsValues.Restaurants}
-                setAdditionalTabData = {this.setAdditionalTabData}
-              />
-            );
-          },
-          exact: true
+        exact: true
+      },
+      {
+        path: "/moderator/restaurants",
+        render: props => {
+          return (
+            <RestaurantsForApprovalPage
+              restaurantStatus={
+                this.tagsValues.Restaurants[
+                  this.state.selectedStatus.Restaurants
+                ]
+              }
+              tagsValues={this.tagsValues.Restaurants}
+              setAdditionalTabData={this.setAdditionalTabData}
+            />
+          );
         },
-        {
-          path: "/moderator/users",
-          render: (props) => {
-            return (
-              <ModeratorUsersPage
-                userActivity={this.tagsValues.Users[this.state.selectedStatus.Users]}
-                userStatus={"users"}
-                tagsValues = {this.tagsValues.Users}
-                setAdditionalTabData = {this.setAdditionalTabData}
-              />
-            );
-          },
-          exact: true
+        exact: true
+      },
+      {
+        path: "/moderator/users",
+        render: props => {
+          return (
+            <ModeratorUsersPage
+              userActivity={
+                this.tagsValues.Users[this.state.selectedStatus.Users]
+              }
+              userStatus={"users"}
+              tagsValues={this.tagsValues.Users}
+              setAdditionalTabData={this.setAdditionalTabData}
+            />
+          );
         },
-        {
-          path: "/moderator/owners",
-          render: (props) => {
-            return (
-              <ModeratorUsersPage
-                userActivity={this.tagsValues.Owners[this.state.selectedStatus.Owners]}
-                userStatus={"owners"}
-                tagsValues = {this.tagsValues.Owners}
-                setAdditionalTabData = {this.setAdditionalTabData}
-              />
-            );
-          },
-          exact: true
+        exact: true
+      },
+      {
+        path: "/moderator/owners",
+        render: props => {
+          return (
+            <ModeratorUsersPage
+              userActivity={
+                this.tagsValues.Owners[this.state.selectedStatus.Owners]
+              }
+              userStatus={"owners"}
+              tagsValues={this.tagsValues.Owners}
+              setAdditionalTabData={this.setAdditionalTabData}
+            />
+          );
         },
+        exact: true
+      },
       {
         path: "/moderator/messages",
         render: props => {
@@ -171,7 +182,7 @@ class ModeratorPanel extends React.Component {
         },
         exact: true
       }
-    ]);
+    ];
   };
 
   icons = {
@@ -184,9 +195,7 @@ class ModeratorPanel extends React.Component {
   classes = this.props.classes;
 
   componentDidMount() {
-
-    this.setState({ isLoading: false});
-    
+    this.setState({ isLoading: false });
   }
 
   handleTabChange = (event, value) => {
@@ -196,14 +205,14 @@ class ModeratorPanel extends React.Component {
         prevState.selectedItemName
       ][value];
       return { selectedStatus: newSelectedStatus };
-    }
-  )}
-  
-  setAdditionalTabData = (additionalTabData) => {
-    this.setState((prevState) => {
+    });
+  };
+
+  setAdditionalTabData = additionalTabData => {
+    this.setState(prevState => {
       return { currentStatusAdditionalValues: additionalTabData };
-    }
-  )}
+    });
+  };
 
   handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -213,10 +222,10 @@ class ModeratorPanel extends React.Component {
   };
 
   render() {
-
-    const { isLoading, 
-      selectedItemName, 
-      selectedStatus, 
+    const {
+      isLoading,
+      selectedItemName,
+      selectedStatus,
       currentStatusAdditionalValues,
       snackbarOpen,
       success,
@@ -237,30 +246,33 @@ class ModeratorPanel extends React.Component {
             paper: classes.drawerPaper
           }}
         >*/}
-          <div className={classes.toolbar} />
-          <List>
-            {["Restaurants", "Users", "Owners"].map(
-              (text, index) => (
-                <ListItem
-                  button
-                  selected={this.state.selectedItemName === text}
-                  key={text}
-                  onClick={() => {this.setState({selectedItemName: text})}}
-                  component={Link} to={ "/moderator/" + text.toLowerCase() }
-                >
-                  <ListItemIcon>{this.icons[text]}</ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
-              )
-            )}
-          </List>
+        <div className={classes.toolbar} />
+        <List>
+          {["Restaurants", "Users", "Owners"].map((text, index) => (
+            <ListItem
+              button
+              selected={this.state.selectedItemName === text}
+              key={text}
+              onClick={() => {
+                this.setState({ selectedItemName: text });
+              }}
+              component={Link}
+              to={"/moderator/" + text.toLowerCase()}
+            >
+              <ListItemIcon>{this.icons[text]}</ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
+          ))}
+        </List>
         {/*</Drawer>*/}
         <main className={classes.content}>
           <div>
             <GenericTabs
               tags={this.tags[selectedItemName]}
               tagsAdditionalInformation={currentStatusAdditionalValues}
-              selectedValue={this.tags[selectedItemName].indexOf(selectedStatus[selectedItemName])}
+              selectedValue={this.tags[selectedItemName].indexOf(
+                selectedStatus[selectedItemName]
+              )}
               handleTabChange={this.handleTabChange}
             />
           </div>

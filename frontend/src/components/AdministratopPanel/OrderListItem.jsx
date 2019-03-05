@@ -14,7 +14,6 @@ const styles = theme => ({
   card: {
     display: "flex",
     flexWrap: "wrap"
-    // width : "40%"
   },
   itemName: {
     flex: 1

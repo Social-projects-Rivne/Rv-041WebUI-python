@@ -32,7 +32,7 @@ class ModeratorUsersPage extends Component {
 
     fetch(fetchURL, fetchInit)
       .then(response => (!(response.status >= 200 && response.status < 300)
-        ? Promise.reject.bind(Promise)
+        ? response.json().then(Promise.reject.bind(Promise))
         : response.json()))
       .then(data => this.setState({
         users: data.data,
@@ -67,7 +67,7 @@ class ModeratorUsersPage extends Component {
 
     fetch(fetchURL, fetchInit)
       .then(response => (!(response.status >= 200 && response.status < 300)
-        ? Promise.reject.bind(Promise)
+        ? response.json().then(Promise.reject.bind(Promise))
         : response.json()))
       .then(data => this.setState((prevState) => {
         return {

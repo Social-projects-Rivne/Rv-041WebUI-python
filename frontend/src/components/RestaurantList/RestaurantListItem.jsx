@@ -138,18 +138,18 @@ function RestaurantListItem(props) {
               <Button
                 variant="contained"
                 component={Link}
-                to={"restaurants/" + restData.id}
+                to={`restaurants/${restData.id}`}
                 color="primary"
               >
                 details
               </Button>
             </Grid>
-            {restData.has_menu && (
+            {restData.menu.length > 0 && (
               <Grid item>
                 <Button
                   variant="contained"
                   component={Link}
-                  to={"/restaurant/" + restData.id + "/menu/1"}
+                  to={`/restaurant/${restData.id}/menu/${restData.menu.find(item => (item.primary)).id}`}
                   color="primary"
                 >
                   Watch Menu

@@ -7,7 +7,6 @@ import {
 } from "@material-ui/core";
 import SnackbarContent from "../components/SnackbarContent";
 import GenericTabs from "../Service/GenericTabs";
-import PageContainer from "./PageContainer";
 import Orders from "../components/WaiterPanelComponents/Orders"
 import {AddAllCategory, GetCurrentRouteLocation} from "../Service/functions"
 
@@ -45,7 +44,7 @@ class WaiterPanelOrders extends React.Component {
 		fetch("http://localhost:6543/api/waiter/orders", fetchInit)
 			.then(response =>
 				!(response.status >= 200 && response.status < 300)
-					? Promise.reject.bind(Promise)
+					? response.json().then(Promise.reject.bind(Promise))
 					: response.json()
 			)
 			.then(data =>
@@ -160,7 +159,7 @@ class WaiterPanelOrders extends React.Component {
 
 		return (
 
-      <PageContainer>
+      <>
 				<GenericTabs
 					tags={statuses}
 					tagsAdditionalInformation={statusesLenthObject}
@@ -204,7 +203,7 @@ class WaiterPanelOrders extends React.Component {
               }
             />
           </Snackbar>
-      </PageContainer>
+      </>
 		)
 	}
 }

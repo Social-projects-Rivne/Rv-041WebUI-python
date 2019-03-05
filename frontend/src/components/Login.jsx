@@ -55,7 +55,11 @@ class Login extends React.Component {
       body: JSON.stringify(body),
       headers: { "Content-Type": "application/json" }
     })
-      .then(response => response.json())
+      .then(response => {
+        return response.status >= 200 && response.status < 300
+          ? response.json()
+          : response.json().then(Promise.reject.bind(Promise));
+      })
       .then(json => {
         const { success, error, data } = json;
         const { role, token, userName } = data;
@@ -90,10 +94,10 @@ class Login extends React.Component {
 
         this.props.history.push(from);
       })
-      .catch(error => {
+      .catch(json => {
         this.setState({
           error: true,
-          errorMes: "" + error
+          errorMes: json.error
         });
       });
   };
@@ -101,9 +105,8 @@ class Login extends React.Component {
   render() {
     const { error, errorMes } = this.state;
     const { classes } = this.props;
-
     let snackBarMessage = "";
-    if (!errorMes || errorMes.search("fetch") !== -1)  {
+    if (!errorMes || errorMes.search("fetch") !== -1) {
       snackBarMessage = "No connection to the server";
     } else {
       snackBarMessage = "" + errorMes;
@@ -168,7 +171,7 @@ class Login extends React.Component {
                   variant="error"
                   message={
                     <Typography color="inherit" align="center">
-                      {snackBarMessage}
+                      {snackBarMessage || "Something went wrong!"}
                     </Typography>
                   }
                 />

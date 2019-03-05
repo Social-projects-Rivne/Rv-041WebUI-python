@@ -424,8 +424,8 @@ def change_status(request):
         "description": "Validate json inputs",
         "type": "object",
         "properties": {
-            "set_waiter_id": {"type": ["integer", "None"]},
-            "booked_time": {"type": ["integer", "None"]},
+            "set_waiter_id": {"type": ["integer", "null"]},
+            "booked_time": {"type": ["integer", "null"]},
             "new_status": {"type": "string"}
         },
         "required": ["new_status"]

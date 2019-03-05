@@ -33,11 +33,9 @@ def asign_tags(rests):
     rests_list = []
     for rest in rests:
         tags = rest.tags
-        has_menu = len(rest.menu) != 0
         tags_list = [tag.as_dict() for tag in tags]
-        rest_dict = rest.as_dict()
+        rest_dict = rest.as_dict(with_relations=["menu"])
         rest_dict.update({"tags": tags_list})
-        rest_dict.update({"has_menu": has_menu})
         rests_list.append(rest_dict)
     return rests_list
 
@@ -136,7 +134,7 @@ def get_restaurant_controler(request):
     if rest is None:
         raise HTTPNotFound("Restaurant with id=%s not found" % (rest_id))
     else:
-        if request.token is not None and request.token.user.id == rest.user.id:
+        if request.token is not None and request.token.user.id == rest.owner_id:
             is_owner = True
 
         rest_with_tags = asign_tags([rest])
