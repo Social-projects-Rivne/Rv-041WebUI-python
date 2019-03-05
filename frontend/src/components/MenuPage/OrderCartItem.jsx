@@ -33,7 +33,7 @@ const styles = theme => ({
     transition: theme.transitions.create("opacity", { duration: 1000 }),
     display: "flex",
     opacity: 0,
-    padding: "16px",
+    padding: "8px",
     position: "absolute",
     top: 0,
     bottom: 0,
