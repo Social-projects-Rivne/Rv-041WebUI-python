@@ -136,7 +136,7 @@ def get_restaurant_controler(request):
     if rest is None:
         raise HTTPNotFound("Restaurant with id=%s not found" % (rest_id))
     else:
-        if request.token is not None and request.token.user.id == rest.user.id:
+        if request.token is not None and request.token.user.id == rest.owner_id:
             is_owner = True
 
         rest_with_tags = asign_tags([rest])
@@ -214,11 +214,11 @@ def create_user_restaurant(request):
     rest = Restaurant(name=name, description=description,
                       phone=phone, address_id=address, creation_date=creation_date, description_markup=markup)
     rest.tag = tag_models
-    user = request.token.user
-    rest.user = request.token.user
-
-    if user.role.name == 'Client':
-        user.role_id = 2
+    owner = request.token.user
+    rest.owner_id = owner.id
+    print owner
+    if owner.role.name == 'Client':
+        owner.role_id = 2
 
     request.dbsession.add(rest)
 
