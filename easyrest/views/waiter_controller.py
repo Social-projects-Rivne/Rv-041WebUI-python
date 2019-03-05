@@ -19,9 +19,8 @@ def get_orders_controller(request):
         ]
     """
     statuses = [
-        "Asigned waiter",
+        "Assigned waiter",
         "In progress",
-        "Failed",
         "History",
     ]
     orders = request.dbsession.query(Order).filter(Order.waiter_id==request.token.user.id,

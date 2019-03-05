@@ -64,7 +64,7 @@ class Order extends React.Component {
     const dateModified = new Date().getTime();
   
     switch (status) {
-      case "Asigned waiter":
+      case "Assigned waiter":
         buttons.push(<Button
           key={0}
           size="small"
