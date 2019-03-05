@@ -5,6 +5,8 @@ import AddRestaurantForm from "../components/UserRestaurants/AddRestaurantForm";
 import { Typography } from "@material-ui/core";
 import AppContext from "../components/AppContext";
 
+export const ArchiveContext = React.createContext();
+
 class MyRestaurants extends React.Component {
   state = {
     myRestaurants: []
@@ -29,6 +31,18 @@ class MyRestaurants extends React.Component {
     });
   };
 
+  handleArchiveRestaurant = (restId, status) => {
+    const myRestaurants = this.state.myRestaurants.map(item => {
+      if (item.id == restId) {
+        item.status = status;
+        return item;
+      } else {
+        return item;
+      }
+    });
+    this.setState({ myRestaurants });
+  };
+
   render() {
     const { myRestaurants } = this.state;
     return (
@@ -36,7 +50,13 @@ class MyRestaurants extends React.Component {
         {ctx => (
           <>
             {myRestaurants.length > 0 ? (
-              <RestaurantList data={myRestaurants} />
+              <ArchiveContext.Provider
+                value={{
+                  handleArchiveRestaurant: this.handleArchiveRestaurant
+                }}
+              >
+                <RestaurantList data={myRestaurants} />
+              </ArchiveContext.Provider>
             ) : (
               <Typography variant="h6">
                 Create your first restaurant:

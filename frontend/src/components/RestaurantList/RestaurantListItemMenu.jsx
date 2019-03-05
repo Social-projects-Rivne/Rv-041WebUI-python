@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import Archive from "@material-ui/icons/Archive";
+import { Unarchive, Archive } from "@material-ui/icons";
 import Setting from "@material-ui/icons/Settings";
 import {
   Menu,
@@ -24,6 +24,43 @@ class RestaurantListItemMenu extends React.Component {
 
   handleClose = () => {
     this.setState({ anchorEl: null });
+  };
+
+  handleRestaurantDelete = e => {
+    const rest = this.props.restData;
+    if ([1, 0].includes(rest.status)) {
+      this.sendRestaurantToggle(2);
+      this.handleClose();
+    } else {
+      this.sendRestaurantToggle(0);
+      this.handleClose();
+    }
+  };
+
+  sendRestaurantToggle = status => {
+    const headers = new Headers({
+      "Content-Type": "application/json",
+      "X-Auth-Token": localStorage.getItem("token")
+    });
+
+    const fetchInit = {
+      method: "PUT",
+      headers: headers,
+      body: JSON.stringify({
+        id: this.props.restData.id,
+        status: status
+      })
+    };
+
+    fetch("http://localhost:6543/api/delete_restaurant", fetchInit)
+      .then(response =>
+        !(response.status >= 200 && response.status < 300)
+          ? Promise.reject(response.status)
+          : response.json()
+      )
+      .then(
+        this.props.ctx.handleArchiveRestaurant(this.props.restData.id, status)
+      );
   };
 
   render() {
@@ -57,12 +94,19 @@ class RestaurantListItemMenu extends React.Component {
             horizontal: "right"
           }}
         >
-          <MenuItem onClick={this.handleClose}>
+          <MenuItem onClick={this.handleRestaurantDelete}>
             <ListItemIcon>
-              <Archive />
+              {[1, 0].includes(restData.status) && <Archive />}
+              {![1, 0].includes(restData.status) && <Unarchive />}
             </ListItemIcon>
-            <ListItemText inset primary="Archive" />
+            <ListItemText
+              inset
+              primary={
+                [1, 0].includes(restData.status) ? "Archive" : "Unarchive"
+              }
+            />
           </MenuItem>
+
           <Divider />
           <MenuItem
             component={Link}
