@@ -1,10 +1,13 @@
 import React from "react";
 
 import { Paper } from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
 
 import { convertFromRaw } from "draft-js";
 import Converter from "../../components/Markdown/Converter";
 import RestaurantInfo from "../../components/RestaurantManagment/Info/RestaurantInfo";
+import UpdateRestaurantForm from "../../components/RestaurantManagment/Info/UpdateRestaurantForm";
+import CollapseForm from "../../components/CollapseForm";
 
 class ManageInfo extends React.Component {
   state = {
@@ -26,14 +29,14 @@ class ManageInfo extends React.Component {
           : response.json().then(Promise.reject.bind(Promise));
       })
       .then(rest => {
-        if (rest.data[0].description_markup) {
+        if (rest.data.description_markup) {
           const markup = Converter(
-            convertFromRaw(JSON.parse(rest.data[0].description_markup))
+            convertFromRaw(JSON.parse(rest.data.description_markup))
           );
-          rest.data[0].description_markup = markup;
+          rest.data.description_markup = markup;
         }
         this.setState({
-          restInfo: rest.data[0]
+          restInfo: rest.data
         });
       })
       .catch(err => {
@@ -44,9 +47,19 @@ class ManageInfo extends React.Component {
   render() {
     const { restInfo } = this.state;
     return (
-      <Paper>
-        <RestaurantInfo info={restInfo} />
-      </Paper>
+      <>
+        <Paper>
+          <RestaurantInfo info={restInfo} />
+        </Paper>
+        <CollapseForm
+          tooltipText="Edit Information"
+          formTitle="Edit Restaurant Information:"
+          tooltipText="Edit"
+          tooltipIcon={<EditIcon />}
+        >
+          <UpdateRestaurantForm />
+        </CollapseForm>
+      </>
     );
   }
 }

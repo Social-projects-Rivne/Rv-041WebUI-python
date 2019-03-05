@@ -27,16 +27,16 @@ export class RastaurantPage extends Component {
           : response.json().then(Promise.reject.bind(Promise));
       })
       .then(rest => {
-        if (rest.data[0].description_markup) {
+        if (rest.data.description_markup) {
           const markup = converter(
-            convertFromRaw(JSON.parse(rest.data[0].description_markup))
+            convertFromRaw(JSON.parse(rest.data.description_markup))
           );
           this.setState({
             restMarkup: markup
           });
         }
         this.setState({
-          restInfo: rest.data[0],
+          restInfo: rest.data,
           ableUpdate: rest.is_owner
         });
       })
