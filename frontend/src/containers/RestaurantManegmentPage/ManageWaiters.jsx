@@ -1,7 +1,7 @@
 import React from "react";
 import { ROLES } from "../../Service/constants";
 
-import { Paper } from "@material-ui/core";
+import { Paper, Typography } from "@material-ui/core";
 
 import WorkersList from "../../components/RestaurantManagment/WorkersList";
 import CollapseForm from "../../components/CollapseForm";
@@ -41,14 +41,41 @@ class ManageWaiters extends React.Component {
     }));
   };
 
-  handleDeleteUser = () => {};
+  handleDeleteUser = id => {
+    fetch(`http://localhost:6543/api/user/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": localStorage.getItem("token")
+      }
+    })
+      .then(response => {
+        return response.status >= 200 && response.status < 300
+          ? response.json()
+          : response.json().then(Promise.reject.bind(Promise));
+      })
+      .then(json => {
+        this.setState(prevState => ({
+          waiters: prevState.waiters.filter(item => item.id !== id)
+        }));
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   render() {
     const { waiters } = this.state;
     return (
       <>
         <Paper>
-          <WorkersList onDelete={this.handleDeleteUser} workers={waiters} />
+          {waiters.length > 0 ? (
+            <WorkersList onDelete={this.handleDeleteUser} workers={waiters} />
+          ) : (
+            <Typography style={{ padding: 16 }} variant="subtitle2">
+              Create your worker:
+            </Typography>
+          )}
         </Paper>
         <CollapseForm tooltipText="Add Waiter" formTitle="Create New Waiter:">
           <AddWorkerForm

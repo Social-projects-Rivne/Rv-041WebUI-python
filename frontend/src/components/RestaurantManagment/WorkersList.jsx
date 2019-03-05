@@ -39,7 +39,7 @@ const WorkersList = props => {
               </Typography>
             }
           />
-          <IconButton onClick={props.onDelete}>
+          <IconButton onClick={() => props.onDelete(worker.id)}>
             <IconDelete fontSize="small" />
           </IconButton>
         </ListItem>
