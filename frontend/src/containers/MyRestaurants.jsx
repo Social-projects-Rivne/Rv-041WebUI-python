@@ -23,7 +23,8 @@ class MyRestaurants extends React.Component {
       .then(rests => {
         console.log(rests.data);
         this.setState({ myRestaurants: rests.data });
-      });
+      })
+      .catch(console.log);
   }
 
   handleAddRestaurant = newRestaurant => {

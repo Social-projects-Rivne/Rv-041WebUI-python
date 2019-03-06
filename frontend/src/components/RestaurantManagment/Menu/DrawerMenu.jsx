@@ -95,7 +95,7 @@ class DrawerMenu extends React.Component {
                       className={classes.nested}
                     >
                       <ListItemIcon>
-                        {listItem.is_active ? <Star /> : <StarBorder />}
+                        {listItem.primary ? <Star /> : <StarBorder />}
                       </ListItemIcon>
                       <ListItemText inset primary={listItem.name} />
                     </ListItem>
