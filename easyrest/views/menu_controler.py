@@ -100,6 +100,32 @@ def create_menu_item_controler(request):
     return wrap(item.as_dict(with_relations=["category"]))
 
 
+@view_config(route_name='menu_items', renderer='json', request_method='PUT')
+@restrict_access(user_types=['Owner'])
+def toggle_pripary_controler(request):
+    """
+    POST request controller. Create new restaurant menu item in database and return created item
+    """
+    menu_id = request.matchdict["menu_id"]
+    rest_id = request.matchdict["rest_id"]
+
+    msg = "Menu:" + menu_id + " Primary changed to False"
+
+    menu_target = request.dbsession.query(Menu)\
+        .filter(Menu.id == menu_id)\
+        .filter(Menu.rest_id == rest_id).first()
+    menu_subling = request.dbsession.query(Menu)\
+        .filter(Menu.rest_id == rest_id)
+    if not menu_target.primary:
+        menu_subling = menu_subling.filter(Menu.primary == True).all()
+        for item in menu_subling:
+            item.primary = False
+        msg = "Menu:" + menu_id + " Primary changed to True"
+
+    menu_target.primary = not menu_target.primary
+    return wrap(message=msg)
+
+
 @view_config(route_name='menu_items', renderer='json', request_method='GET')
 def get_cats_controler(request):
     """GET request controler to return menu items

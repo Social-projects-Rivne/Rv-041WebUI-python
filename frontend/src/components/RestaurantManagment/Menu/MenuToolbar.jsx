@@ -7,12 +7,16 @@ import {
   Typography,
   Tooltip,
   IconButton,
-  withStyles
+  withStyles,
+  Menu,
+  MenuItem,
+  ListItemText,
+  ListItemIcon,
 } from "@material-ui/core";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { lighten } from "@material-ui/core/styles/colorManipulator";
-import { MoreVert } from "@material-ui/icons";
+import { StarBorder, Star, MoreVert } from "@material-ui/icons";
 
 const toolbarStyles = theme => ({
   root: {
@@ -42,8 +46,45 @@ const toolbarStyles = theme => ({
 });
 
 class MenuToolbar extends React.Component {
+  state = {
+    anchorEl: null
+  }
+
+  handleClick = event => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
+  handleClose = () => {
+    this.setState({ anchorEl: null });
+  };
+
+  handlePrimaryToggle = () => {
+    this.sendPrimaryToggle(this.props.menuId, this.props.ctx.restId);
+    this.handleClose();
+  }
+
+  sendPrimaryToggle = (menuId, restId) => {
+    const headers = new Headers({
+      "Content-Type": "application/json",
+      "X-Auth-Token": localStorage.getItem("token")
+    });
+    const fetchInit = {
+      method: "PUT",
+      headers: headers
+    };
+    const url = `http://localhost:6543/api/restaurant/${restId}/menu/${menuId}`
+    fetch(url, fetchInit)
+      .then(response => response.json())
+      .then(data => {
+        this.props.ctx.handlePrimaryToggle(menuId);
+      })
+      .catch(console.log);
+  }
+
+
   render() {
-    const { numSelected, classes, menuName } = this.props;
+    const { numSelected, classes, menuName, menuId } = this.props;
+    const menu = this.props.ctx.menusList.find(item => (item.id == menuId)) || [];
     return (
       <Toolbar
         className={classNames(classes.root, {
@@ -77,11 +118,40 @@ class MenuToolbar extends React.Component {
               </Tooltip>
             </>
           )}
-          <Tooltip title="Action">
-            <IconButton aria-label="Action">
-              <MoreVert />
-            </IconButton>
-          </Tooltip>
+          <IconButton
+            aria-label="Action"
+            onClick={this.handleClick}
+          >
+            <MoreVert />
+          </IconButton>
+          <Menu
+            id="item-menu"
+            getContentAnchorEl={null}
+            anchorEl={this.state.anchorEl}
+            open={Boolean(this.state.anchorEl)}
+            onClose={this.handleClose}
+            disableAutoFocusItem
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right"
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right"
+            }}
+          >
+            <MenuItem onClick={this.handlePrimaryToggle}>
+              <ListItemIcon>
+                {menu.primary ? <StarBorder /> : <Star />}
+              </ListItemIcon>
+              <ListItemText
+                inset
+                primary={
+                  menu.primary ? "Make not primary" : "Make primary"
+                }
+              />
+            </MenuItem>
+          </Menu>
         </div>
       </Toolbar>
     );

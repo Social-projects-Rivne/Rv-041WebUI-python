@@ -5,6 +5,9 @@ import { CardMedia, withStyles, Paper, Divider } from "@material-ui/core";
 
 import MenuToolbar from "./MenuToolbar";
 
+import { MenuContext } from "../../../containers/RestaurantManegmentPage/RestaurantManagmentPage";
+
+
 const styles = theme => ({
   media: {
     maxWidth: "100%",
@@ -16,9 +19,14 @@ const styles = theme => ({
 class MenuImage extends React.Component {
   render() {
     const { menuItems, classes, menuName } = this.props;
+    const menuId = this.props.match.params.id;
     return (
       <Paper>
-        <MenuToolbar menuName={menuName} />
+       <MenuContext.Consumer>
+          {ctx => (
+            <MenuToolbar menuId={menuId} ctx={ctx} menuName={menuName} />
+          )}
+        </MenuContext.Consumer>
         <Divider />
         {menuItems && (
           <CardMedia
