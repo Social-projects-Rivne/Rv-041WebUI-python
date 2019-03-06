@@ -32,7 +32,7 @@ class UserCreate extends React.Component {
     name: "",
     email: "",
     password: "",
-    phoneNumber: null,
+    phoneNumber: "",
     birthDate: null,
     repeated_password: "",
     serverResponse: false,
@@ -61,7 +61,7 @@ class UserCreate extends React.Component {
   };
 
   handleDateChange = date => {
-    const currentDate = new Date()
+    const currentDate = new Date();
     date > currentDate ?
       this.setState({ birthDate: currentDate })
       :
@@ -75,8 +75,8 @@ class UserCreate extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     const { name, email, password } = this.state;
-    const phone_number = this.state.phoneNumber;
-    const birth_date = this.state.birthDate;
+    const phone_number = this.state.phoneNumber === "" ? null : this.state.phoneNumber;
+    const birth_date = this.state.birthDate === "" ? null : this.state.birthDate;
     const formData = { name, email, password, phone_number, birth_date };
     const requestConfig = {
       headers: new Headers({
@@ -225,17 +225,6 @@ class UserCreate extends React.Component {
                       name="repeated_password"
                       fullWidth
                     />
-                    {this.state.errors && (
-                      <Grid item>
-                        <Typography
-                          variant="body1"
-                          color="error"
-                          align="center"
-                        >
-                          Ooops something went wrong! Please try again later.
-                        </Typography>
-                      </Grid>
-                    )}
                   </Grid>
                   <Grid item xs={12}>
                     <Grid container justify="space-between">
