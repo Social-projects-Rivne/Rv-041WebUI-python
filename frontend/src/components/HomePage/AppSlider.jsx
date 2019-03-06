@@ -17,7 +17,7 @@ const slides = [
       color: "black"
     },
     restaurantName: "Johnson PLC",
-    restaurantMenu: "/restaurant/2/menu/1",
+    restaurantMenu: "/restaurant/2/menu/3",
     restaurantAddress: "Victor Knoll East Lindastad, CA 10851",
     restaurantNameProperties: {
       left: "72%",
@@ -41,7 +41,7 @@ const slides = [
       color: "white"
     },
     restaurantName: "Preston, Terrell and Warren",
-    restaurantMenu: "/restaurant/8/menu/1",
+    restaurantMenu: "/restaurant/8/menu/15",
     restaurantAddress: "Kimberly Bypass Suite 107 Suttonburgh, NY 04699",
     restaurantNameProperties: {
       left: "68%",
@@ -65,7 +65,7 @@ const slides = [
       color: "white"
     },
     restaurantName: "Ball-Logan",
-    restaurantMenu: "/restaurant/5/menu/1",
+    restaurantMenu: "/restaurant/5/menu/9",
     restaurantAddress: "Unit 1280 Box 4854 DPO AP 93705",
     restaurantNameProperties: {
       left: "2%",

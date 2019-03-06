@@ -14,6 +14,9 @@ import {
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { Link, Redirect } from "react-router-dom";
 import SnackbarContent from "../SnackbarContent";
+import Clear from "@material-ui/icons/Clear";
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, DatePicker } from 'material-ui-pickers';
 
 const styles = theme => ({
   root: {
@@ -27,11 +30,13 @@ class SignUpForm extends React.Component {
     name: "",
     email: "",
     password: "",
-    phoneNumber: null,
+    phoneNumber: "",
     birthDate: null,
     repeated_password: "",
     serverResponse: false,
-    errors: false
+    errors: false,
+    snackbarOpen: false,
+    snackbarMessage: ""
   };
 
   componentDidMount() {
@@ -46,19 +51,31 @@ class SignUpForm extends React.Component {
     if (reason === "clickaway") {
       return;
     }
-    this.setState({ error: false });
+    this.setState({ snackbarOpen: false });
   };
 
   handleChange = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  handleDateChange = date => {
+    const currentDate = new Date();
+    date > currentDate ?
+      this.setState({ birthDate: currentDate })
+      :
+      this.setState({ birthDate: date })
+  };
+
+  clearBirthDate = () => {
+    this.setState({birthDate: null});
+  };
+
   handleSubmit = e => {
     e.preventDefault();
     const clientRole = 1;
     const { name, email, password } = this.state;
-    const phone_number = this.state.phoneNumber;
-    const birth_date = this.state.birthDate;
+    const phone_number = this.state.phoneNumber === "" ? null : this.state.phoneNumber;
+    const birth_date = this.state.birthDate === "" ? null : this.state.birthDate;
     const formData = { name, email, password, phone_number, birth_date };
     const requestConfig = {
       headers: new Headers({ "Content-Type": "application/json" }),
@@ -76,8 +93,8 @@ class SignUpForm extends React.Component {
       })
       .catch(error => {
         this.setState({
-          error: true,
-          errorMes:
+          snackbarOpen: true,
+          snackbarMessage:
             error.error ||
             "Ooops something went wrong! Please try again later."
         })
@@ -86,6 +103,7 @@ class SignUpForm extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const { birthDate } = this.state;
     if (this.state.serverResponse) {
       return <Redirect to="/log-in" />;
     } else {
@@ -144,6 +162,38 @@ class SignUpForm extends React.Component {
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <TextValidator
+                      label="Phone number"
+                      onChange={this.handleChange}
+                      className={classes.textField}
+                      value={this.state.phoneNumber}
+                      name="phoneNumber"
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Grid container alignItems={"flex-end"}>
+                      <Grid item xs>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                          <DatePicker
+                            label="Birth date"
+                            value={birthDate}
+                            onChange={this.handleDateChange}
+                            name="birthDate"
+                            fullWidth
+                          />
+                        </MuiPickersUtilsProvider>
+                        {/* TODO: Change date format in the datepicker */}
+                        {/* TODO: Add error when selected date greater than current date */}
+                      </Grid>
+                      <Grid item>
+                        {this.state.birthDate != null &&
+                          <Clear onClick={this.clearBirthDate}/>
+                        }
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextValidator
                       label="Password"
                       onChange={this.handleChange}
                       className={classes.textField}
@@ -174,17 +224,6 @@ class SignUpForm extends React.Component {
                       name="repeated_password"
                       fullWidth
                     />
-                    {this.state.errors && (
-                      <Grid item>
-                        <Typography
-                          variant="body1"
-                          color="error"
-                          align="center"
-                        >
-                          Ooops something went wrong! Please try again later.
-                        </Typography>
-                      </Grid>
-                    )}
                   </Grid>
                   <Grid item xs={12}>
                     <Grid container justify="space-between">
@@ -214,7 +253,7 @@ class SignUpForm extends React.Component {
                 vertical: "bottom",
                 horizontal: "right"
               }}
-              open={this.state.error}
+              open={this.state.snackbarOpen}
               autoHideDuration={10000}
               onClose={this.handleClose}
             >
@@ -223,7 +262,7 @@ class SignUpForm extends React.Component {
                 variant="error"
                 message={
                   <Typography color="inherit" align="center">
-                    {this.state.errorMes || "No connection to the server"}
+                    {this.state.snackbarMessage || "No connection to the server"}
                   </Typography>
                 }
               />
