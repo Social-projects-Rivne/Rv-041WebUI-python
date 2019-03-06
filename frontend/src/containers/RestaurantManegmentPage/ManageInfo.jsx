@@ -33,7 +33,7 @@ class ManageInfo extends React.Component {
           const markup = Converter(
             convertFromRaw(JSON.parse(rest.data.description_markup))
           );
-          rest.data.description_markup = markup;
+          rest.data.description_markup_converted = markup;
         }
         this.setState({
           restInfo: rest.data
@@ -43,6 +43,19 @@ class ManageInfo extends React.Component {
         console.log(err);
       });
   }
+
+  handlerUpdate = updatedItem => {
+    if (updatedItem.description_markup) {
+      const markup = Converter(
+        convertFromRaw(JSON.parse(updatedItem.description_markup))
+      );
+      updatedItem.description_markup_converted = markup;
+    }
+    console.log(updatedItem);
+    this.setState({
+      restInfo: updatedItem
+    });
+  };
 
   render() {
     const { restInfo } = this.state;
@@ -54,10 +67,13 @@ class ManageInfo extends React.Component {
         <CollapseForm
           tooltipText="Edit Information"
           formTitle="Edit Restaurant Information:"
-          tooltipText="Edit"
           tooltipIcon={<EditIcon />}
         >
-          <UpdateRestaurantForm />
+          <UpdateRestaurantForm
+            onUpdate={this.handlerUpdate}
+            restId={this.props.restId}
+            info={restInfo}
+          />
         </CollapseForm>
       </>
     );

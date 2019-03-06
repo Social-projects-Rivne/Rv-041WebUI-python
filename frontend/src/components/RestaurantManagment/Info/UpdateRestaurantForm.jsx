@@ -8,6 +8,8 @@ import {
 } from "@material-ui/core";
 import ListSelect from "../../ListSelect";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
+import { EditorState, RichUtils, convertFromRaw, convertToRaw } from "draft-js";
+import MarkdownEditor from "../../Markdown/MarkdownEditor";
 
 export class UpdateRestaurantForm extends React.Component {
   state = {
@@ -17,23 +19,26 @@ export class UpdateRestaurantForm extends React.Component {
       phone: "",
       description: "",
       tags: []
-      // editorState: EditorState.createEmpty()
     },
+    editorState: EditorState.createEmpty(),
     allTags: []
   };
 
   componentDidMount() {
-    // const { restInfo } = this.props;
+    const { info } = this.props;
 
-    // this.setState({
-    //   updatedRestaurant: {
-    //     name: restInfo.name,
-    //     phone: restInfo.phone,
-    //     address: restInfo.address_id,
-    //     description: restInfo.description,
-    //     tags: restInfo.tags ? restInfo.tags.map(tag => tag.name) : []
-    //   }
-    // });
+    this.setState({
+      updatedRestaurant: {
+        name: info.name,
+        phone: info.phone,
+        address: info.address_id,
+        description: info.description,
+        tags: info.tags ? info.tags.map(tag => tag.name) : []
+      },
+      editorState: EditorState.createWithContent(
+        convertFromRaw(JSON.parse(info.description_markup))
+      )
+    });
 
     fetch("http://localhost:6543/api/tag")
       .then(response => response.json())
@@ -43,7 +48,9 @@ export class UpdateRestaurantForm extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
 
-    const { updatedRestaurant } = this.state;
+    const { updatedRestaurant, editorState } = this.state;
+    const contentState = convertToRaw(editorState.getCurrentContent());
+    updatedRestaurant.markup = JSON.stringify(contentState);
 
     fetch(`http://localhost:6543/api/user_restaurant/${this.props.restId}`, {
       method: "PUT",
@@ -91,9 +98,24 @@ export class UpdateRestaurantForm extends React.Component {
     }));
   };
 
+  onEditorChange = editorState => {
+    this.setState({ editorState });
+  };
+
+  toggleEditorBlockType = blockType => {
+    this.onEditorChange(
+      RichUtils.toggleBlockType(this.state.editorState, blockType)
+    );
+  };
+
+  toggleEditorInlineStyle = inlineStyle => {
+    this.onEditorChange(
+      RichUtils.toggleInlineStyle(this.state.editorState, inlineStyle)
+    );
+  };
+
   render() {
     const { allTags, updatedRestaurant, editorState } = this.state;
-
     return (
       <ValidatorForm
         onSubmit={this.handleSubmit}
@@ -136,7 +158,7 @@ export class UpdateRestaurantForm extends React.Component {
             <TextField
               value={updatedRestaurant.description}
               name="description"
-              label="Restaurant Description"
+              label="Prewiev text"
               multiline
               rows="4"
               fullWidth
@@ -144,13 +166,13 @@ export class UpdateRestaurantForm extends React.Component {
           </Grid>
           <Grid item xs={12} />
           <Grid item xs={12}>
-            {/* <MarkdownEditor
+            <MarkdownEditor
               ref="editor"
               editorState={editorState}
               toggleInlineStyle={this.toggleEditorInlineStyle}
               toggleBlockType={this.toggleEditorBlockType}
               onChange={this.onEditorChange}
-            /> */}
+            />
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
@@ -165,7 +187,7 @@ export class UpdateRestaurantForm extends React.Component {
           </Grid>
           <Grid item xs={3}>
             <Button
-              onClick={this.handleCloseFormClick}
+              onClick={this.props.handleCloseFormClick}
               variant="contained"
               color="secondary"
               fullWidth

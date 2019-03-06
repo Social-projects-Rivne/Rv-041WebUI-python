@@ -40,7 +40,7 @@ class ManageAdministrators extends React.Component {
 
   handleAddUser = newUser => {
     this.setState(prevState => ({
-      administrators: [...prevState.administrators, newUser]
+      administrators: [newUser]
     }));
   };
 

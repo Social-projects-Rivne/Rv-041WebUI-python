@@ -246,10 +246,10 @@ def update_user_restaurant(request):
     rest_id = request.matchdict["id"]
     rest = request.dbsession.query(Restaurant).get(int(rest_id))
 
-    name, description, phone, address, tags = rest_data["name"], rest_data[
-        "description"], rest_data["phone"], rest_data["address"], rest_data["tags"]
+    name, description, phone, address, tags, markup = rest_data["name"], rest_data[
+        "description"], rest_data["phone"], rest_data["address"], rest_data["tags"], rest_data['markup']
 
-    if request.token.user == rest.user:
+    if request.token.user.id == rest.owner_id:
         try:
             if name:
                 rest.name = name
@@ -257,11 +257,12 @@ def update_user_restaurant(request):
                 rest.address_id = address
             rest.description = description
             rest.phone = phone
+            rest.description_markup = markup
             tag_models = [request.dbsession.query(
                 Tag).filter_by(name=tag).first() for tag in tags]
-            rest.tag = tag_models
+            rest.tags = tag_models
             request.response.status_code = 201
-            return wrap(rest.as_dict(), message="Restaurant was successfully updated")
+            return wrap(rest.as_dict(with_relations=["tags", "administrator", "waiters"]), message="Restaurant was successfully updated")
         except Exception:
             request.response.status_code = 500
             return wrap([], success=False, error='Cannot update your retaurant.')

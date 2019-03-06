@@ -21,7 +21,6 @@ class MyRestaurants extends React.Component {
     })
       .then(response => response.json())
       .then(rests => {
-        console.log(rests.data);
         this.setState({ myRestaurants: rests.data });
       })
       .catch(console.log);
@@ -60,7 +59,7 @@ class MyRestaurants extends React.Component {
                 <RestaurantList data={myRestaurants} />
               </ArchiveContext.Provider>
             ) : (
-              <Typography variant="h6">
+              <Typography variant="subtitle2">
                 Create your first restaurant:
               </Typography>
             )}

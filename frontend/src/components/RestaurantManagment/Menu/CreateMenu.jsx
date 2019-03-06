@@ -23,6 +23,7 @@ import {
 import MenuToolbar from "./MenuToolbar";
 import ImageUploader from "./ImageUploader";
 import MenuTable from "./MenuTable";
+import { MenuContext } from "../../../containers/RestaurantManegmentPage/RestaurantManagmentPage";
 
 const styles = theme => ({
   root: {
@@ -65,7 +66,11 @@ function getStepContent(
         <FillMenu>
           {menuType === "image" ? (
             <Paper>
-              <MenuToolbar menuName={menuName} />
+              <MenuContext.Consumer>
+                {ctx => {
+                  return <MenuToolbar ctx={ctx} menuName={menuName} />;
+                }}
+              </MenuContext.Consumer>
               <Divider />
               <ImageUploader imgFileHandler={imgFileHandler} />
             </Paper>

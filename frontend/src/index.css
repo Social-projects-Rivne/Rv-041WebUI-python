@@ -10,3 +10,7 @@ body {
 .DraftEditor-editorContainer {
   min-height: 100px;
 }
+
+.DraftEditor-editorContainer > div {
+  min-height: 100px;
+}

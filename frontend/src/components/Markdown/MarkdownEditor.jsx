@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Grid,
-  withStyles,
-  FormControl,
-  FormLabel,
-  InputLabel
-} from "@material-ui/core";
+import { Grid, withStyles, FormControl, FormLabel } from "@material-ui/core";
 import InlineStyleControls from "./InlineStyleControls";
 import BlockStyleControls from "./BlockStyleControls";
 import { Editor } from "draft-js";
