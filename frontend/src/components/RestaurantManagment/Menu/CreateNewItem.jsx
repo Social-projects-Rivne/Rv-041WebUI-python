@@ -183,6 +183,8 @@ class CreateNewItem extends React.Component {
             })
             .then(response => {
               this._resetState();
+              var select = document.querySelector(`[name="category"]`);
+              select.value = "";
             })
             .catch(err => {
               console.log(err);

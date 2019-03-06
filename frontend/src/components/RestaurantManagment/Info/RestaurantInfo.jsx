@@ -67,7 +67,7 @@ const RestaurantInfo = props => {
           </>
         )}
         {props.info.description_markup &&
-          props.info.description_markup !== "<p></p>" && (
+          props.info.description_markup_converted !== "<p></p>" && (
             <>
               <Grid item xs={3}>
                 <Typography variant="subtitle2">Description:</Typography>
@@ -75,7 +75,7 @@ const RestaurantInfo = props => {
               <Grid item xs={9}>
                 <Typography
                   dangerouslySetInnerHTML={{
-                    __html: props.info.description_markup
+                    __html: props.info.description_markup_converted
                   }}
                 />
               </Grid>

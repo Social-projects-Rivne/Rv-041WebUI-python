@@ -31,10 +31,16 @@ export class AddWorkerForm extends React.Component {
           : response.json().then(Promise.reject.bind(Promise));
       })
       .then(newUser => {
+        return newUser.success
+          ? newUser
+          : newUser.then(Promise.reject.bind(Promise));
+      })
+      .then(newUser => {
         this.props.handleSuccesEvent(newUser.success, newUser.message);
         this.props.onAdd(newUser.data[0]);
         this.clearForm();
       })
+
       .catch(err => {
         this.props.handleSuccesEvent(err.success, err.error);
       });
