@@ -165,7 +165,7 @@ export class UpdateRestaurantForm extends React.Component {
           </Grid>
           <Grid item xs={3}>
             <Button
-              onClick={this.handleCloseFormClick}
+              onClick={this.props.handleCloseFormClick}
               variant="contained"
               color="secondary"
               fullWidth

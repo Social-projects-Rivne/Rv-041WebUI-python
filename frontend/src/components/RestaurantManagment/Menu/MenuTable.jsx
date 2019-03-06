@@ -268,9 +268,7 @@ class MenuTable extends React.Component {
             : response.json().then(Promise.reject.bind(Promise));
         })
         .then(response => {
-          console.log(data["image"]);
           data["image"] = response;
-          console.log(data["image"]);
           fetch(
             `http://localhost:6543/api/restaurant/${restId}/menu/${menuId}/item/${id}`,
             {

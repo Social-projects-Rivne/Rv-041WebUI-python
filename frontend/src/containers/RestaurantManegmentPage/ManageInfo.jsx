@@ -54,7 +54,6 @@ class ManageInfo extends React.Component {
         <CollapseForm
           tooltipText="Edit Information"
           formTitle="Edit Restaurant Information:"
-          tooltipText="Edit"
           tooltipIcon={<EditIcon />}
         >
           <UpdateRestaurantForm />

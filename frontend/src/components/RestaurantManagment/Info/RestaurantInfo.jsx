@@ -1,13 +1,6 @@
 import React from "react";
 
-import {
-  Grid,
-  Typography,
-  Chip,
-  Avatar,
-  CardMedia,
-  Divider
-} from "@material-ui/core";
+import { Grid, Typography, Chip, Avatar, CardMedia } from "@material-ui/core";
 
 import { makeDate } from "../../../Service/functions";
 
@@ -73,20 +66,18 @@ const RestaurantInfo = props => {
             </Grid>
           </>
         )}
-        {props.info.description_markup !== "<p></p>" &&
-          props.info.description_markup && (
+        {props.info.description_markup &&
+          props.info.description_markup !== "<p></p>" && (
             <>
               <Grid item xs={3}>
                 <Typography variant="subtitle2">Description:</Typography>
               </Grid>
               <Grid item xs={9}>
-                <Typography variant="subtitle2">
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: props.info.description_markup
-                    }}
-                  />
-                </Typography>
+                <Typography
+                  dangerouslySetInnerHTML={{
+                    __html: props.info.description_markup
+                  }}
+                />
               </Grid>
             </>
           )}
