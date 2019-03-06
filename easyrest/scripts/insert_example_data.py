@@ -248,7 +248,7 @@ def fill_db(session):
                     client_model.orders[-1].items.append(
                         OrderAssoc(quantity=i+1))
                     client_model.orders[-1].items[-1].food = item
-                    order_total += item.price
+                    order_total += item.price*(i+1)
                 if order_status != "Draft":
                     client_model.orders[-1].total_price = order_total
                 if order_status not in ["Draft", "Accepted", "Waiting for confirm"]:
