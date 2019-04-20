@@ -18,8 +18,9 @@ class UserAvatarWithInfo extends React.Component {
     userInfo: [],
     success: null,
     error: "",
-    token: localStorage.getItem("token")
-  };
+    token: localStorage.getItem("token"),
+    imgBody: null,
+    img: null  };
 
   componentDidMount() {
     const headers = new Headers({
@@ -41,7 +42,70 @@ class UserAvatarWithInfo extends React.Component {
         })
       )
       .catch(err => this.setState({ success: false, error: err.message }));
-  }
+  };
+
+  handleImageChange = e => {
+
+    const img = e.target.files[0];
+    let formData = new FormData();
+    formData.append("img", img);
+
+    fetch("http://localhost:6543/api/file", {
+      method: "POST",
+      headers: {
+        "x-auth-token": localStorage.getItem("token")
+      },
+      body: formData
+    })
+    .then(response =>
+      !(response.status >= 200 && response.status < 300)
+        ? response.json().then(Promise.reject.bind(Promise))
+        : response.json()
+    )
+    .then(data => {
+      const user_id = this.state.userInfo["id"];
+      if (user_id && data) {
+        let requestBody ={
+          "img": data  
+        };
+
+        fetch(`http://localhost:6543/api/user/${user_id}`, {
+          method: "PUT",
+          headers: {
+            "x-auth-token": localStorage.getItem("token"),
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(requestBody)
+        })
+        .then(response =>
+          !(response.status >= 200 && response.status < 300)
+            ? response.json().then(Promise.reject.bind(Promise))
+            : response.json()
+        )
+        .then(data =>
+          this.setState(prevState => {
+            let prevUserInfo = prevState.userInfo;
+            prevUserInfo["img"] = requestBody["img"];
+            return({
+              success: data.success,
+              userInfo: prevUserInfo,
+            });
+          })
+        )  
+        .catch(err => console.log("" + err));
+        
+      }
+
+    })
+    .catch(err => console.log("" + err));
+
+
+    /*e.target.files[0] &&
+      this.setState({
+        imgBody: e.target.files[0],
+        img: URL.createObjectURL(e.target.files[0])
+      });*/
+  };
 
   render() {
     const { classes } = this.props;
@@ -59,7 +123,10 @@ class UserAvatarWithInfo extends React.Component {
       if (success) {
         return (
           <div className={classes.forDiv}>
-            <UserAvatar userInfo={userInfo} />
+            <UserAvatar 
+              userInfo={userInfo}
+              handleImageChange={this.handleImageChange} 
+            />
             <UserInfo userInfo={userInfo} />
           </div>
         );
