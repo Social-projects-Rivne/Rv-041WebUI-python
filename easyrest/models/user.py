@@ -176,20 +176,11 @@ class User(Base):
                 if email_in_database is not None:
                     raise ValidationError('already exist', new_email)
 
-        #name = form_data['name']
-        #password = form_data['password']
-        #phone_number = form_data['phone_number']
-        #birth_date = form_data['birth_date']
-        #img = form_data['img']
-
         password = information_for_update.get("password")
         if password is not None:
             password_hash = pbkdf2_sha256.hash(password)
             database.query(User).filter_by(id=user.id).update(
                 {"password": password_hash})
-
-        #database.query(User).filter_by(id=user.id)\
-        #    .update({'name': name, 'email': new_email, 'phone_number': phone_number, 'birth_date': birth_date})
 
         database.query(User).filter_by(id=user.id)\
             .update(information_for_update)

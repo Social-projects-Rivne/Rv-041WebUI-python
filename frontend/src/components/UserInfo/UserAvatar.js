@@ -6,22 +6,9 @@ import {
   CardContent,
   Grid,
   Typography,
-  Fab,
-  IconButton
+  Fab
 } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
-
-/*const styles = {
-  card: {
-    flexGrow: 1,
-    maxWidth: 345,
-    width: "50%",
-    margin: 16
-  },
-  media: {
-    height: 330
-  }
-};*/
 
 
 const styles = theme => ({

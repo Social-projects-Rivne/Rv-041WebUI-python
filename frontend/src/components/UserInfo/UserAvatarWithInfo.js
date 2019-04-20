@@ -92,19 +92,13 @@ class UserAvatarWithInfo extends React.Component {
             });
           })
         )  
-        .catch(err => console.log("" + err));
+        .catch(err => {});
         
       }
 
     })
-    .catch(err => console.log("" + err));
+    .catch(err => {});
 
-
-    /*e.target.files[0] &&
-      this.setState({
-        imgBody: e.target.files[0],
-        img: URL.createObjectURL(e.target.files[0])
-      });*/
   };
 
   render() {
