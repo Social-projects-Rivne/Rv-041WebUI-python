@@ -43,12 +43,16 @@ def form_dict(record, keys, normalize_datetime=False, normalize_decimal=False):
     """
     result = {}
     for key in keys:
-        value = getattr(record, key)
-        if normalize_datetime:
-            value = date_time_normalize(value)
-        if normalize_decimal:
-            value = decimal_time_normalize(value)
-        result[key] = value
+        if type(record) == dict:
+            value = record.get(key, None)
+        else:
+            value = getattr(record, key, None)
+        if value is not None:
+            if normalize_datetime:
+                value = date_time_normalize(value)
+            if normalize_decimal:
+                value = decimal_time_normalize(value)
+            result[key] = value
     return result
     
 

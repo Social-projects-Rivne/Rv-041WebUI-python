@@ -17,6 +17,7 @@ from .meta import Base
 from validator import validation
 from ..exceptions import ValidationError
 from restaurant import Restaurant
+from ..scripts.json_helpers import form_dict
 
 
 class User(Base):
@@ -57,6 +58,7 @@ class User(Base):
     role_id = Column(Integer, ForeignKey('user_roles.id'), default=1)
     restaurant_id = Column(Integer, ForeignKey('restaurants.id'))
     is_active = Column(Boolean, default=True)
+    img = Column(Text)
 
     tokens = relationship('Token')
     role = relationship('UserRole')
@@ -152,28 +154,36 @@ class User(Base):
                 "email": {"format": "email"},
                 "phone_number": {"format": "string"},
                 "birth_date": {"format": "string"},
-                "password": {"minLength": 8}
+                "password": {"minLength": 8},
+                "img": {"type": "string"}
             },
-            "required": ["name", "email"]
+            #"required": ["name", "email"]
         }
         validation(schema, form_data)
-        current_email, new_email = user.email, form_data['email']
-        if current_email != new_email:
-            email_in_database = database.query(User.email)\
-                .filter(User.email == new_email).scalar()
-            if email_in_database is not None:
-                raise ValidationError('already exist', new_email)
-        name = form_data['name']
-        password = form_data['password']
-        phone_number = form_data['phone_number']
-        birth_date = form_data['birth_date']
+
+        update_info_keys = ("name", "email", "password", "phone_number", "birth_date", "img")
+        information_for_update = form_dict(form_data, update_info_keys)
+
+        if information_for_update == {}:
+          return None  
+
+        new_email = information_for_update.get("email")
+        if new_email is not None:
+            current_email = user.email
+            if current_email != new_email:
+                email_in_database = database.query(User.email)\
+                    .filter(User.email == new_email).scalar()
+                if email_in_database is not None:
+                    raise ValidationError('already exist', new_email)
+
+        password = information_for_update.get("password")
         if password is not None:
             password_hash = pbkdf2_sha256.hash(password)
             database.query(User).filter_by(id=user.id).update(
                 {"password": password_hash})
 
         database.query(User).filter_by(id=user.id)\
-            .update({'name': name, 'email': new_email, 'phone_number': phone_number, 'birth_date': birth_date})
+            .update(information_for_update)
 
     def toggle_activity(self):
         """Method to switch field state `is_active`.
