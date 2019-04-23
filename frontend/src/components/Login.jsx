@@ -62,7 +62,7 @@ class Login extends React.Component {
       })
       .then(json => {
         const { success, error, data } = json;
-        const { role, token, userName } = data;
+        const { role, token, userName, userImg } = data;
 
         if (success && role && token && userName) {
           localStorage.setItem("token", token);
@@ -72,7 +72,8 @@ class Login extends React.Component {
             auth: true,
             token,
             role,
-            userName
+            userName,
+            userImg
           });
         } else {
           throw error;

@@ -29,7 +29,8 @@ class App extends React.Component {
     auth: false,
     role: "",
     token: "",
-    userName: ""
+    userName: "",
+    userImg: ""
   };
 
   componentDidMount() {
@@ -54,7 +55,8 @@ class App extends React.Component {
             auth: true,
             role: json.data.role,
             userName: json.data.userName,
-            token: json.data.token
+            token: json.data.token,
+            userImg: json.data.userImg
           });
           localStorage.setItem("role", json.data.role);
           localStorage.setItem("userName", json.data.userName);
