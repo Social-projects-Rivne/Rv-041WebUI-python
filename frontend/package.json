@@ -9,6 +9,7 @@
     "draft-convert": "^2.1.4",
     "draft-js": "^0.10.5",
     "markdown-to-jsx": "^6.9.1",
+    "query-string": "^6.4.2",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-hot-loader": "^4.6.3",

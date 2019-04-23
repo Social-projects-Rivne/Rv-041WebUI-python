@@ -15,6 +15,7 @@ import PrivateRoute from "./Service/PrivatRoute";
 import AdminPanel from "./containers/AdminPanel";
 import WaiterPanel from "./containers/WaiterPanel";
 import AdministratorPanel from "./containers/AdministratorPanel"
+import openId from "./containers/OpenId"
 
 
 const routes = [
@@ -53,6 +54,11 @@ const routes = [
   {
     path: "/log-in",
     component: LogInPage
+  },
+  {
+    path: "/openid",
+    component: openId,
+    exact: false
   },
   {
     path: "/sign-up",

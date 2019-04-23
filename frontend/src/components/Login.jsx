@@ -180,6 +180,12 @@ class Login extends React.Component {
               <Grid item xs={12}>
                 <Grid container justify="space-between">
                   <Button
+                    href="https://accounts.google.com/o/oauth2/v2/auth?client_id=284454521138-k70hk283vmsdtj8m3gh242gmudk8q3k3.apps.googleusercontent.com&response_type=id_token&nonce=123&redirect_uri=http://localhost:3000/openid&scope=email+profile"
+                    color="primary"
+                  >
+                    Google
+                  </Button>
+                  <Button
                     replace
                     component={Link}
                     to="/sign-up"
