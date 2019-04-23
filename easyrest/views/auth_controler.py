@@ -3,8 +3,9 @@
 
 from pyramid.view import view_config
 from pyramid.authentication import AuthTicket
-from pyramid.httpexceptions import HTTPForbidden, HTTPNotFound
+from pyramid.httpexceptions import HTTPForbidden, HTTPNotFound, HTTPBadRequest
 from passlib.hash import pbkdf2_sha256
+import pyjwt
 
 from ..scripts.json_helpers import wrap
 from ..models.user import User
@@ -58,6 +59,56 @@ def check_token(request):
         "userImg": request.token.user.img
     }
     return wrap(data)
+
+@view_config(route_name='login', renderer='json', request_method='PUT')
+def login_openid(request):
+    """Controler for recivind google id_token from react redirect. 
+    Expects:
+        PUT request:
+            {'id_token': token}
+    Return:
+        {
+            "data": [],
+            "status": True if user added good
+                      False if user added bad
+        }
+    """
+    req_json = request.json_body
+    id_token = req_json.get("id_token", False)
+    if not id_token:
+        raise HTTPNotFound("No id_token suplied")
+    
+    decoded_token = pyjwt.decode(id_token, 'secret', algorithms=['HS256'])
+
+    email = decoded_token.get('email', False)
+    new_pass = decoded_token.get('jti', False)
+
+    if not email or not new_pass:
+        raise HTTPBadRequest("no email in token")
+
+    user = request.dbsession.query(User).filter_by(email=email).first()
+    # check if user exists
+    if user is None:
+        form_data = {
+            "email": email,
+            "password": new_pass,
+            "name": ""
+        }
+        user = User.add(request.dbsession, form_data)
+
+    token = remember(request, user)
+    body = {
+        "role": user.role.name,
+        "token": token,
+        "userName": user.name,
+        "userImg": user.img
+    }
+
+    return wrap(body)
+    
+
+
+    
 
 
 @view_config(route_name='login', renderer='json', request_method='DELETE')

@@ -8,7 +8,7 @@ def includeme(config):
     config.add_route('options_handling', '/{catch_all:.*}',
                      request_method="OPTIONS")
     config.add_route('login', 'login',
-                     request_method=["GET", "POST", "DELETE"])
+                     request_method=["POST", "GET", "PUT", "DELETE"])
     config.add_route('get_tags', 'tag', request_method="GET")
     config.add_route('get_all_restaurants', 'restaurant',
                      request_method="GET")
