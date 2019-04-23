@@ -64,7 +64,7 @@ function UserAvatar(props){
     <Card className={classes.card}>
       <CardMedia
         className={classes.media}
-        image={userInfo.img}
+        image={ userInfo.img ? userInfo.img : "https://previews.123rf.com/images/salamatik/salamatik1801/salamatik180100019/92979836-ic%C3%B4ne-de-visage-anonyme-de-profil-personne-silhouette-grise-avatar-par-d%C3%A9faut-masculin-photo-placeholder-.jpg" }
         title="You"
       />
 
