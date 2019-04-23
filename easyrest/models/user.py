@@ -102,14 +102,16 @@ class User(Base):
             User.email).filter(User.email == email).scalar()
         if email_in_database is not None:
             raise ValidationError('already exist', email)
-        name = form_data['name']
-        password = form_data['password']
-        password_hash = pbkdf2_sha256.hash(password)
-        phone_number = form_data['phone_number']
-        birth_date = form_data['birth_date']
 
-        user = User(name=name, email=email, phone_number=phone_number,
-                    birth_date=birth_date, password=password_hash, role_id=role)
+        form_data["password"] = pbkdf2_sha256.hash(form_data["password"])
+        form_data["role_id"] = role
+        # name = form_data['name']
+        # password = form_data['password']
+        # password_hash = pbkdf2_sha256.hash(password)
+        # phone_number = form_data.get('phone_number', None)
+        # birth_date = form_data.get('birth_date', None)
+
+        user = User(**form_data)
 
         try:
             restaurant_id = form_data["restaurant_id"]

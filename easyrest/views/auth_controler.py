@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Controler which defines auth behavior
 """
 
@@ -5,7 +6,7 @@ from pyramid.view import view_config
 from pyramid.authentication import AuthTicket
 from pyramid.httpexceptions import HTTPForbidden, HTTPNotFound, HTTPBadRequest
 from passlib.hash import pbkdf2_sha256
-import pyjwt
+import jwt
 
 from ..scripts.json_helpers import wrap
 from ..models.user import User
@@ -78,23 +79,36 @@ def login_openid(request):
     if not id_token:
         raise HTTPNotFound("No id_token suplied")
     
-    decoded_token = pyjwt.decode(id_token, 'secret', algorithms=['HS256'])
+    decoded_token = jwt.decode(id_token, 'NrbEQgu9ggA4VJqmdtynWgcs', verify=False, algorithms=['HS256'])
 
     email = decoded_token.get('email', False)
     new_pass = decoded_token.get('jti', False)
+    name = decoded_token.get('name', '').encode("utf-8")
+    # import codecs
+    print(name)
+    # print(name.decode("UTF-8").encode("UTF-8"))
+    img = decoded_token.get('picture', '')
 
     if not email or not new_pass:
         raise HTTPBadRequest("no email in token")
 
     user = request.dbsession.query(User).filter_by(email=email).first()
-    # check if user exists
+    # check if user exists    
     if user is None:
         form_data = {
             "email": email,
             "password": new_pass,
-            "name": ""
+            "name": decoded_token.get('name', ''),
+            "img": decoded_token.get('picture', '')
         }
         user = User.add(request.dbsession, form_data)
+    else:
+        upd_data = {}
+        if user.name == '':
+            upd_data["name"] = name
+        if user.img is None or user.img != '':
+            upd_data["img"] = img
+        User.update(request.dbsession, user, upd_data)
 
     token = remember(request, user)
     body = {
@@ -106,10 +120,6 @@ def login_openid(request):
 
     return wrap(body)
     
-
-
-    
-
 
 @view_config(route_name='login', renderer='json', request_method='DELETE')
 def login_del(request):
