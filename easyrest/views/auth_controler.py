@@ -40,7 +40,8 @@ def login_post(request):
     body = {
         "role": user.role.name,
         "token": token,
-        "userName": user.name
+        "userName": user.name,
+        "userImg": user.img
     }
 
     return wrap(body)
@@ -53,7 +54,8 @@ def check_token(request):
     data = {
         "token": request.token.token,
         "role": request.token.user.role.name,
-        "userName": request.token.user.name
+        "userName": request.token.user.name,
+        "userImg": request.token.user.img
     }
     return wrap(data)
 

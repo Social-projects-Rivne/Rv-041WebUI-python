@@ -60,7 +60,8 @@ class UserMenu extends React.Component {
           auth: false,
           token: "",
           role: "",
-          userName: ""
+          userName: "",
+          userImg: ""
         });
         this.setState({ anchorEl: null });
       })
@@ -70,7 +71,7 @@ class UserMenu extends React.Component {
   };
 
   render() {
-    const { auth, role, userName } = this.props.ctx;
+    const { auth, role, userName, userImg } = this.props.ctx;
     const isClient = role === "Client";
     const isOwner = role === "Owner";
     const isModerator = role === "Moderator";
@@ -117,7 +118,19 @@ class UserMenu extends React.Component {
               aria-haspopup="true"
               onClick={this.handleMenu}
             >
-              <Avatar className={classes.avatar}>{avatarChar}</Avatar>
+              {
+                userImg &&  <Avatar 
+                              className={classes.avatar} 
+                              src={userImg}
+                            />
+              }
+              {
+                !userImg && <Avatar 
+                              className={classes.avatar}
+                            >
+                              {avatarChar}
+                            </Avatar>
+              }
             </IconButton>
             <Menu
               id="menu-appbar"
