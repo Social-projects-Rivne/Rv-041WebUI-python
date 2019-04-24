@@ -83,10 +83,7 @@ def login_openid(request):
 
     email = decoded_token.get('email', False)
     new_pass = decoded_token.get('jti', False)
-    name = decoded_token.get('name', '').encode("utf-8")
-    # import codecs
-    print(name)
-    # print(name.decode("UTF-8").encode("UTF-8"))
+    name = decoded_token.get('name', '')
     img = decoded_token.get('picture', '')
 
     if not email or not new_pass:
@@ -98,8 +95,8 @@ def login_openid(request):
         form_data = {
             "email": email,
             "password": new_pass,
-            "name": decoded_token.get('name', ''),
-            "img": decoded_token.get('picture', '')
+            "name": name,
+            "img": img
         }
         user = User.add(request.dbsession, form_data)
     else:
