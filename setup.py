@@ -16,7 +16,8 @@ requires = [
     'psycopg2-binary',
     'faker',
     'passlib',
-    'jsonschema'
+    'jsonschema',
+    'pyjwt' # added to parse google`s id_token
 ]
 
 tests_require = [
